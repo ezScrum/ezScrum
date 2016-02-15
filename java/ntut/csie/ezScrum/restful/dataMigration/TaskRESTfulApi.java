@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
@@ -35,7 +37,12 @@ public class TaskRESTfulApi {
 	public Response createTask(@PathParam("projectId") long projectId, 
                                @PathParam("sprintId") long sprintId,
                                @PathParam("storyId") long storyId,
+                               @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+					           @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
                                String entity) {
+		if (!SecurityModule.isAccountValid(username, password)) {
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -66,7 +73,12 @@ public class TaskRESTfulApi {
 	                                 	@PathParam("sprintId") long sprintId,
 	                                 	@PathParam("storyId") long storyId,
 	                                 	@PathParam("taskId") long taskId,
+	                                 	@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	  					                @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 	String entity) {
+		if (!SecurityModule.isAccountValid(username, password)) {
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -97,7 +109,12 @@ public class TaskRESTfulApi {
 	        							@PathParam("sprintId") long sprintId,
 	        							@PathParam("storyId") long storyId,
 	        							@PathParam("taskId") long taskId,
+	                                 	@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	  					                @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	        							String entity) {
+		if (!SecurityModule.isAccountValid(username, password)) {
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -120,7 +137,12 @@ public class TaskRESTfulApi {
 	        						  @PathParam("sprintId") long sprintId,
 	        						  @PathParam("storyId") long storyId,
 	        						  @PathParam("taskId") long taskId,
+	                                  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	  					              @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                  String entity) throws IOException {
+		if (!SecurityModule.isAccountValid(username, password)) {
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);

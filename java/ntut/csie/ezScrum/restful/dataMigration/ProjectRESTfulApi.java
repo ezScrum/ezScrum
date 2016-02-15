@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 
 import java.util.ArrayList;
 
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -17,6 +18,7 @@ import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
@@ -29,7 +31,13 @@ import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 public class ProjectRESTfulApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createProject(String entity) {
+	public Response createProject(String entity, 
+								  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+								  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
+		
 		// Error Checking
 		String message = JSONChecker.checkProjectJSON(entity);
 
@@ -50,7 +58,13 @@ public class ProjectRESTfulApi {
 	@PUT
 	@Path("/{projectId}/scrumroles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateScrumRolesInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response updateScrumRolesInProject(@PathParam("projectId") long projectId, String entity,
+											  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+											  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password) throws JSONException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
+		
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
@@ -75,7 +89,13 @@ public class ProjectRESTfulApi {
 	@POST
 	@Path("/{projectId}/projectroles")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createProjectRoleInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response createProjectRoleInProject(@PathParam("projectId") long projectId, 
+											   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+											   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+											   String entity) throws JSONException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
@@ -101,7 +121,13 @@ public class ProjectRESTfulApi {
 	@POST
 	@Path("/{projectId}/tags")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createTagInProject(@PathParam("projectId") long projectId, String entity) throws JSONException {
+	public Response createTagInProject(@PathParam("projectId") long projectId, 
+									   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+									   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+									   String entity) throws JSONException {
+		if(!SecurityModule.isAccountValid(username,password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {

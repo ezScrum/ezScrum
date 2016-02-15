@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -148,6 +149,8 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + project.getId() +
 		               "/tasks")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(taskJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -193,6 +196,8 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -222,6 +227,8 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -256,6 +263,8 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		                "/tasks/" + task.getId() + 
 		                "/attachfiles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(attachFileJSON.toString()));
 		
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
@@ -273,5 +282,527 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// clean test data
 		File file = new File(task.getAttachFiles().get(0).getPath());
 		file.delete();
+	}
+	
+	@Test
+	public void testCreateDroppedTask_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(1);
+		String name = "TEST_TASK_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_DROPPED_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		               "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", message);
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
+	
+	@Test
+	public void testCreateDroppedTask_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(1);
+		String name = "TEST_TASK_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_DROPPED_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		               "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", message);
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
+	
+	@Test
+	public void testCreateDroppedTask_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		AccountObject handlerAccount = mCA.getAccountList().get(0);
+		AccountObject partnerAccount = mCA.getAccountList().get(1);
+		String name = "TEST_TASK_NAME";
+		String handler = handlerAccount.getUsername();
+		String partner = partnerAccount.getUsername();
+		int estimate = 3;
+		int remain = 2;
+		int actual = 3;
+		String notes = "TEST_CREATE_DROPPED_TASK";
+		String status = "assigned";
+		ProjectObject project = mCP.getAllProjects().get(0);
+
+		// Add Account to Project
+		handlerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+		partnerAccount.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
+
+		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.NAME, name);
+		taskJSON.put(TaskJSONEnum.HANDLER, handler);
+		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
+		taskJSON.put(TaskJSONEnum.REMAIN, remain);
+		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		taskJSON.put(TaskJSONEnum.NOTES, notes);
+		taskJSON.put(TaskJSONEnum.STATUS, status);
+		JSONArray partnersIdJSONArray = new JSONArray();
+		JSONObject partnerJSON = new JSONObject();
+		partnerJSON.put(AccountJSONEnum.USERNAME, partner);
+		partnersIdJSONArray.put(partnerJSON);
+		taskJSON.put(TaskJSONEnum.PARTNERS, partnersIdJSONArray);
+
+		// Call '/projects/{projectId}/tasks' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		               "/tasks")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(taskJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", message);
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+	}
+	
+	@Test
+	public void testCreateHistoryInDroppedTask_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateHistoryInDroppedTask_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateHistoryInDroppedTask_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+
+		long createTime = System.currentTimeMillis();
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, "STATUS");
+		historyJSON.put(HistoryJSONEnum.OLD_VALUE, "new");
+		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
+		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(historyJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testDeleteHistoryInDroppedTask_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .delete();
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testDeleteHistoryInDroppedTask_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .delete();
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testDeleteHistoryInDroppedTask_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task histories before create history
+		assertEquals(1, task.getHistories().size());
+		assertEquals(HistoryObject.TYPE_CREATE, task.getHistories().get(0).getHistoryType());
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .delete();
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateAttachFileInDroppedTask_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateAttachFileInDroppedTask_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateAttachFileInDroppedTask_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Create Test Data - Project
+		ProjectObject project = mCP.getAllProjects().get(0);
+		
+		// Create Test Data - Dropped Task
+		TaskObject task = new TaskObject(project.getId());
+		task.setName("TEST_NAME").save(); // no append to story
+		
+		// Check task attach files before create attach file
+		assertEquals(0, task.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Task01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "VGFzazAx");
+		
+		// Call '/projects/{projectId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/tasks/" + task.getId() + 
+		                "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message =  jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 }

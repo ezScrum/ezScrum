@@ -30,6 +30,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -147,6 +148,8 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		              "/sprints/" + sprint.getId() +
 		              "/stories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(storyJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -187,6 +190,8 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/tags")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(tagJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -224,6 +229,8 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(historyJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -252,6 +259,8 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		                "/stories/" + story.getId() + 
 		                "/histories")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .delete();
 		
 		// Assert
@@ -281,6 +290,8 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		              "/stories/" + story.getId() + 
 		              "/attachfiles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(attachFileJSON.toString()));
 		
 		// Assert
@@ -299,5 +310,575 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// clean test data
 		File file = new File(story.getAttachFiles().get(0).getPath());
 		file.delete();
+	}
+	
+	@Test
+	public void testCreateStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateStory_AccountIsNull() throws JSONException {
+		String invalidUsername = null;
+		String invalidPassword = null;
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateStory_AccountIsEmpty() throws JSONException {
+		String invalidUsername = "";
+		String invalidPassword = "";
+		
+		// Test Data
+		String name = "TEST_STORY_NAME";
+		String status = "new";
+		int estimate = 3;
+		int importance = 98;
+		int value = 20;
+		String notes = "TEST_STORY_VALUE";
+		String howToDemo = "TEST_STORY_HOWTODEMO";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+
+		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.NAME, name);
+		storyJSON.put(StoryJSONEnum.STATUS, status);
+		storyJSON.put(StoryJSONEnum.ESTIMATE, estimate);
+		storyJSON.put(StoryJSONEnum.IMPORTANCE, importance);
+		storyJSON.put(StoryJSONEnum.VALUE, value);
+		storyJSON.put(StoryJSONEnum.NOTES, notes);
+		storyJSON.put(StoryJSONEnum.HOW_TO_DEMO, howToDemo);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(storyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String tagName = "TEST_TAG_NAME";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Tag
+		TagObject tag = new TagObject(tagName, project.getId());
+		tag.save();
+		assertTrue(tag.getId() > -1);
+		
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInStory_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		String tagName = "TEST_TAG_NAME";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Tag
+		TagObject tag = new TagObject(tagName, project.getId());
+		tag.save();
+		assertTrue(tag.getId() > -1);
+		
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInStory_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		String tagName = "TEST_TAG_NAME";
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Create Tag
+		TagObject tag = new TagObject(tagName, project.getId());
+		tag.save();
+		assertTrue(tag.getId() > -1);
+		
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateHistoryInStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String type = "CREATE";
+		String oldValue = "";
+		String newValue = "";
+		long createTime = System.currentTimeMillis();
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
+		           .put(HistoryJSONEnum.OLD_VALUE, oldValue)
+		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
+		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(historyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateHistoryInStory_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		String type = "CREATE";
+		String oldValue = "";
+		String newValue = "";
+		long createTime = System.currentTimeMillis();
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
+		           .put(HistoryJSONEnum.OLD_VALUE, oldValue)
+		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
+		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(historyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateHistoryInStory_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		String type = "CREATE";
+		String oldValue = "";
+		String newValue = "";
+		long createTime = System.currentTimeMillis();
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		JSONObject historyJSON = new JSONObject();
+		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
+		           .put(HistoryJSONEnum.OLD_VALUE, oldValue)
+		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
+		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(historyJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = jsonResponse.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testDeleteHistoriesInStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testDeleteHistoriesInStory_AccountIsNull() throws JSONException {
+		String invalidUsername = null;
+		String invalidPassword = null;
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testDeleteHistoriesInStory_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		                "/sprints/" + sprint.getId() +
+		                "/stories/" + story.getId() + 
+		                "/histories")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .delete();
+		
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testCreateAttachFileInStory_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Check story attach files before create attach file
+		assertEquals(0, story.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "U3RvcnkwMQ==");
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		// Assert
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+	}
+	
+	@Test
+	public void testCreateAttachFileInStory_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Check story attach files before create attach file
+		assertEquals(0, story.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "U3RvcnkwMQ==");
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		// Assert
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
+	}
+	
+	@Test
+	public void testCreateAttachFileInStory_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = mCS.getSprints().get(0);
+		StoryObject story = mASTS.getStories().get(0);
+		
+		// Check story attach files before create attach file
+		assertEquals(0, story.getAttachFiles().size());
+
+		JSONObject attachFileJSON = new JSONObject();
+		attachFileJSON.put(AttachFileJSONEnum.NAME, "Story01.txt");
+		attachFileJSON.put(AttachFileJSONEnum.CONTENT_TYPE, "application/octet-stream");
+		attachFileJSON.put(AttachFileJSONEnum.BINARY, "U3RvcnkwMQ==");
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getId() +
+		              "/sprints/" + sprint.getId() +
+		              "/stories/" + story.getId() + 
+		              "/attachfiles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(attachFileJSON.toString()));
+		
+		// Assert
+		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
+		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
+		
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals("", responseMessage);
+		assertEquals(new JSONObject().toString(), responseContent);
 	}
 }

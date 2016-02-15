@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Response;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResourceFinder;
@@ -27,7 +29,12 @@ public class UnplanRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUnplan(@PathParam("projectId") long projectId,
 	        					 @PathParam("sprintId") long sprintId,
+	        					 @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        					 @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	        					 String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -57,7 +64,12 @@ public class UnplanRESTfulApi {
 	public Response createHistoryInUnplan(@PathParam("projectId") long projectId,
 	                                 	  @PathParam("sprintId") long sprintId,
 	                                 	  @PathParam("unplanId") long unplanId,
+	                                 	  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	    	        					  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 	  String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
@@ -82,9 +94,14 @@ public class UnplanRESTfulApi {
 	@Path("/{unplanId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteHistoryInUnplan(@PathParam("projectId") long projectId,
-       	  								@PathParam("sprintId") long sprintId,
-       	  								@PathParam("unplanId") long unplanId,
-       	  								String entity) {
+       	  								  @PathParam("sprintId") long sprintId,
+       	  								  @PathParam("unplanId") long unplanId,
+       	  								  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+       	  								  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+       	  								  String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);

@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.dataMigration;
 
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -8,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResourceFinder;
@@ -19,7 +21,14 @@ import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 public class ReleaseRESTfulApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createRelease(@PathParam("projectId") long projectId, String entity) {
+	public Response createRelease(@PathParam("projectId") long projectId,
+								  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+								  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password, 
+								  String entity
+								  ) {
+		if (!SecurityModule.isAccountValid(username, password)) {
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		if (project == null) {

@@ -25,6 +25,7 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -59,7 +60,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-
+		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
@@ -108,10 +109,12 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
 		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
 
-		// Call '/accounts' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
 		        .path("accounts")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(accountJSON.toString()));
 
 		AccountObject account = AccountObject.get(userName);
@@ -141,10 +144,12 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
 		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
 
-		// Call '/accounts' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
 		        .path("accounts")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(accountJSON.toString()));
 
 		AccountObject account = AccountObject.get(userName);
@@ -174,10 +179,12 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
 		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
 
-		// Call '/accounts' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
 		        .path("accounts")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(accountJSON.toString()));
 
 		AccountObject account = AccountObject.get(userName);
@@ -190,13 +197,105 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		assertEquals(userEmail, account.getEmail());
 		assertEquals(true, account.getEnable());
 		
-		// Call '/accounts' API again
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API again
 		response = mClient.target(BASE_URL)
 		        .path("accounts")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(accountJSON.toString()));
 		
 		// Assert
 		assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testCreateAccount_AccountIsInvalid() throws JSONException {
+		String wrongAdminUsername = "wrongAdminUsername";
+		String wrongAdminPassword = "wrongAdminPassword";
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userNickName = "TEST_USER_NICK_NAME";
+		String userPassword = "TEST_USER_PASSWORD";
+		String userEmail = "TEST_USER_EMAIL";
+		boolean enbale = true;
+
+		JSONObject accountJSON = new JSONObject();
+		accountJSON.put(AccountJSONEnum.USERNAME, userName);
+		accountJSON.put(AccountJSONEnum.NICK_NAME, userNickName);
+		accountJSON.put(AccountJSONEnum.PASSWORD, userPassword);
+		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
+		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
+		Response response = mClient.target(BASE_URL)
+		        .path("accounts")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(accountJSON.toString()));
+	
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testCreateAccount_AccountIsNull() throws JSONException {
+		String wrongAdminUsername = null;
+		String wrongAdminPassword = null;
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userNickName = "TEST_USER_NICK_NAME";
+		String userPassword = "TEST_USER_PASSWORD";
+		String userEmail = "TEST_USER_EMAIL";
+		boolean enbale = true;
+
+		JSONObject accountJSON = new JSONObject();
+		accountJSON.put(AccountJSONEnum.USERNAME, userName);
+		accountJSON.put(AccountJSONEnum.NICK_NAME, userNickName);
+		accountJSON.put(AccountJSONEnum.PASSWORD, userPassword);
+		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
+		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
+		Response response = mClient.target(BASE_URL)
+		        .path("accounts")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(accountJSON.toString()));
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testCreateAccount_AccountIsEmpty() throws JSONException {
+		String wrongAdminUsername = "";
+		String wrongAdminPassword = "";
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userNickName = "TEST_USER_NICK_NAME";
+		String userPassword = "TEST_USER_PASSWORD";
+		String userEmail = "TEST_USER_EMAIL";
+		boolean enbale = true;
+
+		JSONObject accountJSON = new JSONObject();
+		accountJSON.put(AccountJSONEnum.USERNAME, userName);
+		accountJSON.put(AccountJSONEnum.NICK_NAME, userNickName);
+		accountJSON.put(AccountJSONEnum.PASSWORD, userPassword);
+		accountJSON.put(AccountJSONEnum.EMAIL, userEmail);
+		accountJSON.put(AccountJSONEnum.ENABLE, enbale);
+
+		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
+		Response response = mClient.target(BASE_URL)
+		        .path("accounts")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
+		        .post(Entity.text(accountJSON.toString()));
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
 	}
 }

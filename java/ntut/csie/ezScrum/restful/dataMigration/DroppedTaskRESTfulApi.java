@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.FileDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONChecker;
 import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
@@ -30,7 +32,14 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 public class DroppedTaskRESTfulApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createDroppedTask(@PathParam("projectId") long projectId, String entity) {
+	public Response createDroppedTask(@PathParam("projectId") long projectId, 
+									  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+									  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+									  String entity
+									  ) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		if (project == null) {
@@ -58,7 +67,12 @@ public class DroppedTaskRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInDroppedTask(@PathParam("projectId") long projectId,
 	                                 		   @PathParam("taskId") long taskId,
+	                                 		   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	    									   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 		   String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
@@ -82,8 +96,13 @@ public class DroppedTaskRESTfulApi {
 	@Path("/{taskId}/histories/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteHistoryInDroppedTask(@PathParam("projectId") long projectId,
-	        							@PathParam("taskId") long taskId,
-	        							String entity) {
+	        								   @PathParam("taskId") long taskId,
+	        								   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        								   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	        								   String entity) {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
@@ -100,8 +119,13 @@ public class DroppedTaskRESTfulApi {
 	@Path("/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createAttachFileInDroppedTask(@PathParam("projectId") long projectId,
-	        						  		   @PathParam("taskId") long taskId,
-	        						  		   String entity) throws IOException {
+	        						  		      @PathParam("taskId") long taskId,
+	        						  		      @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
+	        						  		      @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
+	        						  		      String entity) throws IOException {
+		if(!SecurityModule.isAccountValid(username, password)){
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+		}
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		TaskObject task = resourceFinder.findDroppedTask(taskId);

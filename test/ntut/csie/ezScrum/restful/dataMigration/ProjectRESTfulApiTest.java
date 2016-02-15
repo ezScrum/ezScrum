@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -130,6 +131,8 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		Response response = mClient.target(BASE_URL)
 		        .path("projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(projectJSON.toString()));
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
@@ -168,6 +171,8 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		Response response = mClient.target(BASE_URL)
 		        .path("projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(projectJSON.toString()));
 		
 		// Assert
@@ -242,7 +247,11 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		scrumRolesJSON.put(ScrumRoleJSONEnum.GUEST, guest.toJSON());
 		
 		// Call '/projects/{projectId}/scrumRoles' API
-		Response response = mClient.target(BASE_URL).path("projects/" + projectId + "/scrumroles").request()
+		Response response = mClient.target(BASE_URL)
+				.path("projects/" + projectId + "/scrumroles")
+				.request()
+				.header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 				.put(Entity.text(scrumRolesJSON.toString()));
 		
 		// Assert Response
@@ -387,6 +396,8 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + projectId +
 		              "/projectroles")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(projectRoleJSON.toString()));
 
 		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
@@ -412,6 +423,8 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + projectId +
 		              "/tags")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(tagJSON.toString()));
 
 		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
@@ -436,6 +449,8 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + projectId +
 		              "/tags")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(tagJSON.toString()));
 
 		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
@@ -450,9 +465,580 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .path("projects/" + projectId +
 		                "/tags")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(tagJSON.toString()));
 
 		// Assert
 		assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testCreateProject_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String projectName = "TEST_PROJECT_NAME";
+		String projectDisplayName = "TEST_PROJECT_DISPLAY_NAME";
+		String projectComment = "TEST_PROJECT_COMMENT";
+		String projectProductOwner = "TEST_PROJECT_PRODUCT_OWNER";
+		int projectMaxAttachFileSize = 2;
+		long createTime = System.currentTimeMillis();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(projectJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateProject_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		String projectName = "TEST_PROJECT_NAME";
+		String projectDisplayName = "TEST_PROJECT_DISPLAY_NAME";
+		String projectComment = "TEST_PROJECT_COMMENT";
+		String projectProductOwner = "TEST_PROJECT_PRODUCT_OWNER";
+		int projectMaxAttachFileSize = 2;
+		long createTime = System.currentTimeMillis();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(projectJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateProject_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		String projectName = "TEST_PROJECT_NAME";
+		String projectDisplayName = "TEST_PROJECT_DISPLAY_NAME";
+		String projectComment = "TEST_PROJECT_COMMENT";
+		String projectProductOwner = "TEST_PROJECT_PRODUCT_OWNER";
+		int projectMaxAttachFileSize = 2;
+		long createTime = System.currentTimeMillis();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(projectJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedProject_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		String projectName = mCP.getAllProjects().get(0).getName();
+		String projectDisplayName = mCP.getAllProjects().get(0).getDisplayName();
+		String projectComment = mCP.getAllProjects().get(0).getComment();
+		String projectProductOwner = mCP.getAllProjects().get(0).getManager();
+		int projectMaxAttachFileSize = (int) mCP.getAllProjects().get(0).getAttachFileSize();
+		long createTime = mCP.getAllProjects().get(0).getCreateTime();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(projectJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedProject_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		String projectName = mCP.getAllProjects().get(0).getName();
+		String projectDisplayName = mCP.getAllProjects().get(0).getDisplayName();
+		String projectComment = mCP.getAllProjects().get(0).getComment();
+		String projectProductOwner = mCP.getAllProjects().get(0).getManager();
+		int projectMaxAttachFileSize = (int) mCP.getAllProjects().get(0).getAttachFileSize();
+		long createTime = mCP.getAllProjects().get(0).getCreateTime();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(projectJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedProject_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		String projectName = mCP.getAllProjects().get(0).getName();
+		String projectDisplayName = mCP.getAllProjects().get(0).getDisplayName();
+		String projectComment = mCP.getAllProjects().get(0).getComment();
+		String projectProductOwner = mCP.getAllProjects().get(0).getManager();
+		int projectMaxAttachFileSize = (int) mCP.getAllProjects().get(0).getAttachFileSize();
+		long createTime = mCP.getAllProjects().get(0).getCreateTime();
+
+		JSONObject projectJSON = new JSONObject();
+		projectJSON.put(ProjectJSONEnum.NAME, projectName);
+		projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, projectDisplayName);
+		projectJSON.put(ProjectJSONEnum.COMMENT, projectComment);
+		projectJSON.put(ProjectJSONEnum.PRODUCT_OWNER, projectProductOwner);
+		projectJSON.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, projectMaxAttachFileSize);
+		projectJSON.put(ProjectJSONEnum.CREATE_TIME, createTime);
+
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(projectJSON.toString()));
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateProjectRoleInProject_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String userName = mCA.getAccountList().get(0).getUsername();
+		String roleName = "ScrumTeam";
+
+		JSONObject projectRoleJSON = new JSONObject();
+		projectRoleJSON.put(AccountJSONEnum.USERNAME, userName);
+		projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, roleName);
+
+		// Call '/projects/{projectId}/projectroles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/projectroles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(projectRoleJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateProjectRoleInProject_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String userName = mCA.getAccountList().get(0).getUsername();
+		String roleName = "ScrumTeam";
+
+		JSONObject projectRoleJSON = new JSONObject();
+		projectRoleJSON.put(AccountJSONEnum.USERNAME, userName);
+		projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, roleName);
+
+		// Call '/projects/{projectId}/projectroles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/projectroles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(projectRoleJSON.toString()));
+
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateProjectRoleInProject_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String userName = mCA.getAccountList().get(0).getUsername();
+		String roleName = "ScrumTeam";
+
+		JSONObject projectRoleJSON = new JSONObject();
+		projectRoleJSON.put(AccountJSONEnum.USERNAME, userName);
+		projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, roleName);
+
+		// Call '/projects/{projectId}/projectroles' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/projectroles")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(projectRoleJSON.toString()));
+
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInProject_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInProject_AccountIsInvalid_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateTagInProject_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedTagInProject_AccountIsInvalid() throws JSONException {
+		String invalidUsername = "test";
+		String invalidPassword = "test";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
+		        .post(Entity.text(tagJSON.toString()));
+
+		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, tags.size());
+		assertEquals(tagName, tags.get(0).getName());
+		
+		// Call '/projects/{projectId}/tags' API again
+		response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		                "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedTagInProject_AccountIsNull() throws JSONException {
+		String nullUsername = null;
+		String nullPassword = null;
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
+		        .post(Entity.text(tagJSON.toString()));
+
+		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, tags.size());
+		assertEquals(tagName, tags.get(0).getName());
+		
+		// Call '/projects/{projectId}/tags' API again
+		response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		                "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
+	}
+	
+	@Test
+	public void testCreateExistedTagInProject_AccountIsEmpty() throws JSONException {
+		String emptyUsername = "";
+		String emptyPassword = "";
+		
+		// Test Data
+		long projectId = mCP.getAllProjects().get(0).getId();
+		String tagName = "TEST_TAG_NAME";
+
+		JSONObject tagJSON = new JSONObject();
+		tagJSON.put(TagJSONEnum.NAME, tagName);
+
+		// Call '/projects/{projectId}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		              "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
+		        .post(Entity.text(tagJSON.toString()));
+
+		ArrayList<TagObject> tags = ProjectObject.get(projectId).getTags();
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(1, tags.size());
+		assertEquals(tagName, tags.get(0).getName());
+		
+		// Call '/projects/{projectId}/tags' API again
+		response = mClient.target(BASE_URL)
+		        .path("projects/" + projectId +
+		                "/tags")
+		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)
+		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
+		        .post(Entity.text(tagJSON.toString()));
+
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
+		String message = jsonResponse.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
+
+		// Assert
+		assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+		assertEquals(new JSONObject().toString(), contentJSON.toString());
+		assertEquals("", message);
 	}
 }
