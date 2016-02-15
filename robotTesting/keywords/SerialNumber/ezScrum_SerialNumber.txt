@@ -38,8 +38,8 @@ Add A New Unplanned Item
 SetUp Data Base
     [Arguments]    ${Sql_name}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    ${Sql_name}
-    load database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
-    login page    ${LOGIN_URL}
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Login Page    ${LOGIN_URL}
 
 Add A New Restrospective
     [Arguments]    ${_Name}
