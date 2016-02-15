@@ -6,13 +6,12 @@ Resource          ../../Global Define.txt
 
 *** Keywords ***
 Add A New Release Plan
-    [Arguments]    ${Sprint_end}
+    [Arguments]    ${Sprint_start}    ${Sprint_end}
     Select Node Product    Release Plan
     Click Element    xpath=//button[text()="New Release Plan"]
     Wait Until Page Contains    Create Release
     Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="Name"]    first release    # Name
-    Click Image    xpath=//input[@name="StartDate"]/../img    # Start Date
-    Click Element    xpath=//button[text()="Today"]
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="StartDate"]    ${Sprint_start}    #Start Date
     Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="EndDate"]    ${Sprint_end}    #End Date
     Focus AND Input Text    //div[@id="ReleaseDetailForm"]//textarea[@name="Description"]    description    # Description
     ${xpathAddTask}=    Find Current Window Element    Create Release    Submit
@@ -37,9 +36,10 @@ Add A New Unplanned Item
     Wait Until Page Contains    Success.
 
 SetUp Data Base
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    testCasePrecondiction.sql
-    load database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
-    login page    ${LOGIN_URL}
+    [Arguments]    ${Sql_name}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    ${Sql_name}
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Login Page    ${LOGIN_URL}
 
 Add A New Restrospective
     [Arguments]    ${_Name}
@@ -52,3 +52,6 @@ Add A New Restrospective
     ${_xpathAddNew} =    Find Current Window Element    Add New Retrospective    Submit
     Element Enable And Submit    ${_xpathAddNew}
     Wait Until Page Contains    Success.
+
+Data Base Tear Down
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
