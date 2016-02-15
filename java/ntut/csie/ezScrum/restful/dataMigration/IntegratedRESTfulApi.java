@@ -26,6 +26,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
@@ -36,7 +37,7 @@ import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 @Path("dataMigration")
 public class IntegratedRESTfulApi {
 	private Client mClient;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private String mBaseUrl = BaseUrlDistributor.BASE_URL;
 
 	@POST
 	@Path("/projects")
@@ -47,6 +48,7 @@ public class IntegratedRESTfulApi {
 		if (!SecurityModule.isAccountValid(username, password)) {
 			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
 		}
+		mBaseUrl = BaseUrlDistributor.getBaseUrl();
 		// Get Client
 		mClient = ClientBuilder.newClient();
 		// Import JSON Data
@@ -68,12 +70,13 @@ public class IntegratedRESTfulApi {
 			// Create Account
 			for (int i = 0; i < accountJSONArray.length(); i++) {
 				JSONObject accountJSON = accountJSONArray.getJSONObject(i);
-				mClient.target(BASE_URL)
+				Response response = mClient.target(mBaseUrl)
 				        .path("accounts")
 				        .request()
 				        .header(SecurityModule.USERNAME_HEADER, username)
 				        .header(SecurityModule.PASSWORD_HEADER, password)
 				        .post(Entity.text(accountJSON.toString()));
+				response.close();
 				// TODO 紀錄結果
 			}
 		} catch (JSONException e) {
@@ -88,7 +91,7 @@ public class IntegratedRESTfulApi {
 			for (int i = 0; i < projectJSONArray.length(); i++) {
 				JSONObject projectJSON = projectJSONArray.getJSONObject(i);
 				// Create Project
-				Response response = mClient.target(BASE_URL)
+				Response response = mClient.target(mBaseUrl)
 				        .path("projects")
 				        .request()
 				        .header(SecurityModule.USERNAME_HEADER, username)
@@ -102,7 +105,7 @@ public class IntegratedRESTfulApi {
 					projectJSON.put(ProjectJSONEnum.NAME, newProjectName);
 					projectJSON.put(ProjectJSONEnum.DISPLAY_NAME, newProjectDisplayName);
 					// Create Project
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects")
 					        .request()
 					        .header(SecurityModule.USERNAME_HEADER, username)
@@ -110,51 +113,54 @@ public class IntegratedRESTfulApi {
 					        .post(Entity.text(projectJSON.toString()));
 				}
 				String responseString = response.readEntity(String.class);
+				response.close();
 				JSONObject responseJSON = new JSONObject(responseString);
 				JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 				long projectId = contentJSON.getLong(ProjectEnum.ID);
 
 				// Update ScrumRoles
 				JSONObject scrumRolesJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
-				response = mClient.target(BASE_URL)
+				response = mClient.target(mBaseUrl)
 				        .path("projects/" + projectId +
 				                "/scrumroles")
 				        .request()
 				        .header(SecurityModule.USERNAME_HEADER, username)
 				        .header(SecurityModule.PASSWORD_HEADER, password)
 				        .put(Entity.text(scrumRolesJSON.toString()));
-
+				response.close();
 				// Create ProjectRoles
 				JSONArray projectRoleJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.PROJECT_ROLES);
 				for (int j = 0; j < projectRoleJSONArray.length(); j++) {
 					JSONObject projectRoleJSON = projectRoleJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/projectroles")
 					        .request()
 					        .header(SecurityModule.USERNAME_HEADER, username)
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(projectRoleJSON.toString()));
+					response.close();
 				}
 
 				// Create Tags
 				JSONArray tagJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.TAGS);
 				for (int j = 0; j < tagJSONArray.length(); j++) {
 					JSONObject tagJSON = tagJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/tags")
 					        .request()
 					        .header(SecurityModule.USERNAME_HEADER, username)
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(tagJSON.toString()));
+					response.close();
 				}
 
 				//// Create Sprints
 				JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
 				for (int j = 0; j < sprintJSONArray.length(); j++) {
 					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/sprints")
 					        .request()
@@ -162,6 +168,7 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(sprintJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
@@ -173,7 +180,7 @@ public class IntegratedRESTfulApi {
 					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
 					for (int k = 0; k < storyJSONArray.length(); k++) {
 						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/sprints/" + sprintId +
 						                "/stories")
@@ -182,6 +189,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(storyJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
@@ -193,7 +201,7 @@ public class IntegratedRESTfulApi {
 						JSONArray tagInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TAGS);
 						for (int l = 0; l < tagInStoryJSONArray.length(); l++) {
 							JSONObject tagJSON = tagInStoryJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
@@ -202,13 +210,14 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(tagJSON.toString()));
+							response.close();
 						}
 
 						// Add AttachFiles to Story
 						JSONArray attachFilesInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
 						for (int l = 0; l < attachFilesInStoryJSONArray.length(); l++) {
 							JSONObject attachFileJSON = attachFilesInStoryJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
@@ -217,13 +226,14 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(attachFileJSON.toString()));
+							response.close();
 						}
 
 						//// Create Tasks
 						JSONArray taskJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TASKS);
 						for (int m = 0; m < taskJSONArray.length(); m++) {
 							JSONObject taskJSON = taskJSONArray.getJSONObject(m);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
@@ -233,6 +243,7 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(taskJSON.toString()));
 							responseString = response.readEntity(String.class);
+							response.close();
 							responseJSON = new JSONObject(responseString);
 							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
@@ -244,7 +255,7 @@ public class IntegratedRESTfulApi {
 							JSONArray attachFilesInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 							for (int n = 0; n < attachFilesInTaskJSONArray.length(); n++) {
 								JSONObject attachFileJSON = attachFilesInTaskJSONArray.getJSONObject(n);
-								response = mClient.target(BASE_URL)
+								response = mClient.target(mBaseUrl)
 								        .path("projects/" + projectId +
 								                "/sprints/" + sprintId +
 								                "/stories/" + storyId +
@@ -254,6 +265,7 @@ public class IntegratedRESTfulApi {
 								        .header(SecurityModule.USERNAME_HEADER, username)
 								        .header(SecurityModule.PASSWORD_HEADER, password)
 								        .post(Entity.text(attachFileJSON.toString()));
+								response.close();
 							}
 						}
 					}
@@ -262,7 +274,7 @@ public class IntegratedRESTfulApi {
 					JSONArray unplanJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.UNPLANS);
 					for (int k = 0; k < unplanJSONArray.length(); k++) {
 						JSONObject unplanJSON = unplanJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/sprints/" + sprintId +
 						                "/unplans")
@@ -271,6 +283,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(unplanJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new UnplanId
@@ -283,7 +296,7 @@ public class IntegratedRESTfulApi {
 					JSONArray retrospectiveJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.RETROSPECTIVES);
 					for (int k = 0; k < retrospectiveJSONArray.length(); k++) {
 						JSONObject retrospectiveJSON = retrospectiveJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/sprints/" + sprintId +
 						                "/retrospectives")
@@ -291,6 +304,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(retrospectiveJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -298,20 +312,21 @@ public class IntegratedRESTfulApi {
 				JSONArray releaseJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.RELEASES);
 				for (int j = 0; j < releaseJSONArray.length(); j++) {
 					JSONObject releaseJSON = releaseJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/releases")
 					        .request()
 					        .header(SecurityModule.USERNAME_HEADER, username)
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(releaseJSON.toString()));
+					response.close();
 				}
 
 				//// Create Dropped Stories
 				JSONArray droppedStoryJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_STORIES);
 				for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
 					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/stories")
 					        .request()
@@ -319,6 +334,7 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(droppedStoryJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
@@ -330,7 +346,7 @@ public class IntegratedRESTfulApi {
 					JSONArray tagInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TAGS);
 					for (int k = 0; k < tagInStoryJSONArray.length(); k++) {
 						JSONObject tagJSON = tagInStoryJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + storyId +
 						                "/tags")
@@ -338,13 +354,14 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(tagJSON.toString()));
+						response.close();
 					}
 
 					// Add AttachFiles to Story
 					JSONArray attachFilesInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
 					for (int k = 0; k < attachFilesInStoryJSONArray.length(); k++) {
 						JSONObject attachFileJSON = attachFilesInStoryJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + storyId +
 						                "/attachfiles")
@@ -352,13 +369,14 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(attachFileJSON.toString()));
+						response.close();
 					}
 
 					//// Create Tasks in DroppedStory
 					JSONArray taskJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TASKS);
 					for (int k = 0; k < taskJSONArray.length(); k++) {
 						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + storyId +
 						                "/tasks")
@@ -367,6 +385,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(taskJSON.toString()));
 						responseString = response.readEntity(String.class);
+						response.close();
 						responseJSON = new JSONObject(responseString);
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new TaskId
@@ -378,7 +397,7 @@ public class IntegratedRESTfulApi {
 						JSONArray attachFileInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 						for (int l = 0; l < attachFileInTaskJSONArray.length(); l++) {
 							JSONObject attachFileJSON = attachFileInTaskJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/stories/" + storyId +
 							                "/tasks/" + taskId +
@@ -387,6 +406,7 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(attachFileJSON.toString()));
+							response.close();
 						}
 					}
 				}
@@ -395,7 +415,7 @@ public class IntegratedRESTfulApi {
 				JSONArray droppedTaskJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_TASKS);
 				for (int j = 0; j < droppedTaskJSONArray.length(); j++) {
 					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/tasks")
 					        .request()
@@ -403,6 +423,7 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .post(Entity.text(taskJSON.toString()));
 					responseString = response.readEntity(String.class);
+					response.close();
 					responseJSON = new JSONObject(responseString);
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
@@ -414,7 +435,7 @@ public class IntegratedRESTfulApi {
 					JSONArray attachFileInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 					for (int k = 0; k < attachFileInTaskJSONArray.length(); k++) {
 						JSONObject attachFileJSON = attachFileInTaskJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/tasks/" + taskId +
 						                "/attachfiles")
@@ -422,6 +443,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(attachFileJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -431,7 +453,7 @@ public class IntegratedRESTfulApi {
 					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
 					long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
 					// Delete old Histories
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/stories/" + droppedStoryId +
 					                "/histories")
@@ -439,11 +461,12 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.USERNAME_HEADER, username)
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .delete();
+					response.close();
 					// Add Histories to Story
 					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + droppedStoryId +
 						                "/histories")
@@ -451,6 +474,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(historyJSON.toString()));
+						response.close();
 					}
 
 					// Create Histories in Task
@@ -459,7 +483,7 @@ public class IntegratedRESTfulApi {
 						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
 						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 						// Delete old Histories
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + droppedStoryId +
 						                "/tasks/" + taskId +
@@ -468,11 +492,12 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .delete();
+						response.close();
 						// Add Histories to Story
 						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/stories/" + droppedStoryId +
 							                "/tasks/" + taskId +
@@ -481,6 +506,7 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 					}
 				}
@@ -490,7 +516,7 @@ public class IntegratedRESTfulApi {
 					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
 					long droppedTaskId = taskJSON.getLong(TaskJSONEnum.ID);
 					// Delete old Histories
-					response = mClient.target(BASE_URL)
+					response = mClient.target(mBaseUrl)
 					        .path("projects/" + projectId +
 					                "/tasks/" + droppedTaskId +
 					                "/histories")
@@ -498,11 +524,12 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.USERNAME_HEADER, username)
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .delete();
+					response.close();
 					// Add Histories to Story
 					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/tasks/" + droppedTaskId +
 						                "/histories")
@@ -510,6 +537,7 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .post(Entity.text(historyJSON.toString()));
+						response.close();
 					}
 				}
 
@@ -522,7 +550,7 @@ public class IntegratedRESTfulApi {
 						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
 						long storyId = storyJSON.getLong(StoryJSONEnum.ID);
 						// Delete old Histories
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/sprints/" + sprintId +
 						                "/stories/" + storyId +
@@ -531,11 +559,12 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .delete();
+						response.close();
 						// Add History to Story
 						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
@@ -544,6 +573,7 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 
 						// Create Histories in Task
@@ -552,7 +582,7 @@ public class IntegratedRESTfulApi {
 							JSONObject taskJSON = taskJSONArray.getJSONObject(l);
 							long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 							// Delete old Histories
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
@@ -562,11 +592,12 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .delete();
+							response.close();
 							// Add History to Task
 							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 							for (int m = 0; m < historyInTaskJSONArray.length(); m++) {
 								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(m);
-								response = mClient.target(BASE_URL)
+								response = mClient.target(mBaseUrl)
 								        .path("projects/" + projectId +
 								                "/sprints/" + sprintId +
 								                "/stories/" + storyId +
@@ -576,6 +607,7 @@ public class IntegratedRESTfulApi {
 								        .header(SecurityModule.USERNAME_HEADER, username)
 								        .header(SecurityModule.PASSWORD_HEADER, password)
 								        .post(Entity.text(historyJSON.toString()));
+								response.close();
 							}
 						}
 					}
@@ -586,7 +618,7 @@ public class IntegratedRESTfulApi {
 						JSONObject unplanJSON = unplanJSONArray.getJSONObject(k);
 						long unplanId = unplanJSON.getLong(UnplanJSONEnum.ID);
 						// Delete old Histories
-						response = mClient.target(BASE_URL)
+						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/sprints/" + sprintId +
 						                "/unplans/" + unplanId +
@@ -595,11 +627,12 @@ public class IntegratedRESTfulApi {
 						        .header(SecurityModule.USERNAME_HEADER, username)
 						        .header(SecurityModule.PASSWORD_HEADER, password)
 						        .delete();
+						response.close();
 						// Add History to Unplan
 						JSONArray historyInUnplanJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInUnplanJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInUnplanJSONArray.getJSONObject(l);
-							response = mClient.target(BASE_URL)
+							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/unplans/" + unplanId +
@@ -608,10 +641,12 @@ public class IntegratedRESTfulApi {
 							        .header(SecurityModule.USERNAME_HEADER, username)
 							        .header(SecurityModule.PASSWORD_HEADER, password)
 							        .post(Entity.text(historyJSON.toString()));
+							response.close();
 						}
 					}
 				}
 			}
+			mClient.close();
 		} catch (JSONException e) {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
 		}

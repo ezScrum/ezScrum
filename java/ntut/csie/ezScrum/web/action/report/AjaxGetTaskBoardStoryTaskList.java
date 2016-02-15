@@ -30,7 +30,7 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		// get parameter info
 		String sprintIdString = request.getParameter("sprintID");
 		

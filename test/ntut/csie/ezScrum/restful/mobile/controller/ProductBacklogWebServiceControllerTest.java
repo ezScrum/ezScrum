@@ -28,7 +28,6 @@ import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -40,13 +39,12 @@ import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 
 public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
-	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/web-service";
+	private static String BASE_URL = "http://localhost:9527/ezScrum/web-service";
 	private URI mBaseUri = URI.create(BASE_URL);
 	private Client mClient;
 	private HttpServer mHttpServer;
 	private String mUsername = "admin";
 	private String mPassword = "admin";
-	
 	private int mProjectCount = 1;
 	private int mStoryCount = 3;
 	private int mEstimate = 90;
@@ -75,7 +73,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 
 		// create a new project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCPB = new CreateProductBacklog(mStoryCount, mEstimate, mCP, "EST");
 		mCPB.exe();
@@ -100,11 +98,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 		
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

@@ -23,7 +23,7 @@ public class AjaxGetSprintBacklogDateInfoAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Sprint Backlog Date.");
 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String sprintIdString = request.getParameter("sprintID");
 		
 		long sprintId = -1;

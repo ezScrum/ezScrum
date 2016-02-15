@@ -28,7 +28,7 @@ public class GetSprintInfoForTaskBoardAction extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 		
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		// get parameter info
 		String sprintIdString = request.getParameter("SprintID");
 		long sprintId = -1;

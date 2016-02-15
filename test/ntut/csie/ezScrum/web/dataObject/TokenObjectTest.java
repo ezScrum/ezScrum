@@ -4,15 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import ntut.csie.ezScrum.dao.TokenDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.dao.TokenDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 
 public class TokenObjectTest {
 	private Configuration mConfig = null;
@@ -40,10 +40,6 @@ public class TokenObjectTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);

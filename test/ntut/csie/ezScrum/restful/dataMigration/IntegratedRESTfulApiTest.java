@@ -30,7 +30,6 @@ import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AttachFileJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
@@ -46,6 +45,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -67,7 +67,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private static String BASE_URL = BaseUrlDistributor.TEST_MODE_BASE_URL;
 	private URI mBaseUri = URI.create(BASE_URL);
 	
 	@Override
@@ -101,10 +101,6 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);

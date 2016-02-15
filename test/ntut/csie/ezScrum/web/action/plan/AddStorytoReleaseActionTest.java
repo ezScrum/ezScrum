@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -30,7 +29,7 @@ public class AddStorytoReleaseActionTest extends MockStrutsTestCase {
 		ini.exe();											// 初始化 SQL
 		
     	mCP = new CreateProject(1);
-    	mCP.exeCreate();								// 新增一測試專案
+    	mCP.exeCreateForDb();								// 新增一測試專案
     	
     	mCR = new CreateRelease(1, mCP);
     	mCR.exe();										// 新增一筆Release Plan
@@ -49,10 +48,7 @@ public class AddStorytoReleaseActionTest extends MockStrutsTestCase {
 	
     protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
-		
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
     	
     	mConfig.setTestMode(false);
 		mConfig.save();

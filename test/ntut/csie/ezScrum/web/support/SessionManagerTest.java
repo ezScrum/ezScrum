@@ -2,17 +2,15 @@ package ntut.csie.ezScrum.web.support;
 
 import java.io.File;
 
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
-
-import org.junit.Test;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class SessionManagerTest extends MockStrutsTestCase{
@@ -45,10 +43,6 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -64,7 +58,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 	public void testGetProjectObject() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
 		actionPerform();
@@ -74,7 +68,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		request.getSession().setAttribute(projectName, mProject);
 		mSessionManager = new SessionManager(request);
 
-		ProjectObject projectObject =  SessionManager.getProjectObject(request);
+		ProjectObject projectObject =  SessionManager.getProject(request);
 		assertNotNull(projectObject);
 	}
 	
@@ -83,7 +77,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		long projectId = mProject.getId();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 		
 		actionPerform();
@@ -123,7 +117,7 @@ public class SessionManagerTest extends MockStrutsTestCase{
 	public void testSetProjectObject(){
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("_dc", String.valueOf(System.currentTimeMillis()));
 
 		actionPerform();

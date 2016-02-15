@@ -85,7 +85,7 @@ public class Project {
 	public Object getDynamic(String token, StaplerRequest request, StaplerResponse response) {
 		HttpSession session = request.getSession();
 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		if (session == null || project == null) {
 			return this;
 		}

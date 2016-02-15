@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
@@ -33,7 +32,7 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 		
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCT = new CreateTag(2, mCP);
 		mCT.exe();
@@ -55,17 +54,12 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCT = null;
 		mConfig = null;
@@ -74,7 +68,7 @@ public class AjaxDeleteTagActionTest extends MockStrutsTestCase {
 	public void testDeleteTag(){
 		// ================ set request info ========================
 		ArrayList<TagObject> tags = mCT.getTagList();
-		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());

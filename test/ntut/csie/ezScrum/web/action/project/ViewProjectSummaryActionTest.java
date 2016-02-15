@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -27,9 +28,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.form.LogonForm;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-
-import org.codehaus.jettison.json.JSONObject;
-
 import servletunit.struts.MockStrutsTestCase;
 
 public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
@@ -76,7 +74,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增使用者
 		mCA = new CreateAccount(mAccountCount);
@@ -89,11 +87,6 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		projectManager.initialRoleBase(mConfig.getDataPath());
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -169,7 +162,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 action
 		actionPerform();
@@ -226,7 +219,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 add user action
 		actionPerform();
@@ -355,7 +348,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -396,7 +389,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession",
@@ -440,7 +433,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1"); // -1代表離現在時間最近的 Sprint
@@ -492,7 +485,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// ================ set request info ========================
 		addRequestParameter("SprintID", "-1"); // -1:代表離現在時間最近的 Sprint
@@ -552,7 +545,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================== set parameter info ====================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 view project action
 		actionPerform();
@@ -601,7 +594,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", notExistedProjectName);
+		addRequestParameter("projectName", notExistedProjectName);
 
 		// ================ 執行 action ======================
 		actionPerform();
@@ -625,7 +618,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 				mConfig.getUserSession());
 
 		// ================ set request info ========================
-		addRequestParameter("PID", existedProjectName);
+		addRequestParameter("projectName", existedProjectName);
 
 		// 執行 view Project action
 		actionPerform();
@@ -660,7 +653,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// 執行 view Project action
 		actionPerform();
@@ -686,7 +679,7 @@ public class ViewProjectSummaryActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", userSession);
 
 		// ================ set request info ========================
-		addRequestParameter("PID", projectName);
+		addRequestParameter("projectName", projectName);
 
 		// ================ 執行 action ======================
 		actionPerform();

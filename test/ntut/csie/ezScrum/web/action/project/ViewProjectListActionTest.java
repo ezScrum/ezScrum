@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -32,7 +31,7 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		
 		// 新增一測試專案
 		mCP = new CreateProject(2);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		super.setUp();
 	}
@@ -41,10 +40,6 @@ public class ViewProjectListActionTest extends MockStrutsTestCase{
 		// 刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

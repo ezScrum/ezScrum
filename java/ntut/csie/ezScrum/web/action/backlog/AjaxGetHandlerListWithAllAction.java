@@ -34,7 +34,7 @@ public class AjaxGetHandlerListWithAllAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Handler List With All in AjaxGetHandlerListWithAllAction.java");
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		
 		ArrayList<AccountObject> members = project.getProjectMembers();
 		ArrayList<String> memberUsernames = new ArrayList<>();

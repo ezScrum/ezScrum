@@ -4,7 +4,6 @@ import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -14,7 +13,6 @@ import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ModifyAccountActionTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateAccount mCA;
 	private int mProjectCount = 1;
@@ -56,7 +54,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mAccountMapper = new AccountMapper();
 
@@ -71,10 +69,6 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 		
@@ -82,7 +76,6 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCA = null;
 		mAccountMapper = null;
@@ -96,7 +89,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(mActionPath);
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = "TEST_ACCOUNT_ID";
 		String password = "TEST_ACCOUNT_PW";
 		String email = "TEST_ACCOUNT_MAIL";
@@ -117,7 +110,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -143,7 +136,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		// User Information
 		String postfix = "_update";
 		AccountObject account = mCA.getAccountList().get(0);
@@ -169,7 +162,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -196,7 +189,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String postfix = "_update";
 		AccountObject account = mCA.getAccountList().get(0);
 		long userId = account.getId();
@@ -221,7 +214,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入 session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -262,7 +255,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		mCA.exe();
 
 		// ================ set initial data =======================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String postfix = "_update";
 		AccountObject account = mCA.getAccountList().get(0);
 		long accountId = account.getId();
@@ -287,7 +280,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 action
 		actionPerform();
@@ -334,7 +327,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = "tester";
 		String password = "tester";
 		String nickName = "tester";
@@ -355,7 +348,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 create account action
 		actionPerform();
@@ -413,7 +406,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 update account action
 		actionPerform();
@@ -482,7 +475,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 		setRequestPathInformation(mActionPath);
 
 		// ================== set initial info ====================
-		String projectName = mCP.getProjectList().get(0).getName();
+		String projectName = mCP.getAllProjects().get(0).getName();
 		String username = "tester";
 		String password = "tester";
 		String nickName = "tester";
@@ -503,7 +496,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 create account action
 		actionPerform();
@@ -560,7 +553,7 @@ public class ModifyAccountActionTest extends MockStrutsTestCase {
 
 		// ================ set URL parameter ========================
 		// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		// 執行 update account action
 		actionPerform();

@@ -5,14 +5,13 @@ import java.io.IOException;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.DropTask;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowAddExistedTaskTest extends MockStrutsTestCase {
@@ -20,7 +19,7 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private final String ACTION_PATH = "/showAddExistedTask2";
-	private IProject mProject;
+	private ProjectObject mProject;
 	
 	public ShowAddExistedTaskTest(String testName) {
 		super(testName);
@@ -37,8 +36,8 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		
 		//	新增一個測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
-		mProject = mCP.getProjectList().get(0);
+		mCP.exeCreateForDb();
+		mProject = mCP.getAllProjects().get(0);
 		
 		//	新增一個Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -59,17 +58,12 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
@@ -87,11 +81,10 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		// Story加入1個Task
 		AddTaskToStory ATTS = new AddTaskToStory(1, 1, ASTS, mCP);
 		ATTS.exe();
-
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);	
@@ -132,7 +125,7 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		// 設定Session資訊
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);	

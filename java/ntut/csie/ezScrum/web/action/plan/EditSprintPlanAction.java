@@ -35,7 +35,7 @@ public class EditSprintPlanAction extends PermissionAction {
 
 		// get session info
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		// get parameter info

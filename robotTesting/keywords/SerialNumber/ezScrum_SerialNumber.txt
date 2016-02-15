@@ -1,0 +1,57 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+Resource          ../../Global Define.txt
+
+*** Keywords ***
+Add A New Release Plan
+    [Arguments]    ${Sprint_start}    ${Sprint_end}
+    Select Node Product    Release Plan
+    Click Element    xpath=//button[text()="New Release Plan"]
+    Wait Until Page Contains    Create Release
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="Name"]    first release    # Name
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="StartDate"]    ${Sprint_start}    #Start Date
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="EndDate"]    ${Sprint_end}    #End Date
+    Focus AND Input Text    //div[@id="ReleaseDetailForm"]//textarea[@name="Description"]    description    # Description
+    ${xpathAddTask}=    Find Current Window Element    Create Release    Submit
+    Element Enable And Submit    ${xpathAddTask}
+
+Add A New Story With Story Name And Value
+    [Arguments]    ${name}    ${value}
+    Click Element    xpath=//button[text()="Add Story"]
+    Wait Until Page Contains    Add New Story
+    Focus AND Input Text    //textarea[@name="Name"]    ${name}
+    Focus AND Input Text    //input[@name="Value"]    ${value}
+    ${xpathCreateStorySubmit}=    Find Current Window Element    Add New Story    Submit
+    Element Enable And Submit    ${xpathCreateStorySubmit}
+    Wait Until Page Contains    Success.
+
+Add A New Unplanned Item
+    [Arguments]    ${_Name}
+    Click Element    xpath=//button[text()='Add Unplanned Item']
+    Focus AND Input Text    //input[@name='Name']    ${_Name}
+    ${_xpathAddNew} =    Find Current Window Element    Add New Unplanned Item    Submit
+    Element Enable And Submit    ${_xpathAddNew}
+    Wait Until Page Contains    Success.
+
+SetUp Data Base
+    [Arguments]    ${Sql_name}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    ${Sql_name}
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Login Page    ${LOGIN_URL}
+
+Add A New Restrospective
+    [Arguments]    ${_Name}
+    # action
+    Click Element    xpath=//button[.='Add Retrospective']
+    Element Should Be Visible    xpath=//span[.='Add New Retrospective']    # for check
+    # fill info
+    Focus AND Input Text    //input[@name='Name']    ${_Name}
+    # save
+    ${_xpathAddNew} =    Find Current Window Element    Add New Retrospective    Submit
+    Element Enable And Submit    ${_xpathAddNew}
+    Wait Until Page Contains    Success.
+
+Data Base Tear Down
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

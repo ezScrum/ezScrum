@@ -34,7 +34,7 @@ public class AjaxShowStoryFromSprintAction extends PermissionAction {
 		log.info("Show Story From Sprint in AjaxShowStoryFromSprintAction.");
 
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 
 		// get parameter info
 		String SprintID = request.getParameter("Sid");

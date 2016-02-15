@@ -4,9 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
@@ -15,10 +18,6 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class UnplanItemMapperTest {
 	private CreateProject mCP;
@@ -42,7 +41,7 @@ public class UnplanItemMapperTest {
 
 		// 新增 Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增 Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -53,8 +52,6 @@ public class UnplanItemMapperTest {
 		sProjectId = mProject.getId();
 		sSprintId = mCS.getSprints().get(0).getId();
 		
-		// 為了使 Story 建立時間與修改時間分開而停下
-		Thread.sleep(1000);
 		// ============= release ==============
 		ini = null;
 	}
@@ -65,10 +62,6 @@ public class UnplanItemMapperTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -77,11 +70,8 @@ public class UnplanItemMapperTest {
     	ini = null;
     	mCP = null;
     	mCS = null;
-//    	mCUI = null;
-    	projectManager = null;
     	mUnplanMapper = null;
     	mConfig = null;
-//    	mControl = null;
 	}
 	
 	@Test

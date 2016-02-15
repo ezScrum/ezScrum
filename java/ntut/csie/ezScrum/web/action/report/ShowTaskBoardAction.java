@@ -30,7 +30,7 @@ public class ShowTaskBoardAction extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 

@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -19,11 +23,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintBacklogMapperTest {
 	private SprintBacklogMapper mSprintBacklogMapper;
@@ -56,7 +55,7 @@ public class SprintBacklogMapperTest {
 		String columnBeSet = "EST";
 
 		mCP = new CreateProject(projectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(sprintCount, mCP);
 		mCS.exe();
@@ -77,10 +76,6 @@ public class SprintBacklogMapperTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -92,7 +87,6 @@ public class SprintBacklogMapperTest {
 		mATTS = null;
 		mConfig = null;
 		mSprintBacklogMapper = null;
-		projectManager = null;
 	}
 
 	@Test(expected = RuntimeException.class)

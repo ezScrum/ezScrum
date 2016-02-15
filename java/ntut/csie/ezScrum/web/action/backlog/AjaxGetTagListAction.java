@@ -22,7 +22,7 @@ public class AjaxGetTagListAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Tag List in AjaxGetTagListAction. ");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String result = (new ProductBacklogHelper(project)).getTagListResponseText().toString();
 		
 		try {

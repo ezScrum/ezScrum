@@ -5,21 +5,19 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class AjaxGetPartnerListTest extends MockStrutsTestCase {
-
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private int mSprintId;
 	private final String mActionPath = "/AjaxGetPartnerList";
 
@@ -38,14 +36,14 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 
 		// create project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
 		mSprintId = 1;
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 		// ================ set action info ========================
@@ -60,20 +58,16 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
-		mIProject = null;
+		mProject = null;
 	}
 
 	public void testGetPartnerList() throws Exception {
@@ -94,8 +88,8 @@ public class AjaxGetPartnerListTest extends MockStrutsTestCase {
 
 		String issueId = String.valueOf(CPB.getStoryIds().get(0));
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		addRequestParameter("issueID", issueId);
 

@@ -26,7 +26,6 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.support.ConvertSprintBacklog;
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -40,14 +39,13 @@ import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 public class SprintPlanWebServiceControllerTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
-	private static String BASE_URL = "http://127.0.0.1:8080/ezScrum/web-service";
+	private static String BASE_URL = "http://localhost:9527/ezScrum/web-service";
 	private URI mBaseUri = URI.create(BASE_URL);
 	private String mUsername = "admin";
 	private String mPassword = "admin";
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
 	private int mStoryCount = 3;
-	
 	private Client mClient;
 	private HttpServer mHttpServer;
 	private CreateProject mCP;
@@ -76,7 +74,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 
 		// create project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
@@ -107,10 +105,6 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();

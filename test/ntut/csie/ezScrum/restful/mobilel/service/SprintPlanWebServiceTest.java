@@ -4,10 +4,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.SprintPlanWebService;
 import ntut.csie.ezScrum.restful.mobile.util.SprintUtil;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -22,13 +28,6 @@ import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintPlanWebServiceTest {
 	private int mProjectCount = 1;
@@ -55,7 +54,7 @@ public class SprintPlanWebServiceTest {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
@@ -68,11 +67,7 @@ public class SprintPlanWebServiceTest {
 	public void tearDown() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();

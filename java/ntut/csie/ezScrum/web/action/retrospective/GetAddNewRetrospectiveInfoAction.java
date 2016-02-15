@@ -27,7 +27,7 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 	// --------------------------------------------------------- Methods
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();

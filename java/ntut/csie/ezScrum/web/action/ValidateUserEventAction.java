@@ -81,7 +81,7 @@ public class ValidateUserEventAction extends Action {
 
 	public boolean checkAccount(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) session.getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
 		AccountObject account = userSession.getAccount();

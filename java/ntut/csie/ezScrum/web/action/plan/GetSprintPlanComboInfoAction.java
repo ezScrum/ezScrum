@@ -45,7 +45,7 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 
 		// get parameter
 		String currentSprintId = request.getParameter("SprintID");

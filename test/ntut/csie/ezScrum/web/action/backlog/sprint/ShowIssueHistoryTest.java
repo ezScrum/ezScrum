@@ -9,7 +9,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -51,7 +50,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// 新增1個 project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// 新增1個 sprint
@@ -72,9 +71,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -85,7 +81,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		mCS = null;
 		mCUI = null;
 		mConfig = null;
-		projectManager = null;
 	}
 
 	public void testShowSprintBacklogTreeListInfo() throws Exception {
@@ -97,8 +92,6 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        CreateProductBacklog.COLUMN_TYPE_EST);
 		addStoryToSprint.exe();
 
-		Thread.sleep(1000);
-
 		int taskCount = 1;
 		int taskEst = 2;
 		AddTaskToStory addTaskToStory = new AddTaskToStory(taskCount, taskEst,
@@ -108,7 +101,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		String taskId = String.valueOf(addTaskToStory.getTasksId().get(0));
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(idList.get(0)));
 		addRequestParameter("issueID", taskId);
 		addRequestParameter("issueType", "Task");
@@ -153,7 +146,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
@@ -205,7 +198,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
@@ -262,7 +255,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 		// 設定新增 Task 所需的資訊
@@ -312,7 +305,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
@@ -361,7 +354,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long taskId = addTaskToStory.getTasksId().get(0);
 
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
@@ -419,7 +412,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
@@ -483,7 +476,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
@@ -556,7 +549,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
 
@@ -601,7 +594,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 
 		// 執行 action
 		actionPerform();
@@ -630,19 +623,15 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(1000);
 
 		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
-		Thread.sleep(1000);
 
 		EditUnplanItem EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_CHECKOUT();
-		Thread.sleep(1000);
 
 		String sprintId = String.valueOf(mCS.getSprintsId().get(0));
 		String unplanId = String.valueOf(mCUI.getUnplansId().get(0));
@@ -655,7 +644,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 
 		// 執行 action
 		actionPerform();
@@ -685,24 +674,19 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================== init ====================
 		CreateAccount createAccount = new CreateAccount(1);
 		createAccount.exe();
-		Thread.sleep(1000);
 
 		AddUserToRole addUserToRole = new AddUserToRole(mCP, createAccount);
 		addUserToRole.exe_ST();
-		Thread.sleep(1000);
 
 		// 新增一個UnplanItem
 		mCUI = new CreateUnplanItem(1, mCP, mCS);
 		mCUI.exe();
-		Thread.sleep(1000);
 
 		EditUnplanItem EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_CHECKOUT();
-		Thread.sleep(1000);
 
 		EU = new EditUnplanItem(mCUI, mCP, createAccount);
 		EU.exe_DONE();
-		Thread.sleep(1000);
 
 		String issueId = String.valueOf(mCUI.getUnplansId().get(0));
 
@@ -714,7 +698,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		request.getSession().setAttribute("Project", mProject);
-		request.setHeader("Referer", "?PID=" + mProject.getName());
+		request.setHeader("Referer", "?projectName=" + mProject.getName());
 
 		// 執行 action
 		actionPerform();

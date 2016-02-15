@@ -4,20 +4,19 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.restful.mobile.service.ProjectWebService;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.jcis.account.core.LogonException;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.restful.mobile.service.ProjectWebService;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.jcis.account.core.LogonException;
 
 public class ProjectWebServiceTest {
 	private Configuration mConfig;
@@ -44,10 +43,6 @@ public class ProjectWebServiceTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -55,7 +50,6 @@ public class ProjectWebServiceTest {
 		// ============= release ==============
 		ini = null;
 		mCP = null;
-		projectManager = null;
 		mConfig = null;
 		mProjectWebService = null;
 	}
@@ -67,7 +61,7 @@ public class ProjectWebServiceTest {
 		// 新增 Project
 		int ProjectCount = 5;
 		mCP = new CreateProject(ProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProjectWebService = new ProjectWebService(username, userpwd);
 		assertEquals(ProjectCount, mProjectWebService.getAllProjects().size());
@@ -82,7 +76,7 @@ public class ProjectWebServiceTest {
 		// 新增Project
 		int projectCount = 5;
 		mCP = new CreateProject(projectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProjectWebService = new ProjectWebService(username, password);
 		String response = mProjectWebService.getRESTFulResponseString();
 

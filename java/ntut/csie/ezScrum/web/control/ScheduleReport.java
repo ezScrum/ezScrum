@@ -12,17 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.core.util.CloseStreamUtil;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -41,6 +30,17 @@ import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.time.SimpleTimePeriod;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
+import ntut.csie.jcis.core.util.CloseStreamUtil;
+import ntut.csie.jcis.core.util.DateUtil;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ScheduleReport {
 	private final long mOneDay = 24 * 3600 * 1000;
@@ -236,9 +236,8 @@ public class ScheduleReport {
 	}
 
 	private void saveChart(JFreeChart chart) {
-		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
-		mChartPath = iProject.getFolder(IProject.METADATA).getFullPath()
-				+ File.separator + mFolderName + File.separator + "Sprint"
+		Configuration configuration = new Configuration();
+		mChartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mFolderName + File.separator + "Sprint"
 				+ mIteration + File.separator + mFileName;
 
 		File f = new File(mChartPath);

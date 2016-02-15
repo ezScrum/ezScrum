@@ -35,7 +35,7 @@ public class AddExistedStoryAction extends PermissionAction {
 		log.info("Add dropped stories in AddExistedStoryAction");
 		
 		// get parameter info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String[] selectedStoriesId = request.getParameterValues("selects");
 		long sprintId;
 		try {

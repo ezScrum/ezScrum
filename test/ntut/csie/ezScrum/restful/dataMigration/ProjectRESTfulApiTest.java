@@ -31,9 +31,8 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ScrumRoleJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
-import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
-import ntut.csie.ezScrum.test.CreateData.CreateAccount;
+import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -48,7 +47,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private static String BASE_URL = BaseUrlDistributor.TEST_MODE_BASE_URL;
 	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override
@@ -57,7 +56,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		return mResourceConfig;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() {
 		// Set Test Mode
@@ -71,7 +69,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 
 		// Create Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// Create Account
 		mCA = new CreateAccount(2);
@@ -90,10 +88,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -103,7 +97,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
 		mCP = null;
 		mHttpServer = null;
 		mClient = null;

@@ -22,7 +22,7 @@ public class ShowEditUnplanItemAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		long unplanId = Long.parseLong(request.getParameter("issueID"));
 		
 		// Get unplan item

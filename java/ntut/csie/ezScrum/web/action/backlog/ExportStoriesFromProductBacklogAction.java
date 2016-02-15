@@ -25,7 +25,7 @@ import org.apache.struts.actions.DownloadAction;
 public class ExportStoriesFromProductBacklogAction extends DownloadAction {
 	protected StreamInfo getStreamInfo(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ProjectObject mProject = SessionManager.getProjectObject(request);
+		ProjectObject mProject = SessionManager.getProject(request);
 		IUserSession mUserSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// get all stories
 		ArrayList<StoryObject> mStories = new ProductBacklogLogic(mProject).getStories();

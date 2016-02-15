@@ -6,9 +6,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.restful.mobile.service.ReleasePlanWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
@@ -20,13 +26,6 @@ import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.account.core.LogonException;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ReleasePlanWebServiceTest {
 	private int mProjectCount = 1;
@@ -51,7 +50,7 @@ public class ReleasePlanWebServiceTest {
 
 		// 新增一個 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
@@ -65,10 +64,6 @@ public class ReleasePlanWebServiceTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
