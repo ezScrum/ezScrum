@@ -45,6 +45,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -59,6 +60,7 @@ import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.jcis.core.util.SystemOut;
 
 public class IntegratedRESTfulApiTest extends JerseyTest {
 	private Configuration mConfig;
@@ -471,6 +473,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		Response response = mClient.target(BASE_URL)
 		        .path("dataMigration/projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(entityJSON.toString()));
 		
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -483,7 +487,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Assert Accounts
 		ArrayList<AccountObject> allAccounts = AccountObject.getAllAccounts();
 		ArrayList<AccountObject> accounts = new ArrayList<AccountObject>();
-		
+		SystemOut.println(allAccounts.size());
 		// filter accounts are not admin
 		for (AccountObject account : allAccounts) {
 			if (!account.isAdmin()) {
@@ -1154,6 +1158,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		Response response = mClient.target(BASE_URL)
 		        .path("dataMigration/projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(entityJSON.toString()));
 		
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -1170,6 +1176,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		response = mClient.target(BASE_URL)
 		        .path("dataMigration/projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(entityJSON.toString()));
 		
 		// Assert
@@ -1219,6 +1227,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		Response response = mClient.target(BASE_URL)
 		        .path("dataMigration/projects")
 		        .request()
+		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
+		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
 		        .post(Entity.text(entityJSON.toString()));
 		
 		// Assert
