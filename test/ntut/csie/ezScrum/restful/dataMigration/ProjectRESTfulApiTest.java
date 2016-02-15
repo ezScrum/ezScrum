@@ -714,7 +714,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
-		String projectName = mCP.getAllProjects().get(0).getName();
 		String userName = mCA.getAccountList().get(0).getUsername();
 		String roleName = "ScrumTeam";
 
@@ -730,8 +729,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
 		        .header(SecurityModule.PASSWORD_HEADER, invalidPassword)
 		        .post(Entity.text(projectRoleJSON.toString()));
-
-		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
@@ -750,7 +747,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
-		String projectName = mCP.getAllProjects().get(0).getName();
 		String userName = mCA.getAccountList().get(0).getUsername();
 		String roleName = "ScrumTeam";
 
@@ -767,7 +763,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .header(SecurityModule.PASSWORD_HEADER, nullPassword)
 		        .post(Entity.text(projectRoleJSON.toString()));
 
-		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));
@@ -786,7 +781,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Test Data
 		long projectId = mCP.getAllProjects().get(0).getId();
-		String projectName = mCP.getAllProjects().get(0).getName();
 		String userName = mCA.getAccountList().get(0).getUsername();
 		String roleName = "ScrumTeam";
 
@@ -803,7 +797,6 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		        .header(SecurityModule.PASSWORD_HEADER, emptyPassword)
 		        .post(Entity.text(projectRoleJSON.toString()));
 
-		ArrayList<AccountObject> accounts = ProjectObject.get(projectId).getProjectWorkers();
 
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = new JSONObject(jsonResponse.getString(ResponseJSONEnum.JSON_KEY_CONTENT));

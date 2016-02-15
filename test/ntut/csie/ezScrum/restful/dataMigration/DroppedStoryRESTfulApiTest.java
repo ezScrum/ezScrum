@@ -22,7 +22,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.apphosting.utils.config.AppYaml.Handler.Security;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;

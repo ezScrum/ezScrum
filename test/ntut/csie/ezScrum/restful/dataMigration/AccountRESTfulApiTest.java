@@ -28,15 +28,11 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class AccountRESTfulApiTest extends JerseyTest {
 	private Configuration mConfig;
 	private CreateProject mCP;
-	private CreateSprint mCS;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -64,10 +60,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-
-		// Create Sprint
-		mCS = new CreateSprint(1, mCP);
-		mCS.exe();
 		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -97,7 +89,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		ini = null;
 		copyProject = null;
 		mCP = null;
-		mCS = null;
 		mHttpServer = null;
 		mClient = null;
 	}
@@ -110,8 +101,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "TEST_USER_PASSWORD";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -122,9 +111,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
 		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
@@ -149,8 +136,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -161,9 +146,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
 		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
@@ -188,8 +171,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -200,9 +181,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
 		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
@@ -220,9 +199,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API again
 		response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
 		        .header(SecurityModule.PASSWORD_HEADER, SecurityModule.ADMIN_MD5_PASSWORD)
@@ -242,8 +219,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "TEST_USER_PASSWORD";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -254,9 +229,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
 		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
@@ -276,8 +249,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "TEST_USER_PASSWORD";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -288,9 +259,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
 		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)
@@ -310,8 +279,6 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		String userPassword = "TEST_USER_PASSWORD";
 		String userEmail = "TEST_USER_EMAIL";
 		boolean enbale = true;
-		ProjectObject project = mCP.getAllProjects().get(0);
-		SprintObject sprint = mCS.getSprints().get(0);
 
 		JSONObject accountJSON = new JSONObject();
 		accountJSON.put(AccountJSONEnum.USERNAME, userName);
@@ -322,9 +289,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectId}/sprints/{sprintId}/accounts' API
 		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + project.getId() +
-		                "/sprints/" + sprint.getId() +
-		                "/accounts")
+		        .path("accounts")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
 		        .header(SecurityModule.PASSWORD_HEADER, wrongAdminPassword)

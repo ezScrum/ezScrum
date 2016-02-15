@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,7 +14,7 @@ import ntut.csie.ezScrum.restful.dataMigration.support.JSONDecoder;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-@Path("projects/{projectId}/sprints/{sprintId}/accounts")
+@Path("accounts")
 public class AccountRESTfulApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
