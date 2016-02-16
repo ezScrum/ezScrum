@@ -39,6 +39,7 @@
 <!-- other support -->
 <script type="text/javascript" src="javascript/AjaxWidget/CommonFormVTypes.js"></script>
 <script type="text/javascript" src="javascript/AjaxWidget/Message.js"></script>
+<script type="text/javascript" src="javascript/md5.js"></script>
 <link rel="stylesheet" type="text/css" href="css/Message.css"/>
 
 
