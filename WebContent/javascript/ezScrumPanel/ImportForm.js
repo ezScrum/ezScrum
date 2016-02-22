@@ -86,7 +86,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	        								.done(function(msg) {
 	        									Ext.Msg.alert('Status', 'Project Import successfully.');
 	        								}).fail(function(err) {
-	        									Ext.Msg.alert('Status', 'Project Import fail. </br> ' + err);
+	        									Ext.Msg.alert('Status', 'Project Import fail. </br> message: ' + err.statusText);
 	        						});
 	        					};
 	        		  }

@@ -82,3 +82,56 @@ Test Import - Check Permission Normal User
     Click Element    xpath=//td[text()="Management"]
     Page Should Not Contain    Import
     [Teardown]    Test Import - Check Permission Teardown
+
+Test Import - Check Permission Other Administrator
+    [Setup]    Test Import - Check Permission Other Administrator Setup
+    #Login with newly created account
+    Login Page With Account In The Same Browser    test    test
+    #Management
+    Click Element    xpath=//td[text()="Management"]
+    Page Should Contain    Import
+    Click Element    xpath=//u[text()="Import"]    #Only admin can see this
+    [Teardown]    Test Import - Check Permission Other Administrator Teardown
+
+Test Import - Check Project by Other Administrator
+    [Setup]    Test Import - Check Project by Other Administrator Setup
+    #Login with newly created account
+    Login Page With Account In The Same Browser    test    test
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    golden_answer_project01_project02.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    Click Element    xpath=//button[text()="Import"]
+    # Enter Administrator's password
+    Focus AND Input Text    //input[@type='password']    test
+    # Press OK
+    Click Element    xpath=//button[text()="OK"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
+    # 等待匯出成功
+    Wait Until Page Contains    Project Import successfully.
+    Click Element    xpath=//button[text()="OK"]
+    #回到Projcet List
+    Click Element    xpath=//td[text()="ProjectList"]
+    # 驗證 Project
+    Page Should Contain    Project01
+    Page Should Contain    Project02
+    # 進入 Project01
+    Click Element    xpath=//div[text()="Project01"]
+    #進入Prodouct Backlog
+    Assert ProductBacklog story
+    #進入Release Plan
+    Assert ReleasePlan
+    #進入Sprint Plan
+    Assert SprintPlan
+    #進入Sprint Backlog
+    Assert SprintBacklog
+    #r進入 Retrospective
+    Assert Retrospective
+    #進入Uplanned
+    Assert Unplanned
+    [Teardown]    Test Import - Check Project by Other Administrator Teardown
