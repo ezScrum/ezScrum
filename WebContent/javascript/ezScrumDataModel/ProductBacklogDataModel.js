@@ -4,6 +4,9 @@ var ProductBacklogStore = new Ext.data.Store({
 		name: 'Id',
 		type: 'int'
 	}, {
+		name: 'SerialId',
+		type: 'int'
+	},{
 		name: 'Type'
 	}, {
 		name: 'Link'
@@ -58,7 +61,7 @@ var ProductBacklogExpander = new Ext.ux.grid.RowExpander({
 var ProductBacklogCreateColModel = function() {
 
 	var columns = [ProductBacklogExpander, {
-		dataIndex: 'Id',
+		dataIndex: 'SerialId',
 		header: 'Id',
 		width: 50,
 		filterable: true
