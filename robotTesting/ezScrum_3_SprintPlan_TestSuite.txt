@@ -32,3 +32,36 @@ Test Sprint Plan - Sprint Goal With NewLine
     Select Node Product    Sprint Plan
     Verify Sprint Goal With NewLine
     [Teardown]    Test Sprint Goal With NewLine Teardown
+
+Test Sprint Plan - Check Due Date
+    [Setup]
+    #Select Sprint Plan
+    Select Node Product    Sprint Plan
+    #Click New Sprint
+    Page Should Contain    New Sprint
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/12/26
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2017/01/09
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/12/21
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/01/04
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/02/23
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2015/03/09
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/07
+    Click Element    //button[text()="Cancel"]
+    [Teardown]
