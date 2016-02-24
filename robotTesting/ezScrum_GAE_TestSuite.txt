@@ -1,7 +1,7 @@
 *** Settings ***
 Suite Setup       ezScrumGAE Suite Setup
 Suite Teardown    ezScrumGAE Suite Teardown
-Force Tags        GAE
+Force Tags        GAE    Unstable
 Library           keywords/lib/Selenium2Improved.py
 Resource          keywords/TenantManagement/ezScrumGAE_SetupTeardown.txt
 Resource          keywords/TenantManagement/ezScrumGAE_TenantManagement.txt
