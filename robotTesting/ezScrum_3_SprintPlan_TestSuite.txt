@@ -12,6 +12,7 @@ Resource          ServerConfig.txt
 Resource          Global Define.txt
 Library           keywords/lib/Selenium2Improved.py
 Library           BuiltIn
+Library           DateTime
 
 *** Test Cases ***
 Test Sprint Plan - Create Sprint
@@ -63,5 +64,63 @@ Test Sprint Plan - Check Due Date
     Focus AND Input Text    //input[@name="Interval"]    2
     Click Element    //input[@name="DueDate"]
     Compare Field Content    //input[@name="DueDate"]    2016/03/07
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/02/29
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/23
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/02/29
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/24
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/01
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/25
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/02
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/26
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/03
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/27
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/04
+    Clear Element Text    //input[@name="Interval"]
+    #Check Due date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/28
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="DueDate"]
+    Compare Field Content    //input[@name="DueDate"]    2016/03/07
+    Clear Element Text    //input[@name="Interval"]
     Click Element    //button[text()="Cancel"]
     [Teardown]
+
+Test Sprint Plan - Check Recommended Start Date
+    #Select Sprint Plan
+    Select Node Product    Sprint Plan
+    #Create New Sprint
+    Create Sprint    sprint1 sprint goal    2    4    100    100
+    #Create New Sprint
+    Create Sprint Without StartDate    sprint2 sprint goal    3    4    100    100
+    #Delete All Sprint
+    Clean All Sprint
+    #Check Date Is Today
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    ${StartDate}=    Get Value    xpath=//input[@name="StartDate"]
+    ${date}=    Get Current Date
+    ${date}=    Convert Date    ${date}    result_format=%Y/%m/%d
+    Should Be Equal    ${StartDate}    ${date}

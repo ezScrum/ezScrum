@@ -96,3 +96,18 @@ Clean All Sprint
     # delete all Sprint
     : FOR    ${_index}    IN RANGE    0    ${_count}
     \    Delete Sprint
+
+Create Sprint Without StartDate
+    [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
+    Focus AND Input Text    //input[@name="Interval"]    ${sprintInterval}
+    Focus AND Input Text    //input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
+    ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
+    Element Enable And Submit    ${xpathAddNewSprint}
+    Wait Until Page Contains    Success.
+    Comment    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]    1
+    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1

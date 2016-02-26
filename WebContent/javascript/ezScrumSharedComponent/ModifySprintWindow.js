@@ -186,10 +186,20 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         
         this.interval_CS.addListener('change', function(interval, newValue, oldValue) {
             if (obj.startDate_CS.isValid()) {
-            	obj.dueDate_CS.setValue(obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1));
+            	var tempDueDate = obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1);
+            	
+            	if(tempDueDate.getDay() == 0){
+            	   obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, 1));
+                } else if (tempDueDate.getDay() == 6) {
+                	obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, 2));
+                } else {
+                   obj.dueDate_CS.setValue(tempDueDate);
+                }
             	obj.demoDate_CS.setMinValue(obj.startDate_CS.getValue());
             	obj.demoDate_CS.setValue(obj.dueDate_CS.getValue());
             }
+            
+            
         }, this);
         
         this.startDate_CS.addListener('select', function(interval, newValue, oldValue) {
@@ -272,11 +282,17 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             // 計算DueDate
             var demoDateValue = demoDate_CS.getValue();
             var startDateValue = startDate_CS.getValue();
-            var dueDateValue  = dueDate_CS.getValue();
             var intervalValue = interval_CS.getValue();
+            
             this.demoDate_CS.setMinValue(startDateValue);
-            this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce dueDay
             this.demoDate_CS.setValue(demoDateValue);
+            this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce dueDay
+            if(dueDate_CS.getValue().getDay() == 0){
+               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, 1));
+            } else if (dueDate_CS.getValue().getDay() == 6){
+               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, 2));
+            }
+            var dueDateValue  = dueDate_CS.getValue();
         }else{
         	alert('start date is invalid');
         }
@@ -319,17 +335,32 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
 		this.getForm().reset();
 		
     	if ( (record != null) && (record.get('Id')>0) ) {
-            // 取出 StartDate
+    		// 取出 StartDate
             var preStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
             
             // 計算 DueDate
-            var preDueDate = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1);
+            var temp = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1); 
+            var preDueDate;
+            
+            if(temp.getDay() == 0){
+               preDueDate = temp.add(Date.DAY, 1);
+            } else if(temp.getDay() == 6) {
+               preDueDate = temp.add(Date.DAY, 2);
+            } else {
+               preDueDate = temp;
+            };
             
             // 設定 demoDate 時間範圍
             this.demoDate_CS.setMinValue(this.startDate_CS.getValue());
             
             var newID = (record.get('Id') ^ 0) + 1;
-			var newStartDate = preDueDate.add(Date.DAY, 1);
+			var newStartDate;
+			
+			if(record.get('Goal') == ""){
+			   newStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
+	        } else {
+	           newStartDate = preDueDate.add(Date.DAY, 1);
+	        };
             
 			// 設定初始值
             this.getForm().setValues({
