@@ -17,12 +17,12 @@ Test Import Setup
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
     # Enter Administrator's password
     Focus AND Input Text    //input[@type='password']    admin
     # Press OK
     Click Element    xpath=//button[text()="OK"]
-    # 點選YES
-    Click Element    xpath=//button[text()="Yes"]
     # 等待匯出成功
     Wait Until Page Contains    Project Import successfully.
     Click Element    xpath=//button[text()="OK"]
@@ -152,12 +152,12 @@ Test Import Same name Setup
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
     # Enter Administrator's password
     Focus AND Input Text    //input[@type='password']    admin
     # Press OK
     Click Element    xpath=//button[text()="OK"]
-    # 點選YES
-    Click Element    xpath=//button[text()="Yes"]
     # 等待匯出成功
     Wait Until Page Contains    Project Import successfully.
     Click Element    xpath=//button[text()="OK"]
