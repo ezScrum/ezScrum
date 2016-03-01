@@ -188,6 +188,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             if (obj.startDate_CS.isValid()) {
             	var tempDueDate = obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1);
             	
+            	// 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             	if(tempDueDate.getDay() == 0){
             	   obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, 1));
                 } else if (tempDueDate.getDay() == 6) {
@@ -287,6 +288,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             this.demoDate_CS.setMinValue(startDateValue);
             this.demoDate_CS.setValue(demoDateValue);
             this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce dueDay
+            // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if(dueDate_CS.getValue().getDay() == 0){
                this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, 1));
             } else if (dueDate_CS.getValue().getDay() == 6){
@@ -342,6 +344,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             var temp = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1); 
             var preDueDate;
             
+            // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if(temp.getDay() == 0){
                preDueDate = temp.add(Date.DAY, 1);
             } else if(temp.getDay() == 6) {
