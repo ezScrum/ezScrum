@@ -51,9 +51,10 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
     				var obj = Ext.util.JSON.decode(response.responseText);
     				
     				var projectName = obj.ProjectName;
-    				var userName = obj.UserName;
+    				var username = obj.Username;
+    				var nickname = obj.Nickname;
     				
-    				Ext.getDom("UserNameInfo_Project").innerHTML = userName;
+    				Ext.getDom("UserNameInfo_Project").innerHTML = username + "(" + nickname + ")";
     				Ext.getDom("ProjectNameInfo").innerHTML = "Project&nbsp;:&nbsp;&nbsp;" + projectName;
     			},
     			failure : function(){
@@ -78,9 +79,10 @@ ezScrum.Management_TopPanel = new ezScrum.TitlePanel({
     			url: 'GetTopTitleInfo.do',
     			success: function(response) {
     				var obj = Ext.util.JSON.decode(response.responseText);
-    				var userName = obj.UserName;
+    				var username = obj.Username;
+    				var nickname = obj.Nickname;
     				
-    				Ext.getDom("UserNameInfo_Management").innerHTML = userName;
+    				Ext.getDom("UserNameInfo_Management").innerHTML = username + "(" + nickname + ")";
     			},
     			failure : function(){
     				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');

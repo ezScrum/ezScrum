@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -39,25 +40,40 @@ public class SecurityModuleTest {
 	
 	@Test
 	public void testIsAccountValid_UserNotAdmin(){
-		String userName = "Jimmy";
-		String userNickName = "TEST_USER_NICK_NAME";
+		String username = "Jimmy";
+		String userNickname = "TEST_USER_NICK_NAME";
 		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
 		String userEmail = "TEST_USER_EMAIL";
-		AccountObject account = new AccountObject(userName);
+		AccountObject account = new AccountObject(username);
 		account.setEmail(userEmail)
-		  	   .setNickName(userNickName)
+		  	   .setNickName(userNickname)
 		  	   .setPassword(userPassword)
 		  	   .save();
-		boolean isAccountValid = SecurityModule.isAccountValid(userName, userPassword);
+		boolean isAccountValid = SecurityModule.isAccountValid(AccountDAO.getMd5(username), userPassword);
 		assertFalse(isAccountValid);
 	}
 	
 	@Test
 	public void testIsAccountValid_UserIsCorrect(){
 		final String ADMIN_USERNAME = "admin";
-		final String ADMIN_MD5_ENCODING_USERNAME = "21232f297a57a5a743894a0e4a801fc3";
 		AccountObject admin = AccountObject.get(ADMIN_USERNAME);
-		boolean isAccountValid = SecurityModule.isAccountValid(ADMIN_MD5_ENCODING_USERNAME, admin.getPassword());
+		boolean isAccountValid = SecurityModule.isAccountValid(AccountDAO.getMd5(ADMIN_USERNAME), admin.getPassword());
+		assertTrue(isAccountValid);
+	}
+	
+	@Test
+	public void testIsAccountValid_UserIsCorrect_AnotherAdmin(){
+		String username = "Jimmy";
+		String userNickname = "TEST_USER_NICK_NAME";
+		String userPassword = "93189e2c4c7b1a2c7b16a24d5daa98a9";
+		String userEmail = "TEST_USER_EMAIL";
+		AccountObject account = new AccountObject(username);
+		account.setEmail(userEmail)
+		  	   .setNickName(userNickname)
+		  	   .setPassword(userPassword)
+		  	   .save();
+		account.createSystemRole();
+		boolean isAccountValid = SecurityModule.isAccountValid(AccountDAO.getMd5(username), userPassword);
 		assertTrue(isAccountValid);
 	}
 	

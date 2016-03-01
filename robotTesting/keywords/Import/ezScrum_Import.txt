@@ -17,12 +17,12 @@ Test Import Setup
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
     # Enter Administrator's password
     Focus AND Input Text    //input[@type='password']    admin
     # Press OK
     Click Element    xpath=//button[text()="OK"]
-    # 點選YES
-    Click Element    xpath=//button[text()="Yes"]
     # 等待匯出成功
     Wait Until Page Contains    Project Import successfully.
     Click Element    xpath=//button[text()="OK"]
@@ -152,12 +152,12 @@ Test Import Same name Setup
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
     Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    Click Element    xpath=//button[text()="Yes"]
     # Enter Administrator's password
     Focus AND Input Text    //input[@type='password']    admin
     # Press OK
     Click Element    xpath=//button[text()="OK"]
-    # 點選YES
-    Click Element    xpath=//button[text()="Yes"]
     # 等待匯出成功
     Wait Until Page Contains    Project Import successfully.
     Click Element    xpath=//button[text()="OK"]
@@ -183,5 +183,67 @@ Test Import - Check Permission Normal User Setup
 
 Test Import - Check Permission Teardown
     Exit ezScrum System
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Import - Check Permission Other Administrator Setup
+    # admin Login
+    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains    Accounts List
+    #Create normal user    Creating normal user for further testing
+    Click Element    xpath=//button[text()="Add Account"]
+    #Fill the fields
+    Focus AND Input Text    //input[@name='account']    test
+    Focus AND Input Text    //input[@name='name']    testName
+    Focus AND Input Text    //input[@name="passwd"]    test
+    Focus AND Input Text    //input[@name="reenter"]    test
+    Focus AND Input Text    //input[@name="mail"]    test@test.com
+    #Save
+    ${svBtn}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${svBtn}
+    #Assin administrator authority for the normal user
+    Click Element    //div[@id='Account_Management_Grid_Panel']//div[text()='test']/../..
+    Click Element    //button[text()='Assign Role']
+    Click Element    //input[@name='unassignRole']/..
+    Click Element    //div[text()='system']
+    Click Element    //button[text()='Add Role']
+    Click Element    //button[text()='Close']
+    #Logout
+    Logout ezScrum System
+
+Test Import - Check Permission Other Administrator Teardown
+    Exit ezScrum System
+    # clean DB
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Import - Check Project by Other Administrator Setup
+    # admin Login
+    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains    Accounts List
+    #Create normal user    Creating normal user for further testing
+    Click Element    xpath=//button[text()="Add Account"]
+    #Fill the fields
+    Focus AND Input Text    //input[@name='account']    test
+    Focus AND Input Text    //input[@name='name']    testName
+    Focus AND Input Text    //input[@name="passwd"]    test
+    Focus AND Input Text    //input[@name="reenter"]    test
+    Focus AND Input Text    //input[@name="mail"]    test@test.com
+    #Save
+    ${svBtn}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${svBtn}
+    #Assin administrator authority for the normal user
+    Click Element    //div[@id='Account_Management_Grid_Panel']//div[text()='test']/../..
+    Click Element    //button[text()='Assign Role']
+    Click Element    //input[@name='unassignRole']/..
+    Click Element    //div[text()='system']
+    Click Element    //button[text()='Add Role']
+    Click Element    //button[text()='Close']
+    #Logout
+    Logout ezScrum System
+
+Test Import - Check Project by Other Administrator Teardown
+    Close Browser
     # clean DB
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
