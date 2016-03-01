@@ -45,11 +45,9 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		ImportFormLayout.superclass.initComponent.apply(this, arguments);
 	},
 	import : function() {
-		var MD5EncodingAdmin = '21232f297a57a5a743894a0e4a801fc3';
 		Ext.MessageBox.getDialog().body.child('input').dom.type='password';
 		Ext.MessageBox.prompt('Identity verification', "Please enter the administrator's password:",
             function(btn, password) {
-				var MD5EncodingPassword = md5(password);
 	            if (btn == 'ok') {
 	            	// check is admin want to import file
 	        		Ext.MessageBox
@@ -73,28 +71,40 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	        									  wait:true,
 	        									  waitConfig: {interval:200}
 	        									});
-	        								$.ajax(
-	        										{
-	        										   url : "/ezScrum/resource/dataMigration/projects",
-	        										   headers: {
-	        										        'username': MD5EncodingAdmin,
-	        										        'password': MD5EncodingPassword
-	        										   },
-	        										   method : "post",
-	        										   data : e.target.result
-	        										})
-	        								.done(function(msg) {
-	        									Ext.Msg.alert('Status', 'Project Import successfully.');
-	        								}).fail(function(err) {
-	        									Ext.Msg.alert('Status', 'Project Import fail. </br> message: ' + err.statusText);
-	        						});
-	        					};
-	        		  }
-	        		}
-	        	   });
-	            }
-            }
-		);
+	        								Ext.Ajax.request({
+	        					    			url: 'GetTopTitleInfo.do',
+	        					    			success: function(response) {
+	        					    				var topTopTitleInfo = Ext.util.JSON.decode(response.responseText);
+	        					    				var username = topTopTitleInfo.Username;
+	        					    				var MD5EncodingUsername = md5(username);
+	        					    				var MD5EncodingPassword = md5(password);
+	        					    				$.ajax(
+	    	        										{
+	    	        										   url : "/ezScrum/resource/dataMigration/projects",
+	    	        										   headers: {
+	    	        										        'username': MD5EncodingUsername,
+	    	        										        'password': MD5EncodingPassword
+	    	        										   },
+	    	        										   method : "post",
+	    	        										   data : e.target.result
+	    	        										})
+	    	        								.done(function(msg) {
+	    	        									Ext.Msg.alert('Status', 'Project Import successfully.');
+	    	        								}).fail(function(err) {
+	    	        									Ext.Msg.alert('Status', 'Project Import fail. </br> message: ' + err.statusText);
+	    	        								});
+	        					    			},
+	        					    			failure : function(){
+	        					    				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
+	        					    			}
+	        					    		});
+	        							};
+	        						}
+	        					}
+	        				});
+	            	}
+            	}
+			);
 	}
 });
 

@@ -10,27 +10,7 @@ import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ScrumRoleLogic {
-
-	private Map<String, ScrumRole> scrumRoles;
-
 	public ScrumRoleLogic() {}
-	
-	public ScrumRole getScrumRole(IProject project, AccountObject account) {
-		synchronized (this) {
-			HashMap<String, ProjectRole> roles = account.getRoles();
-			ScrumRole scrumRole = null;
-			ProjectRole role = roles.get("system");
-			if (role != null) {
-				scrumRole = role.getScrumRole();
-			} else {
-				if (roles == null || project == null) return null;
-				role = roles.get(project.getName());
-				if (role == null) return null;
-				scrumRole = role.getScrumRole();
-			} 
-			return scrumRole;
-		}
-	}
 	
 	public ScrumRole getScrumRole(ProjectObject project, AccountObject account) {
 		synchronized (this) {

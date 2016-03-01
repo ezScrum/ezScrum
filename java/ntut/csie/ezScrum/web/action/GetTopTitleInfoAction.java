@@ -27,16 +27,15 @@ public class GetTopTitleInfoAction extends Action {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		
-		String userName = account.getUsername();
-		String nickName = account.getNickName();
-		String userInfo = userName + "(" + nickName + ")";
+		String username = account.getUsername();
+		String nickname = account.getNickName();
 		String projectName = "";
 		
 		if (project != null) {
 			projectName = project.getName();
 		}
 		
-		TopTitleInfoUI ttiui = new TopTitleInfoUI(userInfo, projectName);
+		TopTitleInfoUI ttiui = new TopTitleInfoUI(username, nickname, projectName);
 		Gson gson = new Gson();
 		
 		response.setContentType("text/html; charset=utf-8");
@@ -51,11 +50,13 @@ public class GetTopTitleInfoAction extends Action {
 	}
 	
 	private class TopTitleInfoUI {
-		private String UserName = "";
+		private String Username = "";
+		private String Nickname = "";
 		private String ProjectName = "";
 		
-		public TopTitleInfoUI(String username, String projectname) {
-			this.UserName = username;
+		public TopTitleInfoUI(String username, String nickname, String projectname) {
+			this.Username = username;
+			this.Nickname = nickname;
 			this.ProjectName = projectname;
 		}
 	}

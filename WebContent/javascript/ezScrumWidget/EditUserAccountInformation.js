@@ -104,9 +104,10 @@ ezScrum.EditUserAccountInformationForm = Ext.extend(Ext.form.FormPanel, {
 			url: 'GetTopTitleInfo.do',
 			success: function(response) {
 				var obj = Ext.util.JSON.decode(response.responseText);
-				var userName = obj.UserName;
+				var username = obj.Username;
+				var nickname = obj.Nickname;
 				
-				Ext.getDom("UserNameInfo_Management").innerHTML = userName;
+				Ext.getDom("UserNameInfo_Management").innerHTML = username + "(" + nickname + ")";
 			},
 			failure : function(){
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
