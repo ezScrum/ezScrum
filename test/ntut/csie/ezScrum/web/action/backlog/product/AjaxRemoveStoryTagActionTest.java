@@ -113,6 +113,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
 							.append("\"Id\":").append(storyId).append(",")
+							.append("\"SerialId\":").append(storyId).append(",")
 							.append("\"Type\":\"Story\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":").append(expectedStoryValue).append(",")	
