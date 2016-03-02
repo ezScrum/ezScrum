@@ -124,3 +124,4 @@ Test Sprint Plan - Check Recommended Start Date
     ${date}=    Get Current Date
     ${date}=    Convert Date    ${date}    result_format=%Y/%m/%d
     Should Be Equal    ${StartDate}    ${date}
+    Click Element    //button[text()="Cancel"]
