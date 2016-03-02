@@ -366,12 +366,12 @@ public class ProductBacklogHelper {
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
 		// create folder to put file
 		Configuration configuration = new Configuration();
-		String folderPath = configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		String folderPath = File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
 		String fileName = System.currentTimeMillis() + "_" + attachFileInfo.name;
 		String relativeFilePath = folderPath + File.separator + fileName;
-		String absoluteFilePath = new File(relativeFilePath).getAbsolutePath();
+		String absoluteFilePath = new File(configuration.getWorkspacePath() + relativeFilePath).getAbsolutePath();
 		attachFileInfo.path = relativeFilePath;
-		new File(folderPath).mkdirs();
+		new File(configuration.getWorkspacePath() + folderPath).mkdirs();
 		File targetFile = new File(absoluteFilePath);
 		// move file from tmp folder to "AttachFile" folder
 		copyFile(file, targetFile);
@@ -382,7 +382,7 @@ public class ProductBacklogHelper {
 
 	public void deleteAttachFile(long fileId) {
 		AttachFileObject attachFile = getAttachFile(fileId);
-		File file = new File(attachFile.getPath());
+		File file = new File(attachFile.getFullPath());
 		file.delete();
 		attachFile.delete();
 	}
