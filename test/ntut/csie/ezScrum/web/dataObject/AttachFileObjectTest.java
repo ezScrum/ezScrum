@@ -3,6 +3,8 @@ package ntut.csie.ezScrum.web.dataObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +74,32 @@ public class AttachFileObjectTest {
 		assertEquals(filePath, attachFileFromDB.getPath());
 		assertEquals(issueId, attachFileFromDB.getIssueId());
 		assertEquals(issueType, attachFileFromDB.getIssueType());
+	}
+	
+	@Test
+	public void testGetFullPath() {
+		// Test Data
+		String contentType = "text/plain";
+		String fileName = "file.txt";
+		String projectName = "project01";
+		long issueId = 10;
+		int issueType = 1;
+		
+		Configuration configuration = new Configuration();
+		// Build AttachFileObject
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(contentType)
+		                 .setName(fileName)
+		                 .setIssueId(issueId)
+		                 .setIssueType(issueType)
+		                 .setPath(File.separator + "AttachFile" + File.separator + projectName + File.separator + fileName)
+		                 .save();
+		
+		long id = attachFile.getId();
+		assertTrue(id > 0);
+		
+		AttachFileObject attachFileFromDB = AttachFileObject.get(id);
+		assertEquals(configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + projectName + File.separator + fileName, attachFileFromDB.getFullPath());
 	}
 	
 	@Test

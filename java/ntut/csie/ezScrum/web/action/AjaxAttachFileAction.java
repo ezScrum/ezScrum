@@ -10,6 +10,14 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -19,15 +27,6 @@ import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.core.util.FileUtil;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 
 public class AjaxAttachFileAction extends Action {
 	private static Log log = LogFactory.getLog(AjaxAttachFileAction.class);
@@ -80,7 +79,6 @@ public class AjaxAttachFileAction extends Action {
 		            
 					try {
 						pbHelper.addAttachFile(attachFileInfo, file);
-						FileUtil.delete(file.getAbsolutePath());
 					} catch (IOException e) {
 						System.out.println(e);
 					}

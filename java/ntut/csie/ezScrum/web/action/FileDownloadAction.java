@@ -46,7 +46,7 @@ public class FileDownloadAction extends DownloadAction {
 			response.setHeader("Content-disposition", "inline; filename=\"" + fileName + "\"");
 
 			// 用fileType預設檔案類型
-			File file = new File(attachFile.getPath());
+			File file = new File(attachFile.getFullPath());
 			StreamInfo fileStream = new FileStreamInfo(attachFile.getContentType(), file);
 			return fileStream;
 		} else {
