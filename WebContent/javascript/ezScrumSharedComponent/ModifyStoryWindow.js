@@ -119,6 +119,13 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				emptyText: '',
 				xtype: 'hidden'
 			}, {
+				fieldLabel: 'SerialId',
+				name: 'SerialId',
+				readOnly: true,
+				ref: 'Project_ProductBacklog_Story_refID',
+				emptyText: '',
+				xtype: 'hidden'
+			}, {
 				fieldLabel: 'Name',
 				name: 'Name',
 				allowBlank: false,
@@ -287,6 +294,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 					// set initial from value
 					this.getForm().setValues({
 						issueID: record.data['Id'],
+						SerialId: record.data['SerialId'],
 						Name: replaced_Name,
 						Value: record.data['Value'],
 						Importance: record.data['Importance'],
@@ -296,7 +304,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 					});
 
 					// append issueID to window title
-					Story_Window.setTitle(Story_Window.title + ' #' + record.data['Id']);
+					Story_Window.setTitle(Story_Window.title + ' #' + record.data['SerialId']);
 				}
 			}
 		}

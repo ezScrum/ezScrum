@@ -673,19 +673,20 @@ public class ProductBacklogHelperTest {
 		// create 1 story
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
-
+		
+		Configuration configuration = new Configuration();
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
-		attachFileInfo.path = mSourceFile.getPath();
+		attachFileInfo.path = configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName + File.separator + attachFileInfo.name;
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
 					mSourceFile);
 			AttachFileObject attachFile = mProductBacklogHelper1
 					.getAttachFile(id);
-			File actualFile = new File(attachFile.getPath());
+			File actualFile = new File(attachFile.getFullPath());
 			assertFalse(mSourceFile.exists());
 			assertEquals(SOURCE_CONTENT, getStringFromFile(actualFile));
 			assertEquals(attachFileInfo.name, attachFile.getName());
@@ -712,17 +713,19 @@ public class ProductBacklogHelperTest {
 		mCPB = new CreateProductBacklog(1, mCP);
 		mCPB.exe();
 
+		Configuration configuration = new Configuration();
 		AttachFileInfo attachFileInfo = new AttachFileInfo();
 		attachFileInfo.name = mSourceFile.getName();
 		attachFileInfo.issueId = mCPB.getStories().get(0).getId();
 		attachFileInfo.issueType = IssueTypeEnum.TYPE_STORY;
 		attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
+		attachFileInfo.path = configuration.getWorkspacePath() + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName + File.separator + attachFileInfo.name;
 		try {
 			long id = mProductBacklogHelper1.addAttachFile(attachFileInfo,
 					mSourceFile);
 			AttachFileObject attachFile = mProductBacklogHelper1
 					.getAttachFile(id);
-			File actualFile = new File(attachFile.getPath());
+			File actualFile = new File(attachFile.getFullPath());
 			assertEquals(SOURCE_CONTENT, getStringFromFile(actualFile));
 			assertEquals(attachFileInfo.name, attachFile.getName());
 			assertEquals(attachFileInfo.issueType, attachFile.getIssueType());

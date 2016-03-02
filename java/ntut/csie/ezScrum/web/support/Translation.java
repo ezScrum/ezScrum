@@ -14,6 +14,7 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -27,6 +28,7 @@ public class Translation {
 		responseText.append("<Total>1</Total>");
 		responseText.append("<Story>");
 		responseText.append("<Id>" + story.getId() + "</Id>");
+		responseText.append("<SerialId>" + story.getSerialId() + "</SerialId>");
 		responseText.append("<Link></Link>");
 		responseText.append("<Name>"
 				+ TranslateSpecialChar.TranslateXMLChar(story.getName()) + "</Name>");
@@ -46,7 +48,9 @@ public class Translation {
 		if (story.getSprintId() == StoryObject.NO_PARENT) {
 			responseText.append("<Sprint>None</Sprint>");			
 		} else {
-			responseText.append("<Sprint>" + story.getSprintId() + "</Sprint>");
+			long sprintId = story.getSprintId();
+			SprintObject sprint = SprintObject.get(sprintId);
+			responseText.append("<Sprint>" + sprint.getSerialId() + "</Sprint>");
 		}
 		responseText.append("<Tag>"
 				+ TranslateSpecialChar.TranslateXMLChar(Join(story.getTags(), ","))
@@ -78,6 +82,7 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
+				jsonStory.put("SerialId", stories.get(i).getSerialId());
 				jsonStory.put("Type", "Story");
 				jsonStory.put("Name", TranslateSpecialChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());
@@ -92,7 +97,9 @@ public class Translation {
 				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
 					jsonStory.put("Sprint", "None");
 				} else {
-					jsonStory.put("Sprint", stories.get(i).getSprintId());				
+					long sprinitId = stories.get(i).getSprintId();
+					SprintObject sprint = SprintObject.get(sprinitId);
+					jsonStory.put("Sprint", sprint.getSerialId());
 				}
 				jsonStory.put("FilterType", getFilterType(stories.get(i)));
 

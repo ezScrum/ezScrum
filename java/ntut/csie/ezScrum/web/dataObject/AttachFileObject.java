@@ -6,6 +6,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 
@@ -85,6 +86,11 @@ public class AttachFileObject implements IBaseObject {
 
 	public String getPath() {
 		return mPath;
+	}
+	
+	public String getFullPath() {
+		Configuration configuration = new Configuration();
+		return configuration.getWorkspacePath() + getPath();
 	}
 
 	public AttachFileObject setPath(String filePath) {
