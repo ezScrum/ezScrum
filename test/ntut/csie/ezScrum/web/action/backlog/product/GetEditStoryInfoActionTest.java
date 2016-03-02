@@ -84,6 +84,7 @@ public class GetEditStoryInfoActionTest extends MockStrutsTestCase{
 				.append("<Total>1</Total>")
 				.append("<Story>")
 					.append("<Id>2</Id>")
+					.append("<SerialId>2</SerialId>")
 					.append("<Link></Link>")
 					.append("<Name>TEST_STORY_2</Name>")
 					.append("<Value>50</Value>")
