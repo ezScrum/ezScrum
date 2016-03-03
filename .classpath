@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/tomcat5.5/naming-factory.jar"/>
 	<classpathentry kind="lib" path="lib/tomcat5.5/naming-resources.jar"/>
 	<classpathentry kind="lib" path="lib/Executer.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/jacocoant.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpclient-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpclient-cache-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpcore-4.4.1.jar"/>
