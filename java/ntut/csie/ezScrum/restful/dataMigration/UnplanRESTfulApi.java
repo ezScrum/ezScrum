@@ -39,7 +39,7 @@ public class UnplanRESTfulApi {
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
 		if (project == null || sprint == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		
 		// Error Checking
@@ -55,7 +55,7 @@ public class UnplanRESTfulApi {
 		// Update Actual
 		unplan.setActual(actual);
 		UnplanDAO.getInstance().update(unplan);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, unplan.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, unplan.toString());
 	}
 
 	@POST
@@ -76,7 +76,7 @@ public class UnplanRESTfulApi {
 		UnplanObject unplan = resourceFinder.findUnplan(unplanId);
 
 		if (project == null || sprint == null || unplan == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -87,7 +87,7 @@ public class UnplanRESTfulApi {
 		// Get HistoryObject
 		HistoryObject history = JSONDecoder.toHistory(unplanId, IssueTypeEnum.TYPE_UNPLAN, entity);
 		history.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
 	
 	@DELETE
@@ -108,10 +108,10 @@ public class UnplanRESTfulApi {
 		UnplanObject unplan = resourceFinder.findUnplan(unplanId);
 
 		if (project == null || sprint == null || unplan == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Delete Histories
 		HistoryDAO.getInstance().deleteByIssue(unplanId, IssueTypeEnum.TYPE_UNPLAN);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 }

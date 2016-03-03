@@ -35,7 +35,7 @@ public class RetrospectiveRESTfulApi {
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
 		if (project == null || sprint == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Error Checking
 		String message = JSONChecker.checkRetrospectiveJSON(entity);
@@ -45,6 +45,6 @@ public class RetrospectiveRESTfulApi {
 		// Create Retrospective
 		RetrospectiveObject retrospective = JSONDecoder.toRetrospective(projectId, sprintId, entity);
 		retrospective.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, retrospective.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, retrospective.toString());
 	}
 }

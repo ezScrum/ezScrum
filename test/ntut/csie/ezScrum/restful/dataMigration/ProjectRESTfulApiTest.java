@@ -252,7 +252,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		JSONObject responseJSON = new JSONObject(response.readEntity(String.class));
 		JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 		String message = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, message);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, message);
 		// Assert Product Owner permission
 		JSONObject productOwnerJSON = contentJSON.getJSONObject(ScrumRoleJSONEnum.PRODUCT_OWNER);
 		assertEquals(productOwner.getAccessProductBacklog(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));

@@ -52,7 +52,7 @@ public class ProjectRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_RESOURCE_EXIST_MESSAGE, "");
 		}
 		project.save(project.getCreateTime());
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, project.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, project.toString());
 	}
 
 	@PUT
@@ -68,7 +68,7 @@ public class ProjectRESTfulApi {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 				
 		// Error Checking
@@ -83,7 +83,7 @@ public class ProjectRESTfulApi {
 		for (ScrumRole scrumRole : scrumRoles) {
 			project.updateScrumRole(scrumRole);
 		}
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, entity);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, entity);
 	}
 
 	@POST
@@ -99,7 +99,7 @@ public class ProjectRESTfulApi {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 				
 		// Error Checking
@@ -115,7 +115,7 @@ public class ProjectRESTfulApi {
 		String roleName = projectRoleJSON.getString(ScrumRoleJSONEnum.ROLE);
 		AccountObject account = AccountObject.get(userName);
 		account.joinProjectWithScrumRole(project.getId(), RoleEnum.valueOf(roleName));
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, entity);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, entity);
 	}
 
 	@POST
@@ -131,7 +131,7 @@ public class ProjectRESTfulApi {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 				
 		// Error Checking
@@ -149,6 +149,6 @@ public class ProjectRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_RESOURCE_EXIST_MESSAGE, "");
 		}
 		tag.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, entity);
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, entity);
 	}
 }

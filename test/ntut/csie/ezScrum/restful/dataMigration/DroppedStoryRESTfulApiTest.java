@@ -149,7 +149,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		long storyId = responseContent.getLong(StoryEnum.ID);
 		assertTrue(storyId > 0);
 		StoryObject story = StoryObject.get(storyId);
@@ -187,7 +187,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(story.getTags().get(0).toString(), responseContent);
 	}
 
@@ -224,7 +224,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(story.getHistories().get(1).toString(), responseContent);
 	}
 	
@@ -254,7 +254,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(0, story.getHistories().size());
 	}
@@ -287,7 +287,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(1, story.getAttachFiles().size());
 		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), story.getAttachFiles().get(0).getName());
@@ -345,7 +345,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		long taskId = responseContent.getLong(StoryEnum.ID);
 		assertTrue(taskId > 0);
 		TaskObject task = TaskObject.get(taskId);
@@ -389,7 +389,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(task.getHistories().get(2).toString(), responseContent);
 	}
 	
@@ -423,7 +423,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(0, task.getHistories().size());
 	}
@@ -461,7 +461,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(1, task.getAttachFiles().size());
 		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), task.getAttachFiles().get(0).getName());
