@@ -45,7 +45,7 @@ public class StoryRESTfulApi {
 		ProjectObject project = resourceFinder.findProject(projectId);
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
 		if (project == null || sprint == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -57,7 +57,7 @@ public class StoryRESTfulApi {
 		// Create Story
 		StoryObject story = JSONDecoder.toStory(projectId, sprintId, entity);
 		story.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, story.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, story.toString());
 	}
 	
 	@POST
@@ -78,7 +78,7 @@ public class StoryRESTfulApi {
 		StoryObject story = resourceFinder.findStory(storyId);
 		
 		if (project == null || sprint == null || story == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -91,7 +91,7 @@ public class StoryRESTfulApi {
 		TagObject tag = JSONDecoder.toTagInStory(entity);
 		story.addTag(tag.getId());
 		story.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, tag.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, tag.toString());
 	}
 	
 	@POST
@@ -112,7 +112,7 @@ public class StoryRESTfulApi {
 		StoryObject story = resourceFinder.findStory(storyId);
 
 		if (project == null || sprint == null || story == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -124,7 +124,7 @@ public class StoryRESTfulApi {
 		// Get HistoryObject
 		HistoryObject history = JSONDecoder.toHistory(story.getId(), IssueTypeEnum.TYPE_STORY, entity);
 		history.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
 	
 	@DELETE
@@ -145,11 +145,11 @@ public class StoryRESTfulApi {
 		StoryObject story = resourceFinder.findStory(storyId);
 
 		if (project == null || sprint == null || story == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Delete Histories
 		HistoryDAO.getInstance().deleteByIssue(storyId, IssueTypeEnum.TYPE_STORY);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 	
 	@POST
@@ -170,7 +170,7 @@ public class StoryRESTfulApi {
 		StoryObject story = resourceFinder.findStory(storyId);
 		
 		if (project == null || sprint == null || story == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -185,6 +185,6 @@ public class StoryRESTfulApi {
         File file = FileDecoder.toFile(attachFileInfo.name, base64BinaryString);
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 }

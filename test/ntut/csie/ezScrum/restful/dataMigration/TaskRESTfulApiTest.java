@@ -373,7 +373,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(task.getHistories().get(2).toString(), responseContent);
 	}
 	
@@ -651,7 +651,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(1, task.getAttachFiles().size());
 		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), task.getAttachFiles().get(0).getName());
