@@ -235,7 +235,7 @@ Test TaskBoard - Attach File on Story
     #Attach file to Story
     click element    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/table/tbody/tr/td[2]/a[@title='Upload File']/img
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
-    Choose File    //input[@id="ext-comp-1088-file"]    ${attachFilePath}
+    Choose File    //input[@name="file"]    ${attachFilePath}
     click button    //button[text()="Submit"]
     Wait Until Page Contains    Success.
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/p/a[@target='_blank']
@@ -252,7 +252,7 @@ Test TaskBoard - Attach File on Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
     click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task02AttachFile.txt
-    choose file    //input[@id="ext-comp-1088-file"]    ${attachFilePath}
+    choose file    //input[@name="file"]    ${attachFilePath}
     click button    //button[text()="Submit"]
     Wait Until Page Contains    Success.
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
