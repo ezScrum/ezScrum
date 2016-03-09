@@ -230,32 +230,32 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
 Test TaskBoard - Attach File on Story
     [Setup]    Test TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
-    click element    //div[text()="TestProject01"]
-    select node product    TaskBoard
+    Click Element    //div[text()="TestProject01"]
+    Select Node Product    TaskBoard
     #Attach file to Story
-    click element    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/table/tbody/tr/td[2]/a[@title='Upload File']/img
+    Click Element    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/table/tbody/tr/td[2]/a[@title='Upload File']/img
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
     Choose File    //input[@name="file"]    ${attachFilePath}
-    click button    //button[text()="Submit"]
+    Click button    //button[text()="Submit"]
     Wait Until Page Contains    Success.
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/p/a[@target='_blank']
     ${fileName1} =    Get Text    xpath=//table[@class="StoryCard_Table"]/tbody/tr[3]/td/p[2]/a[1]
-    should be equal    ${fileName1}    Story01AttachFile.txt
+    Should Be Equal    ${fileName1}    Story01AttachFile.txt
     [Teardown]    Test TaskBoard_AttachFile - Teardown on Story
 
 Test TaskBoard - Attach File on Task
     [Setup]    Test TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
-    click element    //div[text()="TestProject01"]
-    select node product    TaskBoard
+    Click Element    //div[text()="TestProject01"]
+    Select Node Product    TaskBoard
     #Attach file to Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
-    click element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
+    Click Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task02AttachFile.txt
-    choose file    //input[@name="file"]    ${attachFilePath}
-    click button    //button[text()="Submit"]
+    Choose File    //input[@name="file"]    ${attachFilePath}
+    Click Button    //button[text()="Submit"]
     Wait Until Page Contains    Success.
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
     ${fileName2} =    Get Text    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
-    should be equal    Task02AttachFile.txt    ${fileName2}
+    Should Be Equal    Task02AttachFile.txt    ${fileName2}
     [Teardown]    Test TaskBoard_AttachFile - Teardown on Task
