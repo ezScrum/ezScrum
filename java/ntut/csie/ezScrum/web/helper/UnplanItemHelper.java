@@ -29,6 +29,10 @@ public class UnplanItemHelper {
 		return UnplanObject.get(unplanId);
 	}
 	
+	public UnplanObject getUnplan(Long projectId, long serialId) {
+		return UnplanObject.get(projectId, serialId);
+	}
+	
 	public void updateUnplan(String handlerUsername, String partnersUsername,
 			UnplanInfo unplanInfo) {
 		unplanInfo.handlerId = getHandlerId(handlerUsername);
@@ -40,7 +44,7 @@ public class UnplanItemHelper {
 		} else {
 			unplanInfo.status = UnplanObject.STATUS_DONE;
 		}
-		mUnplanMapper.updateUnplan(unplanInfo.id, unplanInfo);
+		mUnplanMapper.updateUnplan(unplanInfo);
 	}
 	
 	public void deleteUnplan(long unplanId) {
@@ -94,7 +98,7 @@ public class UnplanItemHelper {
 			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
 			result.append("<UnplannedItem>");
-			result.append("<Id>").append(unplan.getId()).append("</Id>");
+			result.append("<Id>").append(unplan.getSerialId()).append("</Id>");
 			result.append("<Link></Link>");
 			result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>");
 			result.append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>");

@@ -49,8 +49,8 @@ public class UnplanItemMapper {
 		return unplan.getId();
 	}
 
-	public void updateUnplan(long unplanId, UnplanInfo unplanInfo) {
-		UnplanObject unplan = UnplanObject.get(unplanId);
+	public void updateUnplan(UnplanInfo unplanInfo) {
+		UnplanObject unplan = UnplanObject.get(unplanInfo.projectId, unplanInfo.serialId);
 		if (unplan != null) {
 			unplan.setName(unplanInfo.name).setNotes(unplanInfo.notes)
 			.setEstimate(unplanInfo.estimate).setActual(unplanInfo.actual)

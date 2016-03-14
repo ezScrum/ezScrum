@@ -38,7 +38,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
 		// get parameter info
-		long id = Long.parseLong(request.getParameter("issueID"));
+		long serialUnplanId = Long.parseLong(request.getParameter("issueID"));
 		String name = request.getParameter("Name");
 		String notes = request.getParameter("Notes");
 		String statusString = request.getParameter("Status");
@@ -59,7 +59,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		
 		// 表格的資料
 		UnplanInfo unplanInfo = new UnplanInfo();
-		unplanInfo.id = id;
+		unplanInfo.serialId = serialUnplanId;
 		unplanInfo.name = name;
 		unplanInfo.notes = notes;
 		unplanInfo.estimate = estimate;
@@ -73,11 +73,11 @@ public class EditUnplanItemAction extends PermissionAction {
 		unplanHelper.updateUnplan(handlerUsername, partnersUsername, unplanInfo);
 		
 		// return result of unplan item in XML
-		UnplanObject unplan = unplanHelper.getUnplan(id);
+		UnplanObject unplan = unplanHelper.getUnplan(unplanInfo.projectId, unplanInfo.serialId);
 
 		StringBuilder result = new StringBuilder();
 		result.append("<EditUnplannedItem><Result>success</Result><UnplannedItem>")
-			  .append("<Id>").append(unplan.getId()).append("</Id>")
+			  .append("<Id>").append(unplan.getSerialId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
 			  .append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>")

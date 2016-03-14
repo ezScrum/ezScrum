@@ -72,7 +72,7 @@ public class AddNewUnplanItemAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		result.append("<AddUnplannedItem><Result>success</Result>")
 			  .append("<UnplannedItem>")
-			  .append("<Id>").append(unplanItem.getId()).append("</Id>")
+			  .append("<Id>").append(unplanItem.getSerialId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getName())).append("</Name>")
 			  .append("<SprintID>").append(unplanItem.getSprintId()).append("</SprintID>")

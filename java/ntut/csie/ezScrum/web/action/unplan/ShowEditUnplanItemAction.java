@@ -23,16 +23,16 @@ public class ShowEditUnplanItemAction extends Action {
 
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
-		long unplanId = Long.parseLong(request.getParameter("issueID"));
+		long serialUnplanId = Long.parseLong(request.getParameter("issueID"));
 		
 		// Get unplan item
 		UnplanItemHelper unplanHelper = new UnplanItemHelper(project);
-		UnplanObject unplan = unplanHelper.getUnplan(unplanId);
+		UnplanObject unplan = unplanHelper.getUnplan(project.getId(), serialUnplanId);
 		
 		// return result of unplan item in XML
 		StringBuilder result = new StringBuilder();
 		result.append("<EditUnplannedItem><UnplannedItem>")
-		  .append("<Id>").append(unplan.getId()).append("</Id>")
+		  .append("<Id>").append(unplan.getSerialId()).append("</Id>")
 		  .append("<Link></Link>")
 		  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
 		  .append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>")

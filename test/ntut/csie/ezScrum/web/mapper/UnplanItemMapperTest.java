@@ -169,7 +169,8 @@ public class UnplanItemMapperTest {
 		assertEquals(sProjectId, unplan.getProjectId());
 		
 		UnplanInfo unplanInfo = new UnplanInfo();
-		unplanInfo.id = unplan.getId();
+		unplanInfo.projectId = mCP.getAllProjects().get(0).getId();
+		unplanInfo.serialId = unplan.getSerialId();
 		unplanInfo.name = "亨利欺負學長";
 		unplanInfo.notes = "亨利快衝阿";
 		unplanInfo.estimate = 888;
@@ -180,7 +181,7 @@ public class UnplanItemMapperTest {
 		partnersId.add(account1.getId());
 		partnersId.add(account2.getId());
 		unplanInfo.partnersId = partnersId;
-		mUnplanMapper.updateUnplan(unplan.getId(), unplanInfo);
+		mUnplanMapper.updateUnplan(unplanInfo);
 		
 		unplan.reload();
 		assertEquals(1, unplan.getId());
@@ -204,7 +205,8 @@ public class UnplanItemMapperTest {
 		UnplanObject unplan = mCUI.getUnplans().get(0);
 		
 		UnplanInfo unplanInfo = new UnplanInfo();
-		unplanInfo.id = unplan.getId();
+		unplanInfo.projectId = mCP.getAllProjects().get(0).getId();
+		unplanInfo.serialId = unplan.getSerialId();
 		unplanInfo.name = "亨利欺負學長";
 		unplanInfo.notes = "亨利快衝阿";
 		unplanInfo.estimate = 888;
@@ -212,7 +214,7 @@ public class UnplanItemMapperTest {
 		unplanInfo.sprintId = 2;
 		unplanInfo.status = UnplanObject.STATUS_DONE;
 		
-		mUnplanMapper.updateUnplan(unplan.getId(), unplanInfo);
+		mUnplanMapper.updateUnplan(unplanInfo);
 		
 		unplan.reload();
 		assertEquals(1, unplan.getId());

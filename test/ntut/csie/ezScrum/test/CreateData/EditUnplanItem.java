@@ -32,7 +32,7 @@ public class EditUnplanItem {
 	public void exe() {
 		for (UnplanObject unplan :  mCU.getUnplans()) {
 			UnplanInfo unplanInfo = new UnplanInfo();
-			unplanInfo.id = unplan.getId();
+			unplanInfo.serialId = unplan.getSerialId();
 			unplanInfo.sprintId = unplan.getSprintId();
 			unplanInfo.name = unplan.getName();
 			unplanInfo.notes = TEST_NOTE;
@@ -42,7 +42,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = unplan.getHandlerId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
-			mUnplanItemMapper.updateUnplan(unplanInfo.id, unplanInfo);
+			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class EditUnplanItem {
 	public void exe_CHECKOUT() {
 		for (UnplanObject unplan :  mCU.getUnplans()) {
 			UnplanInfo unplanInfo = new UnplanInfo();
-			unplanInfo.id = unplan.getId();
+			unplanInfo.serialId = unplan.getSerialId();
 			unplanInfo.sprintId = unplan.getSprintId();
 			unplanInfo.name = unplan.getName();
 			unplanInfo.notes = TEST_NOTE;
@@ -62,7 +62,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
-			mUnplanItemMapper.updateUnplan(unplanInfo.id, unplanInfo);
+			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}
 	
@@ -72,7 +72,7 @@ public class EditUnplanItem {
 	public void exe_DONE() {
 		for (UnplanObject unplan : mCU.getUnplans()) {
 			UnplanInfo unplanInfo = new UnplanInfo();
-			unplanInfo.id = unplan.getId();
+			unplanInfo.serialId = unplan.getSerialId();
 			unplanInfo.sprintId = unplan.getSprintId();
 			unplanInfo.name = unplan.getName();
 			unplanInfo.notes = TEST_NOTE;
@@ -82,7 +82,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
-			mUnplanItemMapper.updateUnplan(unplanInfo.id, unplanInfo);
+			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}
 }

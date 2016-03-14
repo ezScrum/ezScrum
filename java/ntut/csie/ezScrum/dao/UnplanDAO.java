@@ -82,6 +82,28 @@ public class UnplanDAO extends AbstractDAO<UnplanObject, UnplanObject> {
 		}
 		return unplan;
     }
+	
+    public UnplanObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(UnplanEnum.TABLE_NAME);
+		valueSet.addEqualCondition(UnplanEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(UnplanEnum.SERIAL_ID, serialId);
+		String query = valueSet.getSelectQuery();
+
+		ResultSet result = mControl.executeQuery(query);
+
+		UnplanObject unplan = null;
+		try {
+			if (result.next()) {
+				unplan = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return unplan;
+    }
 
 	@Override
     public boolean update(UnplanObject unplan) {
