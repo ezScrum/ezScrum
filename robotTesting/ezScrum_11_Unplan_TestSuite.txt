@@ -5,15 +5,15 @@ Force Tags        Unplan
 Resource          keywords/Unplan/ezScrum_Unplan_SetupTeardown.txt
 
 *** Variables ***
-@{addUnplanList}    1    Test Unplanned    1    cutecool    henry;badhenry    99    This is Unplanned Notes
+@{addUnplanList}    1    Test Unplanned    1    account01    account02;account03    99    This is Unplanned Notes
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
-@{editUnplanList}    2    New Unplanned Name    2    badhenry    henry    50    New Unplanned Notes
+@{editUnplanList}    1    New Unplanned Name    1    account03    account02    50    New Unplanned Notes
 ...               30    assigned    ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
-@{deleteUnplanList1}    3    Test Unplanned 1    1    badhenry    henry    99    This is Unplanned Notes 1
+@{deleteUnplanList1}    1    Test Unplanned 1    1    account03    account02    99    This is Unplanned Notes 1
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
-@{deleteUnplanList2}    4    Test Unplanned 2    1    badhenry    henry    99    This is Unplanned Notes 2
+@{deleteUnplanList2}    2    Test Unplanned 2    1    account03    account02    99    This is Unplanned Notes 2
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
-@{deleteUnplanList3}    5    Test Unplanned 3    1    badhenry    henry    99    This is Unplanned Notes 3
+@{deleteUnplanList3}    3    Test Unplanned 3    1    account03    account02    99    This is Unplanned Notes 3
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
 
 *** Test Cases ***
@@ -72,20 +72,20 @@ Test Unplan - Edit Unplan
 
 Test Unplan - Delete Unplan
     [Setup]    Test Unplan Delete Setup
-    # 沒做刪除之前有3筆
+    # There 3 Unplan Items Before Delete Unplan
     ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
     Should Be Equal    3    ${counts}
-    # Delete後剩2筆
+    # Remains 2 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList1[1]}
     Delete Unplan
     ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
     Should Be Equal    2    ${counts}
-    # Delete後剩1筆
+    # Remains 1 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList2[1]}
     Delete Unplan
     ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
     Should Be Equal    1    ${counts}
-    # Delete後剩0筆
+    # Remains 0 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList3[1]}
     Delete Unplan
     ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
