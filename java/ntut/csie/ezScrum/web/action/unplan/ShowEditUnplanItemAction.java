@@ -5,16 +5,17 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.UnplanObject;
-import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
-import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
+import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
+import ntut.csie.ezScrum.web.support.SessionManager;
+import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
 public class ShowEditUnplanItemAction extends Action {
 	
@@ -29,13 +30,14 @@ public class ShowEditUnplanItemAction extends Action {
 		UnplanItemHelper unplanHelper = new UnplanItemHelper(project);
 		UnplanObject unplan = unplanHelper.getUnplan(project.getId(), serialUnplanId);
 		
+		SprintObject sprint = SprintObject.get(unplan.getSprintId());
 		// return result of unplan item in XML
 		StringBuilder result = new StringBuilder();
 		result.append("<EditUnplannedItem><UnplannedItem>")
 		  .append("<Id>").append(unplan.getSerialId()).append("</Id>")
 		  .append("<Link></Link>")
 		  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
-		  .append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>")
+		  .append("<SprintID>").append(sprint.getSerialId()).append("</SprintID>")
 		  .append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>")
 		  .append("<Status>").append(unplan.getStatusString()).append("</Status>")
 		  .append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")

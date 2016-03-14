@@ -42,6 +42,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = unplan.getHandlerId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
+			unplanInfo.projectId = mProject.getId();
 			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}
@@ -62,6 +63,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
+			unplanInfo.projectId = mProject.getId();
 			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}
@@ -82,6 +84,7 @@ public class EditUnplanItem {
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
+			unplanInfo.projectId = mProject.getId();
 			mUnplanItemMapper.updateUnplan(unplanInfo);
 		}
 	}

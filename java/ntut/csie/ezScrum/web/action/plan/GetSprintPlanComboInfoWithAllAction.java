@@ -92,8 +92,8 @@ public class GetSprintPlanComboInfoWithAllAction extends PermissionAction {
 
 		public SprintPlanItem(SprintObject sprint) {
 			if (sprint != null) {
-				this.Id = String.valueOf(sprint.getId());
-				this.Info = "Sprint #" + String.valueOf(sprint.getId());
+				this.Id = String.valueOf(sprint.getSerialId());
+				this.Info = "Sprint #" + String.valueOf(sprint.getSerialId());
 			} else {
 				this.Id = "0";
 				this.Info = "Sprint None";

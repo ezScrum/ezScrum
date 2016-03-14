@@ -6,17 +6,18 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.UnplanInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 
 public class EditUnplanItemAction extends PermissionAction {
 
@@ -43,7 +44,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		String notes = request.getParameter("Notes");
 		String statusString = request.getParameter("Status");
 		String sprintName = request.getParameter("SprintID");
-		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
+		long serialSprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		int estimate = Integer.parseInt(request.getParameter("Estimate"));
 		int actual = Integer.parseInt(request.getParameter("ActualHour"));
 		String handlerUsername = request.getParameter("Handler");
@@ -57,6 +58,8 @@ public class EditUnplanItemAction extends PermissionAction {
 			specificDate = new Date();
 		}
 		
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		
 		// 表格的資料
 		UnplanInfo unplanInfo = new UnplanInfo();
 		unplanInfo.serialId = serialUnplanId;
@@ -66,7 +69,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		unplanInfo.actual = actual;
 		unplanInfo.statusString = statusString;
 		unplanInfo.projectId = project.getId();
-		unplanInfo.sprintId = sprintId;
+		unplanInfo.sprintId = sprint.getId();
 		unplanInfo.specificTime = specificDate.getTime();
 		
 		UnplanItemHelper unplanHelper = new UnplanItemHelper(project);
@@ -74,13 +77,14 @@ public class EditUnplanItemAction extends PermissionAction {
 		
 		// return result of unplan item in XML
 		UnplanObject unplan = unplanHelper.getUnplan(unplanInfo.projectId, unplanInfo.serialId);
-
+		SprintObject sprintAfterEditUnplan = SprintObject.get(unplan.getSprintId());
+		
 		StringBuilder result = new StringBuilder();
 		result.append("<EditUnplannedItem><Result>success</Result><UnplannedItem>")
 			  .append("<Id>").append(unplan.getSerialId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>")
-			  .append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>")
+			  .append("<SprintID>").append(sprintAfterEditUnplan.getSerialId()).append("</SprintID>")
 			  .append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>")
 			  .append("<Status>").append(unplan.getStatusString()).append("</Status>")
 			  .append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")

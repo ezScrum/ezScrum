@@ -22,8 +22,8 @@ public class UnplanItemMapper {
 		return UnplanObject.get(unplanId);
 	}
 
-	public ArrayList<UnplanObject> getUnplansInSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
+	public ArrayList<UnplanObject> getUnplansInSprint(long serialSprintId) {
+		SprintObject sprint = SprintObject.get(mProject.getId(), serialSprintId);
 		ArrayList<UnplanObject> unplans = new ArrayList<>();
 		if (sprint != null) {
 			unplans = sprint.getUnplans();

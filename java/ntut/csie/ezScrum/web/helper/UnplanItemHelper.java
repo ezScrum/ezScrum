@@ -74,19 +74,19 @@ public class UnplanItemHelper {
 		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
 			unplans = mUnplanMapper.getAllUnplans();
 		} else {
-			long sprintId = -1;
+			long serialSprintId = -1;
 			try {
-				sprintId = Long.parseLong(sprintIdString);
+				serialSprintId = Long.parseLong(sprintIdString);
 			} catch (Exception e) {
 				SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mUnplanMapper.getProject());
 				// if there is not current sprint, then get latest sprint
 				SprintObject sprint = sprintPlanHelper.getCurrentSprint();
 				// The project has no any sprint
 				if (sprint != null) {
-					sprintId = sprint.getId();
+					serialSprintId = sprint.getSerialId();
 				}
 			}
-			unplans = mUnplanMapper.getUnplansInSprint(sprintId);
+			unplans = mUnplanMapper.getUnplansInSprint(serialSprintId);
 		}
 
 		// write stories to XML format
@@ -97,11 +97,12 @@ public class UnplanItemHelper {
 			.append("<Name>Sprint ").append(sprintIdString).append("</Name>")
 			.append("</Sprint>");
 		for (UnplanObject unplan : unplans) {
+			SprintObject sprint = SprintObject.get(unplan.getSprintId());
 			result.append("<UnplannedItem>");
 			result.append("<Id>").append(unplan.getSerialId()).append("</Id>");
 			result.append("<Link></Link>");
 			result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getName())).append("</Name>");
-			result.append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>");
+			result.append("<SprintID>").append(sprint.getSerialId()).append("</SprintID>");
 			result.append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>");
 			result.append("<Status>").append(unplan.getStatusString()).append("</Status>");
 			result.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>");
