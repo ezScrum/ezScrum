@@ -18,13 +18,21 @@ Test Serial Number - Check Sprint ID
     Select Node Product    Sprint Plan
     Create Sprint    second sprint1    2    4    100    100
     Create Sprint    second sprint2    2    4    100    100
-    Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    1    #1
-    Compare Text In Specific Xpath    //div[text() ="second sprint2"]/../../td[1]/div    2    #2
+    Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text() ="second sprint2"]/../../td[1]/div    5    #5    #should be 2
     Delete Sprint
     Create Sprint    second sprint3    2    4    100    100
-    Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    3    #3
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    6    #6    #should be 3
+    Select Node Product    Product Backlog
+    Add A New Story With Story Name And Value    story1    10
+    Add A New Story With Story Name And Value    story2    10
+    Select Sprint Backlog Page And Add All Existing Story
+    Reload Page
+    Select Node Product    Sprint Plan
+    Click Element    xpath=//div[text()="second sprint1"]
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/div    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story2"]/../../td[1]/div    5    #5    #should be 2
+    [Teardown]    Test Serial Number Test Suite Tear Down
 
 Test Serial Number - Check Story ID
     [Setup]    SetUp Data Base    Check_Story_ID.sql

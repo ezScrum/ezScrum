@@ -55,3 +55,16 @@ Add A New Restrospective
 
 Data Base Tear Down
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Select Sprint Backlog Page And Add All Existing Story
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//button[text()="Add Existing Stories"]
+    Wait Until Page Contains    Add Existing Stories
+    Mouse Down    xpath=//div[@class='x-grid3-hd-checker']
+    Mouse Up    xpath=//div[@class='x-grid3-hd-checker']
+    Click Element    xpath=//button[text()="Add Existed Stories"]
+    Wait Until Page Contains    Add Existing Stories
+
+Test Serial Number Test Suite Tear Down
+    Data Base Tear Down
+    Exit ezScrum System
