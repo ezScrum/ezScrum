@@ -42,6 +42,10 @@ public class UnplanObject implements IBaseObject {
 		return UnplanDAO.getInstance().get(id);
 	}
 	
+	public static UnplanObject get(long projectId, long serialId) {
+		return UnplanDAO.getInstance().get(projectId, serialId);
+	}
+	
 	public UnplanObject(long sprintId, long projectId) {
 		mSprintId = sprintId;
 		mProjectId = projectId;

@@ -22,8 +22,8 @@ public class UnplanItemMapper {
 		return UnplanObject.get(unplanId);
 	}
 
-	public ArrayList<UnplanObject> getUnplansInSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
+	public ArrayList<UnplanObject> getUnplansInSprint(long serialSprintId) {
+		SprintObject sprint = SprintObject.get(mProject.getId(), serialSprintId);
 		ArrayList<UnplanObject> unplans = new ArrayList<>();
 		if (sprint != null) {
 			unplans = sprint.getUnplans();
@@ -49,8 +49,8 @@ public class UnplanItemMapper {
 		return unplan.getId();
 	}
 
-	public void updateUnplan(long unplanId, UnplanInfo unplanInfo) {
-		UnplanObject unplan = UnplanObject.get(unplanId);
+	public void updateUnplan(UnplanInfo unplanInfo) {
+		UnplanObject unplan = UnplanObject.get(unplanInfo.projectId, unplanInfo.serialId);
 		if (unplan != null) {
 			unplan.setName(unplanInfo.name).setNotes(unplanInfo.notes)
 			.setEstimate(unplanInfo.estimate).setActual(unplanInfo.actual)

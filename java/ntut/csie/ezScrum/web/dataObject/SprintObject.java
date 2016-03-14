@@ -165,6 +165,10 @@ public class SprintObject implements IBaseObject {
 	public static SprintObject get(long id) {
 		return SprintDAO.getInstance().get(id);
 	}
+	
+	public static SprintObject get(long projectId, long serialId) {
+		return SprintDAO.getInstance().get(projectId, serialId);
+	}
 
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
