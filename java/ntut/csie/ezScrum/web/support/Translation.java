@@ -14,10 +14,12 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 
 public class Translation {
 
@@ -96,10 +98,20 @@ public class Translation {
 				jsonStory.put("Release", "");
 				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
 					jsonStory.put("Sprint", "None");
+					jsonStory.put("Release", "None");
 				} else {
 					long sprinitId = stories.get(i).getSprintId();
 					SprintObject sprint = SprintObject.get(sprinitId);
 					jsonStory.put("Sprint", sprint.getSerialId());
+					ProjectObject project = ProjectObject.get(sprint.getProjectId());
+					ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+					long releaseId = releasePlanHelper.getReleaseIdBySprintId(sprint.getId());
+					if (releaseId == SprintObject.NO_PARENT) {
+						jsonStory.put("Release", "None");
+					} else {
+						ReleaseObject release = ReleaseObject.get(releaseId);
+						jsonStory.put("Release", release.getSerialId());
+					}
 				}
 				jsonStory.put("FilterType", getFilterType(stories.get(i)));
 

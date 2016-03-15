@@ -69,6 +69,28 @@ public class RetrospectiveDAO extends
 		}
 		return retrospective;
 	}
+	
+	public RetrospectiveObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(RetrospectiveEnum.SERIAL_ID, serialId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		RetrospectiveObject retrospective = null;
+		try {
+			if (result.next()) {
+				retrospective = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return retrospective;
+	}
 
 	@Override
 	public boolean update(RetrospectiveObject retrospective) {

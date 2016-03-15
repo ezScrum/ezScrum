@@ -33,10 +33,11 @@ public class ShowRetrospectiveAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// ger parameter info
-		String sprintId = request.getParameter("sprintID");
+		String serialSprintId = request.getParameter("sprintID");
 
 		try {
-			return (new RetrospectiveHelper(project)).getListXML(sprintId);
+			RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
+			return retrospectiveHelper.getListXML(serialSprintId);
 		} catch (SQLException e) {
 			return new StringBuilder("error");
 		}

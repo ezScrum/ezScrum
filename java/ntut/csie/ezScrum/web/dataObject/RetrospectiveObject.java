@@ -42,6 +42,10 @@ public class RetrospectiveObject implements IBaseObject {
 	public static RetrospectiveObject get(long retrospectiveId) {
 		return RetrospectiveDAO.getInstance().get(retrospectiveId);
 	}
+	
+	public static RetrospectiveObject get(long projectId, long serialId) {
+		return RetrospectiveDAO.getInstance().get(projectId, serialId);
+	}
 
 	public RetrospectiveObject setName(String name) {
 		mName = name;
