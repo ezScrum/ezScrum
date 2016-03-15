@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class SprintObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
+	public final static int NO_PARENT = -1;
 	private long mId = DEFAULT_VALUE;
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
