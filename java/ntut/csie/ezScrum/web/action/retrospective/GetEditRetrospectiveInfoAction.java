@@ -29,14 +29,10 @@ public class GetEditRetrospectiveInfoAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProject(request);
-		
 		// get parameter info
-		long retrospectiveId = Long.parseLong(request.getParameter("issueID"));
-		
+		long serialRetrospectiveId = Long.parseLong(request.getParameter("issueID"));
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
-		
-		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
-		
+		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(project.getId(), serialRetrospectiveId);
 		return retrospectiveHelper.getXML("get", retrospective);
 	}
 }

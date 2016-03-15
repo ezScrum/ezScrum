@@ -16,9 +16,13 @@ public class RetrospectiveHelper {
 	public RetrospectiveHelper(ProjectObject project) {
 		mRetrospectiveMapper = new RetrospectiveMapper(project);
 	}
+	
+	public RetrospectiveObject getRetrospective(long id) {
+		return mRetrospectiveMapper.getRetrospective(id);
+	}
 
-	public RetrospectiveObject getRetrospective(long retrospectiveId) {
-		return mRetrospectiveMapper.getRetrospective(retrospectiveId);
+	public RetrospectiveObject getRetrospective(long projectId, long serialRetrospectiveId) {
+		return mRetrospectiveMapper.getRetrospective(projectId, serialRetrospectiveId);
 	}
 
 	public long addRetrospective(RetrospectiveInfo retrospectiveInfo) {
@@ -29,8 +33,8 @@ public class RetrospectiveHelper {
 		mRetrospectiveMapper.updateRetrospective(retrospectiveInfo);
 	}
 
-	public void deleteRetrospective(long retrospectiveId) {
-		mRetrospectiveMapper.deleteRetrospective(retrospectiveId);
+	public void deleteRetrospective(long projectId, long serialId) {
+		mRetrospectiveMapper.deleteRetrospective(projectId, serialId);
 	}
 
 	// 前端XML格式定義在: Common.js 之 變數 Retrospective, Parser 為 retReader
@@ -48,20 +52,23 @@ public class RetrospectiveHelper {
 		else
 			tag = "";
 
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(retrospective.getSprintId());
+		
 		StringBuilder result = new StringBuilder("");
 		result.append("<" + tag + "Retrospective><Result>true</Result><Retrospective>");
-		result.append("<Id>" + retrospective.getId() + "</Id>");
+		result.append("<Id>" + retrospective.getSerialId() + "</Id>");
 
 		// get的順序跟別人不一樣,先 Name再SprintID -> 前端認XML tag所以順序沒關係
 		if (actionType.equals("add") || actionType.equals("edit") || actionType.equals("get")) {
 			result.append("<Link>" + "/ezScrum/showIssueInformation.do?issueID=" + retrospective.getId() + "</Link>");
-			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
+			result.append("<SprintID>" + sprint.getSerialId() + "</SprintID>");
 			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(retrospective.getName()) + "</Name>");
 			result.append("<Type>" + retrospective.getType() + "</Type>");
 			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(retrospective.getDescription()) + "</Description>");
 			result.append("<Status>" + retrospective.getStatus() + "</Status>");
 		} else if (actionType.equals("delete")) {
-			result.append("<SprintID>" + retrospective.getSprintId() + "</SprintID>");
+			result.append("<SprintID>" + sprint.getSerialId() + "</SprintID>");
 		}
 
 		result.append("</Retrospective></" + tag + "Retrospective>");
@@ -70,40 +77,41 @@ public class RetrospectiveHelper {
 	}
 
 	// 前端XML格式定義在: ShowRetrospective.jsp 之 變數 retrospectiveStore
-	public StringBuilder getListXML(String sprintIdString) throws SQLException {
+	public StringBuilder getListXML(String serialSprintIdString) throws SQLException {
 		ArrayList<RetrospectiveObject> goods = new ArrayList<RetrospectiveObject>();
 		ArrayList<RetrospectiveObject> improvements = new ArrayList<RetrospectiveObject>();
 		final String specialSprintId = "ALL"; // 這個特殊的sprintID主要是為了抓出所有 good 和
 											  // improve(待改善) 的 retrospective 
-		if (sprintIdString != null && sprintIdString.equals(specialSprintId)) {
+		if (serialSprintIdString != null && serialSprintIdString.equals(specialSprintId)) {
 			goods = mRetrospectiveMapper.getAllGoods();
 			improvements = mRetrospectiveMapper.getAllImprovements();
 		} else {
-			long sprintId = -1;
+			long serialSprintId = -1;
 			try {
-				sprintId = Long.parseLong(sprintIdString);
+				serialSprintId = Long.parseLong(serialSprintIdString);
 			} catch (Exception e) {
 				SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mRetrospectiveMapper.getProjct());
 				// if there is not current sprint, then get latest sprint
 				SprintObject sprint = sprintPlanHelper.getCurrentSprint();
 				// The project has no any sprint
 				if (sprint != null) {
-					sprintId = sprint.getId();
+					serialSprintId = sprint.getSerialId();
 				}
 			}
-			goods = mRetrospectiveMapper.getGoodsInSprint(sprintId);
-			improvements = mRetrospectiveMapper.getImprovementsInSprint(sprintId);
+			goods = mRetrospectiveMapper.getGoodsInSprint(serialSprintId);
+			improvements = mRetrospectiveMapper.getImprovementsInSprint(serialSprintId);
 		}
 		
 		StringBuilder result = new StringBuilder();
-		result.append("<Retrospectives><Sprint><Id>" + sprintIdString + "</Id><Name>Sprint #" + sprintIdString + "</Name></Sprint>");
+		result.append("<Retrospectives><Sprint><Id>" + serialSprintIdString + "</Id><Name>Sprint #" + serialSprintIdString + "</Name></Sprint>");
 
 		// Good Retrospective 封裝成 XML 給 Ext 使用
 		for (RetrospectiveObject good : goods) {
+			SprintObject sprint = SprintObject.get(good.getSprintId());
 			result.append("<Retrospective>");
-			result.append("<Id>" + good.getId() + "</Id>");
+			result.append("<Id>" + good.getSerialId() + "</Id>");
 			result.append("<Link></Link>");
-			result.append("<SprintID>" + good.getSprintId() + "</SprintID>");
+			result.append("<SprintID>" + sprint.getSerialId() + "</SprintID>");
 			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(good.getName()) + "</Name>");
 			result.append("<Type>" + good.getType() + "</Type>");
 			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(good.getDescription()) + "</Description>");
@@ -113,10 +121,11 @@ public class RetrospectiveHelper {
 		
 		// Improvement Retrospective 封裝成 XML 給 Ext 使用
 		for (RetrospectiveObject improvement : improvements) {
+			SprintObject sprint = SprintObject.get(improvement.getSprintId());
 			result.append("<Retrospective>");
-			result.append("<Id>" + improvement.getId() + "</Id>");
+			result.append("<Id>" + improvement.getSerialId() + "</Id>");
 			result.append("<Link></Link>");
-			result.append("<SprintID>" + improvement.getSprintId() + "</SprintID>");
+			result.append("<SprintID>" + sprint.getSerialId() + "</SprintID>");
 			result.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(improvement.getName()) + "</Name>");
 			result.append("<Type>" + improvement.getType() + "</Type>");
 			result.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(improvement.getDescription()) + "</Description>");

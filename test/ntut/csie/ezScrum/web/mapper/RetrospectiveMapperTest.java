@@ -124,7 +124,7 @@ public class RetrospectiveMapperTest {
 		             .save();
 		long retrospectiveId = retrospective.getId();
 		assertTrue(retrospectiveId > 0);
-		mRetrospectiveMapper.deleteRetrospective(retrospectiveId);
+		mRetrospectiveMapper.deleteRetrospective(retrospective.getProjectId(), retrospective.getSerialId());
 		retrospective = RetrospectiveObject.get(retrospectiveId);
 		assertNull(retrospective);
 	}

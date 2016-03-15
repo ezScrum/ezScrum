@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.RetrospectiveInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.RetrospectiveHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -34,27 +35,30 @@ public class AjaxEditRetrospectiveAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long retrospectiveId = Long.valueOf(request.getParameter("issueID"));
+		long serialRetrospectiveId = Long.valueOf(request.getParameter("issueID"));
 		
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");
-		long sprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
+		long serialSprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		String type = request.getParameter("Type");
 		String description = TranslateSpecialChar.TranslateDBChar(request.getParameter("Description"));
 		String status = request.getParameter("Status");
 		
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
 		
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		
 		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
-		retrospectiveInfo.id = retrospectiveId;
+		retrospectiveInfo.serialId = serialRetrospectiveId;
 		retrospectiveInfo.name = name;
 		retrospectiveInfo.description = description;
-		retrospectiveInfo.sprintId = sprintId;
+		retrospectiveInfo.sprintId = sprint.getId();
 		retrospectiveInfo.type = type;
 		retrospectiveInfo.status = status;
 		
 		retrospectiveHelper.editRetrospective(retrospectiveInfo); 
-		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
+		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(project.getId(), serialRetrospectiveId);
 				
 		return retrospectiveHelper.getXML("edit", retrospective);
 	}
