@@ -124,7 +124,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
 							.append("\"Link\":\"\",")
-							.append("\"Release\":\"\",")
+							.append("\"Release\":\"None\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"DETAIL\",")
 							.append("\"Attach\":false,")
