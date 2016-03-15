@@ -97,7 +97,7 @@ public class RetrospectiveMapperTest {
 		long retrospectiveId = retrospective.getId();
 		assertTrue(retrospectiveId > 0);
 		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
-		retrospectiveInfo.id = retrospectiveId;
+		retrospectiveInfo.serialId = retrospective.getSerialId();
 		retrospectiveInfo.name = "TEST_RETROSPECTIVE_NAME_UPDATE";
 		retrospectiveInfo.description = "TEST_RETROSPECTIVE_DESCRIPTION_UPDATE";
 		retrospectiveInfo.type = RetrospectiveObject.TYPE_IMPROVEMENT;
