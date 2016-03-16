@@ -158,6 +158,8 @@ public class SprintPlanMapperTest {
 	public void testUpdateSprint() {
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.id = mCS.getSprintsId().get(0);
+		SprintObject tempSprint = SprintObject.get(sprintInfo.id);
+		sprintInfo.serialId = tempSprint.getSerialId();
 		sprintInfo.interval = 2;
 		sprintInfo.teamSize = 2;
 		sprintInfo.hoursCanCommit = 120;
@@ -168,7 +170,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoPlace = "Lab1321_NEW";
 		sprintInfo.dailyInfo = "12:10@Lab1321";
 		sprintInfo.dueDate = "2015/06/25";
-
+		
 		// call updateSprintPlan
 		mSprintPlanMapper.updateSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));

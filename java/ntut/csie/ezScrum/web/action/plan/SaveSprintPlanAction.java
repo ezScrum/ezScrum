@@ -39,7 +39,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 		String isCreate = request.getParameter("isCreate");
 
 		// get parameter info
-		String sprintId = request.getParameter("Id");
+		String serialSprintId = request.getParameter("Id");
 		String sprintGoal = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("Goal"));
 		String startDate = request.getParameter("StartDate");
@@ -56,7 +56,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 
 		// set sprint info
 		SprintInfo sprintInfo = new SprintInfo();
-		sprintInfo.id = Long.parseLong(sprintId);
+		sprintInfo.serialId = Long.parseLong(serialSprintId);
 		sprintInfo.sprintGoal = sprintGoal;
 		sprintInfo.startDate = startDate;
 		sprintInfo.interval = Integer.parseInt(interval);
@@ -75,7 +75,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 			sprintPlanHelper.createSprint(sprintInfo);
 		} else {
 			// edit sprint
-			sprintPlanHelper.updateSprint(sprintInfo.id, sprintInfo);
+			sprintPlanHelper.updateSprint(sprintInfo);
 		}
 
 		return new StringBuilder("true");
