@@ -561,13 +561,35 @@ public class TaskObjectTest {
 		int TEST_ACTUAL = 1;
 		int TEST_REMAIN = 2;
 		long TEST_PROJECT = 1;
-		long TEST_STORY_ID = 5;
+		
+		String sprintGoal = "TEST_SPRINT_GOAL";
+		String sprintDailyInfo = "TEST_SPRINT_DAILY_INFO";
+		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
+		String sprintStartDate = "2015/05/28";
+		String sprintDemoDate = "2015/06/11";
+		String sprintDueDate = "2015/06/11";
+		
+		// create sprint
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setInterval(2).setTeamSize(5)
+				.setAvailableHours(100).setFocusFactor(70)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
+				.save();
+		
+		// create story
+		StoryObject story = new StoryObject(mProjectId);
+		story.setName("TEST_NAME").setNotes("TEST_NOTE")
+				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
+				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
+				.setSprintId(sprint.getId()).save();
 
 		TaskObject task = new TaskObject(TEST_PROJECT);
 		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
 				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
 				.setStatus(TaskObject.STATUS_DONE)
-				.setHandlerId(handler.getId()).setStoryId(TEST_STORY_ID).save();
+				.setHandlerId(handler.getId()).setStoryId(story.getId()).save();
 		ArrayList<Long> partners = new ArrayList<Long>();
 		partners.add(partner.getId());
 		task.addPartner(partner.getId());
@@ -580,7 +602,7 @@ public class TaskObjectTest {
 		assertEquals(TEST_ACTUAL, json.getInt(TaskEnum.ACTUAL));
 		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.REMAIN));
 		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
-		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
+		assertEquals(story.getId(), json.getInt(TaskEnum.STORY_ID));
 
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));

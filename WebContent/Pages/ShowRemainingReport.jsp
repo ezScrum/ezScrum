@@ -103,8 +103,8 @@ function clearDate() {
 				<select id="ShowSprint" onchange="show()" class="selectField">
 					<logic:iterate id="element" name="SprintPlans">
 						<c:choose>
-						<c:when test="${element.id == iteration}"><option value="${ element.id }" selected>Sprint ${ element.id }</option></c:when>
-							<c:otherwise><option value="${ element.id }">Sprint ${ element.id }</option></c:otherwise>
+						<c:when test="${element.serialId == iteration}"><option value="${ element.serialId }" selected>Sprint ${ element.serialId }</option></c:when>
+							<c:otherwise><option value="${ element.serialId }">Sprint ${ element.serialId }</option></c:otherwise>
 						</c:choose>						
 					</logic:iterate>
 				</select>

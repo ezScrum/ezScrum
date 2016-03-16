@@ -17,6 +17,7 @@ import ntut.csie.ezScrum.web.dataInfo.UnplanInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 
 public class UnplanItemMapperTest {
@@ -44,7 +45,7 @@ public class UnplanItemMapperTest {
 		mCP.exeCreateForDb();
 
 		// 新增 Sprint
-		mCS = new CreateSprint(1, mCP);
+		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 		
 		mProject = mCP.getAllProjects().get(0);
@@ -97,9 +98,11 @@ public class UnplanItemMapperTest {
 		mCUI = new CreateUnplanItem(3, mCP, mCS);
 		mCUI.exe();
 		
+		SprintObject sprint = SprintObject.get(sSprintId);
+		ArrayList<UnplanObject> actualUnplans = mUnplanMapper.getUnplansInSprint(sprint.getSerialId());
+		assertEquals(3, actualUnplans.size());
+		
 		ArrayList<UnplanObject> expectUnplans = mCUI.getUnplans();
-		ArrayList<UnplanObject> actualUnplans = mUnplanMapper.getUnplansInSprint(sSprintId);
-		assertEquals(expectUnplans.size(), actualUnplans.size());
 		for (int i = 0; i < 3; i++) {
 			UnplanObject actualUnplan = actualUnplans.get(i);
 			UnplanObject expectUnplan = expectUnplans.get(i);
