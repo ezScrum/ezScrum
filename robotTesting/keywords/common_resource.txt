@@ -137,3 +137,10 @@ Compare Text In Specific Xpath
     [Arguments]    ${xpathToAssert}    ${expectedText}
     ${textOfXpath}=    Get Text    xpath=${xpathToAssert}
     Should Be Equal    ${textOfXpath}    ${expectedText}
+
+Clean Database and Exit ezScrum
+    Data Base Tear Down
+    Exit ezScrum System
+
+Data Base Tear Down
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
