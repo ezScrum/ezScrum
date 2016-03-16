@@ -256,7 +256,6 @@
     		
     		<!-- sprint plan -->    		    		    		
     		<action path="/GetSprintsComboInfoAll"	type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoWithAllAction" />
-			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
 			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />	
     		<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
     		<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />

@@ -37,7 +37,7 @@ public class SprintPlanUI {
 		}
 
 		public SprintPlanItem(SprintObject sprint) {
-			this.Id = String.valueOf(sprint.getId());
+			this.Id = String.valueOf(sprint.getSerialId());
 			this.Goal = sprint.getGoal();
 			this.StartDate = sprint.getStartDateString();
 			this.Interval = String.valueOf(sprint.getInterval());

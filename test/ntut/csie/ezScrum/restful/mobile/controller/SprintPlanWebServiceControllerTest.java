@@ -138,7 +138,8 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		
 		// prepare request data
 		JSONObject sprintJson = new JSONObject();
-		sprintJson.put(SprintEnum.INTERVAL, interval)
+		sprintJson.put(SprintEnum.SERIAL_ID, 1)
+				  .put(SprintEnum.INTERVAL, interval)
 		          .put(SprintEnum.TEAM_SIZE, members)
 		          .put(SprintEnum.AVAILABLE_HOURS, availableHours)
 		          .put(SprintEnum.FOCUS_FACTOR, focusFactor)
@@ -155,7 +156,6 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
                 .queryParam("password", mPassword)
                 .request()
                 .post(Entity.text(sprintJson.toString()));
-		
 		String expectedJsonString = ConvertSprintBacklog.getSprintBacklogJsonString(mProject.getCurrentSprint());
 		// assert
 		assertEquals(expectedJsonString, response.readEntity(String.class));
@@ -194,9 +194,11 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		String dueDate = "2013/07/22";
 
 		SprintObject updateSpint = mCS.getSprints().get(0);
+		SprintObject temp = SprintObject.get(updateSpint.getId());
 		// prepare request data
 		JSONObject sprintJson = new JSONObject();
 		sprintJson.put(SprintEnum.ID, updateSpint.getId())
+				.put(SprintEnum.SERIAL_ID, temp.getSerialId())
 		        .put(SprintEnum.INTERVAL, interval)
 		        .put(SprintEnum.TEAM_SIZE, members)
 		        .put(SprintEnum.AVAILABLE_HOURS, availableHours)
@@ -217,7 +219,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		
 		// get Sprint
 		SprintObject sprint = SprintObject.get(updateSpint.getId());
-
+		
 		// assert
 		assertEquals(interval, sprint.getInterval());
 		assertEquals(members, sprint.getTeamSize());

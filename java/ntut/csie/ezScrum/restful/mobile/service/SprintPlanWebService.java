@@ -45,7 +45,7 @@ public class SprintPlanWebService extends ProjectWebService {
 	 */
 	public void updateSprint(String sprintJson) throws JSONException {
 		SprintInfo sprintInfo = new SprintInfo(sprintJson);
-		mSprintPlanHelper.updateSprint(sprintInfo.id, sprintInfo);
+		mSprintPlanHelper.updateSprint(sprintInfo);
 	}
 
 	/**
