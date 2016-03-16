@@ -35,7 +35,7 @@ Add A New Unplanned Item
     Element Enable And Submit    ${_xpathAddNew}
     Wait Until Page Contains    Success.
 
-SetUp Data Base
+SetUp Data Base And Login ezScrum
     [Arguments]    ${Sql_name}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    ${Sql_name}
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
@@ -53,5 +53,16 @@ Add A New Restrospective
     Element Enable And Submit    ${_xpathAddNew}
     Wait Until Page Contains    Success.
 
-Data Base Tear Down
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+Select Sprint Backlog Page And Add All Existing Story
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//button[text()="Add Existing Stories"]
+    Wait Until Page Contains    Add Existing Stories
+    Mouse Down    xpath=//div[@class='x-grid3-hd-checker']
+    Mouse Up    xpath=//div[@class='x-grid3-hd-checker']
+    Click Element    xpath=//button[text()="Add Existed Stories"]
+    Wait Until Page Contains    Add Existing Stories
+
+Compare value In Specific Input Field
+    [Arguments]    ${xpathToAssert}    ${expectedText}
+    ${textOfXpath}=    Get Value    xpath=${xpathToAssert}
+    Should Be Equal    ${textOfXpath}    ${expectedText}

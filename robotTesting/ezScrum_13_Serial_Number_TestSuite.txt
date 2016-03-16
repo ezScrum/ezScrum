@@ -1,4 +1,5 @@
 *** Settings ***
+Suite Teardown    Data Base Tear Down
 Force Tags        Serial Number
 Resource          ServerConfig.txt
 Resource          Global Define.txt
@@ -12,36 +13,49 @@ Resource          keywords/Unplan/ezScrum_Unplan.txt
 Resource          keywords/SerialNumber/ezScrum_SerialNumber.txt
 
 *** Test Cases ***
-Test Serial Number - Check Sprint ID
-    [Setup]    SetUp Data Base    Check_Sprint_ID.sql
+Test Serial Number - Check ID In Sprint Plan
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Sprint_Plan.sql
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Sprint Plan
     Create Sprint    second sprint1    2    4    100    100
     Create Sprint    second sprint2    2    4    100    100
-    Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    1    #1
-    Compare Text In Specific Xpath    //div[text() ="second sprint2"]/../../td[1]/div    2    #2
+    Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text() ="second sprint2"]/../../td[1]/div    5    #5    #should be 2
     Delete Sprint
     Create Sprint    second sprint3    2    4    100    100
-    Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    3    #3
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    6    #6    #should be 3
+    Select Node Product    Product Backlog
+    Add A New Story With Story Name And Value    story1    10
+    Add A New Story With Story Name And Value    story2    10
+    Select Sprint Backlog Page And Add All Existing Story
+    Reload Page
+    Select Node Product    Sprint Plan
+    Click Element    xpath=//div[text()="second sprint1"]
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/div    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story2"]/../../td[1]/div    5    #5    #should be 2
+    [Teardown]    Clean Database and Exit ezScrum
 
-Test Serial Number - Check Story ID
-    [Setup]    SetUp Data Base    Check_Story_ID.sql
+Test Serial Number - Check ID In Product Backlog
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Product_Backlog.sql
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Product Backlog
     Add A New Story With Story Name And Value    story1    10
     Add A New Story With Story Name And Value    story2    10
-    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[2]/div    1    #4
-    Compare Text In Specific Xpath    //div[text()="story2"]/../../td[2]/div    2    #5
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[2]/div    1
+    Compare Text In Specific Xpath    //div[text()="story2"]/../../td[2]/div    2
     Delete Story
     Add A New Story With Story Name And Value    story3    10
-    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[2]/div    3    #6
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[2]/div    3
+    Select Node Product    Sprint Plan
+    Create Sprint    test sprint    2    4    100    100
+    Select Sprint Backlog Page And Add All Existing Story
+    Select Node Product    Product Backlog
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[6]/div    3
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[6]/div    3
+    [Teardown]    Clean Database and Exit ezScrum
 
-Test Serial Number - Check Task ID
-    [Setup]    SetUp Data Base    Check_Task_ID.sql
+Test Serial Number - Check ID In Sprint Backlog
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Sprint_Backlog.sql
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Sprint Backlog
     Click Element    xpath=//button[text()="Add Existing Stories"]
@@ -50,35 +64,39 @@ Test Serial Number - Check Task ID
     Mouse Up    xpath=//div[@class='x-grid3-hd-checker']
     Click Element    xpath=//button[text()="Add Existed Stories"]
     Wait Until Page Contains    Add Existing Stories
-    Add Task With Arguments    1    task1    10    note    #4
-    Add Task With Arguments    3    task2    10    note    #6
-    Compare Text In Specific Xpath    //div[text()="task1"]/../../td[1]/a/span    1    #4
-    Compare Text In Specific Xpath    //div[text()="task2"]/../../td[1]/a/span    2    #5
+    Add Task With Arguments    4    task1    10    note    #4    #should be 1
+    Add Task With Arguments    6    task2    10    note    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="task1"]/../../td[1]/a/span    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="task2"]/../../td[1]/a/span    5    #5    #should be 2
     Drop Task With Arguments    task2
-    Add Task With Arguments    3    task3    10    note    #6
-    Compare Text In Specific Xpath    //div[text()="task3"]/../../td[1]/a/span    3    #6
+    Add Task With Arguments    6    task3    10    note    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="task3"]/../../td[1]/a/span    6    #6    #should be 3
     Click Element    xpath=//tr[@class="x-toolbar-left-row"]/td[2]/div/input
-    Compare Text In Specific Xpath    //div[text()="Sprint #1]/../div[1]    Sprint #3    #Sprint #6
-    Compare Text In Specific Xpath    //div[text()="Sprint #1]/../div[2]    Sprint #1    #Sprint #4
+    Compare Text In Specific Xpath    //div[text()="Sprint #4"]/../div[1]    Sprint #6    #Sprint #6    #should be Sprint #3
+    Compare Text In Specific Xpath    //div[text()="Sprint #4"]/../div[2]    Sprint #4    #Sprint #4    #should be Sprint #1
     \    #Sprint #4
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/a/span    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[1]/a/span    6    #6    #should be 3
+    [Teardown]    Clean Database and Exit ezScrum
 
-Test Serial Number - Check Release Plan ID
-    [Setup]    SetUp Data Base    Check_Release_Plan_ID.sql
+Test Serial Number - Check ID In Release Plan
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Release_Plan.sql
     Click Element    xpath=//div[text()="second"]
     Add A New Release Plan    2016/02/29    2016/03/27
-    Compare Text In Specific Xpath    //div[text()="first release"]/../../td[1]/a/span    1    #2
-    Compare Text In Specific Xpath    //div[text()="second sprint1"]/../../td[1]/a/span    1    #4
-    Compare Text In Specific Xpath    //div[text()="second sprint3"]/../../td[1]/a/span    3    #6
+    Compare Text In Specific Xpath    //div[text()="first release"]/../../td[1]/a/span    2    #2    #should be 1
+    Compare Text In Specific Xpath    //div[text()="second sprint1"]/../../td[1]/a/span    4    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="second sprint3"]/../../td[1]/a/span    6    #6    #should be 3
     Click Element    //div[text()="first release"]/../../td[1]/a/span
-    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/div    1    #4
-    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[1]/div    3    #6
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/div    4    #check story ID    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[1]/div    6    #check story ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[8]/div    2    #check release ID    #2    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[8]/div    2    #check release ID    #2    #should be 1
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[9]/div    6    #check Sprint ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[9]/div    6    #check Sprint ID    #6    #should be 3
+    [Teardown]    Clean Database and Exit ezScrum
 
-Test Serial Number - Check Unplan Item ID
-    [Setup]    SetUp Data Base    Check_Unplan_Item_ID.sql
+Test Serial Number - Check ID In Unplan Item
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Unplan_Item.sql
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Unplanned
     Add A New Unplanned Item    unplanned1
@@ -89,16 +107,17 @@ Test Serial Number - Check Unplan Item ID
     Click Element    xpath=${xpathDeleteUnplanned}
     Wait Until Page Contains    Success.
     Add A New Unplanned Item    unplanned3
-    Compare Text In Specific Xpath    //div[text()="unplanned1"]/../../td[1]/div    1    #4
-    Compare Text In Specific Xpath    //div[text()="unplanned3"]/../../td[1]/div    3    #6
+    Compare Text In Specific Xpath    //div[text()="unplanned1"]/../../td[1]/div    4    #check release ID    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="unplanned3"]/../../td[1]/div    6    #check release ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="unplanned1"]/../../td[3]/div    6    #check srpint ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="unplanned3"]/../../td[3]/div    6    #check srpint ID    #6    #should be 3
     Click Element    //input[@id='SprintCombo_UnplannedToolBar']
-    Compare Text In Specific Xpath    //div[text()='ALL']/../div[2]    Sprint #1    #Sprint #4
-    Compare Text In Specific Xpath    //div[text()='ALL']/../div[3]    Sprint #3    #Sprint #6
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text()='ALL']/../div[2]    Sprint #4    #check sprint drop down list    #Sprint #4    #should be Sprint #1
+    Compare Text In Specific Xpath    //div[text()='ALL']/../div[3]    Sprint #6    #check sprint drop down list    #Sprint #6    #should be Sprint #3
+    [Teardown]    Clean Database and Exit ezScrum
 
-Test Serial Number - Check Restrosapective ID
-    [Setup]    SetUp Data Base    Check_Retrospective_ID.sql
+Test Serial Number - Check ID In Restrosapective
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Retrospective.sql
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Retrospective
     Add A New Restrospective    retrospective1
@@ -109,12 +128,48 @@ Test Serial Number - Check Restrosapective ID
     Click Element    xpath=${xpathDeleteUnplanned}
     Wait Until Page Contains    Success.
     Add A New Restrospective    retrospective3
-    Compare Text In Specific Xpath    //div[text()="retrospective1"]/../../td[1]/div    1    #4
-    Compare Text In Specific Xpath    //div[text()="retrospective3"]/../../td[1]/div    3    #6
+    Compare Text In Specific Xpath    //div[text()="retrospective1"]/../../td[1]/div    4    #check retrospective ID    #4    #should be 1
+    Compare Text In Specific Xpath    //div[text()="retrospective3"]/../../td[1]/div    6    #check retrospective ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="retrospective1"]/../../td[2]/div    6    #check Sprint ID    #6    #should be 3
+    Compare Text In Specific Xpath    //div[text()="retrospective3"]/../../td[2]/div    6    #check Sprint ID    #6    #should be 3
     Click Element    //input[@id="SprintCombo_RetrospectiveToolBar"]
-    Compare Text In Specific Xpath    //div[text()='ALL']/../div[2]    Sprint #1    #Sprint #4
-    Compare Text In Specific Xpath    //div[text()='ALL']/../div[3]    Sprint #3    #Sprint #6
-    Exit ezScrum System
-    [Teardown]    Data Base Tear Down
+    Compare Text In Specific Xpath    //div[text()='ALL']/../div[2]    Sprint #4    #check drop down list    #Sprint #4    #should be Sprint #1
+    Compare Text In Specific Xpath    //div[text()='ALL']/../div[3]    Sprint #6    #check drop down list    #Sprint #6    #should be Sprint #3
+    [Teardown]    Clean Database and Exit ezScrum
+
+Test Serial Number - Check ID In Scrum Report
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Scrum_Report.sql
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    Scrum Report
+    Select Frame    xpath=//iframe[@id="remainingWorkReport"]
+    Click Element    xpath=//select[@id='ShowSprint']
+    Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[1]    Sprint 4    #check sprint ID in drop down list    #Sprint #4    #should be Sprint #1
+    Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[2]    Sprint 6    #check sprint ID in drop down list    #Sprint #6    #should be Sprint #3
+    Reload Page
+    Select Node Product    Scrum Report
+    Mouse Down    xpath=//div[@id="ezScrum_Report_Page"]/div/div/div/div[1]/div[1]/ul/li[2]/a[2]/em/span/span
+    Mouse Up    xpath=//div[@id="ezScrum_Report_Page"]/div/div/div/div[1]/div[1]/ul/li[2]/a[2]/em/span/span
+    Select Frame    xpath=//iframe[@id="scheduleReport"]
+    Click Element    xpath=//select[@id='ShowSprint']
+    Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[1]    Sprint 4    #check sprint ID in drop down list    #Sprint #4    #should be Sprint #1
+    Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[2]    Sprint 6    #check sprint ID in drop down list    #Sprint #6    #should be Sprint #3
+    Reload Page
+    [Teardown]    Clean Database and Exit ezScrum
+
+Test Serial Number - Check ID In Task Board
+    [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Task_Board.sql
+    Click Element    xpath=//div[text()="second"]
+    Select Node Product    TaskBoard
+    Select Node Product    Scrum Report
+    Select Node Product    TaskBoard
+    Compare Text In Specific Xpath    (//table[@class="StoryCard_Header"])[1]/tbody/tr/td/h2    [Story] #4    #check story card ID    #[Story] #4    #should be [Story] #1
+    Compare Text In Specific Xpath    (//table[@class="StoryCard_Header"])[2]/tbody/tr/td/h2    [Story] #6    #check story card ID    #[Story] #6    #should be [Story] #3
+    Compare Text In Specific Xpath    (//table[@class="TaskCard_Header"])[1]/tbody/tr/td/h2    [Task] #4    #check taslk card ID    #[Task] #4    #should be [Task] #1
+    Compare Text In Specific Xpath    (//table[@class="TaskCard_Header"])[2]/tbody/tr/td/h2    [Task] #6    #check taslk card ID    #[Task] #6    #should be [Task] #3
+    Click Element    xpath=//label[text()="Sprint ID:"]/../div[1]/div/input
+    Compare Text In Specific Xpath    (//div[@class="x-combo-list-inner"])[1]/div[1]    Sprint #6    #check sprint ID in drop down list    #Sprint #6    #should be Sprint #3
+    Compare Text In Specific Xpath    (//div[@class="x-combo-list-inner"])[1]/div[2]    Sprint #4    #check sprint ID in drop down list    #Sprint #4    #should be Sprint #1
+    Compare value In Specific Input Field    //label[text()="ReleaseID:"]/../div[1]/input    Release #2    #check release ID    #Release #2    #should be Release #1
+    [Teardown]    Clean Database and Exit ezScrum
 
 *** Keywords ***
