@@ -9,7 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 public class BaseUrlDistributorTest {
 	@Test
 	public void testGetBaseUrl() {
-		assertEquals(BaseUrlDistributor.BASE_URL, BaseUrlDistributor.getBaseUrl());
+		assertEquals("http://localhost:8080/ezScrum/resource/", BaseUrlDistributor.getBaseUrl());
 		Configuration configuration = new Configuration();
 		configuration.setTestMode(true);
 		configuration.save();

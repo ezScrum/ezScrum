@@ -203,7 +203,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(unplan.getHistories().get(1).toString(), responseContent);
 	}
 	

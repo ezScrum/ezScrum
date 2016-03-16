@@ -110,7 +110,7 @@ public class TranslationTest {
 			storyInfo.value = 0;
 			storyInfo.importance = 0;
 			storyInfo.howToDemo = "0";
-			storyInfo.sprintId = 0;
+			storyInfo.sprintId = StoryObject.NO_PARENT;
 			storyInfo.notes = "0";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = "0";
@@ -122,6 +122,7 @@ public class TranslationTest {
 			expectedText.append("<Total>1</Total>");
 			expectedText.append("<Story>");
 			expectedText.append("<Id>" + story.getId() + "</Id>");
+			expectedText.append("<SerialId>" + story.getSerialId() + "</SerialId>");
 			expectedText.append("<Link></Link>");
 			expectedText.append("<Name>0</Name>");
 			expectedText.append("<Value>0</Value>");
@@ -131,7 +132,7 @@ public class TranslationTest {
 			expectedText.append("<Notes>0</Notes>");
 			expectedText.append("<HowToDemo>0</HowToDemo>");
 			expectedText.append("<Release></Release>");
-			expectedText.append("<Sprint>0</Sprint>");
+			expectedText.append("<Sprint>None</Sprint>");
 			expectedText.append("<Tag></Tag>");
 			expectedText.append("<Attach>false</Attach>");
 			expectedText.append("</Story>");
@@ -174,6 +175,7 @@ public class TranslationTest {
 			expectedText.append("<Total>1</Total>");
 			expectedText.append("<Story>");
 			expectedText.append("<Id>" + story.getId() + "</Id>");
+			expectedText.append("<SerialId>" + story.getSerialId() + "</SerialId>");
 			expectedText.append("<Link></Link>");
 			expectedText.append("<Name>" + storyInfo.name + "</Name>");
 			expectedText.append("<Value>" + storyInfo.value + "</Value>");
@@ -254,7 +256,7 @@ public class TranslationTest {
 			storyInfo.value = 0;
 			storyInfo.importance = 0;
 			storyInfo.howToDemo = "0";
-			storyInfo.sprintId = 0;
+			storyInfo.sprintId = StoryObject.NO_PARENT;
 			storyInfo.notes = "TEST_NOTES";
 			productBacklogHelper.updateStory(storyInfo.id, storyInfo);
 
@@ -329,7 +331,7 @@ public class TranslationTest {
 		storyInfo.value = 1;
 		storyInfo.importance = 1;
 		storyInfo.howToDemo = "";
-		storyInfo.sprintId = 0;
+		storyInfo.sprintId = StoryObject.NO_PARENT;
 		productBacklogHelper.updateStory(storyInfo.id, storyInfo);
 
 		storyInfo.id = stories.get(5).getId();
@@ -380,7 +382,7 @@ public class TranslationTest {
 		String TEST_STORY_HOWTODEMO = "TEST_STORY_HOWTODEMO";
 		String TEST_STORY_NOTES = "TEST_STORY_NOTES";
 		int TEST_STORY_VALUE = 8;
-		int TEST_STORY_SPRINTID = -1;
+		int TEST_STORY_SPRINTID = StoryObject.NO_PARENT;
 		int TEST_STORY_STATUS = StoryObject.STATUS_UNCHECK;
 		// Tag data
 		String tagName = "TEST_TAG_NAME";

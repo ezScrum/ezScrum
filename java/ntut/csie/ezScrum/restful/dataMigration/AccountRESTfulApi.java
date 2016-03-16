@@ -38,6 +38,6 @@ public class AccountRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.CONFLICT, ResponseJSONEnum.ERROR_RESOURCE_EXIST_MESSAGE, "");
 		}
 		account.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, account.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, account.toString());
 	}
 }

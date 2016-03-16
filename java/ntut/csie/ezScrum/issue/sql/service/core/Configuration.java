@@ -13,8 +13,8 @@ import java.util.Properties;
 
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 
 public class Configuration {
@@ -251,6 +251,13 @@ public class Configuration {
 	public String getInitialSQLPath() {
 		init_workspacepath();
 		return initialSQLPath;
+	}
+	
+	/**
+	 * return service host with port ex. localhost:8080
+	 */
+	public String getServiceHostWithPort() {
+		return JettyServerXMLReader.readHostWithPort();
 	}
 
 }

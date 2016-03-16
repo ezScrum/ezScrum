@@ -48,7 +48,7 @@ public class TaskRESTfulApi {
 		SprintObject sprint = resourceFinder.findSprint(sprintId);
 		StoryObject story = resourceFinder.findStory(storyId);
 		if (project == null || sprint == null || story == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		
 		// Error Checking
@@ -63,7 +63,7 @@ public class TaskRESTfulApi {
 		// Update Remain
 		task.setRemains(remain);
 		TaskDAO.getInstance().update(task);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, task.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, task.toString());
 	}
 	
 	@POST
@@ -87,7 +87,7 @@ public class TaskRESTfulApi {
 
 		if (project == null || sprint == null ||
 		        story == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -99,7 +99,7 @@ public class TaskRESTfulApi {
 		// Get HistoryObject
 		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity);
 		history.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
 	
 	@DELETE
@@ -123,11 +123,11 @@ public class TaskRESTfulApi {
 
 		if (project == null || sprint == null || 
 			story == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Delete Histories
 		HistoryDAO.getInstance().deleteByIssue(taskId, IssueTypeEnum.TYPE_TASK);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 	
 	@POST
@@ -151,7 +151,7 @@ public class TaskRESTfulApi {
 
 		if (project == null || sprint == null ||
 		        story == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		
 		// Error Checking
@@ -166,6 +166,6 @@ public class TaskRESTfulApi {
         File file = FileDecoder.toFile(attachFileInfo.name, base64BinaryString);
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 }

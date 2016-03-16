@@ -299,7 +299,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		String responseMessage = responseJSON.getString(ResponseJSONEnum.JSON_KEY_MESSAGE);
 		String responseContent = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT).toString();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(ResponseJSONEnum.SUCCESS_MEESSAGE, responseMessage);
+		assertEquals(ResponseJSONEnum.SUCCESS_MESSAGE, responseMessage);
 		assertEquals(new JSONObject().toString(), responseContent);
 		assertEquals(1, story.getAttachFiles().size());
 		assertEquals(attachFileJSON.getString(AttachFileJSONEnum.NAME), story.getAttachFiles().get(0).getName());

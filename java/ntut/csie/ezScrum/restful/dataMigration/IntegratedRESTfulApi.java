@@ -37,7 +37,7 @@ import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 @Path("dataMigration")
 public class IntegratedRESTfulApi {
 	private Client mClient;
-	private String mBaseUrl = BaseUrlDistributor.BASE_URL;
+	private String mBaseUrl = BaseUrlDistributor.getBaseUrl();
 
 	@POST
 	@Path("/projects")
@@ -46,9 +46,8 @@ public class IntegratedRESTfulApi {
 							           @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 									   String entity) throws IOException {
 		if (!SecurityModule.isAccountValid(username, password)) {
-			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, "", "");
+			return ResponseFactory.getResponse(Response.Status.FORBIDDEN, ResponseJSONEnum.ERROR_FORBIDDEN_MESSAGE, "");
 		}
-		mBaseUrl = BaseUrlDistributor.getBaseUrl();
 		// Get Client
 		mClient = ClientBuilder.newClient();
 		// Import JSON Data
@@ -57,7 +56,7 @@ public class IntegratedRESTfulApi {
 		try {
 			importDataJSON = new JSONObject(entity);
 		} catch (JSONException e) {
-			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MESSAGE, "");
 		}
 		// 檢查 Checksum
 		// TODO
@@ -80,7 +79,7 @@ public class IntegratedRESTfulApi {
 				// TODO 紀錄結果
 			}
 		} catch (JSONException e) {
-			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MESSAGE, "");
 		}
 
 		// Create Projects
@@ -648,9 +647,9 @@ public class IntegratedRESTfulApi {
 			}
 			mClient.close();
 		} catch (JSONException e) {
-			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, ResponseJSONEnum.ERROR_BAD_REQUEST_MESSAGE, "");
 		}
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 	
 	private String getNewProjectName(String projectName) {

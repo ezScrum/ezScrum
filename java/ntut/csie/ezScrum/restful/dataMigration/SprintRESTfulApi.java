@@ -31,7 +31,7 @@ public class SprintRESTfulApi {
 		// Get Project
 		ProjectObject project = ProjectObject.get(projectId);
 		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Error Checking
 		String message = JSONChecker.checkSprintJSON(entity);
@@ -41,6 +41,6 @@ public class SprintRESTfulApi {
 		// Create Sprint
 		SprintObject sprint = JSONDecoder.toSprint(projectId, entity);
 		sprint.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, sprint.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, sprint.toString());
 	}
 }

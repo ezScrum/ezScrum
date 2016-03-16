@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/tomcat5.5/naming-factory.jar"/>
 	<classpathentry kind="lib" path="lib/tomcat5.5/naming-resources.jar"/>
 	<classpathentry kind="lib" path="lib/Executer.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/jacocoant.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpclient-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpclient-cache-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/http/httpcore-4.4.1.jar"/>
@@ -24,6 +23,7 @@
 	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-core-2.22.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/jersey/jersey-test-framework-provider-jdk-http-2.22.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/rome-0.9.jar"/>
+	<classpathentry kind="lib" path="lib/jacoco/jacocoant.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.5">
 		<attributes>
 			<attribute name="owner.project.facets" value="#system#"/>

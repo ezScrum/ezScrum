@@ -43,7 +43,7 @@ public class DroppedTaskRESTfulApi {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		ProjectObject project = resourceFinder.findProject(projectId);
 		if (project == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -59,7 +59,7 @@ public class DroppedTaskRESTfulApi {
 		// Update Remain
 		task.setRemains(remain);
 		TaskDAO.getInstance().update(task);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, task.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, task.toString());
 	}
 	
 	@POST
@@ -78,7 +78,7 @@ public class DroppedTaskRESTfulApi {
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
 
 		if (project == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 
 		// Error Checking
@@ -89,7 +89,7 @@ public class DroppedTaskRESTfulApi {
 		// Get HistoryObject
 		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity);
 		history.save();
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, history.toString());
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
 	
 	@DELETE
@@ -108,11 +108,11 @@ public class DroppedTaskRESTfulApi {
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
 
 		if (project == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		// Delete Histories
 		HistoryDAO.getInstance().deleteByIssue(taskId, IssueTypeEnum.TYPE_TASK);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 	
 	@POST
@@ -131,7 +131,7 @@ public class DroppedTaskRESTfulApi {
 		TaskObject task = resourceFinder.findDroppedTask(taskId);
 
 		if (project == null || task == null) {
-			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MEESSAGE, "");
+			return ResponseFactory.getResponse(Response.Status.NOT_FOUND, ResponseJSONEnum.ERROR_NOT_FOUND_MESSAGE, "");
 		}
 		
 		// Error Checking
@@ -145,6 +145,6 @@ public class DroppedTaskRESTfulApi {
         File file = FileDecoder.toFile(attachFileInfo.name, base64BinaryString);
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
 		productBacklogHelper.addAttachFile(attachFileInfo, file);
-		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MEESSAGE, "");
+		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, "");
 	}
 }
