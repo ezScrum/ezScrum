@@ -32,15 +32,15 @@ public class AjaxDeleteRetrospectiveAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long retrospectiveId = Long.parseLong(request.getParameter("issueID"));
+		long serialRetrospectiveId = Long.parseLong(request.getParameter("issueID"));
 		// Create Helper
 		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project);
 		// Get Retrospective
-		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(retrospectiveId);
+		RetrospectiveObject retrospective = retrospectiveHelper.getRetrospective(project.getId(), serialRetrospectiveId);
 		// Get Result
 		StringBuilder result = retrospectiveHelper.getXML("delete", retrospective);
 		// Do delete
-		retrospectiveHelper.deleteRetrospective(retrospectiveId);
+		retrospectiveHelper.deleteRetrospective(project.getId(), serialRetrospectiveId);
 		return result;
 	}
 }

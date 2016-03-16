@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -37,9 +38,10 @@ public class AjaxShowStoryFromSprintAction extends PermissionAction {
 		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 
 		// get parameter info
-		String SprintID = request.getParameter("Sid");
-
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, Long.parseLong(SprintID));
+		String serialSprintIdString = request.getParameter("Sid");
+		long serialSprintId = Long.parseLong(serialSprintIdString);
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprint.getId());
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 
 		return sprintBacklogHelper.getStoriesInSprintResponseText(stories);

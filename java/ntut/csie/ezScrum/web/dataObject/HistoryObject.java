@@ -264,16 +264,16 @@ public class HistoryObject implements IBaseObject {
 		String desc = "";
 		switch (mIssueType) {
 			case IssueTypeEnum.TYPE_STORY:
-				desc = "Create Story #" + mIssueId;
+				StoryObject story = StoryObject.get(mIssueId);
+				desc = "Create Story #" + story.getSerialId();
 				break;
 			case IssueTypeEnum.TYPE_TASK:
-				desc = "Create Task #" + mIssueId;
+				TaskObject task = TaskObject.get(mIssueId);
+				desc = "Create Task #" + task.getSerialId();
 				break;
 			case IssueTypeEnum.TYPE_UNPLAN:
-				desc = "Create Unplan #" + mIssueId;
-				break;
-			case IssueTypeEnum.TYPE_RETROSPECTIVE:
-				desc = "Create Retrospective #" + mIssueId;
+				UnplanObject unplan = UnplanObject.get(mIssueId);
+				desc = "Create Unplan #" + unplan.getSerialId();
 				break;
 		}
 		return desc;
@@ -281,38 +281,54 @@ public class HistoryObject implements IBaseObject {
 
 	private String getAppendParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			return "Append to Story #" + mNewValue;
+			long storyId = Long.parseLong(mNewValue);
+			StoryObject story = StoryObject.get(storyId);
+			return "Append to Story #" + story.getSerialId();
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Append to Sprint #" + mNewValue;
+			long sprintId = Long.parseLong(mNewValue);
+			SprintObject sprint = SprintObject.get(sprintId);
+			return "Append to Sprint #" + sprint.getSerialId();
 		}
 		return "";
 	}
 
 	private String getRemoveParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			return "Remove from Story #" + mNewValue;
+			long storyId = Long.parseLong(mNewValue);
+			StoryObject story = StoryObject.get(storyId);
+			return "Remove from Story #" + story.getSerialId();
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Remove from Sprint #" + mNewValue;
+			long sprintId = Long.parseLong(mNewValue);
+			SprintObject sprint = SprintObject.get(sprintId);
+			return "Remove from Sprint #" + sprint.getSerialId();
 		}
 		return "";
 	}
 
 	private String getAddChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Add Task #" + mNewValue;
+			long taskId = Long.parseLong(mNewValue);
+			TaskObject task = TaskObject.get(taskId);
+			return "Add Task #" + task.getSerialId();
 		}
 		return "";
 	}
 
 	private String getDropChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Drop Task #" + mNewValue;
+			long taskId = Long.parseLong(mNewValue);
+			TaskObject task = TaskObject.get(taskId);
+			return "Drop Task #" + task.getSerialId();
 		}
 		return "";
 	}
 
 	private String getSprintDesc() {
-		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
+		long oldSprintId = Long.parseLong(mOldValue);
+		SprintObject oldSprint = SprintObject.get(oldSprintId);
+		long newSprintId = Long.parseLong(mNewValue);
+		SprintObject newSprint = SprintObject.get(newSprintId);
+		return String.format("Sprint #%s => Sprint #%s", oldSprint.getSerialId(), newSprint.getSerialId());
 	}
 	
 	private String getPartnerDesc() {

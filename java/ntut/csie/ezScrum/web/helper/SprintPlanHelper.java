@@ -58,15 +58,15 @@ public class SprintPlanHelper {
 	 * 只取得一筆 sprint
 	 * 
 	 * @param isLatestSprint
-	 * @param sprintId
+	 * @param serialSprintId
 	 * @return
 	 */
 	public SprintObject getOneSprintInformation(boolean isLatestSprint,
-			long sprintId) {
+			long serialSprintId) {
 		if (isLatestSprint) {
 			return getLatestSprint();
-		} else if (sprintId > 0) {
-			return getSprint(sprintId);
+		} else if (serialSprintId > 0) {
+			return getSprint(serialSprintId);
 		}
 		return null;
 	}
@@ -109,17 +109,17 @@ public class SprintPlanHelper {
 		return mSprintPlanMapper.getSprints();
 	}
 
-	public SprintObject getSprint(long sprintId) {
-		return mSprintPlanMapper.getSprint(sprintId);
+	public SprintObject getSprint(long serialSprintId) {
+		return mSprintPlanMapper.getSprint(serialSprintId);
 	}
 
-	public SprintObject updateSprint(long sprintId, SprintInfo sprintInfo) {
+	public SprintObject updateSprint(SprintInfo sprintInfo) {
 		mSprintPlanMapper.updateSprint(sprintInfo);
-		return mSprintPlanMapper.getSprint(sprintId);
+		return mSprintPlanMapper.getSprint(sprintInfo.serialId);
 	}
 
-	public void deleteSprint(long sprintId) {
-		mSprintPlanMapper.deleteSprint(sprintId);
+	public void deleteSprint(long serialSprintId) {
+		mSprintPlanMapper.deleteSprint(serialSprintId);
 	}
 
 	/**

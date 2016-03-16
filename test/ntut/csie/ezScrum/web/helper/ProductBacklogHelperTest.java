@@ -1006,7 +1006,7 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
-		jsonStory.put("Release", "");
+		jsonStory.put("Release", "None");
 		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
 		jsonStory.put("FilterType", "DETAIL");
 		jsonStory.put("Attach", false);
@@ -1057,7 +1057,7 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
-		jsonStory.put("Release", "");
+		jsonStory.put("Release", "None");
 		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
 		jsonStory.put("FilterType", "DETAIL");
 		jsonStory.put("Attach", false);
@@ -1109,7 +1109,7 @@ public class ProductBacklogHelperTest {
 		jsonStory.put("Notes", story.getNotes());
 		jsonStory.put("HowToDemo", story.getHowToDemo());
 		jsonStory.put("Link", "");
-		jsonStory.put("Release", "");
+		jsonStory.put("Release", "None");
 		jsonStory.put("Sprint", story.getSprintId() == StoryObject.NO_PARENT ? "None" : story.getSprintId());
 		jsonStory.put("FilterType", TEST_FILETER_TYPE);
 		jsonStory.put("Attach", false);

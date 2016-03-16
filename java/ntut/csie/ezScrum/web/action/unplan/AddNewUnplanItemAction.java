@@ -6,17 +6,18 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.UnplanInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.UnplanObject;
 import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 
 public class AddNewUnplanItemAction extends PermissionAction {
 	@Override
@@ -39,7 +40,7 @@ public class AddNewUnplanItemAction extends PermissionAction {
 		// get parameter info
 		String name = request.getParameter("Name");
 		String sprintName = request.getParameter("SprintID");
-		String sprintId = sprintName.substring(sprintName.indexOf("#") + 1);
+		String serialSprintId = sprintName.substring(sprintName.indexOf("#") + 1);
 		String estimate = request.getParameter("Estimate");
 		String handlerUsername = request.getParameter("Handler");
 		String partnersUsername = request.getParameter("Partners");
@@ -53,13 +54,15 @@ public class AddNewUnplanItemAction extends PermissionAction {
 			specificDate = new Date();
 		}
 
+		SprintObject sprint = SprintObject.get(project.getId(), Long.parseLong(serialSprintId));
+		
 		// 表格的資料
 		UnplanInfo unplanInfo = new UnplanInfo();
 		unplanInfo.name = name;
 		unplanInfo.notes = notes;
 		unplanInfo.estimate = (estimate.equals("") ? 0 : Integer.parseInt(estimate));
 		unplanInfo.projectId = project.getId();
-		unplanInfo.sprintId = Long.parseLong(sprintId);
+		unplanInfo.sprintId = sprint.getId();
 		unplanInfo.specificTime = specificDate.getTime();
 		
 		// Add new unplan item
@@ -72,10 +75,10 @@ public class AddNewUnplanItemAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		result.append("<AddUnplannedItem><Result>success</Result>")
 			  .append("<UnplannedItem>")
-			  .append("<Id>").append(unplanItem.getId()).append("</Id>")
+			  .append("<Id>").append(unplanItem.getSerialId()).append("</Id>")
 			  .append("<Link></Link>")
 			  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getName())).append("</Name>")
-			  .append("<SprintID>").append(unplanItem.getSprintId()).append("</SprintID>")
+			  .append("<SprintID>").append(sprint.getSerialId()).append("</SprintID>")
 			  .append("<Estimate>").append(unplanItem.getEstimate()).append("</Estimate>")
 			  .append("<Status>").append(unplanItem.getStatusString()).append("</Status>")
 			  .append("<ActualHour>").append(unplanItem.getActual()).append("</ActualHour>")

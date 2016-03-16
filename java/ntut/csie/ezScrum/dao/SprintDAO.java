@@ -76,6 +76,28 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		}
 		return sprint;
 	}
+	
+	public SprintObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SprintEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SprintEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(SprintEnum.SERIAL_ID, serialId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		SprintObject sprint = null;
+		try {
+			if (result.next()) {
+				sprint = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return sprint;
+	}
 
 	@Override
 	public boolean update(SprintObject sprint) {

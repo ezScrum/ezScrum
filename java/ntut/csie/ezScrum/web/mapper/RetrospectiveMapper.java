@@ -29,8 +29,12 @@ public class RetrospectiveMapper {
 		return retrospective.getId();
 	}
 	
-	public RetrospectiveObject getRetrospective(long retrospectiveId) {
-		return RetrospectiveObject.get(retrospectiveId);
+	public RetrospectiveObject getRetrospective(long id) {
+		return RetrospectiveObject.get(id);
+	}
+	
+	public RetrospectiveObject getRetrospective(long projectId, long serialId) {
+		return RetrospectiveObject.get(projectId, serialId);
 	}	
 	
 	public ArrayList<RetrospectiveObject> getAllGoods() {
@@ -41,8 +45,8 @@ public class RetrospectiveMapper {
 		return mProject.getImprovements();
 	}
 	
-	public ArrayList<RetrospectiveObject> getGoodsInSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
+	public ArrayList<RetrospectiveObject> getGoodsInSprint(long serialSprintId) {
+		SprintObject sprint = SprintObject.get(mProject.getId(), serialSprintId);
 		if (sprint == null) {
 			return new ArrayList<RetrospectiveObject>();
 		} else {
@@ -50,8 +54,8 @@ public class RetrospectiveMapper {
 		}
 	}
 
-	public ArrayList<RetrospectiveObject> getImprovementsInSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
+	public ArrayList<RetrospectiveObject> getImprovementsInSprint(long serialSprintId) {
+		SprintObject sprint = SprintObject.get(mProject.getId(), serialSprintId);
 		if (sprint == null) {
 			return new ArrayList<RetrospectiveObject>();
 		} else {
@@ -60,7 +64,7 @@ public class RetrospectiveMapper {
 	}
 	
 	public void updateRetrospective(RetrospectiveInfo retrospectiveInfo) {
-		RetrospectiveObject retrospective = RetrospectiveObject.get(retrospectiveInfo.id);
+		RetrospectiveObject retrospective = RetrospectiveObject.get(mProject.getId(), retrospectiveInfo.serialId);
 		retrospective.setName(retrospectiveInfo.name)
 					 .setDescription(retrospectiveInfo.description)
 					 .setType(retrospectiveInfo.type)
@@ -69,8 +73,8 @@ public class RetrospectiveMapper {
 					 .save();
 	}
 	
-	public void deleteRetrospective(long retrospectiveId) {
-		RetrospectiveObject retrospective = RetrospectiveObject.get(retrospectiveId);
+	public void deleteRetrospective(long projectId, long serialId) {
+		RetrospectiveObject retrospective = RetrospectiveObject.get(projectId, serialId);
 		if (retrospective != null) {
 			retrospective.delete();
 		}

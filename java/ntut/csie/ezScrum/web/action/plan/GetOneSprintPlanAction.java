@@ -40,21 +40,21 @@ public class GetOneSprintPlanAction extends PermissionAction {
 
 		// get parameter info
 		String isLatestSprintString = request.getParameter("lastsprint");
-		String sprintIdString = request.getParameter("SprintID");
+		String serialSprintIdString = request.getParameter("SprintID");
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		ArrayList<SprintObject> sprints = new ArrayList<>();
 
 		// // 只取得一筆 sprint
 		Boolean isLatestSprint = false;
-		long sprintId = -1;
+		long serialSprintId = -1;
 		if (isLatestSprintString != null) {
 			isLatestSprint = Boolean.parseBoolean(isLatestSprintString);
 		}
-		if (sprintIdString != null) {
-			sprintId = Long.parseLong(sprintIdString);
+		if (serialSprintIdString != null) {
+			serialSprintId = Long.parseLong(serialSprintIdString);
 		}
-		SprintObject sprint = sprintPlanHelper.getOneSprintInformation(isLatestSprint, sprintId);
+		SprintObject sprint = sprintPlanHelper.getOneSprintInformation(isLatestSprint, serialSprintId);
 		sprints.add(sprint);
 		SprintPlanUI sprintPlanUI = new SprintPlanUI(sprints);
 

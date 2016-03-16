@@ -29,13 +29,15 @@ public class ShowScheduleReportAction extends Action {
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
-		String iter = request.getParameter("sprintID");
+		String serialSprintIdString = request.getParameter("sprintID");
 		ScheduleReport report = null;
-		if (iter == null) {
+		if (serialSprintIdString == null) {
 			report = new ScheduleReport(project, session);
 		} else {
+			long serialSprintId = Long.parseLong(serialSprintIdString);
+			SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
 			report = new ScheduleReport(project, session,
-					Integer.parseInt(iter));
+					sprint.getId());
 		}
 
 		try {

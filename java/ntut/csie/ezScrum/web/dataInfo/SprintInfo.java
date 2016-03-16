@@ -7,6 +7,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class SprintInfo {
 	public long id = -1;
+	public long serialId = -1;
 	public int interval = 0;
 	public int teamSize = 0;
 	public int hoursCanCommit = 0;
@@ -41,5 +42,6 @@ public class SprintInfo {
 		demoPlace = sprint.getString(SprintEnum.DEMO_PLACE);
 		dailyInfo = sprint.getString(SprintEnum.DAILY_INFO);
 		dueDate = sprint.getString(SprintEnum.DUE_DATE);
+		serialId = sprint.getLong(SprintEnum.SERIAL_ID);
 	}
 }
