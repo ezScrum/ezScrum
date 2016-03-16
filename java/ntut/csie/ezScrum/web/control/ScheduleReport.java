@@ -56,7 +56,7 @@ public class ScheduleReport {
 	private String mSprintGoal = "";
 	private int mSize = 0;
 
-	public ScheduleReport(ProjectObject project, IUserSession session, int iteration) {
+	public ScheduleReport(ProjectObject project, IUserSession session, long iteration) {
 		mProject = project;
 		mIteration = iteration;
 	}
