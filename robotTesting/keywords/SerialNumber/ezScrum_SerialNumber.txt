@@ -65,6 +65,11 @@ Select Sprint Backlog Page And Add All Existing Story
     Click Element    xpath=//button[text()="Add Existed Stories"]
     Wait Until Page Contains    Add Existing Stories
 
-Test Serial Number Test Suite Tear Down
+Test Serial Number Tear Down
     Data Base Tear Down
     Exit ezScrum System
+
+Compare value In Specific Input Field
+    [Arguments]    ${xpathToAssert}    ${expectedText}
+    ${textOfXpath}=    Get Value    xpath=${xpathToAssert}
+    Should Be Equal    ${textOfXpath}    ${expectedText}
