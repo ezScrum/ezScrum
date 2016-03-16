@@ -30,7 +30,6 @@ public class Translation {
 		responseText.append("<Total>1</Total>");
 		responseText.append("<Story>");
 		responseText.append("<Id>" + story.getId() + "</Id>");
-		responseText.append("<SerialId>" + story.getSerialId() + "</SerialId>");
 		responseText.append("<Link></Link>");
 		responseText.append("<Name>"
 				+ TranslateSpecialChar.TranslateXMLChar(story.getName()) + "</Name>");
@@ -84,7 +83,6 @@ public class Translation {
 				JSONObject jsonStory = new JSONObject();
 
 				jsonStory.put("Id", stories.get(i).getId());
-				jsonStory.put("SerialId", stories.get(i).getSerialId());
 				jsonStory.put("Type", "Story");
 				jsonStory.put("Name", TranslateSpecialChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());

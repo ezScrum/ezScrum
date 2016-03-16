@@ -128,11 +128,6 @@ ezScrum.EditStoryForm = Ext.extend(Ext.form.FormPanel, {
 			items: [{
 		            fieldLabel: 'ID',
 		            name: 'issueID',
-		            xtype: 'hidden',
-					readOnly:true
-		        },{
-		            fieldLabel: 'SerialId',
-		            name: 'SerialId',
 					readOnly:true
 		        },{
 		            fieldLabel: 'Name',
@@ -256,7 +251,6 @@ ezScrum.EditStoryForm = Ext.extend(Ext.form.FormPanel, {
 					this.record = record;
 					this.getForm().setValues({
 						issueID:record.data['Id'],
-						SerialId:record.data['SerialId']
 						Name : record.data['Name'],
 						Value : record.data['Value'],
 						Importance : record.data['Importance'],

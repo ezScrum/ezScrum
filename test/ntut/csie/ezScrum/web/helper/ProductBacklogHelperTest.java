@@ -995,7 +995,6 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
-		jsonStory.put("SerialId", story.getSerialId());
 		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
@@ -1046,7 +1045,6 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
-		jsonStory.put("SerialId", story.getSerialId());
 		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
@@ -1098,7 +1096,6 @@ public class ProductBacklogHelperTest {
 
 		JSONObject jsonStory = new JSONObject();
 		jsonStory.put("Id", story.getId());
-		jsonStory.put("SerialId", story.getSerialId());
 		jsonStory.put("Type", "Story");
 		jsonStory.put("Name", story.getName());
 		jsonStory.put("Value", story.getValue());
