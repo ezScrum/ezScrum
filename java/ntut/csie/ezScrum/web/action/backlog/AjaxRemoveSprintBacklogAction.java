@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -35,16 +36,22 @@ public class AjaxRemoveSprintBacklogAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long issueId = Long.parseLong(request.getParameter("issueID"));
+		long serialIssueId = Long.parseLong(request.getParameter("issueID"));
+		
+		SprintObject sprint = SprintObject.get(project.getId(), serialIssueId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		String result = "";
 		
 		try{
 			ProductBacklogHelper PBHelper = new ProductBacklogHelper(project);
 			
 			// 將 Story 自 Sprint 移除
-			PBHelper.dropStoryFromSprint(issueId);
+			PBHelper.dropStoryFromSprint(sprintId);
 			
-			result = "<DropStory><Result>true</Result><Story><Id>" + issueId + "</Id></Story></DropStory>";
+			result = "<DropStory><Result>true</Result><Story><Id>" + sprintId + "</Id></Story></DropStory>";
 		}catch (Exception e) {
 			result = "<DropStory><Result>false</Result></DropStory>";
 		}
