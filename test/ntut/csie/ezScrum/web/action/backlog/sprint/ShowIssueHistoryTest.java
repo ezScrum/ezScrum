@@ -398,7 +398,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		long taskId = addTaskToStory.getTasksId().get(0);
 
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = taskId;
+		taskInfo.id = taskId;
 		taskInfo.name = "崩潰啦";
 		taskInfo.estimate = 13;
 		taskInfo.actual = 2;
@@ -408,7 +408,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 
 		// edit task info
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(mCP.getAllProjects().get(0));
-		sprintBacklogMapper.updateTask(taskInfo.taskId, taskInfo);
+		sprintBacklogMapper.updateTask(taskInfo.id, taskInfo);
 
 		// ================ set request info ========================
 		// 設定 Session 資訊
@@ -538,7 +538,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        task.getPartnersUsername(), task.getNotes(), "");
 
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = task.getName();
 		taskInfo.notes = task.getNotes();
 		taskInfo.estimate = task.getEstimate();

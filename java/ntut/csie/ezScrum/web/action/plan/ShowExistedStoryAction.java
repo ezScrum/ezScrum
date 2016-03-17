@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -36,15 +37,20 @@ public class ShowExistedStoryAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		String sprintIdString = request.getParameter("sprintID");
-		long sprintId;
+		String serialSprintIdString = request.getParameter("sprintID");
+		long serialSprintId;
 		
 		try{
-			sprintId = Long.parseLong(sprintIdString);
+			serialSprintId = Long.parseLong(serialSprintIdString);
 		} catch(NumberFormatException e){
-			sprintId = -1;
+			serialSprintId = -1;
 		}
 		
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
 		// ProductBacklog Helper
@@ -63,7 +69,7 @@ public class ShowExistedStoryAction extends PermissionAction {
 			return new StringBuilder("");
 		} 
 		
-		StringBuilder sb = new StringBuilder( sprintBacklogHelper.getStoriesInSprintResponseText(stories) );
+		StringBuilder sb = new StringBuilder(sprintBacklogHelper.getStoriesInSprintResponseText(stories));
 		
 		return sb;
 	}

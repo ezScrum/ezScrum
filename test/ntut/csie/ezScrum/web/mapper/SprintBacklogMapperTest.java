@@ -396,7 +396,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(0, oldTask.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = taskId;
+		taskInfo.id = taskId;
 		// set new value
 		taskInfo.name = "NEW_TEST_TASK_NAME";
 		taskInfo.handlerId = 1;

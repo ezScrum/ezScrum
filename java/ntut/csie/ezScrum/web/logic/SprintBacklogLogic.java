@@ -350,12 +350,12 @@ public class SprintBacklogLogic {
 		}
 	}
 	
-	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
-		for (long storyId : storiesId) {
-			StoryObject story = mSprintBacklogMapper.getStory(storyId);
+	public void addStoriesToSprint(ArrayList<Long> serialStoriesId, long sprintId) {
+		for (long serialStoryId : serialStoriesId) {
+			StoryObject story = StoryObject.get(mProject.getId(), serialStoryId);
 			if (sprintId > 0 && story != null) {
-				// 更新 Story 與 Sprint 對應的關係
-				mSprintBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
+				// Update the relation between story and sprint
+				mSprintBacklogMapper.updateStoryRelation(serialStoryId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}

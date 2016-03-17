@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -25,16 +26,21 @@ public class ShowSprintBacklogListInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog List Information in ShowSprintBacklogListInfo.");
 
-		ProjectObject projectObject = (ProjectObject) SessionManager.getProject(request);
-		String sprintIdString = request.getParameter("sprintID");
-		long sprintId;
-		if (sprintIdString == null) {
-			sprintId = -1;
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
+		String serialSprintIdString = request.getParameter("sprintID");
+		long serialSprintId;
+		if (serialSprintIdString == null) {
+			serialSprintId = -1;
 		} else {
-			sprintId = Long.parseLong(sprintIdString);
+			serialSprintId = Long.parseLong(serialSprintIdString);
 		}
-
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(projectObject, sprintId);
+		
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		String reponseText = reContructString(sprintBacklogHelper.getSprintBacklogListInfoText());
 
 		response.setContentType("text/html; charset=utf-8");

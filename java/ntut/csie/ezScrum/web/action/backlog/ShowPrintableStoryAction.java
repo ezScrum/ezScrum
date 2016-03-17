@@ -8,17 +8,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.pic.core.MakePDFService;
-import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.ezScrum.web.support.SessionManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -26,6 +15,17 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DownloadAction;
 
 import com.lowagie.text.DocumentException;
+
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.pic.core.MakePDFService;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 public class ShowPrintableStoryAction extends DownloadAction {
 	private static Log log = LogFactory.getLog(ShowPrintableStoryAction.class);
@@ -38,13 +38,18 @@ public class ShowPrintableStoryAction extends DownloadAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 
 		// get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		long serialSprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
+		
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		SprintBacklogMapper backlog = sprintBacklogLogic.getSprintBacklogMapper();
-		ArrayList<StoryObject> issues = sprintBacklogLogic.getStoriesSortedByImpInSprint();
+		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
 
-		request.setAttribute("SprintID", backlog.getSprintId());
-		request.setAttribute("Stories", issues);
+		request.setAttribute("SprintID", serialSprintId);
+		request.setAttribute("Stories", stories);
 		File file = null;
 
 		try {
@@ -53,7 +58,7 @@ public class ShowPrintableStoryAction extends DownloadAction {
 			String ttfPath = sc.getRealPath("") + "/WEB-INF/otherSetting/uming.ttf";
 
 			MakePDFService makePDFService = new MakePDFService();
-			file = makePDFService.getFile(ttfPath, issues);
+			file = makePDFService.getFile(ttfPath, stories);
 		} catch (DocumentException de) {
 			log.debug(de.toString());
 		} catch (IOException ioe) {

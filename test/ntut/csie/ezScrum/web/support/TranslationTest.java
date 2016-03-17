@@ -447,7 +447,7 @@ public class TranslationTest {
 			// Task Data
 			TaskObject task = mCT.getTaskList().get(i);
 			TaskInfo taskInfo = new TaskInfo();
-			taskInfo.taskId = task.getId();
+			taskInfo.id = task.getId();
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
@@ -456,7 +456,7 @@ public class TranslationTest {
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;
 			sprintBacklogHelper.updateTask(taskInfo, "", "");
-			task = sprintBacklogHelper.getTask(taskInfo.taskId);
+			task = sprintBacklogHelper.getTask(taskInfo.id);
 			
 			String actualText = Translation.translateTaskToJson(task);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -512,7 +512,7 @@ public class TranslationTest {
 			// Task Data
 			TaskObject task = mCT.getTaskList().get(i);
 			TaskInfo taskInfo = new TaskInfo();
-			taskInfo.taskId = task.getId();
+			taskInfo.id = task.getId();
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
@@ -521,7 +521,7 @@ public class TranslationTest {
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;
 			sprintBacklogHelper.updateTask(taskInfo, TEST_ACCOUNT_NAME, "");
-			task = sprintBacklogHelper.getTask(taskInfo.taskId);
+			task = sprintBacklogHelper.getTask(taskInfo.id);
 			
 			String actualText = Translation.translateTaskboardTaskToJson(task);
 			assertTrue(actualText.contains("\"success\":true"));

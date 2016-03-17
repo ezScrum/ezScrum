@@ -59,7 +59,7 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 				// 尚未開始的sprint
 				if (stringToDate(release.getDueDateString()).compareTo(
 						today) >= 0) {
-					sprintTree.append("{ID:\'" + release.getId() + "\'");
+					sprintTree.append("{ID:\'" + release.getSerialId() + "\'");
 					sprintTree.append(", Goal:\'" + release.getName()
 							+ "\'" + "},");
 				}

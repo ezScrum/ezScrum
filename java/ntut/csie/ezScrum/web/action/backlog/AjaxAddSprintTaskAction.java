@@ -6,17 +6,19 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 
 public class AjaxAddSprintTaskAction extends PermissionAction {
 
@@ -39,8 +41,8 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintId"));
-		long storyId = Long.parseLong(request.getParameter("issueID"));
+		long serialSprintId = Long.parseLong(request.getParameter("sprintId"));
+		long serialStoryId = Long.parseLong(request.getParameter("issueID"));
 		int estimate = request.getParameter("Estimate").equals("") ? 0 : Integer.parseInt(request.getParameter("Estimate"));
 		String name = request.getParameter("Name");
 		String notes = request.getParameter("Notes");
@@ -53,6 +55,12 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 			specificDate = new Date();
 		}
 		
+		// Get Story
+		StoryObject story = StoryObject.get(project.getId(), serialStoryId);
+		long storyId = -1;
+		if (story != null) {
+			storyId = story.getId();
+		}
 		// 表格的資料
 		TaskInfo taskInfo = new TaskInfo();
 		taskInfo.name = name;
@@ -61,15 +69,20 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		taskInfo.notes = notes;
 		taskInfo.specificTime = specificDate.getTime();
 		
-		ProjectObject projectObject = ProjectObject.get(project.getName());
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project, sprintId);
-		TaskObject task = sprintBacklogHelper.addTask(projectObject.getId(), taskInfo);
+		TaskObject task = sprintBacklogHelper.addTask(project.getId(), taskInfo);
 
 		// 組出回傳資訊
 		StringBuilder sb = new StringBuilder();
 		sb.append("<AddNewTask><Result>true</Result><Task>");
-		sb.append("<Id>" + task.getId() + "</Id>");
+		sb.append("<Id>" + task.getSerialId() + "</Id>");
 		sb.append("<Link>/ezScrum/showIssueInformation.do?issueID=" + task.getId()
 				+ "</Link>");
 		sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())

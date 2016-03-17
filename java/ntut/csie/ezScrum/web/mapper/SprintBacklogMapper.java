@@ -89,6 +89,10 @@ public class SprintBacklogMapper {
 		return TaskObject.get(taskId);
 	}
 	
+	public TaskObject getTask(long projectId, long serialTaskId) {
+		return TaskObject.get(projectId, serialTaskId);
+	}
+	
 	/**
 	 * 如果沒有指定時間的話，預設就回傳目前最新的 Task 表給他
 	 * 
@@ -144,9 +148,9 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistingTasksToStory(ArrayList<Long> taskIds, long storyId) {
-		for (long taskId : taskIds) {
-			TaskObject task = TaskObject.get(taskId);
+	public void addExistingTasksToStory(ArrayList<Long> serialTaskIds, long storyId) {
+		for (long taskId : serialTaskIds) {
+			TaskObject task = TaskObject.get(mProject.getId(), taskId);
 			if (task != null) {
 				task.setStoryId(storyId);
 				task.save();
@@ -216,8 +220,8 @@ public class SprintBacklogMapper {
 		return mSprint.getGoal();
 	}
 	
-	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
-		StoryObject story = StoryObject.get(storyId);
+	public void updateStoryRelation(long serialStoryId, long sprintId, int estimate, int importance, Date date) {
+		StoryObject story = StoryObject.get(mProject.getId(), serialStoryId);
 		story.setSprintId(sprintId)
 		     .setEstimate(estimate)
 		     .setImportance(importance)

@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -34,24 +36,37 @@ public class AddExistedTaskAction extends PermissionAction {
 		
 		// get parameter info
 		ProjectObject project = SessionManager.getProject(request);
-		String[] selectedTaskIds = request.getParameterValues("selected");
-		long sprintId, storyId;
+		String[] selectedSerialTaskIds = request.getParameterValues("selected");
+		long serialSprintId, serialStoryId;
 		
 		try {
-			sprintId = Long.parseLong(request.getParameter("sprintID"));
+			serialSprintId = Long.parseLong(request.getParameter("sprintID"));
 		} catch (NumberFormatException e) {
-			sprintId = -1;
+			serialSprintId = -1;
 		}
 		
 		try {
-			storyId = Long.parseLong(request.getParameter("issueID"));
+			serialStoryId = Long.parseLong(request.getParameter("issueID"));
 		} catch (NumberFormatException e) {
-			storyId = -1;
+			serialStoryId = -1;
 		}
 
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		try {
-			sprintBacklogHelper.addExistingTasksToStory(selectedTaskIds, storyId);
+			// Get Story
+			StoryObject story = StoryObject.get(project.getId(), serialStoryId);
+			long storyId = -1;
+			if (story != null) {
+				storyId = story.getId();
+			}
+			sprintBacklogHelper.addExistingTasksToStory(selectedSerialTaskIds, storyId);
 		} catch (Exception e) {
 			return new StringBuilder(e.getMessage());
 		}
