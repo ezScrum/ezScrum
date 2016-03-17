@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -19,11 +24,6 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
 
 public class ShowSprintInformationAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -44,30 +44,31 @@ public class ShowSprintInformationAction extends Action {
 		request.setAttribute(IProjectSummaryEnum.PROJECT, project);
  
 		// get parameter info
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		long serialSprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintObject tempSprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (tempSprint != null) {
+			sprintId = tempSprint.getId();
+		}
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		if (sprintBacklogMapper == null) {
 			return mapping.findForward("error");
 		}
-		sprintId = sprintBacklogMapper.getSprintId();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
+		serialSprintId = sprintBacklogMapper.getSprintId();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, serialSprintId);
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 		SprintObject sprint = sprintBacklogMapper.getSprint();
 		
-		request.setAttribute("SprintID", sprintBacklogMapper.getSprintId());
+		request.setAttribute("SprintID", serialSprintId);
 		request.setAttribute("Stories", stories);
 
-		request.setAttribute("StoryPoint", sprint.getTotalStoryPoints());
+		request.setAttribute("StoryPoint", (int) sprint.getTotalStoryPoints());
 
 		
 		request.setAttribute("SprintPlan", sprint);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
-		String sprintPeriod = DateUtil.format(sprintBacklogLogic.getSprintStartWorkDate(),
-		        DateUtil._8DIGIT_DATE_1)
-		        + " to "
-		        + DateUtil.format(sprintBacklogLogic.getSprintEndWorkDate(), DateUtil._8DIGIT_DATE_1);
-
+		String sprintPeriod = sprint.getStartDateString() + " to " + sprint.getDueDateString();
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
 		AccountObject account = userSession.getAccount();

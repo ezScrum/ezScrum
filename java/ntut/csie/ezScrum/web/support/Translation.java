@@ -19,6 +19,7 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 
 public class Translation {
@@ -122,7 +123,7 @@ public class Translation {
 				JSONArray jsonAttachFiles = new JSONArray();
 				for (AttachFileObject attachFile : attachFiles) {
 					JSONObject jsonAttachFile = new JSONObject();
-					jsonAttachFile.put("IssueId", attachFile.getIssueId());
+					jsonAttachFile.put("IssueId", stories.get(i).getSerialId());
 					jsonAttachFile.put("FileId", attachFile.getId());
 					jsonAttachFile.put("FileName", TranslateSpecialChar.TranslateJSONChar(attachFile.getName()));
 
@@ -301,7 +302,7 @@ public class Translation {
 
 	// for ShowSprintBacklogAction
 	public static String translateSprintBacklogToJson(
-			ArrayList<StoryObject> stories, long currentSprintId,
+			ArrayList<StoryObject> stories, long currentSerialSprintId,
 			double currentPoint, double limitedPoint, double taskPoint,
 			long releaseId, String sprintGoal) {
 		JSONObject responseText = new JSONObject();
@@ -310,12 +311,12 @@ public class Translation {
 			responseText.put("Total", stories.size());
 
 			JSONObject sprint = new JSONObject();
-			sprint.put("Id", currentSprintId);
+			sprint.put("Id", currentSerialSprintId);
 			sprint.put(
 					"Name",
 					"Sprint #"
 							+ TranslateSpecialChar.TranslateJSONChar(String
-									.valueOf(currentSprintId)));
+									.valueOf(currentSerialSprintId)));
 			sprint.put("CurrentPoint", currentPoint);
 			sprint.put("LimitedPoint", limitedPoint);
 			sprint.put("TaskPoint", taskPoint);
@@ -331,7 +332,7 @@ public class Translation {
 			for (StoryObject story : stories) {
 				JSONObject jsonStory = new JSONObject();
 
-				jsonStory.put("Id", story.getId());
+				jsonStory.put("Id", story.getSerialId());
 				jsonStory.put("Link", "");
 				jsonStory.put("Name",
 						TranslateSpecialChar.TranslateJSONChar(story.getName()));
@@ -346,7 +347,8 @@ public class Translation {
 				jsonStory.put("HowToDemo",
 						TranslateSpecialChar.TranslateJSONChar(story.getHowToDemo()));
 				jsonStory.put("Release", "");
-				jsonStory.put("Sprint", story.getSprintId());
+				SprintObject tempSprint = SprintObject.get(story.getSprintId());
+				jsonStory.put("Sprint", tempSprint.getSerialId());
 
 				if (story.getAttachFiles().size() == 0) {
 					jsonStory.put("Attach", false);

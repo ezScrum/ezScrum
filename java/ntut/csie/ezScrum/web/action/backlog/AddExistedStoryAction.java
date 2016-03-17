@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -36,17 +37,22 @@ public class AddExistedStoryAction extends PermissionAction {
 		
 		// get parameter info
 		ProjectObject project = SessionManager.getProject(request);
-		String[] selectedStoriesId = request.getParameterValues("selects");
-		long sprintId;
+		String[] selectedSerialStoriesId = request.getParameterValues("selects");
+		long serialSprintId;
 		try {
-			sprintId = Long.parseLong(request.getParameter("sprintID"));
+			serialSprintId = Long.parseLong(request.getParameter("sprintID"));
 		} catch (NumberFormatException e) {
-			sprintId = -1;
+			serialSprintId = -1;
 		}
 		
 		ArrayList<Long> addedStoriesId = new ArrayList<Long>();
-		for (String storyId : selectedStoriesId) {
+		for (String storyId : selectedSerialStoriesId) {
 			addedStoriesId.add(Long.parseLong(storyId));
+		}
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
 		}
 		
 		try {			

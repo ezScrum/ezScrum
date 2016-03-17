@@ -20,7 +20,7 @@
 <body>
 <table class="NoBorderTable" width="95%">
 <tr>
-	<td class="InformationTitle" align="center">${Project.projectDesc.displayName }, Sprint ${SprintID }
+	<td class="InformationTitle" align="center">${Project.displayName }, Sprint ${SprintID }
 	</td>
 </tr>
 <tr>
@@ -37,7 +37,7 @@
 </tr>
 <tr><td><ul>
 <c:forEach var="element" items="${Stories }">
-	<li>${element.summary } (${element.estimated })</li>
+	<li>${element.name } (${element.estimate })</li>
 </c:forEach>
 </ul></td></tr>
 <tr><td></td></tr>
@@ -51,8 +51,8 @@
 <tr>
 	<td><ul>
 		<li>Sprint period : ${SprintPeriod}</li>
-		<li>Daily Scrum : ${SprintPlan.notes }</li>
-		<li>Sprint Review : ${SprintPlan.demoDate } ${SprintPlan.demoPlace }</li>
+		<li>Daily Scrum : ${SprintPlan.dailyInfo }</li>
+		<li>Sprint Review : ${SprintPlan.demoDateString } ${SprintPlan.demoPlace }</li>
 	</ul></td>
 </tr>
 <tr>

@@ -216,8 +216,8 @@ public class SprintBacklogMapper {
 		return mSprint.getGoal();
 	}
 	
-	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
-		StoryObject story = StoryObject.get(storyId);
+	public void updateStoryRelation(long serialStoryId, long sprintId, int estimate, int importance, Date date) {
+		StoryObject story = StoryObject.get(mProject.getId(), serialStoryId);
 		story.setSprintId(sprintId)
 		     .setEstimate(estimate)
 		     .setImportance(importance)

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
@@ -44,7 +45,7 @@ public class SprintBacklogTreeStructure {
 	public SprintBacklogTreeStructure(StoryObject story,
 			ArrayList<TaskObject> tasks, ArrayList<Date> dates) {
 		IssueType = ScrumEnum.STORY_ISSUE_TYPE;
-		ID = Long.toString(story.getId());
+		ID = Long.toString(story.getSerialId());
 		Name = HandleSpecialChar(story.getName());
 		Handler = " ";
 		Value = String.valueOf(story.getValue());
@@ -54,7 +55,8 @@ public class SprintBacklogTreeStructure {
 		Status = story.getStatusString();
 		Notes = HandleSpecialChar(story.getNotes());
 		Link = "";
-		SprintID = String.valueOf(story.getSprintId());
+		SprintObject sprint = SprintObject.get(story.getSprintId());
+		SprintID = String.valueOf(sprint.getSerialId());
 		ReleaseID = "";
 		
 		leaf = false;
@@ -70,7 +72,7 @@ public class SprintBacklogTreeStructure {
 
 	public SprintBacklogTreeStructure(TaskObject task, ArrayList<Date> dates) {
 		IssueType = ScrumEnum.TASK_ISSUE_TYPE;
-		ID = String.valueOf(task.getId());
+		ID = String.valueOf(task.getSerialId());
 		Name = task.getName();
 		Handler = task.getHandler() != null ? task.getHandler().getUsername() : "";
 		Estimate = String.valueOf(task.getEstimate());

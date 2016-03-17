@@ -23,7 +23,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
 
-	public File getFile(String ttfPath, ArrayList<StoryObject> issues)
+	public File getFile(String ttfPath, ArrayList<StoryObject> stories)
 			throws Exception {
 		File temp = File.createTempFile("ezScrum",
 				Long.toString(System.nanoTime()));
@@ -39,7 +39,7 @@ public class MakePDFService {
 
 			document1.open();
 
-			for (StoryObject issue : issues) {
+			for (StoryObject story : stories) {
 				PdfPTable outerTable = new PdfPTable(1);
 				outerTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 				outerTable.getDefaultCell().setBorderWidth(1f);
@@ -57,7 +57,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setColspan(2);
 				Paragraph titleParagraph = new Paragraph(
-						"Sprint Backlog Item #" + String.valueOf(issue.getId()),
+						"Sprint Backlog Item #" + String.valueOf(story.getSerialId()),
 						new Font(bfChinese, 12, Font.NORMAL));
 				cell.setPaddingLeft(6f);
 				cell.addElement(titleParagraph);
@@ -84,7 +84,7 @@ public class MakePDFService {
 				cell.setBorder(PdfPCell.LEFT);
 				cell.setBorderWidth(1f);
 				cell.setPaddingLeft(6f);
-				cell.addElement(new Paragraph(issue.getName(), new Font(
+				cell.addElement(new Paragraph(story.getName(), new Font(
 						bfChinese, 14, Font.NORMAL)));
 				table.addCell(cell);
 
@@ -97,7 +97,7 @@ public class MakePDFService {
 				cell.setPaddingTop(-10f);
 				cell.setVerticalAlignment(PdfPCell.ALIGN_TOP);
 				paragraph = new Paragraph(
-						String.valueOf(issue.getImportance()), new Font(
+						String.valueOf(story.getImportance()), new Font(
 								bfChinese, 36, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
@@ -138,7 +138,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setMinimumHeight(60f);
 				cell.setPaddingBottom(10f);
-				cell.addElement(new Paragraph(issue.getNotes(), new Font(
+				cell.addElement(new Paragraph(story.getNotes(), new Font(
 						bfChinese, 14, Font.NORMAL)));
 
 				innerTable.addCell(cell);
@@ -163,7 +163,7 @@ public class MakePDFService {
 				cell.setMinimumHeight(60f);
 				cell.setUseAscender(false);
 				cell.setPaddingTop(-10f);
-				paragraph = new Paragraph(String.valueOf(issue.getEstimate()),
+				paragraph = new Paragraph(String.valueOf(story.getEstimate()),
 						new Font(bfChinese, 36, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
@@ -199,7 +199,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setMinimumHeight(60f);
 				cell.setPaddingBottom(10f);
-				cell.addElement(new Paragraph(issue.getHowToDemo(), new Font(
+				cell.addElement(new Paragraph(story.getHowToDemo(), new Font(
 						bfChinese, 14, Font.NORMAL)));
 
 				innerTable.addCell(cell);
