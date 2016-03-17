@@ -120,7 +120,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
@@ -149,7 +149,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
@@ -180,7 +180,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();

@@ -61,7 +61,7 @@ public class TaskWebService extends ProjectWebService {
 	public String createTaskInStory(long storyId, String taskJSonString) throws JSONException {
 		JSONObject taskJSon = new JSONObject(taskJSonString);
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.id = Long.parseLong(taskJSon.getString("id"));
 		taskInfo.name = taskJSon.getString("name");
 		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
 		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
@@ -88,7 +88,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @param taskId
 	 * @param storyId
 	 */
-	public void dropTask(String taskId, String storyId) {
+	public void dropTask(String taskId) {
 		mSprintBacklogHelper.dropTask(Long.parseLong(taskId));
 	}
 	
@@ -101,7 +101,7 @@ public class TaskWebService extends ProjectWebService {
 	public String updateTask(String taskJSonString) throws JSONException {
 		JSONObject taskJSon = new JSONObject(taskJSonString);
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = Long.parseLong(taskJSon.getString("id"));
+		taskInfo.id = Long.parseLong(taskJSon.getString("id"));
 		taskInfo.name = taskJSon.getString("name");
 		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
 		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));

@@ -97,15 +97,19 @@ public class SprintBacklogHelper {
 			throw new RuntimeException("Story#" + storyId + " is not existed.");
 		}
 
-		ArrayList<Long> tasksId = new ArrayList<Long>();
-		for (String taskId : selectedTaskIds) {
-			tasksId.add(Long.parseLong(taskId));
+		ArrayList<Long> serialTasksId = new ArrayList<Long>();
+		for (String serialTaskId : selectedTaskIds) {
+			serialTasksId.add(Long.parseLong(serialTaskId));
 		}
-		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
+		mSprintBacklogMapper.addExistingTasksToStory(serialTasksId, storyId);
 	}
 
 	public TaskObject getTask(long taskId) {
 		return mSprintBacklogMapper.getTask(taskId);
+	}
+	
+	public TaskObject getTask(long projectId, long serialTaskId) {
+		return mSprintBacklogMapper.getTask(projectId, serialTaskId);
 	}
 
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
@@ -135,7 +139,7 @@ public class SprintBacklogHelper {
 		taskInfo.handlerId = handlerId;
 		taskInfo.partnersId = partnersId;
 
-		mSprintBacklogMapper.updateTask(taskInfo.taskId, taskInfo);
+		mSprintBacklogMapper.updateTask(taskInfo.id, taskInfo);
 	}
 
 	public void deleteTask(long taskId) {

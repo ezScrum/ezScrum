@@ -57,8 +57,8 @@ public class ShowAddExistedTaskAction extends PermissionAction {
     			String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
     			
 				sb.append("<Task>")
-				  .append("<Id>").append(task.getId()).append("</Id>")
-				  .append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getId()).append("</Link>")
+				  .append("<Id>").append(task.getSerialId()).append("</Id>")
+				  .append("<Link>/ezScrum/showIssueInformation.do?issueID=").append(task.getSerialId()).append("</Link>")
 				  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>")
 				  .append("<Status>").append(task.getStatusString()).append("</Status>")
 				  .append("<Estimate>").append(task.getEstimate()).append("</Estimate>")

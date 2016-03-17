@@ -54,7 +54,7 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 			for (int i = 0; i < sprints.size(); i++) {
 				// 尚未開始的sprint
 				if (stringToDate(sprints.get(i).getDueDateString()).compareTo(today) >= 0) {
-					sprintTree.append("{ID:\'" + String.valueOf(sprints.get(i).getId()) + "\'");
+					sprintTree.append("{ID:\'" + String.valueOf(sprints.get(i).getSerialId()) + "\'");
 					sprintTree.append(", Goal:\'" + sprints.get(i).getGoal()
 							+ "\'" + "},");
 				}

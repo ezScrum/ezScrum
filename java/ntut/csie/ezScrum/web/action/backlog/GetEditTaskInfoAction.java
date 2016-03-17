@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -35,27 +36,33 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long sprintId;
+		long serialSprintId;
 		
-		String sprintIdString = request.getParameter("sprintID");
+		String serialSprintIdString = request.getParameter("sprintID");
 		
-		if (sprintIdString == null || sprintIdString.length() == 0) {
-			sprintId = -1;
+		if (serialSprintIdString == null || serialSprintIdString.length() == 0) {
+			serialSprintId = -1;
 		} else {
-			sprintId = Long.parseLong(sprintIdString);
+			serialSprintId = Long.parseLong(serialSprintIdString);
 		}
 		
-		long taskId = Long.parseLong(request.getParameter("issueID"));
+		long serialTaskId = Long.parseLong(request.getParameter("issueID"));
 		
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 		
 		StringBuilder result = new StringBuilder();
-		TaskObject task = sprintBacklogHelper.getTask(taskId);
+		TaskObject task = sprintBacklogHelper.getTask(project.getId(), serialTaskId);
 		
 		String handlerUsername = task.getHandler() != null ? task.getHandler().getUsername() : "";
 
 		result.append("<EditTask><Task>");
-		result.append("<Id>").append(task.getId()).append("</Id>");
+		result.append("<Id>").append(task.getSerialId()).append("</Id>");
 		result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>");
 		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
 		result.append("<Actual>").append(task.getActual()).append("</Actual>");
