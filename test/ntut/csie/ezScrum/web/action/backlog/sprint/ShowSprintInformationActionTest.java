@@ -145,7 +145,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		assertEquals(expectedSprintID, actualSprintID);		//	verify sprint ID
-		assertEquals("0.0", actualStoryPoint);				//	verify story points
+		assertEquals("0", actualStoryPoint);				//	verify story points
 		assertNotNull(actualSprintPlan);					//	verify sprint plan object
 		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getGoal());	//	verify sprint goal
 		assertEquals("[]", actualActors);					//	verify 參與此專案的人(因為尚未加入團隊成員因此為空的)
@@ -153,7 +153,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	verify story information
 		assertNotNull(actualIIssueList);
 		assertEquals(0, actualIIssueList.size());
-		assertEquals("0.0", actualStoryPoint);				//	verify story points
+		assertEquals("0", actualStoryPoint);				//	verify story points
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	verify story information
 		assertNotNull(actualStories);
 		assertEquals("TEST_STORY_1", actualStories.get(0).getName());
-		assertEquals("5.0", actualStoryPoint);
+		assertEquals("5", actualStoryPoint);
 
 		//	verify sprint plan information
 		assertNotNull(actualSprintPlan);

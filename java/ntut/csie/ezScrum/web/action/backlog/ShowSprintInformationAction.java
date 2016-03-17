@@ -50,11 +50,11 @@ public class ShowSprintInformationAction extends Action {
 		if (tempSprint != null) {
 			sprintId = tempSprint.getId();
 		}
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
-		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		if (sprintBacklogMapper == null) {
+		if (sprintId <= 0) {
 			return mapping.findForward("error");
 		}
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
+		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		serialSprintId = sprintBacklogMapper.getSprintId();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, serialSprintId);
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();

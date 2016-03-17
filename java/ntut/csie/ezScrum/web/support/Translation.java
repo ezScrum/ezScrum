@@ -19,7 +19,6 @@ import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 
 public class Translation {
@@ -348,7 +347,11 @@ public class Translation {
 						TranslateSpecialChar.TranslateJSONChar(story.getHowToDemo()));
 				jsonStory.put("Release", "");
 				SprintObject tempSprint = SprintObject.get(story.getSprintId());
-				jsonStory.put("Sprint", tempSprint.getSerialId());
+				long serialSprintId = -1;
+				if (tempSprint != null) {
+					serialSprintId = tempSprint.getSerialId();
+				}
+				jsonStory.put("Sprint", serialSprintId);
 
 				if (story.getAttachFiles().size() == 0) {
 					jsonStory.put("Attach", false);

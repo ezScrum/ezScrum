@@ -56,7 +56,11 @@ public class SprintBacklogTreeStructure {
 		Notes = HandleSpecialChar(story.getNotes());
 		Link = "";
 		SprintObject sprint = SprintObject.get(story.getSprintId());
-		SprintID = String.valueOf(sprint.getSerialId());
+		long serialSprintId = -1;
+		if (sprint != null) {
+			serialSprintId = sprint.getSerialId();
+		}
+		SprintID = String.valueOf(serialSprintId);
 		ReleaseID = "";
 		
 		leaf = false;

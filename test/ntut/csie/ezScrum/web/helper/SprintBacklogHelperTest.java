@@ -432,13 +432,13 @@ public class SprintBacklogHelperTest {
 
 		String expectStoryString = "<Story><Id>%s</Id><Link></Link><Name>TEST_STORY_%s</Name><Value>50</Value>"
 				+ "<Importance>100</Importance><Estimate>5</Estimate><Status>new</Status><Notes>TEST_STORY_NOTE_%s</Notes>"
-				+ "<HowToDemo>TEST_STORY_DEMO_%s</HowToDemo><Release></Release><Sprint>1</Sprint><Tag></Tag></Story>";
+				+ "<HowToDemo>TEST_STORY_DEMO_%s</HowToDemo><Release>%s</Release><Sprint>1</Sprint><Tag></Tag></Story>";
 		
 		assertEquals(true, actualResponse.contains("<ExistingStories>"));
 		for (int i = 1; i <= stories.size(); i++) {
 			String index = String.valueOf(i);
 			assertEquals(true, actualResponse.contains(String.format(expectStoryString,
-					index, index, index, index)));
+					index, index, index, index, -1)));
 		}
 		assertEquals(true, actualResponse.contains("</ExistingStories>"));
 	}
