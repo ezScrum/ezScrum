@@ -46,7 +46,6 @@ public class ProductBacklogMapperTest {
 	private int mStoryCount = 2;
 	private ProductBacklogMapper mProductBacklogMapper = null;
 	private Configuration mConfig = null;
-	
 	private final String mFILE_NAME = "Initial.sql";
 	private final String mFILE_TYPE = "sql/plain";
 	
@@ -179,6 +178,7 @@ public class ProductBacklogMapperTest {
 		
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.id = story.getId();
+		storyInfo.serialId = story.getSerialId();
 		storyInfo.name = "NEW_STORY_1";
 		storyInfo.notes = "NEW_NOTE_1";
 		storyInfo.howToDemo = "NEW_DEMO_1";

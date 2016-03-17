@@ -67,8 +67,7 @@ public class StoryWebService extends ProjectWebService {
 	 */
 	public String updateStory(String storyJson) throws JSONException {
 		StoryInfo storyInfo = new StoryInfo(storyJson);
-		StoryObject story = mProductBacklogHelper.updateStory(storyInfo.id,
-				storyInfo);
+		StoryObject story = mProductBacklogHelper.updateStory(storyInfo);
 		return mConvertProductBacklog.getStory(story);
 	}
 

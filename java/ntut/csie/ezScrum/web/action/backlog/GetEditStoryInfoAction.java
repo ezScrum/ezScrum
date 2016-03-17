@@ -35,8 +35,8 @@ public class GetEditStoryInfoAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long issueId = Long.parseLong(request.getParameter("issueID"));
-		StoryObject story = StoryObject.get(issueId);
+		long serialStoryId = Long.parseLong(request.getParameter("issueID"));
+		StoryObject story = StoryObject.get(project.getId(), serialStoryId);
 		StringBuilder result = new ProductBacklogHelper(project).translateStoryToXML(story);
 		return result;
 	}

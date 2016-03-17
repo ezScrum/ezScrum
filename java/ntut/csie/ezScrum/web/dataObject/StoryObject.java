@@ -48,6 +48,10 @@ public class StoryObject implements IBaseObject {
 		return StoryDAO.getInstance().get(id);
 	}
 	
+	public static StoryObject get(long projectId, long serialId) {
+		return StoryDAO.getInstance().get(projectId, serialId);
+	}
+	
 	public StoryObject(long projectId) {
 		mProjectId = projectId;
 	}

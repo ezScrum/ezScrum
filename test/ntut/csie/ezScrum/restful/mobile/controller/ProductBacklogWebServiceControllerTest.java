@@ -194,8 +194,10 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 	@Test
 	public void testUpdateStory() throws JSONException {
 		JSONObject storyJson = new JSONObject();
+		StoryObject story = StoryDAO.getInstance().get(1);
 		storyJson
 			.put("id", 1)
+			.put("serial_id", story.getSerialId())
 			.put("name", "思都瑞名字")
 			.put("importance", 100)
 			.put("estimate", 2)
@@ -225,7 +227,7 @@ public class ProductBacklogWebServiceControllerTest extends JerseyTest {
 		JSONObject responseJson = new JSONObject(response.readEntity(String.class));
 		assertEquals("SUCCESS", responseJson.getString("status"));
 		
-		StoryObject story = StoryDAO.getInstance().get(1);
+		story = StoryDAO.getInstance().get(1);
 		assertEquals(story.getId(), storyJson.getLong("id"));
 		assertEquals(story.getName(), storyJson.getString("name"));
 		assertEquals(story.getNotes(), storyJson.getString("notes"));

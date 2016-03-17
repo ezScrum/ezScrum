@@ -60,9 +60,13 @@ public class ProductBacklogMapper {
 		return StoryObject.get(id);
 	}
 	
+	public StoryObject getStory(long projectId, long serialStoryId) {
+		return StoryObject.get(projectId, serialStoryId);
+	}
+	
 	public void updateStory(StoryInfo storyInfo) {
 		ArrayList<Long> tagsId = getTagsIdByTagsName(storyInfo.tags);
-		StoryObject story = StoryObject.get(storyInfo.id);
+		StoryObject story = StoryObject.get(mProject.getId(), storyInfo.serialId);
 		story.setName(storyInfo.name)
 	         .setEstimate(storyInfo.estimate)
 	         .setImportance(storyInfo.importance)
@@ -103,6 +107,13 @@ public class ProductBacklogMapper {
 	// delete story 用
 	public void deleteStory(long storyId) {
 		StoryObject story = StoryObject.get(storyId);
+		if(story != null){
+			story.delete();
+		}
+	}
+	
+	public void deleteStory(long projectId, long serialStoryId) {
+		StoryObject story = StoryObject.get(projectId, serialStoryId);
 		if(story != null){
 			story.delete();
 		}

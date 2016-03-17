@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.docx4j.model.datastorage.XPathEnhancerParser.main_return;
+
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
@@ -66,9 +68,27 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.ID, id);
 		String query = valueSet.getSelectQuery();
-
 		ResultSet result = mControl.executeQuery(query);
-
+		TaskObject task = null;
+		try {
+			if (result.next()) {
+				task = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return task;
+	}
+	
+	public TaskObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(TaskEnum.SERIAL_ID, serialId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
 		TaskObject task = null;
 		try {
 			if (result.next()) {

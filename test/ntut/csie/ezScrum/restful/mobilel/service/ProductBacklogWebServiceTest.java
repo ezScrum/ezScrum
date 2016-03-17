@@ -193,7 +193,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService service = new ProductBacklogWebService(username, password, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(0, mEstimate, mCP, "EST");
+		mCPB = new CreateProductBacklog(1, mEstimate, mCP, "EST");
 		mCPB.exe();
 		
 		JSONObject storyJson = new JSONObject();
@@ -217,9 +217,11 @@ public class ProductBacklogWebServiceTest {
 		TagObject tag3 = new TagObject("QWQ", mProject.getId());
 		tag3.save();
 		
+		StoryObject story = mCPB.getStories().get(0);
 		storyJson = new JSONObject();
 		storyJson
 			.put("id", 1)
+			.put("serial_id", story.getSerialId())
 			.put("name", "QQ")
 			.put("importance", 90)
 			.put("estimate", 8)

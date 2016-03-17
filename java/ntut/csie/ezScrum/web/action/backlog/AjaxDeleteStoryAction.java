@@ -35,16 +35,16 @@ public class AjaxDeleteStoryAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
-		long storyId;
+		long serialStoryId;
 		
 		try{
-			storyId = Long.parseLong(request.getParameter("issueID"));
+			serialStoryId = Long.parseLong(request.getParameter("issueID"));
 		} catch (NumberFormatException e){
-			storyId = -1;
+			serialStoryId = -1;
 		}
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
-		StringBuilder result = productBacklogHelper.deleteStory(storyId);
+		StringBuilder result = productBacklogHelper.deleteStory(project.getId(), serialStoryId);
 		
 		return result;
 	}

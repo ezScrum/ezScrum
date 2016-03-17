@@ -29,7 +29,7 @@ public class Translation {
 		responseText.append("<ProductBacklog>");
 		responseText.append("<Total>1</Total>");
 		responseText.append("<Story>");
-		responseText.append("<Id>" + story.getId() + "</Id>");
+		responseText.append("<Id>" + story.getSerialId() + "</Id>");
 		responseText.append("<Link></Link>");
 		responseText.append("<Name>"
 				+ TranslateSpecialChar.TranslateXMLChar(story.getName()) + "</Name>");
@@ -82,7 +82,7 @@ public class Translation {
 			for (int i = 0; i < stories.size(); i++) {
 				JSONObject jsonStory = new JSONObject();
 
-				jsonStory.put("Id", stories.get(i).getId());
+				jsonStory.put("Id", stories.get(i).getSerialId());
 				jsonStory.put("Type", "Story");
 				jsonStory.put("Name", TranslateSpecialChar.TranslateJSONChar((stories.get(i).getName())));
 				jsonStory.put("Value", stories.get(i).getValue());

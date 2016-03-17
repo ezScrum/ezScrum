@@ -463,13 +463,19 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 	},
 	// Delete AttachFile action
 	deleteAttachFile: function(file_Id, issue_Id) {
+		var record = Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelected();
+		var serialStoryId = -1;
+		if (record != null) {
+			serialStoryId = record.data['Id'];
+			console.log('serialStoryId: ' + serialStoryId);
+		}
 		Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', function(btn) {
 			if (btn === 'yes') {
 				Ext.Ajax.request({
 					url: 'ajaxDeleteFile.do',
 					params: {
 						fileId: file_Id,
-						issueId: issue_Id,
+						issueId: serialStoryId,
 						issueType : 'Story'
 					},
 					success: function(response) {
