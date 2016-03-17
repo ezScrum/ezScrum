@@ -119,7 +119,7 @@ public class StoryWebServiceTest {
 		StoryObject story = mASTS.getStories().get(0);
 
 		JSONObject storyJson = new JSONObject();
-		storyJson.put("id", story.getId()).put("name", "NAME")
+		storyJson.put("id", story.getId()).put("serial_id", story.getSerialId()).put("name", "NAME")
 				.put("notes", "NOTES").put("how_to_demo", "HOW_TO_DEMO")
 				.put("importance", 99).put("value", 15).put("estimate", 21)
 				.put("status", StoryObject.STATUS_DONE).put("sprint_id", 1L).put("tags", "");

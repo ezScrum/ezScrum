@@ -747,7 +747,7 @@ public class ProductBacklogHelperTest {
 		mCPB.exe();
 
 		StoryInfo storyInfo = new StoryInfo();
-		storyInfo.id = mCPB.getStoryIds().get(0);
+		storyInfo.serialId = mCPB.getStories().get(0).getSerialId();
 		storyInfo.name = "快接 task 啦";
 		storyInfo.value = 6;
 		storyInfo.importance = 6;
@@ -755,9 +755,8 @@ public class ProductBacklogHelperTest {
 		storyInfo.howToDemo = "QAQ";
 		storyInfo.notes = "已哭";
 
-		StoryObject story = mProductBacklogHelper1.updateStory(storyInfo.id, storyInfo);
+		StoryObject story = mProductBacklogHelper1.updateStory(storyInfo);
 		// assert issue info
-		assertEquals(storyInfo.id, story.getId());
 		assertEquals(storyInfo.name, story.getName());
 		assertEquals(storyInfo.value, story.getValue());
 		assertEquals(storyInfo.importance, story.getImportance());

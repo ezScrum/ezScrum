@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -41,8 +42,14 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
-		String sprintId = request.getParameter("SprintId");
+		String serialSprintIdString = request.getParameter("SprintId");
 		String tags = request.getParameter("Tags");
+		long serialSprintId = (serialSprintIdString == null || serialSprintIdString.isEmpty()) ? -1 : Long.parseLong(serialSprintIdString);
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.name = name;
@@ -51,7 +58,7 @@ public class AjaxAddNewStoryAction extends PermissionAction {
 		storyInfo.value = (value == null || value.isEmpty() ? 0 : Integer.parseInt(value));
 		storyInfo.howToDemo = howToDemo;
 		storyInfo.notes = notes;
-		storyInfo.sprintId = (sprintId == null || sprintId.isEmpty()) ? -1 : Long.parseLong(sprintId);
+		storyInfo.sprintId = sprintId;
 		storyInfo.tags = tags;
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);

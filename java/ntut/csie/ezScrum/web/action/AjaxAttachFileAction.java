@@ -45,13 +45,17 @@ public class AjaxAttachFileAction extends Action {
 			long fileMaxSize_int = project.getAttachFileSize();
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
 			
-			long issueId = Long.parseLong(request.getParameter("issueID"));
+			long serialIssueId = Long.parseLong(request.getParameter("issueID"));
 			String issueTypeStr = request.getParameter("issueType");
-			
+			long issueId = -1;
 			int issueType = 0;
 			if (issueTypeStr.equals("Story")) {
+				StoryObject story = StoryObject.get(project.getId(), serialIssueId);
+				issueId = story.getId();
 				issueType = IssueTypeEnum.TYPE_STORY;
 			} else if (issueTypeStr.equals("Task")) {
+				TaskObject task = TaskObject.get(project.getId(), serialIssueId);
+				issueId = task.getId();
 				issueType = IssueTypeEnum.TYPE_TASK;
 			}
 			

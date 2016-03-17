@@ -37,9 +37,8 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		// 取得刪除file前需要的資料
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
-
 		// get parameter info
-		long issueId = Integer.parseInt(request.getParameter("issueId"));
+		long serialIssueId = Integer.parseInt(request.getParameter("issueId"));
 		long fileId = Long.parseLong(request.getParameter("fileId"));
 		String issueType = request.getParameter("issueType");
 		
@@ -51,10 +50,10 @@ public class AjaxDeleteFileAction extends PermissionAction {
 		
 		// 如果是在CustomIssue的頁面attach file的話，則translate custom issue的json
 		if (issueType.equals("Story")){
-			StoryObject story = PBHelper.getStory(issueId);
+			StoryObject story = StoryObject.get(project.getId(), serialIssueId);
 			result = new StringBuilder(Translation.translateStoryToJson(story));
 		} else if (issueType.equals("Task")) {
-			TaskObject task = TaskObject.get(issueId);
+			TaskObject task = TaskObject.get(project.getId(), serialIssueId);
 			result = new StringBuilder(Translation.translateTaskToJson(task));
 		}
 		return result;

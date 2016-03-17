@@ -104,7 +104,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "0";
 			storyInfo.estimate = 0;
 			storyInfo.value = 0;
@@ -114,7 +114,7 @@ public class TranslationTest {
 			storyInfo.notes = "0";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = "0";
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			
 			// Expected Response Text
 			StringBuilder expectedText = new StringBuilder();
@@ -156,7 +156,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME";
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -166,7 +166,7 @@ public class TranslationTest {
 			storyInfo.notes = "TEST_STORY_NOTES";
 			storyInfo.status = StoryObject.STATUS_DONE;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			
 			// Expected Response Text
 			StringBuilder expectedText = new StringBuilder();
@@ -208,7 +208,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME";
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -218,7 +218,7 @@ public class TranslationTest {
 			storyInfo.notes = "TEST_STORY_NOTES";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 
 			String actualText = Translation.translateStoryToJson(story);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -248,7 +248,8 @@ public class TranslationTest {
 		// initial data
 		for (int i = 0; i < 10; i++) {
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = mCPB.getStories().get(i).getId();
+			StoryObject story = mCPB.getStories().get(i);
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "0";
 			storyInfo.estimate = 0;
 			storyInfo.value = 0;
@@ -256,9 +257,8 @@ public class TranslationTest {
 			storyInfo.howToDemo = "0";
 			storyInfo.sprintId = StoryObject.NO_PARENT;
 			storyInfo.notes = "TEST_NOTES";
-			productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			productBacklogHelper.updateStory(storyInfo);
 
-			StoryObject story = mCPB.getStories().get(i);
 			story.reload();
 			assertEquals(0, story.getEstimate());
 			assertEquals(0, story.getImportance());
@@ -323,17 +323,17 @@ public class TranslationTest {
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
 		StoryInfo storyInfo = new StoryInfo();
-		storyInfo.id = stories.get(4).getId();
+		storyInfo.serialId = stories.get(4).getSerialId();
 		storyInfo.name = "";
 		storyInfo.estimate = 1;
 		storyInfo.value = 1;
 		storyInfo.importance = 1;
 		storyInfo.howToDemo = "";
 		storyInfo.sprintId = StoryObject.NO_PARENT;
-		productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+		productBacklogHelper.updateStory(storyInfo);
 
-		storyInfo.id = stories.get(5).getId();
-		productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+		storyInfo.serialId = stories.get(5).getSerialId();
+		productBacklogHelper.updateStory(storyInfo);
 		
 		for (int i = 0; i < 10; i++) {
 			StoryObject story = stories.get(i);
@@ -397,7 +397,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = TEST_STORY_NAME + i;
 			storyInfo.estimate = TEST_STORY_ESTIMATE;
 			storyInfo.value = TEST_STORY_VALUE;
@@ -407,7 +407,7 @@ public class TranslationTest {
 			storyInfo.notes = TEST_STORY_NOTES;
 			storyInfo.status = TEST_STORY_STATUS;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			stories.add(story);
 		}
 
@@ -479,7 +479,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME" + i;
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -488,7 +488,7 @@ public class TranslationTest {
 			storyInfo.sprintId = 1;
 			storyInfo.notes = "TEST_STORY_NOTES";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 
 			String actualText = Translation.translateTaskboardStoryToJson(story);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -496,7 +496,6 @@ public class TranslationTest {
 			assertTrue(actualText.contains("\"Name\":\"" + storyInfo.name + "\""));
 			assertTrue(actualText.contains("\"Estimate\":" + storyInfo.estimate));
 		}
-		
 	}
 
 	@Test

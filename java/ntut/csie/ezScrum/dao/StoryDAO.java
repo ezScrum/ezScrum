@@ -66,6 +66,26 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		}
 		return story;
 	}
+	
+	public StoryObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(StoryEnum.SERIAL_ID, serialId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		StoryObject story = null;
+		try {
+			if (result.next()) {
+				story = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return story;
+	}
 
 	@Override
 	public boolean update(StoryObject story) {

@@ -42,6 +42,10 @@ public class TaskObject implements IBaseObject {
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
+	
+	public static TaskObject get(long projectId, long serialId) {
+		return TaskDAO.getInstance().get(projectId, serialId);
+	}
 
 	public TaskObject(long projectId) {
 		mProjectId = projectId;

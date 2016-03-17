@@ -82,25 +82,33 @@ public class ProductBacklogHelper {
 	 * @param storyInfo
 	 * @return StoryObject
 	 */
-	public StoryObject updateStory(long id, StoryInfo storyInfo) {
+	public StoryObject updateStory(StoryInfo storyInfo) {
 		mProductBacklogMapper.updateStory(storyInfo);
-		return mProductBacklogMapper.getStory(id);
+		return mProductBacklogMapper.getStory(mProject.getId(), storyInfo.serialId);
 	}
-
-	/**
-	 * delete story and get json text
-	 * 
-	 * @param storyId
-	 * @return StringBuilder
-	 */
+	
 	public StringBuilder deleteStory(long storyId) {
-		StoryObject story = getStory(storyId);
+		StoryObject story = StoryObject.get(storyId);
 		StringBuilder result = new StringBuilder("");
 
 		if (story != null) {
 			removeTask(storyId);
 			mProductBacklogMapper.deleteStory(storyId);
-			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + story.getSerialId() + "}]}");
+		} else {
+			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
+		}
+		return result;
+	}
+	
+	public StringBuilder deleteStory(Long projectId, long serialStoryId) {
+		StoryObject story = getStory(projectId, serialStoryId);
+		StringBuilder result = new StringBuilder("");
+
+		if (story != null) {
+			removeTask(projectId, serialStoryId);
+			mProductBacklogMapper.deleteStory(projectId, serialStoryId);
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + serialStoryId + "}]}");
 		} else {
 			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
 		}
@@ -262,7 +270,7 @@ public class ProductBacklogHelper {
 	/**
 	 * remove task 跟 story 之間的關係
 	 * 
-	 * @param storyId
+	 * @param serialStoryId
 	 */
 	private void removeTask(long storyId) {
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
@@ -271,7 +279,18 @@ public class ProductBacklogHelper {
 		// drop Tasks
 		if (tasks.size() > 0) {
 			for (TaskObject task : tasks)
-				mProductBacklogMapper.removeTask(task.getId(), storyId);
+				mProductBacklogMapper.removeTask(task.getId(), story.getId());
+		}
+	}
+	
+	private void removeTask(long projectId, long serialStoryId) {
+		StoryObject story = mProductBacklogMapper.getStory(projectId, serialStoryId);
+		// 取得story的的task列表
+		ArrayList<TaskObject> tasks = story.getTasks();
+		// drop Tasks
+		if (tasks.size() > 0) {
+			for (TaskObject task : tasks)
+				mProductBacklogMapper.removeTask(task.getId(), story.getId());
 		}
 	}
 
@@ -302,6 +321,16 @@ public class ProductBacklogHelper {
 	 */
 	public StoryObject getStory(long storyId) {
 		return mProductBacklogMapper.getStory(storyId);
+	}
+	
+	/**
+	 * 取得 story 或 task
+	 * 
+	 * @param storyId
+	 * @return StoryObject
+	 */
+	public StoryObject getStory(long projectId, long serialStoryId) {
+		return mProductBacklogMapper.getStory(projectId, serialStoryId);
 	}
 
 	/**

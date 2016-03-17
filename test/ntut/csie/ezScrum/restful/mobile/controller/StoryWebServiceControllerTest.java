@@ -169,7 +169,7 @@ public class StoryWebServiceControllerTest extends JerseyTest {
 		storyJson.put("id", story.getId()).put("name", "顆顆").put("notes", "崩潰")
 				.put("how_to_demo", "做不完").put("importance", 99)
 				.put("value", 15).put("estimate", 21).put("status", StoryObject.STATUS_DONE)
-				.put("sprint_id", -1).put("tags", "");
+				.put("sprint_id", -1).put("tags", "").put("serial_id", story.getSerialId());
 		
 		Response response = mClient.target(BASE_URL)
                 .path("/" + mProjectName + "/story/update")

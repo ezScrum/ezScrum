@@ -3,17 +3,17 @@ package ntut.csie.ezScrum.web.action.backlog;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 
 public class AjaxEditStoryAction extends PermissionAction {
 	private static Log log = LogFactory.getLog(AjaxEditStoryAction.class);
@@ -37,9 +37,9 @@ public class AjaxEditStoryAction extends PermissionAction {
 		
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
-		
+		String s = request.getParameter("issueID");
 		// get parameter info
-		long id = Long.parseLong(request.getParameter("issueID"));
+		long serialStoryId = Long.parseLong(request.getParameter("issueID"));
 		String name = request.getParameter("Name");
 		String importances = request.getParameter("Importance");
 		String estimate = request.getParameter("Estimate");
@@ -48,7 +48,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		String notes = request.getParameter("Notes");
 		
 		StoryInfo storyInfo = new StoryInfo();
-		storyInfo.id = id;
+		storyInfo.serialId = serialStoryId;
 		storyInfo.name = name;
 		storyInfo.importance = Integer.parseInt(importances);
 		storyInfo.estimate = Integer.parseInt(estimate);
@@ -57,9 +57,10 @@ public class AjaxEditStoryAction extends PermissionAction {
 		storyInfo.notes = notes;
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
-		StoryObject story = productBacklogHelper.getStory(id);
+		
+		StoryObject story =  productBacklogHelper.getStory(project.getId(), serialStoryId);
 		storyInfo.sprintId = story.getSprintId();
-		story = productBacklogHelper.updateStory(id, storyInfo);
+		story = productBacklogHelper.updateStory(storyInfo);
 		StringBuilder result = productBacklogHelper.translateStoryToJson(story);
 		return result;
 	}

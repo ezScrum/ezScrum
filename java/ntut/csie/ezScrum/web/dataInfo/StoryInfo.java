@@ -7,6 +7,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class StoryInfo {
 	public long id = -1;
+	public long serialId = -1;
 	public String name = "";
 	public String notes = "";
 	public String howToDemo = "";
@@ -30,6 +31,11 @@ public class StoryInfo {
 			id = story.getLong("id");
 		} catch (JSONException e) {
 			id = -1;
+		}
+		try {
+			serialId = story.getLong("serial_id");
+		} catch (Exception e) {
+			serialId = -1;
 		}
 		name = story.getString("name");
 		notes = story.getString("notes");

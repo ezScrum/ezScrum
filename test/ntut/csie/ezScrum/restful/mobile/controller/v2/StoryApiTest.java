@@ -154,7 +154,7 @@ public class StoryApiTest extends JerseyTest {
 		StoryObject story = mCPB.getStories().get(0);
 		// initial request data
 		JSONObject storyJson = new JSONObject();
-		storyJson.put("id", story.getId()).put("name", "顆顆").put("notes", "崩潰")
+		storyJson.put("id", story.getId()).put("serial_id", story.getSerialId()).put("name", "顆顆").put("notes", "崩潰")
 				.put("how_to_demo", "做不完").put("importance", 99)
 				.put("value", 15).put("estimate", 21).put("status", 0)
 				.put("sprint_id", -1).put("tags", "")
