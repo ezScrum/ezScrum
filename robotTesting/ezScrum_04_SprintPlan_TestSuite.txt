@@ -45,30 +45,30 @@ Test Sprint Plan - Check Due Date
     Focus AND Input Text    //input[@name="StartDate"]    2016/12/26
     Focus AND Input Text    //input[@name="Interval"]    2
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2017/01/09
+    Compare Field Content    //input[@name="DueDate"]    2017/01/06
     Clear Element Text    //input[@name="Interval"]
     #Check Due date
     Focus AND Input Text    //input[@name="StartDate"]    2015/12/21
     Focus AND Input Text    //input[@name="Interval"]    2
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2016/01/04
+    Compare Field Content    //input[@name="DueDate"]    2016/01/01
     Clear Element Text    //input[@name="Interval"]
     #Check Due date
     Focus AND Input Text    //input[@name="StartDate"]    2015/02/23
     Focus AND Input Text    //input[@name="Interval"]    2
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2015/03/09
+    Compare Field Content    //input[@name="DueDate"]    2015/03/06
     Clear Element Text    //input[@name="Interval"]
     #Check Due date
     Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
     Focus AND Input Text    //input[@name="Interval"]    2
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2016/03/07
+    Compare Field Content    //input[@name="DueDate"]    2016/03/04
     #Check Due date
     Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
     Focus AND Input Text    //input[@name="Interval"]    1
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2016/02/29
+    Compare Field Content    //input[@name="DueDate"]    2016/02/26
     Clear Element Text    //input[@name="Interval"]
     #Check Due date
     Focus AND Input Text    //input[@name="StartDate"]    2016/02/23
@@ -104,7 +104,7 @@ Test Sprint Plan - Check Due Date
     Focus AND Input Text    //input[@name="StartDate"]    2016/02/28
     Focus AND Input Text    //input[@name="Interval"]    1
     Click Element    //input[@name="DueDate"]
-    Compare Field Content    //input[@name="DueDate"]    2016/03/07
+    Compare Field Content    //input[@name="DueDate"]    2016/03/04
     Clear Element Text    //input[@name="Interval"]
     Click Element    //button[text()="Cancel"]
     [Teardown]

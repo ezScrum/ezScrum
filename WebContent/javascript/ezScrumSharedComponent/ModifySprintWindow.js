@@ -61,7 +61,7 @@ var SprintDetailItems = [
     	allowNegative: false
     },{
     	//Due day
-    	fieldLabel : 'Due Date',
+    	fieldLabel : 'End Date',
     	name       : 'DueDate',
     	xtype	   : 'datefield',
     	format     : 'Y/m/d',
@@ -190,9 +190,9 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             	
             	// 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             	if(tempDueDate.getDay() == 0){
-            	   obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, 1));
+            	   obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, -2));
                 } else if (tempDueDate.getDay() == 6) {
-                	obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, 2));
+                	obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, -1));
                 } else {
                    obj.dueDate_CS.setValue(tempDueDate);
                 }
@@ -280,19 +280,19 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     	var interval_CS = this.getItem_Field(3);
     	var dueDate_CS = this.getItem_Field(4);
         if (startDate_CS.isValid()) {
-            // 計算DueDate
+            // 計算EndDate
             var demoDateValue = demoDate_CS.getValue();
             var startDateValue = startDate_CS.getValue();
             var intervalValue = interval_CS.getValue();
             
             this.demoDate_CS.setMinValue(startDateValue);
             this.demoDate_CS.setValue(demoDateValue);
-            this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce dueDay
+            this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce endDay
             // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if(dueDate_CS.getValue().getDay() == 0){
-               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, 1));
+               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, -2));
             } else if (dueDate_CS.getValue().getDay() == 6){
-               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, 2));
+               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, -1));
             }
             var dueDateValue  = dueDate_CS.getValue();
         }else{
@@ -340,21 +340,22 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     		// 取出 StartDate
             var preStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
             
-            // 計算 DueDate
+            // 計算 EndDate
             var temp = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1); 
             var preDueDate;
             
             // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if(temp.getDay() == 0){
-               preDueDate = temp.add(Date.DAY, 1);
+               preDueDate = temp.add(Date.DAY, -2);
             } else if(temp.getDay() == 6) {
-               preDueDate = temp.add(Date.DAY, 2);
+               preDueDate = temp.add(Date.DAY, -1);
             } else {
                preDueDate = temp;
             };
             
             // 設定 demoDate 時間範圍
             this.demoDate_CS.setMinValue(this.startDate_CS.getValue());
+            console.log("date is : " + preDueDate.getDay());
             
             var newID = (record.get('Id') ^ 0) + 1;
 			var newStartDate;
@@ -362,7 +363,11 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
 			if(record.get('Goal') == ""){
 			   newStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
 	        } else {
-	           newStartDate = preDueDate.add(Date.DAY, 1);
+	           if(preDueDate.getDay() == 5){
+	        	  newStartDate = preDueDate.add(Date.DAY, 3); 
+	           } else {
+	        	  newStartDate = preDueDate.add(Date.DAY, 1);
+	           }
 	        };
             
 			// 設定初始值

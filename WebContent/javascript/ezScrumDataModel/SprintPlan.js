@@ -59,7 +59,7 @@ var SprintColumnModel = function() {
 		width : 90
 	}, {
 		dataIndex : 'DueDate',
-		header : 'Due Date',
+		header : 'End Date',
 		width : 90
 	}, {
 		dataIndex : 'DemoDate',
