@@ -96,7 +96,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/24";
+		sprintInfo.endDate = "2015/06/24";
 
 		// call SprintPlanMapper addSprintPlan
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
@@ -169,7 +169,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/25";
 		sprintInfo.demoPlace = "Lab1321_NEW";
 		sprintInfo.dailyInfo = "12:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/25";
+		sprintInfo.endDate = "2015/06/25";
 		
 		// call updateSprintPlan
 		mSprintPlanMapper.updateSprint(sprintInfo);
@@ -210,7 +210,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/07/01";
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
-		sprintInfo.dueDate = "2015/07/01";
+		sprintInfo.endDate = "2015/07/01";
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(sprintId);
 		
@@ -243,7 +243,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/24";
+		sprintInfo.endDate = "2015/06/24";
 		// addSprint
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(sprintId);

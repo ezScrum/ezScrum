@@ -9,7 +9,7 @@ var SprintPlanStore_ForSprintWindow = new Ext.data.Store({
         { name : 'Goal'}, 
         { name : 'StartDate'},
         { name : 'Interval'}, 
-        { name : 'DueDate'}, 
+        { name : 'EndDate'}, 
         { name : 'Members'}, 
         { name : 'AvaliableDays'},
         { name : 'FocusFactor'}, 
@@ -60,9 +60,9 @@ var SprintDetailItems = [
     	anchor     : '50%',
     	allowNegative: false
     },{
-    	//Due day
+    	//End day
     	fieldLabel : 'End Date',
-    	name       : 'DueDate',
+    	name       : 'EndDate',
     	xtype	   : 'datefield',
     	format     : 'Y/m/d',
     	altFormats : 'Y/m/d',
@@ -175,27 +175,27 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         ezScrum.SprintDetailForm.superclass.initComponent.apply(this, arguments);
         
         /*-----------------------------------------------------------
-         *  Interval與StartDate的Value改變事件處理(計算DueDate)
+         *  Interval與StartDate的Value改變事件處理(計算EndDate)
          *-------------------------------------------------------------*/
         var obj = this;
         this.id_CS = this.getItem_Field(0);
         this.startDate_CS = this.getItem_Field(2);
         this.interval_CS = this.getItem_Field(3);
         this.demoDate_CS = this.getItem_Field(8);
-        this.dueDate_CS = this.getItem_Field(4);
+        this.endDate_CS = this.getItem_Field(4);
         
         this.interval_CS.addListener('change', function(interval, newValue, oldValue) {
             if (obj.startDate_CS.isValid()) {
             	// end date generated logic
-            	var tempDueDate = obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1);
-            	obj.dueDate_CS.setValue(tempDueDate);
+            	var tempEndDate = obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1);
+            	obj.endDate_CS.setValue(tempEndDate);
             	
             	// demo date generated logic
-            	var tempDemoDate = tempDueDate;
-            	if(tempDueDate.getDay() == 0){
-            		tempDemoDate = tempDueDate.add(Date.DAY, -2);
-                } else if (tempDueDate.getDay() == 6) {
-                	tempDemoDate = tempDueDate.add(Date.DAY, -1);
+            	var tempDemoDate = tempEndDate;
+            	if(tempEndDate.getDay() == 0){
+            		tempDemoDate = tempEndDate.add(Date.DAY, -2);
+                } else if (tempEndDate.getDay() == 6) {
+                	tempDemoDate = tempEndDate.add(Date.DAY, -1);
                 } 
             	obj.demoDate_CS.setMinValue(obj.startDate_CS.getValue());
             	obj.demoDate_CS.setValue(tempDemoDate);
@@ -206,9 +206,9 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         
         this.startDate_CS.addListener('select', function(interval, newValue, oldValue) {
             if (obj.interval_CS.isValid()) {
-            	obj.dueDate_CS.setValue(newValue.add(Date.DAY, (obj.interval_CS.getValue() ^ 0) * 7 -1));
+            	obj.endDate_CS.setValue(newValue.add(Date.DAY, (obj.interval_CS.getValue() ^ 0) * 7 -1));
             	obj.demoDate_CS.setMinValue(obj.startDate_CS.getValue());
-            	obj.demoDate_CS.setValue(obj.dueDate_CS.getValue());
+            	obj.demoDate_CS.setValue(obj.endDate_CS.getValue());
             }
         });
     },
@@ -279,7 +279,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     	var startDate_CS = this.getItem_Field(2);
     	var demoDate_CS = this.getItem_Field(8);
     	var interval_CS = this.getItem_Field(3);
-    	var dueDate_CS = this.getItem_Field(4);
+    	var endDate_CS = this.getItem_Field(4);
         if (startDate_CS.isValid()) {
             // generate EndDate
             var demoDateValue = demoDate_CS.getValue();
@@ -288,9 +288,9 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             
             this.demoDate_CS.setMinValue(startDateValue);
             this.demoDate_CS.setValue(demoDateValue);
-            this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce endDay
+            this.endDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce endDay
             
-            var tempDemoDate = this.dueDate_CS.getValue();
+            var tempDemoDate = this.endDate_CS.getValue();
             
             // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if (tempDemoDate.getDay() == 0) {
@@ -315,7 +315,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     		FocusFactor	: record.get('FocusFactor'),
     		DemoDate	: record.get('DemoDate'),
     		DemoPlace	: SpecialChar_Translate(record.get('DemoPlace')),
-    		DueDate		: record.get('DueDate'),
+    		EndDate		: record.get('EndDate'),
     		DailyScrum	: SpecialChar_Translate(record.get('DailyScrum'))
     	});
     },
@@ -346,20 +346,20 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             
             // generate EndDate
             var temp = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1); 
-            var preDueDate;
+            var preEndDate;
             
             // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
             if(temp.getDay() == 0){
-               preDueDate = temp.add(Date.DAY, -2);
+               preEndDate = temp.add(Date.DAY, -2);
             } else if(temp.getDay() == 6) {
-               preDueDate = temp.add(Date.DAY, -1);
+               preEndDate = temp.add(Date.DAY, -1);
             } else {
-               preDueDate = temp;
+               preEndDate = temp;
             };
             
             // set boundary of demoDate
             this.demoDate_CS.setMinValue(this.startDate_CS.getValue());
-            console.log("date is : " + preDueDate.getDay());
+            console.log("date is : " + preEndDate.getDay());
             
             var newID = (record.get('Id') ^ 0) + 1;
 			var newStartDate;
@@ -367,10 +367,10 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
 			if(record.get('Goal') == ""){
 			   newStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
 	        } else {
-	           if(preDueDate.getDay() == 5){
-	        	  newStartDate = preDueDate.add(Date.DAY, 3); 
+	           if(preEndDate.getDay() == 5){
+	        	  newStartDate = preEndDate.add(Date.DAY, 3); 
 	           } else {
-	        	  newStartDate = preDueDate.add(Date.DAY, 1);
+	        	  newStartDate = preEndDate.add(Date.DAY, 1);
 	           }
 	        };
             

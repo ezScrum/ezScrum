@@ -81,14 +81,14 @@ public class SprintObjectTest {
 		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
 		String sprintStartDate = "2015/05/28";
 		String sprintDemoDate = "2015/06/11";
-		String sprintDueDate = "2015/06/11";
+		String sprintEndDate = "2015/06/11";
 
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(sprintStartDate)
-				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 
@@ -115,7 +115,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoPlace, sprintFromDB.getDemoPlace());
 		assertEquals(sprintStartDate, sprintFromDB.getStartDateString());
 		assertEquals(sprintDemoDate, sprintFromDB.getDemoDateString());
-		assertEquals(sprintDueDate, sprintFromDB.getDueDateString());
+		assertEquals(sprintEndDate, sprintFromDB.getEndDateString());
 	}
 
 	@Test
@@ -133,12 +133,12 @@ public class SprintObjectTest {
 		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE_NEW";
 		String sprintStartDate = "2015/05/29";
 		String sprintDemoDate = "2015/06/19";
-		String sprintDueDate = "2015/06/19";
+		String sprintEndDate = "2015/06/19";
 
 		sprint.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(sprintStartDate)
-				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
 				.setDemoPlace(sprintDemoPlace).setDemoDate(sprintDemoDate)
 				.save();
 
@@ -154,7 +154,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
 		assertEquals(sprintDemoDate, sprint.getDemoDateString());
-		assertEquals(sprintDueDate, sprint.getDueDateString());
+		assertEquals(sprintEndDate, sprint.getEndDateString());
 	}
 
 	@Test
@@ -197,14 +197,14 @@ public class SprintObjectTest {
 		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
 		String sprintStartDate = "2015/05/28";
 		String sprintDemoDate = "2015/06/11";
-		String sprintDueDate = "2015/06/11";
+		String sprintEndDate = "2015/06/11";
 
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(sprintStartDate)
-				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 
@@ -218,7 +218,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoPlace, sprint.getDemoPlace());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
 		assertEquals(sprintStartDate, sprint.getStartDateString());
-		assertEquals(sprintDueDate, sprint.getDueDateString());
+		assertEquals(sprintEndDate, sprint.getEndDateString());
 
 		return sprint;
 	}
@@ -227,7 +227,7 @@ public class SprintObjectTest {
 	public void testContains() {
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setStartDate("2015/08/24");
-		sprint.setDueDate("2015/08/31");
+		sprint.setEndDate("2015/08/31");
 		sprint.save();
 		assertFalse(sprint.contains(DateUtil.dayFilter("2015/08/23")));
 		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/24")));
@@ -245,7 +245,7 @@ public class SprintObjectTest {
 	public void testGetTotalStoryPoints() {
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setStartDate("2015/08/24");
-		sprint.setDueDate("2015/08/31");
+		sprint.setEndDate("2015/08/31");
 		sprint.save();
 		
 		StoryObject story1 = new StoryObject(mProjectId);
@@ -269,7 +269,7 @@ public class SprintObjectTest {
 	public void testGetStoryUnclosedPoints() {
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setStartDate("2015/08/24");
-		sprint.setDueDate("2015/08/31");
+		sprint.setEndDate("2015/08/31");
 		sprint.save();
 		
 		StoryObject story1 = new StoryObject(mProjectId);
@@ -294,7 +294,7 @@ public class SprintObjectTest {
 	public void testGetTotalTaskPoints() {
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setStartDate("2015/08/24");
-		sprint.setDueDate("2015/08/31");
+		sprint.setEndDate("2015/08/31");
 		sprint.save();
 		
 		StoryObject story1 = new StoryObject(mProjectId);
@@ -334,7 +334,7 @@ public class SprintObjectTest {
 	public void testGetTaskRemainsPoints() {
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setStartDate("2015/08/24");
-		sprint.setDueDate("2015/08/31");
+		sprint.setEndDate("2015/08/31");
 		sprint.save();
 		
 		StoryObject story1 = new StoryObject(mProjectId);
@@ -388,14 +388,14 @@ public class SprintObjectTest {
 		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
 		String sprintStartDate = "2015/05/28";
 		String sprintDemoDate = "2015/06/11";
-		String sprintDueDate = "2015/06/11";
+		String sprintEndDate = "2015/06/11";
 
 		// create sprint object
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(sprintStartDate)
-				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 		

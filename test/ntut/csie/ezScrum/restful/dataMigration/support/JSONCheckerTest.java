@@ -52,7 +52,7 @@ public class JSONCheckerTest {
 		assertFalse(JSONChecker.checkReleaseJSON(releaseJSON.toString()).isEmpty());
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/12/6");
 		assertFalse(JSONChecker.checkReleaseJSON(releaseJSON.toString()).isEmpty());
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/31");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/31");
 		assertTrue(JSONChecker.checkReleaseJSON(releaseJSON.toString()).isEmpty());
 	}
 	
@@ -184,7 +184,7 @@ public class JSONCheckerTest {
 		assertFalse(JSONChecker.checkSprintJSON(sprintJSON.toString()).isEmpty());
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/27");
 		assertFalse(JSONChecker.checkSprintJSON(sprintJSON.toString()).isEmpty());
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/10");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/10");
 		assertFalse(JSONChecker.checkSprintJSON(sprintJSON.toString()).isEmpty());
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/10");
 		assertFalse(JSONChecker.checkSprintJSON(sprintJSON.toString()).isEmpty());

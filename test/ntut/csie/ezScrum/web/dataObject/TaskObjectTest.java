@@ -567,14 +567,14 @@ public class TaskObjectTest {
 		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
 		String sprintStartDate = "2015/05/28";
 		String sprintDemoDate = "2015/06/11";
-		String sprintDueDate = "2015/06/11";
+		String sprintEndDate = "2015/06/11";
 		
 		// create sprint
 		SprintObject sprint = new SprintObject(mProjectId);
 		sprint.setInterval(2).setTeamSize(5)
 				.setAvailableHours(100).setFocusFactor(70)
 				.setGoal(sprintGoal).setStartDate(sprintStartDate)
-				.setDueDate(sprintDueDate).setDailyInfo(sprintDailyInfo)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
 				.save();
 		

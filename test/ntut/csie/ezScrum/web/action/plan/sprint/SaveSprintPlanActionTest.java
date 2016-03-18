@@ -79,9 +79,9 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintAvaliableDays = "100";
     	String sprintFocusFactor = "100";
     	String sprintDailyScrum = "Lab 1321";
-    	String sprintDemoDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), today);
+    	String sprintDemoDate = testTool.calcaulateEndDate(Integer.parseInt(sprintInterval), today);
     	String sprintDemoPlace = "Lab 1321";
-    	String sprintDueDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), today);
+    	String sprintEndDate = testTool.calcaulateEndDate(Integer.parseInt(sprintInterval), today);
 
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?projectName=" + projectName);
@@ -96,7 +96,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		addRequestParameter("DailyScrum", sprintDailyScrum);
 		addRequestParameter("DemoDate", sprintDemoDate);
 		addRequestParameter("DemoPlace", sprintDemoPlace);
-		addRequestParameter("DueDate", sprintDueDate);
+		addRequestParameter("EndDate", sprintEndDate);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -139,9 +139,9 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
     	String sprintAvaliableDays = "120";
     	String sprintFocusFactor = "80";
     	String sprintDailyScrum = "Lab 1321 Daily Scrum";
-    	String sprintDemoDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), date);
+    	String sprintDemoDate = testTool.calcaulateEndDate(Integer.parseInt(sprintInterval), date);
     	String sprintDemoPlace = "Lab 1321 Demo Place";
-    	String sprintDueDate = testTool.calcaulateDueDate(Integer.parseInt(sprintInterval), date);
+    	String sprintEndDate = testTool.calcaulateEndDate(Integer.parseInt(sprintInterval), date);
     	
 		String projectName = mProject.getName();
 		request.setHeader("Referer", "?projectName=" + projectName);
@@ -156,7 +156,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		addRequestParameter("DailyScrum", sprintDailyScrum);
 		addRequestParameter("DemoDate", sprintDemoDate);
 		addRequestParameter("DemoPlace", sprintDemoPlace);
-		addRequestParameter("DueDate", sprintDueDate);
+		addRequestParameter("EndDate", sprintEndDate);
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -214,7 +214,7 @@ public class SaveSprintPlanActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("\"DailyScrum\":\"" + sprintDailyScrum + "\",");
 		expectedResponseText.append("\"DemoDate\":\"" + sprintDemoDate + "\",");
 		expectedResponseText.append("\"DemoPlace\":\"" + sprintDemoPlace + "\",");
-		expectedResponseText.append("\"DueDate\":\"" + sprintDemoDate + "\"");
+		expectedResponseText.append("\"EndDate\":\"" + sprintDemoDate + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

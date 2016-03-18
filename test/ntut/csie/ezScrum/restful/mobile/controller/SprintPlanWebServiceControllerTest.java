@@ -132,7 +132,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		String sprintGoal = "TEST_SPRINT_GOAL";
 		String startDate = "2015/07/01";
 		String demoDate = "2015/07/15";
-		String dueDate = "2015/07/15";
+		String endDate = "2015/07/15";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "TEST_DAILY_INFO";
 		
@@ -148,7 +148,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		          .put(SprintEnum.DEMO_DATE, demoDate)
 		          .put(SprintEnum.DEMO_PLACE, demoPlace)
 		          .put(SprintEnum.DAILY_INFO, dailyInfo)
-		          .put(SprintEnum.DUE_DATE, dueDate);
+		          .put(SprintEnum.END_DATE, endDate);
 		
 		Response response = mClient.target(BASE_URL)
                 .path("/" + mProjectName + "/sprint/create")
@@ -191,7 +191,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		String demoDate = "2013/07/22";
 		String demoPlace = "TEST_DEMO_PLACE";
 		String dailyInfo = "TEST_DAILY_INFO_NEW";
-		String dueDate = "2013/07/22";
+		String endDate = "2013/07/22";
 
 		SprintObject updateSpint = mCS.getSprints().get(0);
 		SprintObject temp = SprintObject.get(updateSpint.getId());
@@ -208,7 +208,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 		        .put(SprintEnum.DEMO_DATE, demoDate)
 		        .put(SprintEnum.DEMO_PLACE, demoPlace)
 		        .put(SprintEnum.DAILY_INFO, dailyInfo)
-		        .put(SprintEnum.DUE_DATE, dueDate);
+		        .put(SprintEnum.END_DATE, endDate);
 
 		mClient.target(BASE_URL)
                .path("/" + mProjectName + "/sprint/update")

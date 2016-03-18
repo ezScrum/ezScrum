@@ -119,7 +119,7 @@ public class ReleasePlanHelperTest {
 		Calendar cal = Calendar.getInstance();
 		Date NewStartDate = cal.getTime(); // set New Start Date
 		cal.add(Calendar.DAY_OF_YEAR, 180);
-		Date NewDueDate = cal.getTime(); // set New End Date
+		Date NewEndDate = cal.getTime(); // set New End Date
 
 		// edit 判斷式的測試
 		long lastId = releases.get(releases.size() - 1).getId(); // 修改最後一筆資訊
@@ -130,7 +130,7 @@ public class ReleasePlanHelperTest {
 		releaseInfo.id = lastId;
 		releaseInfo.name = NewName;
 		releaseInfo.startDate = format.format(NewStartDate).toString();
-		releaseInfo.dueDate = format.format(NewDueDate).toString();
+		releaseInfo.endDate = format.format(NewEndDate).toString();
 		releaseInfo.description = NewDesc;
 		mReleasePlanHelper.editRelease(releaseInfo);
 
@@ -139,7 +139,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(NewName, editRelease.getName());
 		assertEquals(NewDesc, editRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), editRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), editRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), editRelease.getEndDateString());
 
 		// save 判斷式的測試
 		lastId++;
@@ -147,7 +147,7 @@ public class ReleasePlanHelperTest {
 		releaseInfo.id = lastId;
 		releaseInfo.name = "ReleaseName-New";
 		releaseInfo.startDate = format.format(NewStartDate).toString();
-		releaseInfo.dueDate = format.format(NewDueDate).toString();
+		releaseInfo.endDate = format.format(NewEndDate).toString();
 		releaseInfo.description = "ReleaseDesc-New";
 		mReleasePlanHelper.createRelease(releaseInfo);
 		ReleaseObject saveRelease = mReleasePlanHelper.getReleasePlan(lastId);
@@ -156,7 +156,7 @@ public class ReleasePlanHelperTest {
 		assertEquals("ReleaseName-New", saveRelease.getName());
 		assertEquals("ReleaseDesc-New", saveRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), saveRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), saveRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), saveRelease.getEndDateString());
 
 		// default 除錯測試
 		mReleasePlanHelper.editRelease(releaseInfo);
@@ -165,7 +165,7 @@ public class ReleasePlanHelperTest {
 		assertEquals("ReleaseName-New", otherRelease.getName());
 		assertEquals("ReleaseDesc-New", otherRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), otherRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), otherRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), otherRelease.getEndDateString());
 	}
 	
 	@Test

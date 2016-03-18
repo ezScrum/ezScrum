@@ -95,14 +95,14 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/21";
+		String endDate = "2015/12/21";
 		ProjectObject project = mCP.getAllProjects().get(0);
 
 		JSONObject releaseJSON = new JSONObject();
 		releaseJSON.put(ReleaseJSONEnum.NAME, name);
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, description);
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, startDate);
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, dueDate);
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, endDate);
 
 		// Call '/projects/{projectId}/releases' API
 		Response response = mClient.target(BASE_URL)
@@ -123,7 +123,7 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		assertEquals(name, release.getName());
 		assertEquals(description, release.getDescription());
 		assertEquals(startDate, release.getStartDateString());
-		assertEquals(dueDate, release.getDueDateString());
+		assertEquals(endDate, release.getEndDateString());
 	}
 	
 	@Test
@@ -135,14 +135,14 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/21";
+		String endDate = "2015/12/21";
 		ProjectObject project = mCP.getAllProjects().get(0);
 
 		JSONObject releaseJSON = new JSONObject();
 		releaseJSON.put(ReleaseJSONEnum.NAME, name);
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, description);
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, startDate);
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, dueDate);
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, endDate);
 
 		// Call '/projects/{projectId}/releases' API
 		Response response = mClient.target(BASE_URL)
@@ -172,14 +172,14 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/21";
+		String endDate = "2015/12/21";
 		ProjectObject project = mCP.getAllProjects().get(0);
 
 		JSONObject releaseJSON = new JSONObject();
 		releaseJSON.put(ReleaseJSONEnum.NAME, name);
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, description);
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, startDate);
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, dueDate);
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, endDate);
 
 		// Call '/projects/{projectId}/releases' API
 		Response response = mClient.target(BASE_URL)
@@ -209,14 +209,14 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/21";
+		String endDate = "2015/12/21";
 		ProjectObject project = mCP.getAllProjects().get(0);
 
 		JSONObject releaseJSON = new JSONObject();
 		releaseJSON.put(ReleaseJSONEnum.NAME, name);
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, description);
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, startDate);
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, dueDate);
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, endDate);
 
 		// Call '/projects/{projectId}/releases' API
 		Response response = mClient.target(BASE_URL)

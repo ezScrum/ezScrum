@@ -34,7 +34,7 @@ public class CheckReleaseDateAction extends PermissionAction {
 		// get parameter info
 		String serialReleaseIdString = request.getParameter("Id");
 		String startDate = request.getParameter("StartDate");
-		String dueDate = request.getParameter("EndDate");
+		String endDate = request.getParameter("EndDate");
 		String action = request.getParameter("action");
 		if (action == null || action.isEmpty()) {
 			return null;
@@ -51,7 +51,7 @@ public class CheckReleaseDateAction extends PermissionAction {
 			releaseId = release.getId();
 		}
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
-		return releasePlanHelper.checkReleaseDateOverlapping(releaseId, startDate, dueDate, action);
+		return releasePlanHelper.checkReleaseDateOverlapping(releaseId, startDate, endDate, action);
 	}
 
 }

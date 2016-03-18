@@ -108,12 +108,12 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("\"DailyScrum\":\""
 				+ mCS.TEST_SPRINT_DAILY_INFO + 1 + "\",");
 		expectedResponseText.append("\"DemoDate\":\""
-				+ testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL,
+				+ testTool.calcaulateEndDate(CreateSprint.SPRINT_INTERVAL,
 						mCS.mToday) + "\",");
 		expectedResponseText.append("\"DemoPlace\":\""
 				+ CreateSprint.SPRINT_DEMOPLACE + "\",");
-		expectedResponseText.append("\"DueDate\":\""
-				+ testTool.calcaulateDueDate(CreateSprint.SPRINT_INTERVAL,
+		expectedResponseText.append("\"EndDate\":\""
+				+ testTool.calcaulateEndDate(CreateSprint.SPRINT_INTERVAL,
 						mCS.mToday) + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
@@ -150,7 +150,7 @@ public class GetOneSprintPlanActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("\"DailyScrum\":\"TEST_SPRINTDAILYINFO_2\",");
 		expectedResponseText.append("\"DemoDate\":\"" + lastSprint.getDemoDateString() + "\",");
 		expectedResponseText.append("\"DemoPlace\":\"Lab1321\",");
-		expectedResponseText.append("\"DueDate\":\"" + lastSprint.getDueDateString() + "\"");
+		expectedResponseText.append("\"EndDate\":\"" + lastSprint.getEndDateString() + "\"");
 		expectedResponseText.append("}]}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

@@ -27,8 +27,8 @@ public class ReleaseBoard {
 	private void init() {
 		if (mRelease != null) {
 			Date startDate = DateUtil.dayFilter(mRelease.getStartDateString());
-			Date dueDate = DateUtil.dayFilter(mRelease.getDueDateString());
-			int totalDays = (int) ((dueDate.getTime() - startDate.getTime()) / OneDay);
+			Date endDate = DateUtil.dayFilter(mRelease.getEndDateString());
+			int totalDays = (int) ((endDate.getTime() - startDate.getTime()) / OneDay);
 
 			// ============產生繪製story用的資料=======================
 			// 產生理想的線
@@ -49,7 +49,7 @@ public class ReleaseBoard {
 			int increase_days = (int) (totalDays / interval_count);
 			// 每一天的理想與真實點數
 			while (indexDate.getTimeInMillis() < m_currentDate.getTime()) {
-				if (indexDate.getTimeInMillis() > dueDate
+				if (indexDate.getTimeInMillis() > endDate
 						.getTime())
 					break;
 
@@ -66,7 +66,7 @@ public class ReleaseBoard {
 			}
 
 			// 針對 release 的最後一天作特別處理顯示當天的點數
-			indexDate.setTime(dueDate);
+			indexDate.setTime(endDate);
 			Date key = indexDate.getTime();
 			mStoryIdealMap.put(key, 0.0);
 			mStoryRealMap.put(key, mRelease.getDoneStoryAmount());

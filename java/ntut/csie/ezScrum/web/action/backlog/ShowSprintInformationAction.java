@@ -68,7 +68,7 @@ public class ShowSprintInformationAction extends Action {
 		
 		request.setAttribute("SprintPlan", sprint);
 		request.setAttribute("Actors", (new ProjectMapper()).getProjectWorkersUsername(project.getId()));
-		String sprintPeriod = sprint.getStartDateString() + " to " + sprint.getDueDateString();
+		String sprintPeriod = sprint.getStartDateString() + " to " + sprint.getEndDateString();
 		request.setAttribute("SprintPeriod", sprintPeriod);
 
 		AccountObject account = userSession.getAccount();

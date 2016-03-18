@@ -42,7 +42,7 @@ public class JSONChecker {
 			releaseJSON.getString(ReleaseJSONEnum.NAME);
 			releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION);
 			releaseJSON.getString(ReleaseJSONEnum.START_DATE);
-			releaseJSON.getString(ReleaseJSONEnum.DUE_DATE);
+			releaseJSON.getString(ReleaseJSONEnum.END_DATE);
 		} catch (JSONException e) {
 			message = e.getMessage();
 		}
@@ -121,7 +121,7 @@ public class JSONChecker {
 			sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS);
 			sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR);
 			sprintJSON.getString(SprintJSONEnum.START_DATE);
-			sprintJSON.getString(SprintJSONEnum.DUE_DATE);
+			sprintJSON.getString(SprintJSONEnum.END_DATE);
 			sprintJSON.getString(SprintJSONEnum.DEMO_DATE);
 			sprintJSON.getString(SprintJSONEnum.DEMO_PLACE);
 			sprintJSON.getString(SprintJSONEnum.DAILY_INFO);

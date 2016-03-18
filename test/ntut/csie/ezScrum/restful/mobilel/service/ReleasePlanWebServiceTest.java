@@ -132,7 +132,7 @@ public class ReleasePlanWebServiceTest {
 			assertEquals(releases.get(i).getId(), releaseJson.get(ReleaseEnum.ID));
 			assertEquals(releases.get(i).getName(), releaseJson.get(ReleaseEnum.NAME));
 			assertEquals(releases.get(i).getStartDateString(), releaseJson.get(ReleaseEnum.START_DATE));
-			assertEquals(releases.get(i).getDueDateString(), releaseJson.get(ReleaseEnum.DUE_DATE));
+			assertEquals(releases.get(i).getEndDateString(), releaseJson.get(ReleaseEnum.END_DATE));
 			assertEquals(releases.get(i).getDescription(), releaseJson.get(ReleaseEnum.DESCRIPTION));
 		}
 	}

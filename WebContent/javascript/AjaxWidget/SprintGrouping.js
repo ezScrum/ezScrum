@@ -235,12 +235,12 @@ sprintSelectionModel.on('rowselect', function(sm, rowIdx, r) {
 			// DemoDate.setValue(r.get('DemoDate'));
 			// DemoPlace.setValue(r.get('DemoPlace'));
 
-			// 計算Due Day，與判斷此Sprint是否可編輯
+			// 計算 End Day，與判斷此Sprint是否可編輯
 			var start = StartDate.getValue();
 			if (start != null) {
-				// 計算DueDate
+				// 計算 EndDate
 				var today = new Date();
-				due = start.add(Date.DAY, parseInt(Interval.getValue()) * 7);
+				end = start.add(Date.DAY, parseInt(Interval.getValue()) * 7);
 
 			}
 

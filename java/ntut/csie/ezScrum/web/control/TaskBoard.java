@@ -151,27 +151,27 @@ public class TaskBoard {
 
 		// 依照Type取出當天的Story或者是Task來進行計算
 		// 因為輸入的日期為當日的0:0:0,但在23:59:59之前也算當日，所以必需多加一日做為當天的計算
-		Date dueDate = new Date(date.getTime() + mOneDay);
+		Date endDate = new Date(date.getTime() + mOneDay);
 
 		// 尋訪現有的所有Story
 		for (StoryObject story : mStories) {
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (story.getStatus(dueDate) == StoryObject.STATUS_DONE) {
+			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
 
 			try {
 				// 計算Story點數
-				point[0] += getStoryPoint(dueDate, story);
+				point[0] += getStoryPoint(endDate, story);
 
 				// 計算Task點數
 				// 取得這個Story底下的Task點數
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
-					if(task.getStatus(dueDate) == TaskObject.STATUS_DONE) {
+					if(task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 						continue;
 					}
-					point[1] += getTaskPoint(dueDate, task);
+					point[1] += getTaskPoint(endDate, task);
 				}
 			} catch (Exception e) {
 				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception

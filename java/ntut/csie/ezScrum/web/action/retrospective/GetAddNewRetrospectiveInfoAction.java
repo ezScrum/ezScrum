@@ -63,9 +63,9 @@ public class GetAddNewRetrospectiveInfoAction extends Action {
 				/*------------------------------------------------------------
 				 *  判斷此Sprint是否已過期，是否可以編輯
 				 -------------------------------------------------------------*/
-				String dueDateString = sprint.getDueDateString(); // 取得日期為轉換成字串的日期
+				String endDateString = sprint.getEndDateString(); // 取得日期為轉換成字串的日期
 																	// yyyy/mm/dd
-				Date endDate = DateUtil.dayFilter(dueDateString);
+				Date endDate = DateUtil.dayFilter(endDateString);
 				SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 				String transToday_String = format.format(today);
 				Date transToday_Date = DateUtil.dayFilter(transToday_String); // 將今日轉成與

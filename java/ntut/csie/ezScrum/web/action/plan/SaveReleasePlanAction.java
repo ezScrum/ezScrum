@@ -36,7 +36,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 		String serialReleaseIdString = request.getParameter("Id");
 		String name = TranslateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
 		String startDate = request.getParameter("StartDate");
-		String dueDate = request.getParameter("EndDate");
+		String endDate = request.getParameter("EndDate");
 		String description = TranslateSpecialChar.TranslateXMLChar(request.getParameter("Description"));
 		String action = request.getParameter("action");
 		if (action == null || action.isEmpty()) {
@@ -46,7 +46,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 		ReleaseInfo releaseInfo = new ReleaseInfo();
 		releaseInfo.name = name;
 		releaseInfo.startDate = startDate;
-		releaseInfo.dueDate = dueDate;
+		releaseInfo.endDate = endDate;
 		releaseInfo.description = description;
 		long serialReleaseId = -1;
 		if (action.equals("save")) {

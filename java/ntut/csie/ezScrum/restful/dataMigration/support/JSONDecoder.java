@@ -65,14 +65,14 @@ public class JSONDecoder {
 			String releaseName = releaseJSON.getString(ReleaseJSONEnum.NAME);
 			String releaseDescription = releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION);
 			String releaseStartDate = releaseJSON.getString(ReleaseJSONEnum.START_DATE);
-			String releaseDueDate = releaseJSON.getString(ReleaseJSONEnum.DUE_DATE);
+			String releaseEndDate = releaseJSON.getString(ReleaseJSONEnum.END_DATE);
 
 			// Create ReleaseObject
 			release = new ReleaseObject(projectId);
 			release.setName(releaseName)
 			        .setDescription(releaseDescription)
 			        .setStartDate(releaseStartDate)
-			        .setDueDate(releaseDueDate);
+			        .setEndDate(releaseEndDate);
 		} catch (JSONException e) {
 			release = null;
 		}
@@ -172,7 +172,7 @@ public class JSONDecoder {
 			int availableHours = sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS);
 			int focusFactor = sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR);
 			String startDate = sprintJSON.getString(SprintJSONEnum.START_DATE);
-			String dueDate = sprintJSON.getString(SprintJSONEnum.DUE_DATE);
+			String endDate = sprintJSON.getString(SprintJSONEnum.END_DATE);
 			String demoDate = sprintJSON.getString(SprintJSONEnum.DEMO_DATE);
 			String demoPlace = sprintJSON.getString(SprintJSONEnum.DEMO_PLACE);
 			String dailyInfo = sprintJSON.getString(SprintJSONEnum.DAILY_INFO);
@@ -185,7 +185,7 @@ public class JSONDecoder {
 			      .setAvailableHours(availableHours)
 			      .setFocusFactor(focusFactor)
 			      .setStartDate(startDate)
-			      .setDueDate(dueDate)
+			      .setEndDate(endDate)
 			      .setDemoDate(demoDate)
 			      .setDemoPlace(demoPlace)
 			      .setDailyInfo(dailyInfo);

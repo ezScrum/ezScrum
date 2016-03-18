@@ -55,7 +55,7 @@ public class ConvertSprint {
 		        .put(SprintUtil.TAG_DEMO_DATE, sprint.getDemoDateString())
 		        .put(SprintUtil.TAG_DEMO_PLACE, sprint.getDemoPlace())
 		        .put(SprintUtil.TAG_DAILY_MEETING, sprint.getDailyInfo())
-				.put(SprintUtil.TAG_DUE_DATE, sprint.getDueDateString());
+				.put(SprintUtil.TAG_END_DATE, sprint.getEndDateString());
 		
 		JSONArray storiesArray = new JSONArray();
 		for(StoryObject story : sprint.getStories()){

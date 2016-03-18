@@ -16,7 +16,7 @@ public interface SprintUtil {
 	public final static String TAG_DEMO_DATE      	= "demoDate";
 	public final static String TAG_NOTES			= "notes";
 	public final static String TAG_DEMO_PLACE     	= "demoPlace";
-	public final static String TAG_DUE_DATE     	= "endDate";
+	public final static String TAG_END_DATE     	= "endDate";
 	public final static String TAG_DAILY_MEETING	= "dailyMeeting";
 	public final static String TAG_STORIES			= "stories";
 	public final static String TAG_STORYIDS			= "storyIds";
