@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `release` (
   `name` varchar(255) NOT NULL,
   `description` text,
   `start_date` datetime NOT NULL,
-  `due_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
   `available_hours` int(11) NOT NULL,
   `focus_factor` int(11) NOT NULL DEFAULT '100',
   `start_date` datetime NOT NULL,
-  `due_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
   `demo_date` datetime NOT NULL,
   `demo_place` text,
   `daily_info` text,
@@ -264,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 -- 正在導出表  ezscrum_180.sprint 的資料：1 rows
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
-INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `due_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
+INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
 	(1, 1, 'Sprint01', 2, 5, 100, 70, '2016-02-01 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', 'Lab1321', '09:45@Lab1321', 1, 1457579613726, 1457579613726);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
