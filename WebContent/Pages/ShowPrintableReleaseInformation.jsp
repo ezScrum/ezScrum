@@ -15,7 +15,7 @@
 		<!-- release information -->
 		<table cellspacing="0" cellpadding="3" width="100%" border="0">
 			<tr class="ReportTitle"><td colspan="4">
-				Release Plan #${release.id}：${release.name}</td>
+				Release Plan #${release.serialId}：${release.name}</td>
 			</tr>
 			<tr class="ReportInfo"><td align="right" width="15%">
 				Start Date：</td>
@@ -40,7 +40,7 @@
 				</tr>
 				<tr>
 					<td width="5%" align="right">●</td>
-					<td colspan="5" class="ReportElementTitle">Sprint #${element.id}: ${element.goal}&nbsp;</td>
+					<td colspan="5" class="ReportElementTitle">Sprint #${element.serialId}: ${element.goal}&nbsp;</td>
 				</tr>
 				<tr>
 					<td width="5%"></td>
@@ -50,7 +50,7 @@
 				<tr>
 					<td width="5%"></td>
 					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.dueDateString}&nbsp;</td>
-					<td class="ReportFrameWithoutBorder" colspan="3" align="right">Total Story Points: ${tatolStoryPoints[element.id]}</td>
+					<td class="ReportFrameWithoutBorder" colspan="3" align="right">Total Story Points: ${totalStoryPoints[element.serialId]}</td>
 				</tr>
 				<!-- story information -->
 				<tr>
@@ -61,10 +61,10 @@
 					<td class="ReportFrameTitle" align="center" width="10%">Est.</td>
 					<td class="ReportFrameTitle" align="center" width="35%">Notes</td>
 				</tr>
-				<logic:iterate id="story" property="${element.id}" name="stories">
+				<logic:iterate id="story" property="${element.serialId}" name="stories">
 					<tr>
 						<td></td>
-						<td class="ReportFrame" align="center" width="5%">${story.id}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="5%">${story.serialId}&nbsp;</td>
 						<td class="ReportFrame" align="left" width="40%">${story.notes}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="10%">${story.importance}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="10%">${story.estimate}&nbsp;</td>
@@ -76,7 +76,7 @@
 					</tr>
 					
 					<!-- task information -->
-					<c:if test="${TaskMap[story.id]!=null}">
+					<c:if test="${TaskMap[story.serialId]!=null}">
 					<tr>
 						<td></td>
 						<td class="ReportFrame" colspan="5">
@@ -90,16 +90,16 @@
 									<td class="ReportFrameTitle" width="10%" align="center">Partners</td>
 									<td class="ReportFrameTitle" width="25%" align="center">Notes</td>
 								</tr>
-								<c:forEach var="task" items="${TaskMap[story.id]}">
+								<c:forEach var="task" items="${TaskMap[story.serialId]}">
 									<tr>
 										<td width="5%"></td>
-										<td class="ReportFrame" width="5%" align="center">${task.id }&nbsp;</td>
+										<td class="ReportFrame" width="5%" align="center">${task.serialId }&nbsp;</td>
 										<td class="ReportFrame" width="40%" align="left">${task.notes }&nbsp;</td>
 										<td class="ReportFrame" width="5%" align="center">${task.estimate }&nbsp;</td>
-										<td class="ReportFrame" width="10%" align="center">${task.handlerId}&nbsp;</td>
+										<td class="ReportFrame" width="10%" align="center">${task.handlerUsername}&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">
-											<c:if test="${task.partners!=null}">
-												${task.partners}
+											<c:if test="${task.partnersUsername!=null}">
+												${task.partnersUsername}
 											</c:if>
 												&nbsp;
 										</td>

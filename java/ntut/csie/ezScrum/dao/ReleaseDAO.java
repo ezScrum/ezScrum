@@ -74,6 +74,28 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		}
 		return release;
 	}
+	
+	public ReleaseObject get(long projectId, long serilaId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ReleaseEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ReleaseEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(ReleaseEnum.SERIAL_ID, serilaId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		ReleaseObject release = null;
+		try {
+			if (result.next()) {
+				release = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return release;
+	}
 
 	@Override
 	public boolean update(ReleaseObject release) {

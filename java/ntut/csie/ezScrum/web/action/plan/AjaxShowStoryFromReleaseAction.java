@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -38,8 +39,14 @@ public class AjaxShowStoryFromReleaseAction extends PermissionAction {
 		ReleasePlanHelper planHelper = new ReleasePlanHelper(project);
 		
 		// get parameter info
-		String releaseIdString = request.getParameter("Rid");
-		long releaseId = Long.parseLong(releaseIdString);
+		String serialReleaseIdString = request.getParameter("Rid");
+		long serialReleaseId = Long.parseLong(serialReleaseIdString);
+		// Get release id
+		long releaseId = -1;
+		ReleaseObject release = ReleaseObject.get(project.getId(), serialReleaseId);
+		if (release != null) {
+			releaseId = release.getId();
+		}
 		// 取得 ReleasePlan
 		return planHelper.showStoryFromRelease(releaseId);
 	}

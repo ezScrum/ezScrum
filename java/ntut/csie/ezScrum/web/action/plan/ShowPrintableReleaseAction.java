@@ -7,6 +7,11 @@ import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -14,22 +19,16 @@ import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.logic.ScrumRoleLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.support.SessionManager;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
 
 public class ShowPrintableReleaseAction extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		
-		HashMap<String, Float> tatolStoryPoints;
+		HashMap<Long, Integer> totalStoryPoints;
 		HashMap<String, ArrayList<StoryObject>> storiesMap;
 		LinkedHashMap<Long, ArrayList<TaskObject>> TaskMap;
 		
@@ -38,9 +37,9 @@ public class ShowPrintableReleaseAction extends Action {
     	IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
     	
     	// get parameter info
-    	String releaseIdString = request.getParameter("releaseID");
+    	String serialReleaseIdString = request.getParameter("releaseID");
     	String showTask = request.getParameter("showtask");
-    	long releaseId = Long.parseLong(releaseIdString);
+    	long serialReleaseId = Long.parseLong(serialReleaseIdString);
     	boolean printTask = false;
     	if (showTask != null) {
     		if (showTask.equals("true")) {
@@ -49,11 +48,10 @@ public class ShowPrintableReleaseAction extends Action {
     	}
     	
     	//get release information
-    	ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
-    	ReleaseObject release = releasePlanHelper.getReleasePlan(releaseId);		
+    	ReleaseObject release = ReleaseObject.get(project.getId(), serialReleaseId);
     	//initial data
     	storiesMap = new HashMap<String, ArrayList<StoryObject>>();
-    	tatolStoryPoints = new HashMap<String, Float>();
+    	totalStoryPoints = new HashMap<Long, Integer>();
     	TaskMap = new LinkedHashMap<Long, ArrayList<TaskObject>>();
     	//get sprints information of the release(release id) 
     	
@@ -61,23 +59,23 @@ public class ShowPrintableReleaseAction extends Action {
 	    	ArrayList<SprintObject> sprints = release.getSprints();
 	    	if(sprints != null) {
 	    		for (SprintObject sprint : sprints) {
-	    			String sprintId = String.valueOf(sprint.getId());
-		    		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, Long.parseLong(sprintId));
+	    			long serialSprintId = sprint.getSerialId();
+		    		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprint.getId());
 		    		ArrayList<StoryObject> stories = sprintBacklogLogic.getStoriesSortedByImpInSprint();
-		    		storiesMap.put(sprintId, stories);
+		    		storiesMap.put(String.valueOf(serialSprintId), stories);
 	    		
 		    		//the sum of story points
-					float total = 0;
+		    		int total = 0;
 					for (StoryObject story : stories) {
-						int est = story.getEstimate();
-						total = total + est;
+						int estimate = story.getEstimate();
+						total += estimate;
 					}
-		    		tatolStoryPoints.put(sprintId, total);
+					totalStoryPoints.put(serialSprintId, total);
 		    		
 					// print task information
 					if (printTask) {
 						for (StoryObject story : stories) {
-							TaskMap.put(story.getId(), story.getTasks());
+							TaskMap.put(story.getSerialId(), story.getTasks());
 						}
 					}
 				}
@@ -88,7 +86,7 @@ public class ShowPrintableReleaseAction extends Action {
 			request.setAttribute("sprints", sprints);
 			request.setAttribute("stories", storiesMap);
 			request.setAttribute("TaskMap", TaskMap);
-			request.setAttribute("tatolStoryPoints", tatolStoryPoints);
+			request.setAttribute("totalStoryPoints", totalStoryPoints);
 			
 			ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, session.getAccount());
 			if (scrumRole.getAccessReleasePlan()) {

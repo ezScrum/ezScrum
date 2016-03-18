@@ -106,6 +106,10 @@ public class ReleaseObject implements IBaseObject {
 	public static ReleaseObject get(long id) {
 		return ReleaseDAO.getInstance().get(id);
 	}
+	
+	public static ReleaseObject get(long projectId, long serialId) {
+		return ReleaseDAO.getInstance().get(projectId, serialId);
+	}
 
 	@Override
 	public void save() {
