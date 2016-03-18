@@ -71,7 +71,7 @@ public class ReleasePlanMapperTest {
 		releaseInfo.name = "TEST_RELEASE_NAME";
 		releaseInfo.description = "TEST_RELEASE_DESCRIPTION";
 		releaseInfo.startDate = "2015/06/10";
-		releaseInfo.dueDate = "2015/06/24";
+		releaseInfo.endDate = "2015/06/24";
 		// add release
 		long releaseId = mReleasePlanMapper.addRelease(releaseInfo);
 		ReleaseObject release = ReleaseObject.get(releaseId);
@@ -83,7 +83,7 @@ public class ReleasePlanMapperTest {
 		assertEquals("TEST_RELEASE_NAME", release.getName());
 		assertEquals("TEST_RELEASE_DESCRIPTION", release.getDescription());
 		assertEquals("2015/06/10", release.getStartDateString());
-		assertEquals("2015/06/24", release.getDueDateString());
+		assertEquals("2015/06/24", release.getEndDateString());
 	}
 
 	
@@ -97,14 +97,14 @@ public class ReleasePlanMapperTest {
 		releaseInfo.name = "TEST_RELEASE_NAME_UPDATE";
 		releaseInfo.description = "TEST_RELEASE_DESCRIPTION_UPDATE";
 		releaseInfo.startDate = "2015/07/10";
-		releaseInfo.dueDate = "2015/07/24";
+		releaseInfo.endDate = "2015/07/24";
 		
 		mReleasePlanMapper.updateRelease(releaseInfo);
 		release = ReleaseObject.get(release.getId());
 		assertEquals("TEST_RELEASE_NAME_UPDATE", release.getName());
 		assertEquals("TEST_RELEASE_DESCRIPTION_UPDATE", release.getDescription());
 		assertEquals("2015/07/10", release.getStartDateString());
-		assertEquals("2015/07/24", release.getDueDateString());
+		assertEquals("2015/07/24", release.getEndDateString());
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class ReleasePlanMapperTest {
 		releaseInfo.name = "TEST_RELEASE_NAME";
 		releaseInfo.description = "TEST_RELEASE_DESCRIPTION";
 		releaseInfo.startDate = "2015/06/10";
-		releaseInfo.dueDate = "2015/06/24";
+		releaseInfo.endDate = "2015/06/24";
 		// add release
 		long releaseId = mReleasePlanMapper.addRelease(releaseInfo);
 		ReleaseObject release = ReleaseObject.get(releaseId);

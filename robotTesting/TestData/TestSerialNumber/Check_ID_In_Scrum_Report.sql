@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `release` (
   `name` varchar(255) NOT NULL,
   `description` text,
   `start_date` datetime NOT NULL,
-  `due_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `release` (
 
 -- 正在導出表  ezscrum_180.release 的資料：2 rows
 /*!40000 ALTER TABLE `release` DISABLE KEYS */;
-INSERT INTO `release` (`id`, `serial_id`, `name`, `description`, `start_date`, `due_date`, `project_id`, `create_time`, `update_time`) VALUES
+INSERT INTO `release` (`id`, `serial_id`, `name`, `description`, `start_date`, `end_date`, `project_id`, `create_time`, `update_time`) VALUES
 	(1, 1, 'first release', 'description', '2016-02-02 00:00:00', '2016-02-16 00:00:00', 1, 1454379820826, 1454379820826),
 	(2, 1, 'first release', 'description', '2016-02-29 00:00:00', '2016-03-27 00:00:00', 2, 1455508281163, 1455508335040);
 /*!40000 ALTER TABLE `release` ENABLE KEYS */;
@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
   `available_hours` int(11) NOT NULL,
   `focus_factor` int(11) NOT NULL DEFAULT '100',
   `start_date` datetime NOT NULL,
-  `due_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
   `demo_date` datetime NOT NULL,
   `demo_place` text,
   `daily_info` text,
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 
 -- 正在導出表  ezscrum_180.sprint 的資料：5 rows
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
-INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `due_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
+INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
 	(1, 1, 'first sprint1', 2, 100, 100, 100, '2016-02-02 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', '', '', 1, 1454379421551, 1454379547452),
 	(2, 2, 'first sprint2', 2, 100, 100, 100, '2016-02-02 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', '', '', 1, 1454379443928, 1454379556430),
 	(3, 3, 'first sprint3', 2, 100, 100, 100, '2016-02-02 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', '', '', 1, 1454379462473, 1454379573525),

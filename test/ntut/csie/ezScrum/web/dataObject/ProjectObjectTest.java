@@ -232,7 +232,7 @@ public class ProjectObjectTest {
 		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
-				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 12)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
@@ -240,7 +240,7 @@ public class ProjectObjectTest {
 		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
-				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -2)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
@@ -248,7 +248,7 @@ public class ProjectObjectTest {
 		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
-				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -16)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// 取得目前時間所在的 sprint
@@ -257,7 +257,7 @@ public class ProjectObjectTest {
 		assertFalse(sprint3.contains(today));
 		SprintObject sprint = project.getCurrentSprint();
 		assertEquals(getDate(today, -1), sprint.getStartDateString());
-		assertEquals(getDate(today, 12), sprint.getDueDateString());
+		assertEquals(getDate(today, 12), sprint.getEndDateString());
 		assertEquals(getDate(today, 12), sprint.getDemoDateString());
 		assertTrue(sprint.contains(today));
 	}
@@ -286,7 +286,7 @@ public class ProjectObjectTest {
 		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 1))
-				.setDueDate(getDate(today, 14)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, 14)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 14)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
@@ -294,7 +294,7 @@ public class ProjectObjectTest {
 		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 15))
-				.setDueDate(getDate(today, 28)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, 28)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 28)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
@@ -302,7 +302,7 @@ public class ProjectObjectTest {
 		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, 29))
-				.setDueDate(getDate(today, 42)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, 42)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 42)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// 取得目前時間所在的 sprint
@@ -311,7 +311,7 @@ public class ProjectObjectTest {
 		assertFalse(sprint3.contains(today));
 		SprintObject sprint = project.getCurrentSprint();
 		assertEquals(getDate(today, 29), sprint.getStartDateString());
-		assertEquals(getDate(today, 42), sprint.getDueDateString());
+		assertEquals(getDate(today, 42), sprint.getEndDateString());
 		assertEquals(getDate(today, 42), sprint.getDemoDateString());
 	}
 
@@ -351,7 +351,7 @@ public class ProjectObjectTest {
 		sprint1.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -1))
-				.setDueDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, 12)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, 12)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 2
@@ -359,7 +359,7 @@ public class ProjectObjectTest {
 		sprint2.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -15))
-				.setDueDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, -2)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -2)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// create sprint 3
@@ -367,13 +367,13 @@ public class ProjectObjectTest {
 		sprint3.setInterval(sprintInterval).setTeamSize(membersNumbre)
 				.setAvailableHours(hoursCanCommit).setFocusFactor(focusFactor)
 				.setGoal(sprintGoal).setStartDate(getDate(today, -29))
-				.setDueDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
+				.setEndDate(getDate(today, -16)).setDailyInfo(sprintDailyInfo)
 				.setDemoDate(getDate(today, -16)).setDemoPlace(sprintDemoPlace)
 				.save();
 		// 取得目前時間所在的 sprint
 		SprintObject sprint = project.getLatestSprint();
 		assertEquals(sprint3.getStartDateString(), sprint.getStartDateString());
-		assertEquals(sprint3.getDueDateString(), sprint.getDueDateString());
+		assertEquals(sprint3.getEndDateString(), sprint.getEndDateString());
 		assertEquals(sprint3.getDemoDateString(), sprint.getDemoDateString());
 		assertEquals(sprint3.getId(), sprint.getId());
 	}
@@ -395,17 +395,17 @@ public class ProjectObjectTest {
 		ReleaseObject release1 = new ReleaseObject(projectId);
 		release1.setName("TEST_RELEASE_NAME_1")
 		        .setStartDate("2015/06/10")
-		        .setDueDate("2015/06/24")
+		        .setEndDate("2015/06/24")
 		        .save();
 		ReleaseObject release2 = new ReleaseObject(projectId);
 		release2.setName("TEST_RELEASE_NAME_2")
 		        .setStartDate("2015/07/10")
-		        .setDueDate("2015/07/24")
+		        .setEndDate("2015/07/24")
 		        .save();
 		ReleaseObject release3 = new ReleaseObject(projectId);
 		release3.setName("TEST_RELEASE_NAME_3")
 		        .setStartDate("2015/08/10")
-		        .setDueDate("2015/08/24")
+		        .setEndDate("2015/08/24")
 		        .save();
 		
 		ArrayList<ReleaseObject> releases = project.getReleases();
@@ -415,16 +415,16 @@ public class ProjectObjectTest {
 		assertEquals(release1.getId(), releases.get(0).getId());
 		assertEquals(release1.getName(), releases.get(0).getName());
 		assertEquals(release1.getStartDateString(), releases.get(0).getStartDateString());
-		assertEquals(release1.getDueDateString(), releases.get(0).getDueDateString());
+		assertEquals(release1.getEndDateString(), releases.get(0).getEndDateString());
 		// release 2
 		assertEquals(release2.getId(), releases.get(1).getId());
 		assertEquals(release2.getName(), releases.get(1).getName());
 		assertEquals(release2.getStartDateString(), releases.get(1).getStartDateString());
-		assertEquals(release2.getDueDateString(), releases.get(1).getDueDateString());
+		assertEquals(release2.getEndDateString(), releases.get(1).getEndDateString());
 		// release 3
 		assertEquals(release3.getId(), releases.get(2).getId());
 		assertEquals(release3.getName(), releases.get(2).getName());
 		assertEquals(release3.getStartDateString(), releases.get(2).getStartDateString());
-		assertEquals(release3.getDueDateString(), releases.get(2).getDueDateString());
+		assertEquals(release3.getEndDateString(), releases.get(2).getEndDateString());
 	}
 }

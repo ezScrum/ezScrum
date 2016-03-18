@@ -7,7 +7,7 @@ public interface SprintPlanUtil {
 	public final static String TAG_SPRINT_GOAL    	= "sprintGoal" ;
 	public final static String TAG_START_DATE      	= "startDate" ;
 	public final static String TAG_DEMO_DATE       	= "demoDate" ;
-	public final static String TAG_DUE_DATE       	= "dueDate" ;
+	public final static String TAG_END_DATE       	= "endDate" ;
 	public final static String TAG_INTERVAL       	= "interval" ;
 	public final static String TAG_MEMBERS    	  	= "members" ;
 	public final static String TAG_AVAILABLE_DAYS  	= "availableDays" ;

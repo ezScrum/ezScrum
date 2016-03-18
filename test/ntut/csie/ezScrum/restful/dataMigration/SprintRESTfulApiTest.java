@@ -97,7 +97,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		int availableHours = 200;
 		int focusFactor = 80;
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/07";
+		String endDate = "2015/12/07";
 		String demoDate = "2015/12/07";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "Lab1321@13:30";
@@ -110,7 +110,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, availableHours);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, focusFactor);
 		sprintJSON.put(SprintJSONEnum.START_DATE, startDate);
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, dueDate);
+		sprintJSON.put(SprintJSONEnum.END_DATE, endDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, demoDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, demoPlace);
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, dailyInfo);
@@ -136,7 +136,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		assertEquals(availableHours, contentJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS));
 		assertEquals(focusFactor, contentJSON.getInt(SprintJSONEnum.FOCUS_FACTOR));
 		assertEquals(startDate, contentJSON.getString(SprintJSONEnum.START_DATE));
-		assertEquals(dueDate, contentJSON.getString(SprintJSONEnum.DUE_DATE));
+		assertEquals(endDate, contentJSON.getString(SprintJSONEnum.END_DATE));
 		assertEquals(demoDate, contentJSON.getString(SprintJSONEnum.DEMO_DATE));
 		assertEquals(demoPlace, contentJSON.getString(SprintJSONEnum.DEMO_PLACE));
 		assertEquals(dailyInfo, contentJSON.getString(SprintJSONEnum.DAILY_INFO));
@@ -154,7 +154,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		int availableHours = 200;
 		int focusFactor = 80;
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/07";
+		String endDate = "2015/12/07";
 		String demoDate = "2015/12/07";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "Lab1321@13:30";
@@ -167,7 +167,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, availableHours);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, focusFactor);
 		sprintJSON.put(SprintJSONEnum.START_DATE, startDate);
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, dueDate);
+		sprintJSON.put(SprintJSONEnum.END_DATE, endDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, demoDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, demoPlace);
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, dailyInfo);
@@ -203,7 +203,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		int availableHours = 200;
 		int focusFactor = 80;
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/07";
+		String endDate = "2015/12/07";
 		String demoDate = "2015/12/07";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "Lab1321@13:30";
@@ -216,7 +216,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, availableHours);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, focusFactor);
 		sprintJSON.put(SprintJSONEnum.START_DATE, startDate);
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, dueDate);
+		sprintJSON.put(SprintJSONEnum.END_DATE, endDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, demoDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, demoPlace);
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, dailyInfo);
@@ -252,7 +252,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		int availableHours = 200;
 		int focusFactor = 80;
 		String startDate = "2015/11/24";
-		String dueDate = "2015/12/07";
+		String endDate = "2015/12/07";
 		String demoDate = "2015/12/07";
 		String demoPlace = "Lab1321";
 		String dailyInfo = "Lab1321@13:30";
@@ -265,7 +265,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, availableHours);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, focusFactor);
 		sprintJSON.put(SprintJSONEnum.START_DATE, startDate);
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, dueDate);
+		sprintJSON.put(SprintJSONEnum.END_DATE, endDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, demoDate);
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, demoPlace);
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, dailyInfo);

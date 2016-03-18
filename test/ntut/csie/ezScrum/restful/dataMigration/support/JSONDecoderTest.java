@@ -88,12 +88,12 @@ public class JSONDecoderTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "name");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "description");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/12/06");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/31");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/31");
 		ReleaseObject release = JSONDecoder.toRelease(projectId, releaseJSON.toString());
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.NAME), release.getName());
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION), release.getDescription());
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.START_DATE), release.getStartDateString());
-		assertEquals(releaseJSON.getString(ReleaseJSONEnum.DUE_DATE), release.getDueDateString());
+		assertEquals(releaseJSON.getString(ReleaseJSONEnum.END_DATE), release.getEndDateString());
 		assertEquals(projectId, release.getProjectId());
 	}
 	
@@ -251,7 +251,7 @@ public class JSONDecoderTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 100);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 70);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/27");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/10");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/10");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/10");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "Lab1321");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "12:50@Lab1321");
@@ -262,7 +262,7 @@ public class JSONDecoderTest {
 		assertEquals(sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS), sprint.getAvailableHours());
 		assertEquals(sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR), sprint.getFocusFactor());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.START_DATE), sprint.getStartDateString());
-		assertEquals(sprintJSON.getString(SprintJSONEnum.DUE_DATE), sprint.getDueDateString());
+		assertEquals(sprintJSON.getString(SprintJSONEnum.END_DATE), sprint.getEndDateString());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DEMO_DATE), sprint.getDemoDateString());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DEMO_PLACE), sprint.getDemoPlace());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DAILY_INFO), sprint.getDailyInfo());

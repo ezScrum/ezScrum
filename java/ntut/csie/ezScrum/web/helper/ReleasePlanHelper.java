@@ -135,7 +135,7 @@ public class ReleasePlanHelper {
 			stringBuilder.append(release.getStartDateString());
 			stringBuilder.append("\',");
 			stringBuilder.append("EndDate:\'");
-			stringBuilder.append(release.getDueDateString());
+			stringBuilder.append(release.getEndDateString());
 			stringBuilder.append("\',");
 			stringBuilder.append("Description:\'");
 			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getDescription()));
@@ -339,7 +339,7 @@ public class ReleasePlanHelper {
 				stringBuilder.append(sprint.getStartDateString());
 				stringBuilder.append("\',");
 				stringBuilder.append("EndDate:\'");
-				stringBuilder.append(sprint.getDueDateString());
+				stringBuilder.append(sprint.getEndDateString());
 				stringBuilder.append("\',");
 				stringBuilder.append("Interval:\'");
 				stringBuilder.append(sprint.getInterval());
@@ -464,17 +464,17 @@ public class ReleasePlanHelper {
 	}
 	
 	public StringBuilder checkReleaseDateOverlapping(long releaseId, String startDateString,
-			String dueDateString, String action) {
+			String endDateString, String action) {
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
 		Date startDate = DateUtil.dayFilter(startDateString);
-		Date dueDate = DateUtil.dayFilter(dueDateString);
+		Date endDate = DateUtil.dayFilter(endDateString);
 		String result = "legal";
 		for (ReleaseObject release : releases) {
 			if (action.equals("edit") && (releaseId == release.getId())) {// 不與自己比較
 				continue;
 			}
 			// check 日期的頭尾是否有在各個 release plan 日期範圍內
-			if (release.contains(startDate) || release.contains(dueDate)) {
+			if (release.contains(startDate) || release.contains(endDate)) {
 				result = "illegal";
 				break;
 			}

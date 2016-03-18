@@ -6,5 +6,5 @@ public class ReleaseJSONEnum {
 	public static final String NAME = ReleaseEnum.NAME;
 	public static final String DESCRIPTION = ReleaseEnum.DESCRIPTION;
 	public static final String START_DATE = ReleaseEnum.START_DATE;
-	public static final String DUE_DATE = ReleaseEnum.DUE_DATE;
+	public static final String END_DATE = ReleaseEnum.END_DATE;
 }

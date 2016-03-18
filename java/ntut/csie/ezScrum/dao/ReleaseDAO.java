@@ -38,8 +38,8 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 				release.getDescription());
 		valueSet.addInsertValue(ReleaseEnum.START_DATE,
 				release.getStartDateString());
-		valueSet.addInsertValue(ReleaseEnum.DUE_DATE,
-				release.getDueDateString());
+		valueSet.addInsertValue(ReleaseEnum.END_DATE,
+				release.getEndDateString());
 		valueSet.addInsertValue(ReleaseEnum.PROJECT_ID, release.getProjectId());
 		valueSet.addInsertValue(ReleaseEnum.CREATE_TIME, release.getCreateTime());
 		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getCreateTime());
@@ -104,7 +104,7 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		valueSet.addInsertValue(ReleaseEnum.NAME, release.getName());
 		valueSet.addInsertValue(ReleaseEnum.DESCRIPTION, release.getDescription());
 		valueSet.addInsertValue(ReleaseEnum.START_DATE, release.getStartDateString());
-		valueSet.addInsertValue(ReleaseEnum.DUE_DATE, release.getDueDateString());
+		valueSet.addInsertValue(ReleaseEnum.END_DATE, release.getEndDateString());
 		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getUpdateTime());
 		valueSet.addEqualCondition(ReleaseEnum.ID, release.getId());
 		String query = valueSet.getUpdateQuery();
@@ -152,7 +152,7 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		release.setName(result.getString(ReleaseEnum.NAME))
 				.setDescription(result.getString(ReleaseEnum.DESCRIPTION))
 				.setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.START_DATE)))
-				.setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.DUE_DATE)))
+				.setEndDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.END_DATE)))
 				.setCreateTime(result.getLong(ReleaseEnum.CREATE_TIME))
 				.setUpdateTime(result.getLong(ReleaseEnum.UPDATE_TIME));
 		return release;

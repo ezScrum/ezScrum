@@ -24,7 +24,7 @@
 			</tr>
 			<tr class="ReportInfo"><td align="right" width="15%">
 				End Date：</td>
-				<td align="left">${release.dueDateString}</td>
+				<td align="left">${release.endDateString}</td>
 				<td colspan="2"></td>
 			</tr>
 			<tr><td align="right" width="15%" class="ReportInfoButtom">
@@ -49,7 +49,7 @@
 				</tr>
 				<tr>
 					<td width="5%"></td>
-					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.dueDateString}&nbsp;</td>
+					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.endDateString}&nbsp;</td>
 					<td class="ReportFrameWithoutBorder" colspan="3" align="right">Total Story Points: ${totalStoryPoints[element.serialId]}</td>
 				</tr>
 				<!-- story information -->

@@ -93,7 +93,7 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 		public SprintPlanItem(SprintObject sprint) {
 			Date endDate;
 			if (sprint != null) {
-				endDate = DateUtil.dayFilter(sprint.getDueDateString());
+				endDate = DateUtil.dayFilter(sprint.getEndDateString());
 				this.Id = String.valueOf(sprint.getSerialId());
 				this.Info = "Sprint #" + String.valueOf(sprint.getSerialId());
 				if (isOverSprint(endDate)) {

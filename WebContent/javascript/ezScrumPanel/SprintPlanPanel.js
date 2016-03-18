@@ -168,7 +168,7 @@ ezScrum.SprintPlanPageLayout = Ext.extend(Ext.Panel, {
 				}
 		    });
 
-		    // 計算Due Day，與判斷此Sprint是否可編輯
+		    // 計算 End Day，與判斷此Sprint是否可編輯
 		    var start = Date.parseDate(r.get('StartDate'),'Y/m/d');
 		    
 		    if (start != null) {
@@ -246,9 +246,9 @@ ezScrum.SprintPlanPageLayout = Ext.extend(Ext.Panel, {
 		var obj = this;
 		var start = Date.parseDate(record.get('StartDate'), 'Y/m/d');
 		var today = new Date();
-		var due = start.add(Date.DAY, parseInt(record.get('Interval')) * 7);
+		var end = start.add(Date.DAY, parseInt(record.get('Interval')) * 7);
 
-		if (due < today) {
+		if (end < today) {
 			Ext.MessageBox.confirm('Confirm', info, function(btn) {
 				if (btn == 'yes') {
 					obj.doModify(record, edit);

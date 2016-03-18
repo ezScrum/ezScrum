@@ -14,16 +14,13 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class ReleaseObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
-
 	private long mId = DEFAULT_VALUE;
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
-
 	private String mName = "";
 	private String mDescription = "";
 	private Date mStartDate = new Date();
-	private Date mDueDate = new Date();
-
+	private Date mEndDate = new Date();
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
 
@@ -52,8 +49,8 @@ public class ReleaseObject implements IBaseObject {
 		return this;
 	}
 
-	public ReleaseObject setDueDate(String dueDateString) {
-		mDueDate = DateUtil.dayFilter(dueDateString);
+	public ReleaseObject setEndDate(String endDateString) {
+		mEndDate = DateUtil.dayFilter(endDateString);
 		return this;
 	}
 
@@ -91,8 +88,8 @@ public class ReleaseObject implements IBaseObject {
 		return DateUtil.formatBySlashForm(mStartDate);
 	}
 
-	public String getDueDateString() {
-		return DateUtil.formatBySlashForm(mDueDate);
+	public String getEndDateString() {
+		return DateUtil.formatBySlashForm(mEndDate);
 	}
 
 	public long getCreateTime() {
@@ -141,11 +138,11 @@ public class ReleaseObject implements IBaseObject {
 
 	public boolean containsSprint(SprintObject sprint) {
 		Date sprintStartDate = DateUtil.dayFilter(sprint.getStartDateString());
-		Date sprintDueDate = DateUtil.dayFilter(sprint.getDueDateString());
+		Date sprintEndDate = DateUtil.dayFilter(sprint.getEndDateString());
 		boolean isContains = sprintStartDate.after(mStartDate)
 				|| DateUtils.isSameDay(sprintStartDate, mStartDate);
-		isContains &= sprintDueDate.before(mDueDate)
-				|| DateUtils.isSameDay(sprintDueDate, mDueDate);
+		isContains &= sprintEndDate.before(mEndDate)
+				|| DateUtils.isSameDay(sprintEndDate, mEndDate);
 		return isContains;
 	}
 
@@ -197,7 +194,7 @@ public class ReleaseObject implements IBaseObject {
 	
 	public boolean contains(Date date) {
 		if ((date.compareTo(mStartDate) >= 0)
-				&& (date.compareTo(mDueDate) <= 0)) {
+				&& (date.compareTo(mEndDate) <= 0)) {
 			return true;
 		}
 		return false;
@@ -222,7 +219,7 @@ public class ReleaseObject implements IBaseObject {
 		setName(release.getName());
 		setDescription(release.getDescription());
 		setStartDate(release.getStartDateString());
-		setDueDate(release.getDueDateString());
+		setEndDate(release.getEndDateString());
 		setCreateTime(release.getCreateTime());
 		setUpdateTime(release.getUpdateTime());
 	}
@@ -256,7 +253,7 @@ public class ReleaseObject implements IBaseObject {
 				   .put(ReleaseEnum.NAME, mName)
 				   .put(ReleaseEnum.DESCRIPTION, mDescription)
 				   .put(ReleaseEnum.START_DATE, getStartDateString())
-				   .put(ReleaseEnum.DUE_DATE, getDueDateString())
+				   .put(ReleaseEnum.END_DATE, getEndDateString())
 				   .put(ReleaseEnum.CREATE_TIME, mCreateTime)
 				   .put(ReleaseEnum.UPDATE_TIME, mUpdateTime)
 				   .put("sprints", sprintJsonArray);

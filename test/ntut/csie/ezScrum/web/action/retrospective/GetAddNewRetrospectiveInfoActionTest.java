@@ -148,9 +148,9 @@ public class GetAddNewRetrospectiveInfoActionTest extends MockStrutsTestCase {
 			/*------------------------------------------------------------
 			 *  判斷此Sprint是否已過期，是否可以編輯
 			 -------------------------------------------------------------*/
-			String dueDateString = sprint.getDueDateString();
+			String endDateString = sprint.getEndDateString();
 			
-			Date endDate = DateUtil.dayFilter(dueDateString);
+			Date endDate = DateUtil.dayFilter(endDateString);
 			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 			String transToday_String = format.format(today);
 			Date transToday_Date = DateUtil.dayFilter(transToday_String); 

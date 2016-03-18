@@ -74,7 +74,7 @@ public class SprintPlanHelperTest {
 	public void testGetNextDemoDate_BeforeEverySprint() {
 		// Modify first sprint
 		SprintObject firstSprint = SprintObject.get(mCS.getSprintsId().get(0));
-		firstSprint.setStartDate("2015/06/01").setDueDate("2015/06/15")
+		firstSprint.setStartDate("2015/06/01").setEndDate("2015/06/15")
 				.setDemoDate("2015/06/15").save();
 		// Call GetNextDemoDate
 		String actualNextDamoDate = mSprintPlanHelper.getNextDemoDate();
@@ -88,15 +88,15 @@ public class SprintPlanHelperTest {
 	public void testGetNextDemoDate_AfterEverySprint() {
 		// Modify first sprint
 		SprintObject firstSprint = SprintObject.get(mCS.getSprintsId().get(0));
-		firstSprint.setStartDate("2015/06/01").setDueDate("2015/06/15")
+		firstSprint.setStartDate("2015/06/01").setEndDate("2015/06/15")
 				.setDemoDate("2015/06/15").save();
 		// Modify second sprint
 		SprintObject secondSprint = SprintObject.get(mCS.getSprintsId().get(1));
-		secondSprint.setStartDate("2015/06/16").setDueDate("2015/06/30")
+		secondSprint.setStartDate("2015/06/16").setEndDate("2015/06/30")
 				.setDemoDate("2015/06/30").save();
 		// Modify third sprint
 		SprintObject thirdSprint = SprintObject.get(mCS.getSprintsId().get(2));
-		thirdSprint.setStartDate("2015/07/01").setDueDate("2015/07/15")
+		thirdSprint.setStartDate("2015/07/01").setEndDate("2015/07/15")
 				.setDemoDate("2015/07/15").save();
 		// Call GetNextDemoDate
 		String actualNextDamoDate = mSprintPlanHelper.getNextDemoDate();

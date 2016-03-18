@@ -1,5 +1,5 @@
 var SprintPlanRecord = Ext.data.Record.create([
-	{name:'Id', sortType:'asInt'}, 'Info', 'Goal', 'StartDate', 'Interval','DueDate', 'Members', 
+	{name:'Id', sortType:'asInt'}, 'Info', 'Goal', 'StartDate', 'Interval','EndDate', 'Members', 
 	'AvaliableDays', 'FocusFactor', 'DailyScrum', 'DemoDate', 'DemoPlace', 'Check' ,'Edit'                                       
 ]);
 
@@ -28,7 +28,7 @@ var SprintPlanStore = new Ext.data.Store({
         { name : 'Goal'}, 
         { name : 'StartDate'},
         { name : 'Interval'},
-        { name : 'DueDate'},
+        { name : 'EndDate'},
         { name : 'Members'}, 
         { name : 'AvaliableDays'},
         { name : 'FocusFactor'}, 
@@ -58,7 +58,7 @@ var SprintColumnModel = function() {
 		header : 'Interval',
 		width : 90
 	}, {
-		dataIndex : 'DueDate',
+		dataIndex : 'EndDate',
 		header : 'End Date',
 		width : 90
 	}, {

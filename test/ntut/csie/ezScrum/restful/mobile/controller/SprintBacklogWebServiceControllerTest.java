@@ -198,7 +198,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		assertEquals(currentSprint.getDemoDateString(), wholeJson.getString(SprintUtil.TAG_DEMO_DATE));
 		assertEquals(currentSprint.getDemoPlace(), wholeJson.getString(SprintUtil.TAG_DEMO_PLACE));
 		assertEquals(currentSprint.getDailyInfo(), wholeJson.getString(SprintUtil.TAG_DAILY_MEETING));
-		assertEquals(currentSprint.getDueDateString(), wholeJson.getString(SprintUtil.TAG_DUE_DATE));
+		assertEquals(currentSprint.getEndDateString(), wholeJson.getString(SprintUtil.TAG_END_DATE));
 		assertEquals(3, storyArray.length());
 		// assert story1 info
 		JSONObject story1Json = storyArray.getJSONObject(0);

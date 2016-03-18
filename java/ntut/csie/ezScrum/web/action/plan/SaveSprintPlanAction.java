@@ -52,7 +52,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 		String demoDate = request.getParameter("DemoDate");
 		String demoPlace = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("DemoPlace"));
-		String dueDate = request.getParameter("DueDate");
+		String endDate = request.getParameter("EndDate");
 
 		// set sprint info
 		SprintInfo sprintInfo = new SprintInfo();
@@ -66,7 +66,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 		sprintInfo.dailyInfo = dailyInfo;
 		sprintInfo.demoDate = demoDate;
 		sprintInfo.demoPlace = demoPlace;
-		sprintInfo.dueDate = dueDate;
+		sprintInfo.endDate = endDate;
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 

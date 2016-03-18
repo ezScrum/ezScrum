@@ -259,7 +259,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintStartWorkDate() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -272,7 +272,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintStartWorkDate_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -285,7 +285,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintEndWorkDate() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -298,7 +298,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintEndWorkDate_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -311,7 +311,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintWorkDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -324,7 +324,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintWorkDays_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -337,7 +337,7 @@ public class SprintBacklogLogicTest {
 	public void testIsOutOfSprint() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		assertTrue(!mSprintBacklogLogic.isOutOfSprint());
-		sprint.setDueDate(getDate(new Date(), -1)).save();;
+		sprint.setEndDate(getDate(new Date(), -1)).save();;
 		mSprintBacklogLogic = new SprintBacklogLogic(mProject, sprint.getId());
 		assertTrue(mSprintBacklogLogic.isOutOfSprint());
 	}

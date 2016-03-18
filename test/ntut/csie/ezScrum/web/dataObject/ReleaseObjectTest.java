@@ -72,12 +72,12 @@ public class ReleaseObjectTest {
 		String releaseName = "TEST_RELEASE_NAME";
 		String releaseDescription = "TEST_RELEASE_DESCRIPTION";
 		String releaseStartDate = "2015/08/03";
-		String releaseDueDate = "2015/10/31";
+		String releaseEndDate = "2015/10/31";
 
 		// Create release object
 		ReleaseObject release = new ReleaseObject(mProject.getId());
 		release.setName(releaseName).setDescription(releaseDescription)
-				.setStartDate(releaseStartDate).setDueDate(releaseDueDate)
+				.setStartDate(releaseStartDate).setEndDate(releaseEndDate)
 				.save();
 
 		// 從資料庫撈出 Release
@@ -100,7 +100,7 @@ public class ReleaseObjectTest {
 		assertEquals(releaseName, releaseCreated.getName());
 		assertEquals(releaseDescription, releaseCreated.getDescription());
 		assertEquals(releaseStartDate, releaseCreated.getStartDateString());
-		assertEquals(releaseDueDate, releaseCreated.getDueDateString());
+		assertEquals(releaseEndDate, releaseCreated.getEndDateString());
 	}
 
 	@Test
@@ -109,11 +109,11 @@ public class ReleaseObjectTest {
 		String releaseName = "TEST_RELEASE_NAME_NEW";
 		String releaseDescription = "TEST_RELEASE_DESCRIPTION_NEW";
 		String releaseStartDate = "2015/06/03";
-		String releaseDueDate = "2015/08/31";
+		String releaseEndDate = "2015/08/31";
 
 		// Update Release
 		mRelease.setName(releaseName).setDescription(releaseDescription)
-				.setStartDate(releaseStartDate).setDueDate(releaseDueDate)
+				.setStartDate(releaseStartDate).setEndDate(releaseEndDate)
 				.save();
 
 		ReleaseObject release = ReleaseObject.get(mRelease.getId());
@@ -122,7 +122,7 @@ public class ReleaseObjectTest {
 		assertEquals(releaseName, release.getName());
 		assertEquals(releaseDescription, release.getDescription());
 		assertEquals(releaseStartDate, release.getStartDateString());
-		assertEquals(releaseDueDate, release.getDueDateString());
+		assertEquals(releaseEndDate, release.getEndDateString());
 	}
 
 	@Test
@@ -146,16 +146,16 @@ public class ReleaseObjectTest {
 	public void testContainsSprint() {
 		ReleaseObject release = new ReleaseObject(mProject.getId());
 		release.setName("TEST_RELEASE").setStartDate("2015/08/01")
-				.setDueDate("2015/08/31").save();
+				.setEndDate("2015/08/31").save();
 		SprintObject sprint1 = new SprintObject(mProject.getId());
 		sprint1.setGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/07/24")
-				.setDueDate("2015/08/01").save();
+				.setEndDate("2015/08/01").save();
 		SprintObject sprint2 = new SprintObject(mProject.getId());
 		sprint2.setGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/31")
-				.setDueDate("2015/09/06").save();
+				.setEndDate("2015/09/06").save();
 		SprintObject sprint3 = new SprintObject(mProject.getId());
 		sprint3.setGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
-				.setDueDate("2015/08/21").save();
+				.setEndDate("2015/08/21").save();
 		// assert
 		assertFalse(release.containsSprint(sprint1));
 		assertFalse(release.containsSprint(sprint2));
@@ -166,16 +166,16 @@ public class ReleaseObjectTest {
 	public void testGetSprints() {
 		ReleaseObject release = new ReleaseObject(mProject.getId());
 		release.setName("TEST_RELEASE").setStartDate("2015/08/01")
-				.setDueDate("2015/08/31").save();
+				.setEndDate("2015/08/31").save();
 		SprintObject sprint1 = new SprintObject(mProject.getId());
 		sprint1.setGoal("TEST_SPRINT_GOAL_1").setStartDate("2015/08/01")
-				.setDueDate("2015/08/07").save();
+				.setEndDate("2015/08/07").save();
 		SprintObject sprint2 = new SprintObject(mProject.getId());
 		sprint2.setGoal("TEST_SPRINT_GOAL_2").setStartDate("2015/08/08")
-				.setDueDate("2015/08/14").save();
+				.setEndDate("2015/08/14").save();
 		SprintObject sprint3 = new SprintObject(mProject.getId());
 		sprint3.setGoal("TEST_SPRINT_GOAL_3").setStartDate("2015/08/15")
-				.setDueDate("2015/08/21").save();
+				.setEndDate("2015/08/21").save();
 		// assert sprint count
 		assertEquals(3, release.getSprints().size());
 		// assert sprint 1
@@ -184,24 +184,24 @@ public class ReleaseObjectTest {
 				.getGoal());
 		assertEquals(sprint1.getStartDateString(), release.getSprints().get(0)
 				.getStartDateString());
-		assertEquals(sprint1.getDueDateString(), release.getSprints().get(0)
-				.getDueDateString());
+		assertEquals(sprint1.getEndDateString(), release.getSprints().get(0)
+				.getEndDateString());
 		// assert sprint 2
 		assertEquals(sprint2.getId(), release.getSprints().get(1).getId());
 		assertEquals(sprint2.getGoal(), release.getSprints().get(1)
 				.getGoal());
 		assertEquals(sprint2.getStartDateString(), release.getSprints().get(1)
 				.getStartDateString());
-		assertEquals(sprint2.getDueDateString(), release.getSprints().get(1)
-				.getDueDateString());
+		assertEquals(sprint2.getEndDateString(), release.getSprints().get(1)
+				.getEndDateString());
 		// assert sprint 3
 		assertEquals(sprint3.getId(), release.getSprints().get(2).getId());
 		assertEquals(sprint3.getGoal(), release.getSprints().get(2)
 				.getGoal());
 		assertEquals(sprint3.getStartDateString(), release.getSprints().get(2)
 				.getStartDateString());
-		assertEquals(sprint3.getDueDateString(), release.getSprints().get(2)
-				.getDueDateString());
+		assertEquals(sprint3.getEndDateString(), release.getSprints().get(2)
+				.getEndDateString());
 	}
 
 	@Test
@@ -219,7 +219,7 @@ public class ReleaseObjectTest {
 				.setGoal("TEST_SPRINT_GOAL")
 				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
 				.setStartDate("2015/08/03").setDemoDate("2015/08/17")
-				.setDueDate("2015/08/17").save();
+				.setEndDate("2015/08/17").save();
 
 		// Create Story 1
 		StoryObject story1 = new StoryObject(mProject.getId());
@@ -278,7 +278,7 @@ public class ReleaseObjectTest {
 				.setGoal("TEST_SPRINT_GOAL")
 				.setDailyInfo("TEST_SPRINT_DAILY_INFO")
 				.setStartDate("2015/08/03").setDemoDate("2015/08/17")
-				.setDueDate("2015/08/17").save();
+				.setEndDate("2015/08/17").save();
 
 		// Create Story 1
 		StoryObject story1 = new StoryObject(mProject.getId());
@@ -324,7 +324,7 @@ public class ReleaseObjectTest {
 	public void testContains() {
 		ReleaseObject release = new ReleaseObject(mProject.getId());
 		release.setStartDate("2015/08/24");
-		release.setDueDate("2015/08/31");
+		release.setEndDate("2015/08/31");
 		release.save();
 		assertFalse(release.contains(DateUtil.dayFilter("2015/08/23")));
 		assertTrue(release.contains(DateUtil.dayFilter("2015/08/24")));
@@ -343,12 +343,12 @@ public class ReleaseObjectTest {
 		String releaseName = "TEST_RELEASE_NAME";
 		String releaseDescription = "TEST_RELEASE_DESCRIPTION";
 		String releaseStartDate = "2015/08/03";
-		String releaseDueDate = "2015/10/31";
+		String releaseEndDate = "2015/10/31";
 
 		// Create release object
 		ReleaseObject release = new ReleaseObject(mProject.getId());
 		release.setName(releaseName).setDescription(releaseDescription)
-				.setStartDate(releaseStartDate).setDueDate(releaseDueDate)
+				.setStartDate(releaseStartDate).setEndDate(releaseEndDate)
 				.save();
 
 		// assert
@@ -357,7 +357,7 @@ public class ReleaseObjectTest {
 		assertEquals(releaseName, release.getName());
 		assertEquals(releaseDescription, release.getDescription());
 		assertEquals(releaseStartDate, release.getStartDateString());
-		assertEquals(releaseDueDate, release.getDueDateString());
+		assertEquals(releaseEndDate, release.getEndDateString());
 		return release;
 	}
 

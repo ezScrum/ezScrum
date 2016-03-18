@@ -227,7 +227,7 @@ public class TaskBoardTest {
 		      .setFocusFactor(focusFactor)
 		      .setGoal(sprintGoal)
 		      .setDemoDate(DateUtil.formatBySlashForm(endDay))
-		      .setDueDate(DateUtil.formatBySlashForm(endDay))
+		      .setEndDate(DateUtil.formatBySlashForm(endDay))
 		      .save();
 		
 		// Create a story

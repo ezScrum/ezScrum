@@ -243,7 +243,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -256,7 +256,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -601,7 +601,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.NAME), releasesInProject.get(0).getName());
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION), releasesInProject.get(0).getDescription());
 		assertEquals(releaseJSON.getString(ReleaseJSONEnum.START_DATE), releasesInProject.get(0).getStartDateString());
-		assertEquals(releaseJSON.getString(ReleaseJSONEnum.DUE_DATE), releasesInProject.get(0).getDueDateString());
+		assertEquals(releaseJSON.getString(ReleaseJSONEnum.END_DATE), releasesInProject.get(0).getEndDateString());
 		
 		// Assert Sprints in Project
 		ArrayList<SprintObject> sprintsInProject = project.getSprints();
@@ -613,7 +613,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS), sprint.getAvailableHours());
 		assertEquals(sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR), sprint.getFocusFactor());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.START_DATE), sprint.getStartDateString());
-		assertEquals(sprintJSON.getString(SprintJSONEnum.DUE_DATE), sprint.getDueDateString());
+		assertEquals(sprintJSON.getString(SprintJSONEnum.END_DATE), sprint.getEndDateString());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DEMO_DATE), sprint.getDemoDateString());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DEMO_PLACE), sprint.getDemoPlace());
 		assertEquals(sprintJSON.getString(SprintJSONEnum.DAILY_INFO), sprint.getDailyInfo());
@@ -926,7 +926,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -939,7 +939,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -1368,7 +1368,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -1381,7 +1381,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -1737,7 +1737,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -1750,7 +1750,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -2106,7 +2106,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -2119,7 +2119,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -2461,7 +2461,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -2474,7 +2474,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -2835,7 +2835,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -2848,7 +2848,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");
@@ -3209,7 +3209,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		releaseJSON.put(ReleaseJSONEnum.NAME, "TEST_RELEASE_1");
 		releaseJSON.put(ReleaseJSONEnum.DESCRIPTION, "TEST_RELEASE_1_DESCRIPTION");
 		releaseJSON.put(ReleaseJSONEnum.START_DATE, "2015/11/24");
-		releaseJSON.put(ReleaseJSONEnum.DUE_DATE, "2015/12/21");
+		releaseJSON.put(ReleaseJSONEnum.END_DATE, "2015/12/21");
 		releaseJSONArray.put(releaseJSON);
 		projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		
@@ -3222,7 +3222,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		sprintJSON.put(SprintJSONEnum.AVAILABLE_HOURS, 120);
 		sprintJSON.put(SprintJSONEnum.FOCUS_FACTOR, 80);
 		sprintJSON.put(SprintJSONEnum.START_DATE, "2015/11/24");
-		sprintJSON.put(SprintJSONEnum.DUE_DATE, "2015/12/07");
+		sprintJSON.put(SprintJSONEnum.END_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_DATE, "2015/12/07");
 		sprintJSON.put(SprintJSONEnum.DEMO_PLACE, "TEST_SPRINT_DEMO_PLACE");
 		sprintJSON.put(SprintJSONEnum.DAILY_INFO, "TEST_SPRINT_DAILY_INFO");

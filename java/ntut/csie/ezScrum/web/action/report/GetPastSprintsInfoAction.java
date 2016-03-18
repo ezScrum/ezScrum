@@ -66,7 +66,7 @@ public class GetPastSprintsInfoAction extends Action {
 				/*------------------------------------------------------------
 				 *  判斷此Sprint是否已過期，是否可以編輯
 				 -------------------------------------------------------------*/
-				String endDateString = sprint.getDueDateString(); // 取得日期為轉換成字串的日期
+				String endDateString = sprint.getEndDateString(); // 取得日期為轉換成字串的日期
 																	// yyyy/mm/dd
 				Date endDate = DateUtil.dayFilter(endDateString);
 				SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");

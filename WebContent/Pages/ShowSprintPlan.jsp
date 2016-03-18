@@ -242,20 +242,20 @@ sprintSelectionModel.on('rowselect', function(sm, rowIdx, r) {
                         }
                     });
 
-            // 計算Due Day，與判斷此Sprint是否可編輯
+            // 計算 End Day，與判斷此Sprint是否可編輯
             var start = Date.parseDate(r.get('StartDate'),'Y/m/d');
             
             topToolbar.get('editSprint').enable();
 	        topToolbar.get('removeSprint').enable();
 	        
             if (start != null) {
-                // 計算DueDate
+                // 計算EndDate
                 var today = new Date();
-                due = start.add(Date.DAY, parseInt(r.get('Interval')) * 7);
+                end = start.add(Date.DAY, parseInt(r.get('Interval')) * 7);
                
                 
                 /*
-	            if(due < today)
+	            if(end < today)
 				{
 				    topToolbar.get('editSprint').disable();
 				    topToolbar.get('removeSprint').disable();			
@@ -323,7 +323,7 @@ ezScrum.SprintMaster = Ext.extend(Ext.grid.GridPanel, {
 				// compute overdue or not
 				var start = Date.parseDate(record.get('StartDate'),'Y/m/d');
 				var today = new Date();
-                due = start.add(Date.DAY, parseInt(record.get('Interval')) * 7);
+				end = start.add(Date.DAY, parseInt(record.get('Interval')) * 7);
 
 
 				var goal = record.get('Goal');
@@ -351,7 +351,7 @@ ezScrum.SprintMaster = Ext.extend(Ext.grid.GridPanel, {
 				record.set('DailyScrum', dailyscrum);
 
                
-	            if(due < today) {
+	            if(end < today) {
 					Ext.MessageBox.confirm('Confirm', info, function(btn) {
 						if(btn == 'yes') {
 							if (edit == true) {				

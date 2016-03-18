@@ -101,7 +101,7 @@ public class GetPastSprintsInfoActionTest extends MockStrutsTestCase {
 		// Create 3 Sprints
 		SprintObject sprint1 = new SprintObject(mProject.getId());
 		sprint1.setStartDate("2015/8/1")
-		       .setDueDate("2015/8/14")
+		       .setEndDate("2015/8/14")
 		       .setGoal("Sprint# 1")
 		       .save();
 		
@@ -109,7 +109,7 @@ public class GetPastSprintsInfoActionTest extends MockStrutsTestCase {
 		SprintObject sprint2 = new SprintObject(mProject.getId());
 		sprint2.setStartDate(DateUtil.formatBySlashForm(calendar.getTime()));
 		calendar.add(Calendar.DAY_OF_YEAR, 14);
-		sprint2.setDueDate(DateUtil.formatBySlashForm(calendar.getTime()))
+		sprint2.setEndDate(DateUtil.formatBySlashForm(calendar.getTime()))
 			   .setGoal("Sprint# 2")       
 		       .save();
 		
@@ -117,7 +117,7 @@ public class GetPastSprintsInfoActionTest extends MockStrutsTestCase {
 		SprintObject sprint3 = new SprintObject(mProject.getId());
 		sprint3.setStartDate(DateUtil.formatBySlashForm(calendar.getTime()));
 		calendar.add(Calendar.DAY_OF_YEAR, 14);
-		sprint3.setDueDate(DateUtil.formatBySlashForm(calendar.getTime()))
+		sprint3.setEndDate(DateUtil.formatBySlashForm(calendar.getTime()))
 	           .setGoal("Sprint# 3")   
 	           .save();
 		

@@ -14,7 +14,7 @@ public class SprintInfo {
 	public int focusFactor = 0;
 	public String sprintGoal = "";
 	public String startDate = "";
-	public String dueDate = "";
+	public String endDate = "";
 	public String demoDate = "";
 	public String demoPlace = "";
 	public String dailyInfo = "";
@@ -41,7 +41,7 @@ public class SprintInfo {
 		demoDate = sprint.getString(SprintEnum.DEMO_DATE);
 		demoPlace = sprint.getString(SprintEnum.DEMO_PLACE);
 		dailyInfo = sprint.getString(SprintEnum.DAILY_INFO);
-		dueDate = sprint.getString(SprintEnum.DUE_DATE);
+		endDate = sprint.getString(SprintEnum.END_DATE);
 		serialId = sprint.getLong(SprintEnum.SERIAL_ID);
 	}
 }

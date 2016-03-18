@@ -38,7 +38,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
-		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
+		valueSet.addInsertValue(SprintEnum.END_DATE, sprint.getEndDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
@@ -109,7 +109,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
-		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
+		valueSet.addInsertValue(SprintEnum.END_DATE, sprint.getEndDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
@@ -192,7 +192,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		        .setAvailableHours(result.getInt(SprintEnum.AVAILABLE_HOURS))
 		        .setFocusFactor(result.getInt(SprintEnum.FOCUS_FACTOR))
 		        .setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.START_DATE)))
-		        .setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DUE_DATE)))
+		        .setEndDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.END_DATE)))
 		        .setDemoDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DEMO_DATE)))
 		        .setDemoPlace(result.getString(SprintEnum.DEMO_PLACE))
 		        .setDailyInfo(result.getString(SprintEnum.DAILY_INFO))

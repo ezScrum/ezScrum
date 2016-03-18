@@ -210,7 +210,7 @@ public class SprintBacklogMapper {
 		if (mSprint == null) {
 			return null;
 		}
-		return DateUtil.dayFilter(mSprint.getDueDateString());
+		return DateUtil.dayFilter(mSprint.getEndDateString());
 	}
 
 	public String getSprintGoal() {

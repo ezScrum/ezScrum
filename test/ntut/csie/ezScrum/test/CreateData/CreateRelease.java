@@ -23,7 +23,7 @@ public class CreateRelease {
 	public int RELEASE_DURATION = 180; // Release duration days
 	public String TEST_RELEASE_DESC = "This is Release Description - "; // This is Release Description - X
 	private String StartDate = "";
-	private String DueDate = "";
+	private String EndDate = "";
 
 	private Date mToday = null;
 	private ArrayList<ReleaseObject> mReleases = null;
@@ -72,7 +72,7 @@ public class CreateRelease {
 				ReleaseInfo releaseInfo = new ReleaseInfo();
 				releaseInfo.name = releaseName;
 				releaseInfo.startDate = StartDate;
-				releaseInfo.dueDate = DueDate;
+				releaseInfo.endDate = EndDate;
 				releaseInfo.description = TEST_RELEASE_DESC + (j + 1);
 
 				// save to file
@@ -119,7 +119,7 @@ public class CreateRelease {
 		cal_end.add(Calendar.DAY_OF_YEAR, RELEASE_DURATION);
 
 		StartDate = format.format(cal_start.getTime()); // get start date
-		DueDate = format.format(cal_end.getTime()); // get end date
+		EndDate = format.format(cal_end.getTime()); // get end date
 
 		// set next Today
 		cal_end.add(Calendar.DAY_OF_YEAR, 1);

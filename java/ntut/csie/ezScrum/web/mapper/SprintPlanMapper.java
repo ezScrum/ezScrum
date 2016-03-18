@@ -31,7 +31,7 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
-		        .setDueDate(sprintInfo.dueDate)
+		        .setEndDate(sprintInfo.endDate)
 		        .save();
 		return sprint.getId();
 	}
@@ -79,7 +79,7 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
-		        .setDueDate(sprintInfo.dueDate)
+		        .setEndDate(sprintInfo.endDate)
 		        .save();
 	}
 
