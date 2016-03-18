@@ -186,18 +186,19 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         
         this.interval_CS.addListener('change', function(interval, newValue, oldValue) {
             if (obj.startDate_CS.isValid()) {
+            	// end date generated logic
             	var tempDueDate = obj.startDate_CS.getValue().add(Date.DAY, (newValue ^ 0) * 7 -1);
+            	obj.dueDate_CS.setValue(tempDueDate);
             	
-            	// 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
+            	// demo date generated logic
+            	var tempDemoDate = tempDueDate;
             	if(tempDueDate.getDay() == 0){
-            	   obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, -2));
+            		tempDemoDate = tempDueDate.add(Date.DAY, -2);
                 } else if (tempDueDate.getDay() == 6) {
-                	obj.dueDate_CS.setValue(tempDueDate.add(Date.DAY, -1));
-                } else {
-                   obj.dueDate_CS.setValue(tempDueDate);
-                }
+                	tempDemoDate = tempDueDate.add(Date.DAY, -1);
+                } 
             	obj.demoDate_CS.setMinValue(obj.startDate_CS.getValue());
-            	obj.demoDate_CS.setValue(obj.dueDate_CS.getValue());
+            	obj.demoDate_CS.setValue(tempDemoDate);
             }
             
             
@@ -280,7 +281,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     	var interval_CS = this.getItem_Field(3);
     	var dueDate_CS = this.getItem_Field(4);
         if (startDate_CS.isValid()) {
-            // 計算EndDate
+            // generate EndDate
             var demoDateValue = demoDate_CS.getValue();
             var startDateValue = startDate_CS.getValue();
             var intervalValue = interval_CS.getValue();
@@ -288,13 +289,16 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             this.demoDate_CS.setMinValue(startDateValue);
             this.demoDate_CS.setValue(demoDateValue);
             this.dueDate_CS.setValue( startDateValue.add(Date.DAY, (intervalValue ^ 0) * 7 -1) );//auto produce endDay
+            
+            var tempDemoDate = this.dueDate_CS.getValue();
+            
             // 6 means saturday and 0 means sunday, so it will add 1 or 2 more days based on weekend days
-            if(dueDate_CS.getValue().getDay() == 0){
-               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, -2));
-            } else if (dueDate_CS.getValue().getDay() == 6){
-               this.dueDate_CS.setValue(dueDate_CS.getValue().add(Date.DAY, -1));
+            if (tempDemoDate.getDay() == 0) {
+            	tempDemoDate = tempDemoDate.add(Date.DAY, -2);
+            } else if (tempDemoDate.getDay() == 6){
+            	tempDemoDate = tempDemoDate.add(Date.DAY, -1);
             }
-            var dueDateValue  = dueDate_CS.getValue();
+            this.demoDate_CS.setValue(tempDemoDate);
         }else{
         	alert('start date is invalid');
         }
@@ -333,14 +337,14 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         });
     },
     setNewSprintRecord : function(record) {
-		// 讓所有欄位回復初始狀態
+		// init all fields
 		this.getForm().reset();
 		
     	if ( (record != null) && (record.get('Id')>0) ) {
-    		// 取出 StartDate
+    		// get StartDate
             var preStartDate = Date.parseDate(record.get('StartDate'), 'Y/m/d');
             
-            // 計算 EndDate
+            // generate EndDate
             var temp = preStartDate.add(Date.DAY, parseInt(record.get('Interval')) * 7 - 1); 
             var preDueDate;
             
@@ -353,7 +357,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
                preDueDate = temp;
             };
             
-            // 設定 demoDate 時間範圍
+            // set boundary of demoDate
             this.demoDate_CS.setMinValue(this.startDate_CS.getValue());
             console.log("date is : " + preDueDate.getDay());
             
