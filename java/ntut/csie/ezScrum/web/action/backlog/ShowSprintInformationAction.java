@@ -23,7 +23,6 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.core.util.DateUtil;
 
 public class ShowSprintInformationAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
