@@ -126,7 +126,7 @@ public class ReleasePlanHelper {
 			}
 			stringBuilder.append("Type:\'Release\',");
 			stringBuilder.append("ID:\'");
-			stringBuilder.append(release.getId());
+			stringBuilder.append(release.getSerialId());
 			stringBuilder.append("\',");
 			stringBuilder.append("Name:\'");
 			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getName()));
@@ -330,7 +330,7 @@ public class ReleasePlanHelper {
 				}
 				stringBuilder.append("Type:\'Sprint\',");
 				stringBuilder.append("ID:\'");
-				stringBuilder.append(sprint.getId());
+				stringBuilder.append(sprint.getSerialId());
 				stringBuilder.append("\',");
 				stringBuilder.append("Name:\'");
 				stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(sprint.getGoal()));
@@ -371,8 +371,14 @@ public class ReleasePlanHelper {
 			for (int i = 0; i < stories.size(); i++) {
 
 				long sprintId = stories.get(i).getSprintId();
+				// Get serial sprint id
+				long serialSprintId = -1;
+				SprintObject sprint = SprintObject.get(sprintId);
+				if (sprint != null) {
+					serialSprintId = sprint.getSerialId();
+				}
 				stringBuilder.append("<Story>");
-				stringBuilder.append("<Id>" + stories.get(i).getId() + "</Id>");
+				stringBuilder.append("<Id>" + stories.get(i).getSerialId() + "</Id>");
 				stringBuilder.append("<Link></Link>");
 				stringBuilder.append("<Name>"
 						+ replaceStr(stories.get(i).getName()) + "</Name>");
@@ -389,8 +395,8 @@ public class ReleasePlanHelper {
 				stringBuilder.append("<HowToDemo>"
 						+ replaceStr(stories.get(i).getHowToDemo())
 						+ "</HowToDemo>");
-				stringBuilder.append("<Release>" + releaseId + "</Release>");
-				stringBuilder.append("<Sprint>" + sprintId + "</Sprint>");
+				stringBuilder.append("<Release>" + release.getSerialId() + "</Release>");
+				stringBuilder.append("<Sprint>" + serialSprintId + "</Sprint>");
 				stringBuilder.append("<Tag>"
 						+ replaceStr(joinTagOnStory(stories.get(i)
 								.getTags(), ",")) + "</Tag>");

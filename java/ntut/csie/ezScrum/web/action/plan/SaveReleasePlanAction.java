@@ -3,21 +3,18 @@ package ntut.csie.ezScrum.web.action.plan;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
 public class SaveReleasePlanAction extends PermissionAction {
-	private static Log log = LogFactory.getLog(SaveReleasePlanAction.class);
-	
 	@Override
 	public boolean isValidAction() {
 		return super.getScrumRole().getAccessReleasePlan();
@@ -36,7 +33,7 @@ public class SaveReleasePlanAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
-		String releaseIdString = request.getParameter("Id");
+		String serialReleaseIdString = request.getParameter("Id");
 		String name = TranslateSpecialChar.TranslateXMLChar(request.getParameter("Name"));
 		String startDate = request.getParameter("StartDate");
 		String dueDate = request.getParameter("EndDate");
@@ -51,12 +48,18 @@ public class SaveReleasePlanAction extends PermissionAction {
 		releaseInfo.startDate = startDate;
 		releaseInfo.dueDate = dueDate;
 		releaseInfo.description = description;
-		long releaseId = -1;
+		long serialReleaseId = -1;
 		if (action.equals("save")) {
 			releasePlanHelper.createRelease(releaseInfo);
 		} else if (action.equals("edit")) {
-			if (releaseIdString != null) {
-				releaseId = Long.parseLong(releaseIdString);
+			if (serialReleaseIdString != null) {
+				serialReleaseId = Long.parseLong(serialReleaseIdString);
+			}
+			// Get release id
+			long releaseId = -1;
+			ReleaseObject release = ReleaseObject.get(project.getId(), serialReleaseId);
+			if (release != null) {
+				releaseId = release.getId();
 			}
 			releaseInfo.id = releaseId;
 			releasePlanHelper.editRelease(releaseInfo);

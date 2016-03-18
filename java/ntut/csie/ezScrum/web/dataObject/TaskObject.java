@@ -138,6 +138,15 @@ public class TaskObject implements IBaseObject {
 	public long getHandlerId() {
 		return mHandlerId;
 	}
+	
+	public String getHandlerUsername() {
+		AccountObject handler = getHandler();
+		String handlerUsername = "";
+		if (handler != null) {
+			handlerUsername = handler.getUsername();
+		}
+		return handlerUsername;
+	}
 
 	public AccountObject getHandler() {
 		AccountObject handler = AccountDAO.getInstance().get(mHandlerId);
