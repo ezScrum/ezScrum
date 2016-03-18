@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -25,8 +26,14 @@ public class GetSprintBurndownChartDataAction extends Action {
 		log.info(" Get Sprint Burndown Chart Data. In Project Summary Page.");
 
 		ProjectObject project = SessionManager.getProject(request);
-		long sprintId = Long.parseLong(request.getParameter("SprintID"));
+		long serialSprintId = Long.parseLong(request.getParameter("SprintID"));
 		String type = request.getParameter("Type");
+		// Get sprint id
+		long sprintId = -1;
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		// 拿出 SprintBurndownChart 的資料
 		TaskBoardHelper taskBoardHelper = new TaskBoardHelper(project, sprintId);
 		String responseText = taskBoardHelper.getSprintBurndownChartDataResponseText(type);

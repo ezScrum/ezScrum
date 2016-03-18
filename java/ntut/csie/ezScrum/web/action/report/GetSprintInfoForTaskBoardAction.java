@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -30,10 +31,17 @@ public class GetSprintInfoForTaskBoardAction extends PermissionAction {
 		// get project from session or DB
 		ProjectObject project = SessionManager.getProject(request);
 		// get parameter info
-		String sprintIdString = request.getParameter("SprintID");
+		String serialSprintIdString = request.getParameter("SprintID");
+		long serialSprintId = -1;
+		if (serialSprintIdString != null && serialSprintIdString != "") {
+			serialSprintId = Long.parseLong(serialSprintIdString);
+		}
+		
+		// Get Sprint
 		long sprintId = -1;
-		if (sprintIdString != null && sprintIdString != "") {
-			sprintId = Long.parseLong(request.getParameter("SprintID"));
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		if (sprint != null) {
+			sprintId = sprint.getId();
 		}
 		return new TaskBoardHelper(project, sprintId).getSprintInfoForTaskBoardText();
 	}

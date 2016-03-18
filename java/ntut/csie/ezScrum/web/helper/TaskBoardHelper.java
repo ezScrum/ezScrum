@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -82,10 +83,16 @@ public class TaskBoardHelper {
 			boolean isCurrentSprint = false;
 			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(mProject);
 			long releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintID);
+			// Get serial release id
+			long serialReleaseId = -1;
+			ReleaseObject release = ReleaseObject.get(releaseId);
+			if (release != null) {
+				serialReleaseId = release.getSerialId();
+			}
 			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
-			sprintInfoUI = new SprintInfoUI(currentSprintID, mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, releaseId, isCurrentSprint);
+			sprintInfoUI = new SprintInfoUI(sprint.getSerialId(), mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, serialReleaseId, isCurrentSprint);
 		} else {
 			sprintInfoUI = new SprintInfoUI();
 		}
@@ -215,7 +222,7 @@ public class TaskBoardHelper {
 		ArrayList<TaskBoard_Task> Tasks;
 
 		public TaskBoard_Story(StoryObject story) {
-			Id = String.valueOf(story.getId());
+			Id = String.valueOf(story.getSerialId());
 			Name = HandleSpecialChar(story.getName());
 			Value = String.valueOf(story.getValue());
 			Estimate = String.valueOf(story.getEstimate());
@@ -224,8 +231,24 @@ public class TaskBoardHelper {
 			Status = story.getStatusString();
 			Notes = HandleSpecialChar(story.getNotes());
 			HowToDemo = HandleSpecialChar(story.getHowToDemo());
-			Release = "";
-			Sprint = String.valueOf(story.getSprintId());
+			// Get serial sprint id
+			long serialSprintId = -1;
+			SprintObject sprint = SprintObject.get(story.getSprintId());
+			if (sprint != null) {
+				serialSprintId = sprint.getSerialId();
+			}
+			Sprint = String.valueOf(serialSprintId);
+			// Get serial release id
+			ProjectObject project = ProjectObject.get(story.getProjectId());
+			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+			long releaseId = releasePlanHelper.getReleaseIdBySprintId(sprint.getId());
+			ReleaseObject release = ReleaseObject.get(releaseId);
+			long serialReleaseId = -1;
+			if (release != null) {
+				serialReleaseId = release.getSerialId();
+			}
+			Release = String.valueOf(serialReleaseId);
+			
 
 			Link = "";
 			AttachFileList = getAttachFilePath(story, story.getAttachFiles());
@@ -252,7 +275,7 @@ public class TaskBoardHelper {
 		String Actual;
 		
 		public TaskBoard_Task(TaskObject task) {
-			Id = Long.toString(task.getId());
+			Id = Long.toString(task.getSerialId());
 			Name = HandleSpecialChar(task.getName());
 			Estimate = String.valueOf(task.getEstimate());
 			RemainHours = String.valueOf(task.getRemains());
