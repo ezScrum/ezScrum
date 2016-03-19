@@ -49,7 +49,7 @@ Test Import - Find duplicated \ accounts and projects
     Click Element    xpath=//td[text()="ProjectList"]
     #測試
     ${originPattern}    Set Variable    [Project01]{1,9}[_]{1}[0-9]{14}
-    ${PROJECTNAME}=    Get Text    xpath=//div[text()="Project01"]/../../../../../../div[2]/table/tbody/tr/td[1]/div
+    ${PROJECTNAME}=    Get Text    //div[contains(text(), "Project01_")]
     Should Match Regexp    ${PROJECTNAME}    ${originPattern}
     # 進入 Management 頁面
     Click Element    xpath=//td[text()="Management"]
