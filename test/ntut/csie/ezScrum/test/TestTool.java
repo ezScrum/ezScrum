@@ -154,8 +154,7 @@ public class TestTool {
 	 */
 	public Date getSprintEndDate(int inter, Date startDate) {
 		String calculatedEndDate = calcaulateEndDate(inter, startDate);
-		Date endDate = DateUtil.nearWorkDate(DateUtil.dayFilter(calculatedEndDate), DateUtil.FRONT_DIRECTION);
-		return endDate;
+		return DateUtil.dayFilter(calculatedEndDate);
 	}
 
 	public Date getSprintStartDate(String inter, Date date) {
