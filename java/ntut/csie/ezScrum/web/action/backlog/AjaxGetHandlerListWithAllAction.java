@@ -37,10 +37,6 @@ public class AjaxGetHandlerListWithAllAction extends PermissionAction {
 		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		
 		ArrayList<AccountObject> members = project.getProjectMembers();
-		ArrayList<String> memberUsernames = new ArrayList<>();
-		for (AccountObject member : members) {
-			memberUsernames.add(member.getUsername());
-		}
 		StringBuilder result = new StringBuilder();
 		result.append("<Handlers><Result>success</Result>");
 		
@@ -48,9 +44,9 @@ public class AjaxGetHandlerListWithAllAction extends PermissionAction {
 		result.append("<Name>ALL</Name>");
 		result.append("</Handler>");
 		
-		for(int i = 1; i < memberUsernames.size(); i++) {
+		for (AccountObject member : members) {
 			result.append("<Handler>");
-			result.append("<Name>").append(memberUsernames.get(i)).append("</Name>");
+			result.append("<Name>").append(member.getUsername()).append("</Name>");
 			result.append("</Handler>");
 		}
 		
