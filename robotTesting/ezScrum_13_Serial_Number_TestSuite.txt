@@ -50,13 +50,15 @@ Test Serial Number - Check ID In Product Backlog
     Create Sprint    test sprint    2    4    100    100
     Select Sprint Backlog Page And Add All Existing Story
     Select Node Product    Product Backlog
-    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[6]/div    3
-    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[6]/div    3
+    Compare Text In Specific Xpath    //div[text()="story1"]/../../td[6]/div    4
+    Compare Text In Specific Xpath    //div[text()="story3"]/../../td[6]/div    4
     [Teardown]    Clean Database and Exit ezScrum
 
 Test Serial Number - Check ID In Sprint Backlog
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Sprint_Backlog.sql
     Click Element    xpath=//div[text()="second"]
+    Select Node Product    Sprint Plan
+    Create Sprint    test sprint    2    4    100    100
     Select Node Product    Sprint Backlog
     Click Element    xpath=//button[text()="Add Existing Stories"]
     Wait Until Page Contains    Add Existing Stories
@@ -72,8 +74,9 @@ Test Serial Number - Check ID In Sprint Backlog
     Add Task With Arguments    3    task3    10    note    #6    #should be 3
     Compare Text In Specific Xpath    //div[text()="task3"]/../../td[1]/a/span    3    #6    #should be 3
     Click Element    xpath=//tr[@class="x-toolbar-left-row"]/td[2]/div/input
-    Compare Text In Specific Xpath    //div[text()="Sprint #1"]/../div[1]    Sprint #3    #Sprint #6    #should be Sprint #3
-    Compare Text In Specific Xpath    //div[text()="Sprint #1"]/../div[2]    Sprint #1    #Sprint #4    #should be Sprint #1
+    Compare Text In Specific Xpath    //div[text()="Sprint #1"]/../div[1]    Sprint #4    #Sprint #7    #should be Sprint #4
+    Compare Text In Specific Xpath    //div[text()="Sprint #1"]/../div[2]    Sprint #3    #Sprint #6    #should be Sprint #3
+    Compare Text In Specific Xpath    //div[text()="Sprint #1"]/../div[3]    Sprint #1    #Sprint #4    #should be Sprint #1
     \    #Sprint #4
     Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/a/span    1    #4    #should be 1
     Compare Text In Specific Xpath    //div[text()="story3"]/../../td[1]/a/span    3    #6    #should be 3
