@@ -274,9 +274,11 @@ public class RemainingWorkReport {
 	}
 
 	public String getRemainingWorkChartPath() {
-		Configuration configuration = new Configuration();
+		String workspaceDirectory = "./Workspace/";
+		String metadataFolderName = "/_metadata/";
+		String reportFolderName = "/Report/";
 		// web用的路徑
-		String link = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + "_metadata" + File.separator + mNAME + File.separator + "Report" + File.separator + mChartPath;
+		String link = workspaceDirectory + mProject.getName() + metadataFolderName + mNAME + reportFolderName + mChartPath;
 		return link;
 	}
 
