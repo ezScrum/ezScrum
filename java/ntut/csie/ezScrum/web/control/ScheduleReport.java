@@ -40,7 +40,6 @@ import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.CloseStreamUtil;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ScheduleReport {
 	private final long mOneDay = 24 * 3600 * 1000;
@@ -85,9 +84,12 @@ public class ScheduleReport {
 	}
 
 	public String getPath() {
-		String link = "./Workspace/" + mProject.getName() + "/"
-				+ IProject.METADATA + "/" + mFolderName + "/Sprint"
-				+ mIteration + "/" + mFileName;
+		String workspaceDirectory = "./Workspace/";
+		String metadataFolderName = "/_metadata/";
+		String sprintFolderTitle = "/Sprint";
+		String slash = "/";
+		String link = workspaceDirectory + mProject.getName() + metadataFolderName + mFolderName + sprintFolderTitle
+				+ mIteration + slash + mFileName;
 		return link;
 	}
 
@@ -237,7 +239,8 @@ public class ScheduleReport {
 
 	private void saveChart(JFreeChart chart) {
 		Configuration configuration = new Configuration();
-		mChartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + mFolderName + File.separator + "Sprint"
+		String metadataFolderName = "_metadata";
+		mChartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + metadataFolderName + File.separator + mFolderName + File.separator + "Sprint"
 				+ mIteration + File.separator + mFileName;
 
 		File f = new File(mChartPath);
