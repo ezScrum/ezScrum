@@ -131,7 +131,8 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 					{id:'SprintBacklog_addExistStoryBtn', text:'Add Existing Stories', icon:'images/add.gif', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').addExistStory();}},
 					{id:'SprintBacklog_showPrintableStoryBtn', text:'Printable Stories', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showPrintableStory();}},
 					{id:'SprintBacklog_showSprintInfoBtn', text:'Sprint Information', icon:'images/clipboard.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showSprintInfo();}},
-					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}}
+					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}},
+					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Task', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event')}}
 //					,
 //					{id:'SprintBacklog_deleteExistingTaskBtn', text:'Delete Existing Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteExistingTask();}}
 				]
@@ -598,9 +599,11 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 				obj.setTitle(title);		// update Sprint Backlog Title
 				if(forSprintBacklogThisSprintStore.reader.jsonData.Total == 0 ){
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(true);
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(true);
     				Ext.example.msg('Message','no topics to display !!');//設定title時順便跳出該sprintBacklog tree是否為空
 				}else{
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(false);
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(false);
 				}
 				
 				MainLoadMaskHide();
@@ -652,6 +655,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_editSprintBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showSprintInfoBtn').setDisabled(disable);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(disable);
 	},
 	set_Sprint_Permission_disable:function(disable) {
 		// sprint Action
