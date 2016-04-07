@@ -132,7 +132,7 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 					{id:'SprintBacklog_showPrintableStoryBtn', text:'Printable Stories', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showPrintableStory();}},
 					{id:'SprintBacklog_showSprintInfoBtn', text:'Sprint Information', icon:'images/clipboard.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showSprintInfo();}},
 					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}},
-					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Task', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').selectTasks()}}
+					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Tasks', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').selectTasks()}}
 //					,
 //					{id:'SprintBacklog_deleteExistingTaskBtn', text:'Delete Existing Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteExistingTask();}}
 				]
