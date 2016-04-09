@@ -38,8 +38,9 @@ var ExistedStory_Filter = new Ext.ux.grid.GridFilters({
 
 var ExistedStoryColumnModel = function() {
     var columns = [
+
 		ExistedStory_Expander, ExistedStory_CheckBoxModel,
-		{dataIndex: 'Id', header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
+		{dataIndex: 'Id23', header: 'Id23', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
 		{dataIndex: 'Tag', header: 'Tag', width: 50},
 		{dataIndex: 'Name', header: 'Name', width: 250},
 		{dataIndex: 'Release', header: 'Release', width: 50},
@@ -59,6 +60,7 @@ var ExistedStoryColumnModel = function() {
 };
 
 var ExistedStoryStore = new Ext.data.Store({
+	
 	fields: [
 		{name: 'Id', type: 'int'},
 		{name: 'Link'},
@@ -77,7 +79,7 @@ var ExistedStoryStore = new Ext.data.Store({
 	proxy : new Ext.ux.data.PagingMemoryProxy(),
 	remoteSort : true
 });
-
+ console.log(9999999999);
 ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
@@ -91,6 +93,7 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	viewConfig	: {
         forceFit: true
     },
+   
     loadDataModel: function() {
     	var obj = this;
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "loading info..."});

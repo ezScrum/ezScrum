@@ -1,3 +1,7 @@
+Ext.ns('ezScrum');
+Ext.ns('ezScrum.layout');
+Ext.ns('ezScrum.window');
+/*
 showTheWindow_Sprint: function(panel, sprintID) {
     	// show from sprint backlog page
     	
@@ -11,4 +15,4 @@ showTheWindow_Sprint: function(panel, sprintID) {
     	this.ExistedStoryGrid.releaseID = '-1';
     	this.ExistedStoryGrid.sprintID = sprintID;
     	this.ExistedStoryGrid.loadDataModel();
-    },
+    },*/
