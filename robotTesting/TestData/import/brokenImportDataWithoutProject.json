@@ -1,0 +1,39 @@
+{
+  "accounts": [
+    {
+      "username": "account2",
+      "nick_name": "account2",
+      "password": "93189e2c4c7b1a2c7b16a24d5daa98a9",
+      "email": "account2@gmail.com",
+      "enable": true
+    },
+    {
+      "username": "account1",
+      "nick_name": "account1",
+      "password": "809d7aea9eacf339b2e35e3c8ae0a57c",
+      "email": "account1@gmail.com",
+      "enable": true
+    },
+    {
+      "username": "account4",
+      "nick_name": "account4",
+      "password": "201e9991afe90c65e13b08b53fb695de",
+      "email": "account4@gmail.com",
+      "enable": true
+    },
+    {
+      "username": "account3",
+      "nick_name": "account3",
+      "password": "fbcd0ff0529a3dd9b733884b30941297",
+      "email": "account3@gmail.com",
+      "enable": true
+    },
+    {
+      "username": "account5",
+      "nick_name": "account5",
+      "password": "7ea4950f63c983360c863bd5d1608944",
+      "email": "account5@gmail.com",
+      "enable": true
+    }
+  ]
+}

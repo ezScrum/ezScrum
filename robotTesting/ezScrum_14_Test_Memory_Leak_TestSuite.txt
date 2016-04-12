@@ -1,0 +1,37 @@
+*** Settings ***
+Default Tags      Unstable
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+
+*** Test Cases ***
+Test Memory Leak After Import Multitimes
+    [Setup]
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    # 點選 Import 頁面
+    Click Element    xpath=//u[text()="Import"]
+    # 取得 JSON 完整路徑
+    ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    brokenImportDataWithoutProject.json
+    #點選 Browse 按鈕
+    Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
+    :FOR    ${INDEX}    IN RANGE    1    500
+    \    Click Element    xpath=//button[text()="Import"]
+    # 點選YES
+    \    Click Element    xpath=//button[text()="Yes"]
+    # Enter Administrator's password
+    \    Focus AND Input Text    //input[@type='password']    admin
+    # Press OK
+    \    Click Element    xpath=//button[text()="OK"]
+    # 等待匯出成功
+    \    Wait Until Page Contains    Project Import fail.
+    \    Click Element    xpath=//button[text()="OK"]
+    Exit ezScrum System
+    [Teardown]
+
+Test Memory Leak After MySQL Connection Fail
+    : FOR    ${INDEX}    IN RANGE    1    1000
+    # 登入ezScrum
+    \    Login Page    ${LOGIN_URL}
+    \    Exit ezScrum System
