@@ -79,7 +79,7 @@ var ExistedStoryStore = new Ext.data.Store({
 	proxy : new Ext.ux.data.PagingMemoryProxy(),
 	remoteSort : true
 });
- console.log(9999999999);
+ //console.log(9999999999);
 ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
