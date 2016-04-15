@@ -4,27 +4,27 @@ Ext.ns('ezScrum.window');
 
 var Page_Selected_items = new Array();
 
-var ExistedStory_Expander = new Ext.ux.grid.RowExpander({
+/*var ExistedStory_Expander = new Ext.ux.grid.RowExpander({
     tpl : new Ext.Template(
         '<br><p><b>Name:</b><br /> {Name:nl2br}</p>',
         '<p><b>Notes:</b><br /> {Notes:nl2br}</p>',
         '<p><b>How To Demo:</b><br /> {HowToDemo:nl2br}</p><br />'
     )
-});
+});*/
 
-var ExistedStory_CheckBoxModel = new Ext.grid.CheckboxSelectionModel({
+var SelectedTasks_CheckBoxModel = new Ext.grid.CheckboxSelectionModel({
 	listeners:{
 		selectionchange: function() {
    			if (this.getCount() > 0 || Page_Selected_items.length > 0) {
-				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('AddExistedStoryBtn').enable();
+				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('SelectedTasksBtn').enable();
    			} else {
-				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('AddExistedStoryBtn').disable();
+				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('SelectedTasksBtn').disable();
    			}
 		}
 	}
 });
 
-var ExistedStory_Filter = new Ext.ux.grid.GridFilters({
+var SelectedTasks_Filter = new Ext.ux.grid.GridFilters({
 	local:true,
     filters: [{
         type: 'numeric',
@@ -40,11 +40,12 @@ var SelectedTasksColumnModel = function() {
     var columns = [
 
 		//ExistedStory_Expander, 
-		ExistedStory_CheckBoxModel,
+		SelectedTasks_CheckBoxModel,
 		{dataIndex: 'Id', header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
 		{dataIndex: 'Name', header: 'Name', width: 250},
+		{dataIndex: 'StoryId', header: 'StoryId', width: 70},
 		{dataIndex: 'Estimate', header: 'Estimate', width: 70},
-		{dataIndex: 'Status', header: 'Status', width: 50}
+		{dataIndex: 'Status', header: 'Status', width: 70}
 	];
 
     return new Ext.grid.ColumnModel({
@@ -55,37 +56,31 @@ var SelectedTasksColumnModel = function() {
     });
 };
 
-var ExistedStoryStore = new Ext.data.Store({
-	
+var SelectedTaskStore = new Ext.data.Store({
 	fields: [
 		{name: 'Id', type: 'int'},
 		{name: 'Link'},
 		{name: 'Name'},
-		{name: 'Value', type: 'int'},
-		{name: 'Importance', type: 'int'},
+		{name: 'StoryId', type: 'int'},
 		{name: 'Estimate', type: 'float'},
 		{name: 'Status'},
-		{name: 'Release'},
-		{name: 'Sprint'},
 		{name: 'Notes'},
-		{name: 'HowToDemo'},
-		{name: 'Tag'}
 	],
-	reader : ExistedStoryReader,
+	reader : SelectTaskReader,
 	proxy : new Ext.ux.data.PagingMemoryProxy(),
 	remoteSort : true
 });
- //console.log(9999999999);
-ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
+
+ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
 	sprintID	: '-1',
 	releaseID	: '-1',
-	url			: 'showExistedStory.do',
-	store		: ExistedStoryStore,
+	url			: 'showSelectableTask.do',
+	store		: SelectedTaskStore,
 	colModel	: SelectedTasksColumnModel(),
-	plugins		: [ExistedStory_Filter, ExistedStory_Expander],
-	sm			: ExistedStory_CheckBoxModel,
+	plugins		: [ SelectedTasks_Filter  /* ExistedStory_Expander */],
+	sm			: SelectedTasks_CheckBoxModel,
 	viewConfig	: {
         forceFit: true
     },
@@ -98,15 +93,15 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			url: obj.url,
 			params: {
 				sprintID: obj.sprintID,
-				releaseID: obj.releaseID
+				storyID: obj.storyID
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
     			if (ConfirmWidget.confirmAction()) {
-					ExistedStoryStore.loadData(response.responseXML);
-					ExistedStoryStore.proxy.data = response;
-					ExistedStoryStore.proxy.reload = true;
-					ExistedStoryStore.load({params: {start: 0, limit: 15}});
+					SelectedTaskStore.loadData(response.responseXML);
+					SelectedTaskStore.proxy.data = response;
+					SelectedTaskStore.proxy.reload = true;
+					SelectedTaskStore.load({params: {start: 0, limit: 15}});
     			}
     			
     			var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "loading info..."});
@@ -120,11 +115,11 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		});
     },
     reset: function() {
-    	ExistedStoryStore.removeAll();
+    	SelectedTaskStore.removeAll();
     }
 });
 
-Ext.reg('AddExistedStoryGrid', ezScrum.AddExistedStoryGridPanel);
+Ext.reg('SelectedTasksGrid', ezScrum.SelectedTasksGridPanel);
 
 ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 	url			: 'addExistedStory.do',
@@ -147,10 +142,10 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 		var config = {
 			layout : 'fit',
 			items  : [{
-				xtype: 'AddExistedStoryGrid'
+				xtype: 'SelectedTasksGrid'
 			}],
 			tbar: [{
-				id		: 'AddExistedStoryBtn',
+				id		: 'SelectedTasksBtn',
 				text	: 'Select Tasks',
 				icon	: 'images/add3.png',
 				disabled: true,
@@ -165,7 +160,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 			}],
 			bbar: new Ext.PagingToolbar({
 	            pageSize: 15,
-	            store: ExistedStoryStore,
+	            store: SelectedTaskStore,
 	            displayInfo: true,
 	            displayMsg: 'Displaying topics {0} - {1} of {2}',
 	            emptyMsg: "No topics to display",
@@ -178,14 +173,14 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 	                	text : 'Clean Filters',
 	                	icon : 'images/clear2.png',
 	                	handler : function() { Ext.getCmp('SelectTasks_Window').ExistedStoryGrid.filters.clearFilters(); }
-					}, {
-						text : 'Expand All',
-						icon : 'images/folder_out.png',
-						handler : function() { ExistedStory_Expander.expandAll(); }
-					}, {
-						text : 'Collapse All',
-						icon : 'images/folder_into.png',
-						handler : function() { ExistedStory_Expander.collapseAll(); }
+//					}, {
+//						text : 'Expand All',
+//						icon : 'images/folder_out.png',
+//						handler : function() { ExistedStory_Expander.expandAll(); }
+//					}, {
+//						text : 'Collapse All',
+//						icon : 'images/folder_into.png',
+//						handler : function() { ExistedStory_Expander.collapseAll(); }
 					}
 	            ],
 	            listeners: {
@@ -201,7 +196,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 						var currentData = new Array();
 						var otherData = new Array();
 						for (var i=0 ; i<Page_Selected_items.length ; i++) {
-							var record = ExistedStoryStore.getById(Page_Selected_items[i]);
+							var record = SelectedTaskStore.getById(Page_Selected_items[i]);
 							if (record) {
 								currentData.push(record);
 							} else {
@@ -211,8 +206,8 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 						
 						Page_Selected_items = otherData;
 						
-						if (ExistedStory_CheckBoxModel.grid) {
-							ExistedStory_CheckBoxModel.selectRecords(currentData);
+						if (SelectedTasks_CheckBoxModel.grid) {
+							SelectedTasks_CheckBoxModel.selectRecords(currentData);
 						}
 					}
 				}
@@ -288,7 +283,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
     getSelections: function() {
 		// 回傳目前有被勾選的資料
 		var NewArr = new Array();
-		var SelectedArr = ExistedStory_CheckBoxModel.getSelections();
+		var SelectedArr = SelectedTasks_CheckBoxModel.getSelections();
 		for(var i = 0 ; i<SelectedArr.length ; i++) {
 			NewArr.push(SelectedArr[i].data['Id']);
 		}

@@ -40,7 +40,7 @@ var ExistedStoryColumnModel = function() {
     var columns = [
 
 		ExistedStory_Expander, ExistedStory_CheckBoxModel,
-		{dataIndex: 'Id23', header: 'Id23', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
+		{dataIndex: 'Id', header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
 		{dataIndex: 'Tag', header: 'Tag', width: 50},
 		{dataIndex: 'Name', header: 'Name', width: 250},
 		{dataIndex: 'Release', header: 'Release', width: 50},

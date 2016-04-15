@@ -85,3 +85,23 @@ var ExistedStoryReader = new Ext.data.XmlReader({
 /**
 * This is for ezScrumSharedComponent/AddExistedStoryWindow.js
 ***********************************************************************************************/
+
+
+
+
+/**********************************************************************************************
+ * This is for ezScrumSharedComponent/SelectTaskWindow.js
+ * */
+var TaskRecord = Ext.data.Record.create([
+	{name:'Id', sortType:'asInt'}, 'Name',{name:'StoryId', sortType:'asInt'}, {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', 'Link'
+]);
+
+var SelectTaskReader = new Ext.data.XmlReader({
+	   record: 'Task',
+	   idPath : 'Id',
+	   successProperty: 'Result',
+	   totalProperty: 'Total'
+	}, StoryRecord);
+/**
+* This is for ezScrumSharedComponent/SelectTaskWindow.js
+***********************************************************************************************/
