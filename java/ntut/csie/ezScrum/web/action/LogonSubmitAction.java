@@ -24,6 +24,7 @@
 // XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_3.9.210/xslt/JavaClass.xsl
 package ntut.csie.ezScrum.web.action;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,6 +64,7 @@ public class LogonSubmitAction extends Action {
 		// 建立User Session
 		IUserSession userSession = ProjectInfoCenter.getInstance().login(userId, password);
 
+		String encodedUsername = new String(Base64.encode(userId.getBytes()));
 		String encodedPassword = new String(Base64.encode(password.getBytes()));
 
 		// 設定權限資訊
@@ -73,6 +75,10 @@ public class LogonSubmitAction extends Action {
 
 		// 為了要讓插件中可以使用session的中使用者的密碼，所以將原本利用MD5加密的密碼轉換成利用Base64加密。如此加密的密碼才可逆
 		request.getSession().setAttribute("passwordForPlugin", encodedPassword);
+		
+		// for web service
+		response.addCookie(new Cookie("username", encodedUsername));
+		response.addCookie(new Cookie("userpwd", encodedPassword));
 
 		String defaultForwardName = "success";
 		return mapping.findForward(defaultForwardName);
