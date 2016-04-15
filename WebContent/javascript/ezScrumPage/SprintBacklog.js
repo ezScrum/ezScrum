@@ -132,7 +132,7 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 					{id:'SprintBacklog_showPrintableStoryBtn', text:'Printable Stories', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showPrintableStory();}},
 					{id:'SprintBacklog_showSprintInfoBtn', text:'Sprint Information', icon:'images/clipboard.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showSprintInfo();}},
 					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}},
-					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Tasks', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').selectTasks()}}
+					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Tasks', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').selectTasks();}}
 //					,
 //					{id:'SprintBacklog_deleteExistingTaskBtn', text:'Delete Existing Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteExistingTask();}}
 				]
@@ -284,11 +284,11 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
     	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
 		var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
 		
-    	AddExistedStory_Window.showTheWindow_Sprint(this, sprintID);
+		SelectTasks_Window.showTheWindow_Sprint(this, sprintID);
     },
     notify_AddExistedStorySuccess: function() {
-    	AddExistedStory_Window.hide();
-    	Ext.example.msg("Add Existed Stories", 'Success.');
+    	SelectTasks_Window.hide();
+    	Ext.example.msg("Select Tasks", 'Success.');
     	
     	this.SprintBacklog_TreeGrid_ID.fireEvent('updateSprintBacklogTree');
     	

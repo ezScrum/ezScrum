@@ -8,8 +8,9 @@ function registerListenSessionInSprintBacklog() { // 將sprintBacklog中所有�
 	// sprint backlog action
 	registerCheckSession(Story_Window); // function of the story window is add and edit story
 	registerCheckSession(AddExistedStory_Window);
+	registerCheckSession(SelectTasks_Window);
 	registerCheckSession(SprintPlan_Window);
-	//registerCheckSession(SelectTasks_Window);
+	
 	/*
 	 * p.s. 1.printable stories 2.print information 以上兩者都是使用window.open開新分頁的方式
 	 */
