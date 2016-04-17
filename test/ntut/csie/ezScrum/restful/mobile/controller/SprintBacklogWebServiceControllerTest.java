@@ -209,7 +209,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		assertEquals(story1.getImportance(), story1Json.getInt(StoryEnum.IMPORTANCE));
 		assertEquals(story1.getValue(), story1Json.getInt(StoryEnum.VALUE));
 		assertEquals(story1.getEstimate(), story1Json.getInt(StoryEnum.ESTIMATE));
-		assertEquals(story1.getStatus(), story1Json.getInt(StoryEnum.STATUS));
+		assertEquals(story1.getStatusString(), story1Json.getString(StoryEnum.STATUS));
 		assertEquals(story1.getSprintId(), story1Json.getLong(StoryEnum.SPRINT_ID));
 		JSONArray taskArray1 = story1Json.getJSONArray("tasks");
 		JSONArray historyArray1 = story1Json.getJSONArray("histories");
@@ -227,7 +227,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		assertEquals(story2.getImportance(), story2Json.getInt(StoryEnum.IMPORTANCE));
 		assertEquals(story2.getValue(), story2Json.getInt(StoryEnum.VALUE));
 		assertEquals(story2.getEstimate(), story2Json.getInt(StoryEnum.ESTIMATE));
-		assertEquals(story2.getStatus(), story2Json.getInt(StoryEnum.STATUS));
+		assertEquals(story2.getStatusString(), story2Json.getString(StoryEnum.STATUS));
 		assertEquals(story2.getSprintId(), story2Json.getLong(StoryEnum.SPRINT_ID));
 		JSONArray taskArray2 = story2Json.getJSONArray("tasks");
 		JSONArray historyArray2 = story2Json.getJSONArray("histories");
@@ -245,7 +245,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		assertEquals(story3.getImportance(), story3Json.getInt(StoryEnum.IMPORTANCE));
 		assertEquals(story3.getValue(), story3Json.getInt(StoryEnum.VALUE));
 		assertEquals(story3.getEstimate(), story3Json.getInt(StoryEnum.ESTIMATE));
-		assertEquals(story3.getStatus(), story3Json.getInt(StoryEnum.STATUS));
+		assertEquals(story3.getStatusString(), story3Json.getString(StoryEnum.STATUS));
 		assertEquals(story3.getSprintId(), story3Json.getLong(StoryEnum.SPRINT_ID));
 		JSONArray taskArray3 = story3Json.getJSONArray("tasks");
 		JSONArray historyArray3 = story3Json.getJSONArray("histories");

@@ -133,7 +133,7 @@ public class StoryWebServiceTest {
 		assertEquals(21, responseJson.getInt(StoryEnum.ESTIMATE));
 		assertEquals(99, responseJson.getInt(StoryEnum.IMPORTANCE));
 		assertEquals(15, responseJson.getInt(StoryEnum.VALUE));
-		assertEquals(StoryObject.STATUS_DONE, responseJson.getInt(StoryEnum.STATUS));
+		assertEquals("closed", responseJson.getString(StoryEnum.STATUS));
 		assertEquals(1L, responseJson.getLong(StoryEnum.SPRINT_ID));
 	}
 

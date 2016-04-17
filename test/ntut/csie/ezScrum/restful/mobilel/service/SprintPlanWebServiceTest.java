@@ -211,7 +211,7 @@ public class SprintPlanWebServiceTest {
 			assertEquals(story.getValue(), storyJSONObject.get(StoryEnum.VALUE));
 			assertEquals(story.getHowToDemo(), storyJSONObject.get(StoryEnum.HOW_TO_DEMO));
 			assertEquals(story.getNotes(), storyJSONObject.get(StoryEnum.NOTES));
-			assertEquals(story.getStatus(), storyJSONObject.get(StoryEnum.STATUS));
+			assertEquals(story.getStatusString(), storyJSONObject.get(StoryEnum.STATUS));
 		}
 		
 	}

@@ -379,7 +379,7 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.IMPORTANCE, mImportance)
 			.put(StoryEnum.VALUE, mValue)
 			.put(StoryEnum.ESTIMATE, mEstimate)
-			.put(StoryEnum.STATUS, mStatus)
+			.put(StoryEnum.STATUS, getStatusString())
 			.put(StoryEnum.SPRINT_ID, mSprintId)
 			.put("totalTaskPoint", getTotalTaskPoints())
 			.put("tasks", taskJsonArray)

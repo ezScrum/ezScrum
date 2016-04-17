@@ -359,7 +359,6 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
             
             // set boundary of demoDate
             this.demoDate_CS.setMinValue(this.startDate_CS.getValue());
-            console.log("date is : " + preEndDate.getDay());
             
             var newID = (record.get('Id') ^ 0) + 1;
 			var newStartDate;
