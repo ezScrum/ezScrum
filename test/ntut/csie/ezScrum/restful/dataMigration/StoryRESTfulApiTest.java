@@ -159,7 +159,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		assertTrue(contentJSON.getLong(StoryEnum.ID) != -1);
 		assertEquals(name, contentJSON.getString(StoryEnum.NAME));
-		assertEquals(StoryObject.STATUS_UNCHECK, contentJSON.getInt(StoryEnum.STATUS));
+		assertEquals("new", contentJSON.getString(StoryEnum.STATUS));
 		assertEquals(estimate, contentJSON.getInt(StoryEnum.ESTIMATE));
 		assertEquals(importance, contentJSON.getInt(StoryEnum.IMPORTANCE));
 		assertEquals(value, contentJSON.getInt(StoryEnum.VALUE));

@@ -176,7 +176,7 @@ public class StoryApiTest extends JerseyTest {
 				responseJSON.getInt("importance"));
 		assertEquals(storyJson.getInt("value"), responseJSON.getInt("value"));
 		assertEquals(storyJson.getInt("estimate"), responseJSON.getInt("estimate"));
-		assertEquals(storyJson.getInt("status"), responseJSON.getInt("status"));
+		assertEquals("closed", responseJSON.getString("status"));
 		assertEquals(storyJson.getLong("sprint_id"),
 				responseJSON.getLong("sprint_id"));
 		assertEquals(8, responseJSON.getJSONArray("histories").length());
@@ -203,7 +203,7 @@ public class StoryApiTest extends JerseyTest {
 		assertEquals(story.getImportance(), responseJSON.getInt("importance"));
 		assertEquals(story.getValue(), responseJSON.getInt("value"));
 		assertEquals(story.getEstimate(), responseJSON.getInt("estimate"));
-		assertEquals(story.getStatus(), responseJSON.getInt("status"));
+		assertEquals(story.getStatusString(), responseJSON.getString("status"));
 		assertEquals(story.getSprintId(), responseJSON.getLong("sprint_id"));
 	}
 
@@ -230,7 +230,7 @@ public class StoryApiTest extends JerseyTest {
 			assertEquals(story.getImportance(), storyJson.getInt("importance"));
 			assertEquals(story.getValue(), storyJson.getInt("value"));
 			assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-			assertEquals(story.getStatus(), storyJson.getInt("status"));
+			assertEquals(story.getStatusString(), storyJson.getString("status"));
 			assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
 		}
 	}

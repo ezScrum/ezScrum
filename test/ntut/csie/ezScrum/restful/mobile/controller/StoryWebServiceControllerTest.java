@@ -187,7 +187,7 @@ public class StoryWebServiceControllerTest extends JerseyTest {
 		assertEquals(storyJson.getInt("importance"), responseJSON.getInt("importance"));
 		assertEquals(storyJson.getInt("value"), responseJSON.getInt("value"));
 		assertEquals(storyJson.getInt("estimate"), responseJSON.getInt("estimate"));
-		assertEquals(storyJson.getInt("status"), responseJSON.getInt("status"));
+		assertEquals("closed", responseJSON.getString("status"));
 		assertEquals(storyJson.getLong("sprint_id"), responseJSON.getLong("sprint_id"));
 		assertEquals(10, responseJSON.getJSONArray("histories").length());
 		assertEquals(0, responseJSON.getJSONArray("tags").length());

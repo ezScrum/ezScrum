@@ -299,7 +299,7 @@ public class SprintPlanWebServiceControllerTest extends JerseyTest {
 			assertEquals(sprint.getStories().get(i).getImportance(), storiesJSONArray.getJSONObject(i).getInt(StoryEnum.IMPORTANCE));
 			assertEquals(sprint.getStories().get(i).getValue(), storiesJSONArray.getJSONObject(i).getInt(StoryEnum.VALUE));
 			assertEquals(sprint.getStories().get(i).getEstimate(), storiesJSONArray.getJSONObject(i).getInt(StoryEnum.ESTIMATE));
-			assertEquals(sprint.getStories().get(i).getStatus(), storiesJSONArray.getJSONObject(i).getInt(StoryEnum.STATUS));
+			assertEquals(sprint.getStories().get(i).getStatusString(), storiesJSONArray.getJSONObject(i).getString(StoryEnum.STATUS));
 			assertEquals(sprint.getStories().get(i).getSprintId(), storiesJSONArray.getJSONObject(i).getLong(StoryEnum.SPRINT_ID));
 		}
 	}

@@ -144,7 +144,7 @@ public class ProductBacklogWebServiceTest {
 		assertEquals(story.getImportance(), storyJson.getInt("importance"));
 		assertEquals(story.getValue(), storyJson.getInt("value"));
 		assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-		assertEquals(story.getStatus(), storyJson.getInt("status"));
+		assertEquals(story.getStatusString(), storyJson.getString("status"));
 		assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
 	}
 	
@@ -179,7 +179,7 @@ public class ProductBacklogWebServiceTest {
 			assertEquals(story.getImportance(), storyJson.getInt("importance"));
 			assertEquals(story.getValue(), storyJson.getInt("value"));
 			assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-			assertEquals(story.getStatus(), storyJson.getInt("status"));
+			assertEquals(story.getStatusString(), storyJson.getString("status"));
 			assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
 		}
 	}
