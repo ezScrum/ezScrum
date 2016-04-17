@@ -16,7 +16,7 @@ Test Memory Leak After Import Multitimes
     ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    brokenImportDataWithoutProject.json
     #點選 Browse 按鈕
     Choose File    xpath=//input[@id="files-file"]    ${JOSN_PATH}
-    :FOR    ${INDEX}    IN RANGE    1    500
+    : FOR    ${INDEX}    IN RANGE    1    500
     \    Click Element    xpath=//button[text()="Import"]
     # 點選YES
     \    Click Element    xpath=//button[text()="Yes"]
@@ -31,7 +31,9 @@ Test Memory Leak After Import Multitimes
     [Teardown]
 
 Test Memory Leak After MySQL Connection Fail
-    : FOR    ${INDEX}    IN RANGE    1    1000
     # 登入ezScrum
-    \    Login Page    ${LOGIN_URL}
-    \    Exit ezScrum System
+    Login Page    ${LOGIN_URL}
+    Click Element    xpath=//td[text()='Management']
+    : FOR    ${INDEX}    IN RANGE    1    5500
+    \    Reload Page
+    Exit ezScrum System
