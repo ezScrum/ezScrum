@@ -121,8 +121,8 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 Ext.reg('SelectedTasksGrid', ezScrum.SelectedTasksGridPanel);
 
-ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
-	url			: 'addExistedStory.do',
+ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
+	url			: 'printTasks.do',
 	notifyPanel	: undefined,
 	sprintID	: '-1',
 	releaseID	: '-1',
@@ -135,7 +135,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
     },
     listeners: {
     	hide: function() {
-    		this.ExistedStoryGrid.reset();
+    		this.SelectedTaskGrid.reset();
     	}
     },
 	initComponent : function() {
@@ -149,7 +149,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 				text	: 'Select Tasks',
 				icon	: 'images/add3.png',
 				disabled: true,
-				handler	: this.doAddExistedStory
+				handler	: this.doPrintingSelectedTask
 			}, {
 				id		: 'CancelBtn',
 				text	: 'Cancel',
@@ -168,11 +168,11 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 	                '-', {
 	                	text : 'Reload',
 	                	icon : 'images/refresh.png',
-	                	handler: function() { Ext.getCmp('SelectTasks_Window').ExistedStoryGrid.loadDataModel(); }
+	                	handler: function() { Ext.getCmp('SelectTasks_Window').SelectedTaskGrid.loadDataModel(); }
 	                }, {
 	                	text : 'Clean Filters',
 	                	icon : 'images/clear2.png',
-	                	handler : function() { Ext.getCmp('SelectTasks_Window').ExistedStoryGrid.filters.clearFilters(); }
+	                	handler : function() { Ext.getCmp('SelectTasks_Window').SelectedTaskGrid.filters.clearFilters(); }
 //					}, {
 //						text : 'Expand All',
 //						icon : 'images/folder_out.png',
@@ -216,9 +216,9 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 		}
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
-		ezScrum.window.AddExistedStoryWindow.superclass.initComponent.apply(this, arguments);
+		ezScrum.window.SelectTaskWindow.superclass.initComponent.apply(this, arguments);
 		
-		this.ExistedStoryGrid = this.items.get(0);
+		this.SelectedTaskGrid = this.items.get(0);
 	},
 	showTheWindow_Release: function(panel, releaseID) {
 		// show from release plan page
@@ -230,25 +230,23 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
     	this.show();
     	
     	// initial grid info
-    	this.ExistedStoryGrid.releaseID = releaseID;
-    	this.ExistedStoryGrid.sprintID = '-1';
-    	this.ExistedStoryGrid.loadDataModel();
+    	this.SelectedTaskGrid.releaseID = releaseID;
+    	this.SelectedTaskGrid.sprintID = '-1';
+    	this.SelectedTaskGrid.loadDataModel();
     },
     showTheWindow_Sprint: function(panel, sprintID) {
     	// show from sprint backlog page
     	
     	// initial window info
     	this.notifyPanel = panel;
-    	this.releaseID = '-1';
     	this.sprintID = sprintID;
     	this.show();
     	
     	// initial grid info
-    	this.ExistedStoryGrid.releaseID = '-1';
-    	this.ExistedStoryGrid.sprintID = sprintID;
-    	this.ExistedStoryGrid.loadDataModel();
+    	this.SelectedTaskGrid.sprintID = sprintID;
+    	this.SelectedTaskGrid.loadDataModel();
     },
-    doAddExistedStory: function() {
+    doPrintingSelectedTask: function() {
     	var obj = Ext.getCmp('SelectTasks_Window');
     	
     	// get selection items
@@ -260,7 +258,6 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 			url: obj.url,
 			params: { 
 				sprintID: obj.sprintID,
-				releaseID: obj.releaseID,
 				selects: selections
 			},
 			success: function(response) {
@@ -304,4 +301,4 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
  * 		1. Release Plan
  * 		2. Sprint Backlog
  * */
-var SelectTasks_Window = new ezScrum.window.AddExistedStoryWindow();
+var SelectTasks_Window = new ezScrum.window.SelectTaskWindow();
