@@ -97,6 +97,7 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
+				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					SelectedTaskStore.loadData(response.responseXML);
 					SelectedTaskStore.proxy.data = response;

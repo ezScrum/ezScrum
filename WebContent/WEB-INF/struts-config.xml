@@ -118,6 +118,7 @@
     		<action path="/GetSprintsComboInfo"	 			type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoAction" />
     		
     			<!-- Sprint Backlog Action -->
+    		<action path="/showSelectableTask"      type="ntut.csie.ezScrum.web.action.plan.ShowSelectableTaskAction"/>
     		<action path="/showExistedStory"		type="ntut.csie.ezScrum.web.action.plan.ShowExistedStoryAction" />
     		<action path="/addExistedStory" 		type="ntut.csie.ezScrum.web.action.backlog.AddExistedStoryAction" />
     		<action path="/showPrintableStory"	 	type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableStoryAction" />

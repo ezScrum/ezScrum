@@ -106,6 +106,7 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
+				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					ExistedStoryStore.loadData(response.responseXML);
 					ExistedStoryStore.proxy.data = response;

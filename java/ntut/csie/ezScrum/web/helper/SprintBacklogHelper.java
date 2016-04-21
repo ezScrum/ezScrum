@@ -21,6 +21,7 @@ import ntut.csie.ezScrum.web.support.Translation;
 
 import org.codehaus.jettison.json.JSONArray;
 
+import com.google.appengine.repackaged.com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
@@ -114,6 +115,10 @@ public class SprintBacklogHelper {
 
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		return mSprintBacklogMapper.getTasksByStoryId(storyId);
+	}
+	
+	public ArrayList<TaskObject> getTaskBySprintId(long sprintId){
+		return mSprintBacklogMapper.getTasksInSprint();
 	}
 
 	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
@@ -291,7 +296,27 @@ public class SprintBacklogHelper {
 		}
 		return result;
 	}
-
+	/**
+	 * path: showSelectableTask.do class ShowSelectableTaskAction
+	 */
+	public StringBuffer getTasksInSprintResponseText(ArrayList<TaskObject> tasks){
+		StringBuffer sb = new StringBuffer();
+		sb.append("<SelectingTasks>");
+		
+		for(TaskObject task : tasks){
+			sb.append("<Task>");
+			sb.append("<Id>" + task.getSerialId() + "</Id>");
+			sb.append("<Link></Link>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())+ "</Name>");
+			sb.append("<StoryId>" + task.getStoryId() + "</StoryId>");
+			sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
+			sb.append("<Status>" + task.getStatusString() + "</Status>");
+			sb.append("</Task>");
+		}
+		sb.append("</SelectingTasks>");
+		return sb;
+	}
+	
 	/**
 	 * path: AjaxShowStoryfromSprint.do class: AjaxShowStoryFromSprintAction
 	 */
@@ -330,7 +355,6 @@ public class SprintBacklogHelper {
 			if (sprint != null) {
 				serialSprintId = sprint.getSerialId();
 			}
-			sb.append("<Sprint>" + serialSprintId + "</Sprint>");
 			sb.append("<Tag>"
 					+ TranslateSpecialChar.TranslateXMLChar(Translation.Join(story.getTags(),
 							",")) + "</Tag>");
