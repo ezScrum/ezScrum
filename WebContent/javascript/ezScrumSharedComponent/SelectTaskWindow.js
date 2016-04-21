@@ -75,7 +75,7 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
 	sprintID	: '-1',
-	releaseID	: '-1',
+	storyID	: '-1',
 	url			: 'showSelectableTask.do',
 	store		: SelectedTaskStore,
 	colModel	: SelectedTasksColumnModel(),
@@ -126,7 +126,7 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 	url			: 'printTasks.do',
 	notifyPanel	: undefined,
 	sprintID	: '-1',
-	releaseID	: '-1',
+	storyID	: '-1',
 	
 	id			: 'SelectTasks_Window',
 	title		: 'Select Tasks',
@@ -213,7 +213,6 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 					}
 				}
 			})
-		
 		}
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -221,17 +220,17 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 		
 		this.SelectedTaskGrid = this.items.get(0);
 	},
-	showTheWindow_Release: function(panel, releaseID) {
+	showTheWindow_Release: function(panel, storyID) {
 		// show from release plan page
 		
     	// initial window info
     	this.notifyPanel = panel;
-    	this.releaseID = releaseID;
+    	this.storyID = storyID;
     	this.sprintID = '-1';
     	this.show();
     	
     	// initial grid info
-    	this.SelectedTaskGrid.releaseID = releaseID;
+    	this.SelectedTaskGrid.storyID = storyID;
     	this.SelectedTaskGrid.sprintID = '-1';
     	this.SelectedTaskGrid.loadDataModel();
     },
@@ -292,7 +291,7 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 
 /*
  * call method
- * 		1. showTheWindow_Release: function(panel, releaseID)
+ * 		1. showTheWindow_Release: function(panel, storyID)
  * 		2. showTheWindow_Sprint: function(panel, sprintID)
  * 
  * notify method

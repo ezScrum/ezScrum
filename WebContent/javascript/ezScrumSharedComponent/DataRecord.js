@@ -101,7 +101,7 @@ var SelectTaskReader = new Ext.data.XmlReader({
 	   idPath : 'Id',
 	   successProperty: 'Result',
 	   totalProperty: 'Total'
-	}, StoryRecord);
+	}, TaskRecord);
 /**
 * This is for ezScrumSharedComponent/SelectTaskWindow.js
 ***********************************************************************************************/
