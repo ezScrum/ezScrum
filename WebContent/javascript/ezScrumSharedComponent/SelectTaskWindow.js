@@ -123,7 +123,7 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 Ext.reg('SelectedTasksGrid', ezScrum.SelectedTasksGridPanel);
 
 ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
-	url			: 'printTasks.do',
+	url			: 'showPrintableTasks.do',
 	notifyPanel	: undefined,
 	sprintID	: '-1',
 	storyID	: '-1',
@@ -174,14 +174,6 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 	                	text : 'Clean Filters',
 	                	icon : 'images/clear2.png',
 	                	handler : function() { Ext.getCmp('SelectTasks_Window').SelectedTaskGrid.filters.clearFilters(); }
-//					}, {
-//						text : 'Expand All',
-//						icon : 'images/folder_out.png',
-//						handler : function() { ExistedStory_Expander.expandAll(); }
-//					}, {
-//						text : 'Collapse All',
-//						icon : 'images/folder_into.png',
-//						handler : function() { ExistedStory_Expander.collapseAll(); }
 					}
 	            ],
 	            listeners: {
