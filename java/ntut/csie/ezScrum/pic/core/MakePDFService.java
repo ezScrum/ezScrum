@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,33 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
+	
+	public File getTaskFile(String ttfPath, ArrayList<TaskObject> tasks) 
+			throws Exception {
+		File temp = File.createTempFile("ezScrum",
+				Long.toString(System.nanoTime()));
+		String path = temp.getAbsolutePath();
 
+		Document document1 = new Document(PageSize.A4);
+		try {
+			BaseFont bfChinese = BaseFont.createFont(ttfPath,
+					BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+			PdfWriter.getInstance(document1, new FileOutputStream(path));
+
+			document1.open();
+			
+			
+		} catch (DocumentException de) {
+			log.debug(de.toString());
+		} catch (IOException ioe) {
+			log.debug(ioe.toString());
+		}
+		document1.close();
+		File file = new File(path);
+		return file;
+	}
+	
 	public File getFile(String ttfPath, ArrayList<StoryObject> stories)
 			throws Exception {
 		File temp = File.createTempFile("ezScrum",
