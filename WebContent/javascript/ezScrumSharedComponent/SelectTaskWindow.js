@@ -233,7 +233,7 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
     },
     doPrintingSelectedTask: function() {
     	var obj = Ext.getCmp('SelectTasks_Window');
-    	var selections = Page_Selected_items.concat(Ext.getCmp('SelectTasks_Window').getSelections());
+    	var selects = Page_Selected_items.concat(Ext.getCmp('SelectTasks_Window').getSelections());
     	
     	window.open(obj.url + "?selects=" + selects);
     	// get selection items
