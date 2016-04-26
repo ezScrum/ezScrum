@@ -212,19 +212,12 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 		
 		this.SelectedTaskGrid = this.items.get(0);
 	},
-	showTheWindow_Release: function(panel, storyID) {
-		// show from release plan page
+	// Show All printable Story    
+    showPrintableTask:function() {
+    	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
+		var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
 		
-    	// initial window info
-    	this.notifyPanel = panel;
-    	this.storyID = storyID;
-    	this.sprintID = '-1';
-    	this.show();
-    	
-    	// initial grid info
-    	this.SelectedTaskGrid.storyID = storyID;
-    	this.SelectedTaskGrid.sprintID = '-1';
-    	this.SelectedTaskGrid.loadDataModel();
+		openURLWithCheckSession( "showPrintableStory.do?sprintID=" + sprintID );
     },
     showTheWindow_Sprint: function(panel, sprintID) {
     	// show from sprint backlog page
@@ -240,34 +233,41 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
     },
     doPrintingSelectedTask: function() {
     	var obj = Ext.getCmp('SelectTasks_Window');
-    	
-    	// get selection items
     	var selections = Page_Selected_items.concat(Ext.getCmp('SelectTasks_Window').getSelections());
     	
+    	window.open(obj.url + "?selects=" + selects);
+    	// get selection items
+    	
+    	console.log(selects);
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
 		loadmask.show();
-		Ext.Ajax.request({
-			url: obj.url,
-			params: { 
-				sprintID: obj.sprintID,
-				selects: selections
-			},
-			success: function(response) {
-				// check action permission
-				ConfirmWidget.loadData(response);
-				if (ConfirmWidget.confirmAction()) {
-					obj.notifyPanel.notify_AddExistedStorySuccess();
-				}
-				
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
-				loadmask.hide();
-			},
-			failure: function(response) {
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
-				loadmask.hide();
-				Ext.example.msg('Server Error', 'Sorry, please try again.');
-			}
-		});
+//		Ext.Ajax.request({
+//			url: obj.url,
+//			params: { 
+//				sprintID: obj.sprintID,
+//				selects: selections
+//			},
+//			success: function(response) {
+//				openURLWithCheckSession( "showPrintableTasks.do?");
+//				//var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
+//				//var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
+//				
+//				
+//				// check action permission
+//				//ConfirmWidget.loadData(response);
+//				//if (ConfirmWidget.confirmAction()) {
+//					//obj.notifyPanel.notify_AddExistedStorySuccess();
+//				//}
+//				
+		var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
+		loadmask.hide();
+//			},
+//			failure: function(response) {
+//				var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
+//				loadmask.hide();
+//				Ext.example.msg('Server Error', 'Sorry, please try again.');
+//			}
+//		});
     },
     getSelections: function() {
 		// 回傳目前有被勾選的資料

@@ -32,21 +32,150 @@ public class MakePDFService {
 
 		Document document1 = new Document(PageSize.A4);
 		try {
+
 			BaseFont bfChinese = BaseFont.createFont(ttfPath,
 					BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
 			PdfWriter.getInstance(document1, new FileOutputStream(path));
 
 			document1.open();
-			
-			
+
+			for (TaskObject task : tasks) {
+				PdfPTable outerTable = new PdfPTable(1);
+				outerTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+				outerTable.getDefaultCell().setBorderWidth(1f);
+				PdfPTable table = new PdfPTable(2);
+				float[] widths = { 420f, 100f };
+				table.setWidths(widths);
+
+				PdfPCell cell;
+				PdfPTable innerTable;
+				Paragraph paragraph;
+
+				// Title
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
+				cell.setBorderWidth(1f);
+				cell.setColspan(2);
+				Paragraph titleParagraph = new Paragraph(
+						"Task Id #" + String.valueOf(task.getSerialId()),
+						new Font(bfChinese, 12, Font.NORMAL));
+				cell.setPadding(6f);
+				cell.addElement(titleParagraph);
+
+				table.addCell(cell);
+
+				// Tip
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.LEFT);
+				cell.setBorderWidth(1f);
+				table.addCell(cell);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.RIGHT);
+				cell.setBorderWidth(1f);
+				paragraph = new Paragraph("Importance", new Font(bfChinese, 12,
+						Font.NORMAL));
+				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+				cell.addElement(paragraph);
+				table.addCell(cell);
+
+				// Summary and importance
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.LEFT);
+				cell.setBorderWidth(1f);
+				cell.setPaddingLeft(6f);
+				cell.addElement(new Paragraph(task.getName(), new Font(
+						bfChinese, 14, Font.NORMAL)));
+				table.addCell(cell);
+
+				
+
+				// Tip
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.LEFT);
+				cell.setBorderWidth(1f);
+				cell.setPaddingLeft(6f);
+				paragraph = new Paragraph("Notes", new Font(bfChinese, 12,
+						Font.NORMAL));
+				cell.addElement(paragraph);
+				table.addCell(cell);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.RIGHT);
+				cell.setBorderWidth(1f);
+				paragraph = new Paragraph("Estimate", new Font(bfChinese, 12,
+						Font.NORMAL));
+				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+				cell.addElement(paragraph);
+				table.addCell(cell);
+
+				// Notes and estimated
+				innerTable = new PdfPTable(1);
+				innerTable.setTotalWidth(80f);
+
+				cell = new PdfPCell();
+				cell.setBorderWidth(1f);
+				cell.setMinimumHeight(60f);
+				cell.setPaddingBottom(10f);
+				cell.addElement(new Paragraph(task.getNotes(), new Font(
+						bfChinese, 14, Font.NORMAL)));
+
+				innerTable.addCell(cell);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.NO_BORDER);
+				innerTable.addCell(cell);
+
+				cell = new PdfPCell(innerTable);
+				cell.setBorder(PdfPCell.LEFT);
+				cell.setBorderWidth(1f);
+				cell.setPadding(5f);
+
+				table.addCell(cell);
+
+				innerTable = new PdfPTable(1);
+				innerTable.setTotalWidth(80f);
+				innerTable.setExtendLastRow(false);
+
+				cell = new PdfPCell();
+				cell.setBorderWidth(1f);
+				cell.setMinimumHeight(60f);
+				cell.setUseAscender(false);
+				cell.setPaddingTop(-10f);
+				paragraph = new Paragraph(String.valueOf(task.getEstimate()),
+						new Font(bfChinese, 12, Font.NORMAL));
+				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+
+				cell.addElement(paragraph);
+				innerTable.addCell(cell);
+
+				cell = new PdfPCell();
+				cell.setBorder(PdfPCell.NO_BORDER);
+				innerTable.addCell(cell);
+
+				cell = new PdfPCell(innerTable);
+				cell.setBorder(PdfPCell.RIGHT);
+				cell.setBorderWidth(1f);
+				cell.setPadding(5f);
+
+				table.addCell(cell);
+				
+
+				outerTable.addCell(table);
+				document1.add(outerTable);
+				document1.add(new Paragraph("\n"));
+			}
+
 		} catch (DocumentException de) {
 			log.debug(de.toString());
 		} catch (IOException ioe) {
 			log.debug(ioe.toString());
 		}
+
 		document1.close();
 		File file = new File(path);
+
 		return file;
 	}
 	

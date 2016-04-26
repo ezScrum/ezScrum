@@ -673,7 +673,6 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showSprintInfoBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(disable);
-		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(disable);
 	},
 	set_Sprint_Permission_disable:function(disable) {
 		// sprint Action

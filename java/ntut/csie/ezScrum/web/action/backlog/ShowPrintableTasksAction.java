@@ -35,15 +35,21 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 				
-		String[] selectedSerialTasksId = request.getParameterValues("selects");
+		String[] getSelectedTaskId = request.getParameterValues("selects");
 		
+		String[] selectedSerialTasksId = getSelectedTaskId[0].replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+		
+		System.out.println(123);
 		ArrayList<TaskObject> selectedTasks = new ArrayList<TaskObject>();
 		for (String serialTaskId : selectedSerialTasksId) {
+			System.out.println(serialTaskId + " test \n");
+			
 			TaskObject task = TaskObject.get(project.getId(), Long.parseLong(serialTaskId));
 			selectedTasks.add(task);
+			
 		}
-		
-		request.setAttribute("Stories", selectedTasks);
+		System.out.println(456);
+		request.setAttribute("Tasks", selectedTasks);
 		File file = null;
 		
 		try {
@@ -59,7 +65,7 @@ public class ShowPrintableTasksAction extends DownloadAction {
 			log.debug(ioe.toString());
 		}
 		
-		response.setHeader("Content-disposition", "inline; filename=SprintStory.pdf");
+		response.setHeader("Content-disposition", "inline; filename=SprintStoryTask.pdf");
 
 		AccountObject account = session.getAccount();
 		//		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);

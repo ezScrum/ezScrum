@@ -1,4 +1,4 @@
-Ext.ns('ezScrum');
+/*Ext.ns('ezScrum');
 Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
@@ -41,7 +41,7 @@ var ExistedStoryColumnModel = function() {
 
 		ExistedStory_Expander, ExistedStory_CheckBoxModel,
 		{dataIndex: 'Id23', header: 'Id23', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
-		{dataIndex: 'Tag', header: 'Tag', width: 50},
+		/*{dataIndex: 'Tag', header: 'Tag', width: 50},
 		{dataIndex: 'Name', header: 'Name', width: 250},
 		{dataIndex: 'Release', header: 'Release', width: 50},
 		{dataIndex: 'Sprint', header: 'Sprint', width: 50},
@@ -313,4 +313,4 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
  * 		1. Release Plan
  * 		2. Sprint Backlog
  * */
-var SelectTasks_Window = new ezScrum.window.AddExistedStoryWindow();
+//var SelectTasks_Window = new ezScrum.window.AddExistedStoryWindow();
