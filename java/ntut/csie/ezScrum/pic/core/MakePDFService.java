@@ -5,12 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jacoco.asm.tree.IntInsnNode;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -22,6 +18,9 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
@@ -387,7 +386,7 @@ public class MakePDFService {
 	
 	public String atLestHigh(TaskObject task) {
 		String name = task.getName();
-		String ans = "Task Id #" + task.getSerialId() + "\n" + name;
+		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
 		if(nameSize < 175)
 		{
@@ -396,7 +395,7 @@ public class MakePDFService {
 				ans += "\n";
 			}
 		}
-		ans += "                                   Estimate : " + task.getEstimate() + "hr";
+		ans += "                                           Estimate : " + task.getEstimate() + "hr";
 		return ans;
 	}
 }
