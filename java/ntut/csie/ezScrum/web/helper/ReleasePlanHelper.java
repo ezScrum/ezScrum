@@ -75,6 +75,9 @@ public class ReleasePlanHelper {
 
 		for (ReleaseObject release : releases) {
 			SprintObject sprint = SprintObject.get(sprintId);
+			if (sprint == null) {
+			      continue;
+		    }
 			if (release.containsSprint(sprint)) {
 				return release.getId();
 			}

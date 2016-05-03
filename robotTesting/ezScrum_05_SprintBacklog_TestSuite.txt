@@ -74,17 +74,18 @@ Test Sprint Backlog - Drop Story
 
 Test Sprint Backlog - Add Existing Story
     [Setup]    Test Sprint Backlog - Add Existing Story Setup
-    # story information for add
-    ${storyName}=    Set Variable    add story for test add existing story
+    Sleep    3s
+    Select Node Product    Sprint Backlog
+    ${storyName}=    Set Variable    Test Story 01
     ${value}=    Set Variable    3
     ${estimate}=    Set Variable    5
-    ${importance}=    Set Variable    8
-    ${notes}=    Set Variable    add story for notes
-    ${howToDemo}=    Set Variable    add story for how to demo
-    # click show add existing story window
+    ${importance}=    Set Variable    99
+    ${notes}=    Set Variable    Notes
+    ${howToDemo}=    Set Variable
+    # Click add existing story window
     Add Existing Story    ${storyName}
-    # verify story
-    Sleep    3s
+    # Verify story
+    Sleep    2s
     Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
     ...    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Existing Story Teardown
