@@ -308,7 +308,7 @@ public class SprintBacklogHelper {
 			sb.append("<Id>" + task.getSerialId() + "</Id>");
 			sb.append("<Link></Link>");
 			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())+ "</Name>");
-			System.out.println(task.getStoryId());
+			//System.out.println(task.getStoryId());
 			sb.append("<StoryId>" + task.getStoryId() + "</StoryId>");
 			sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
 			sb.append("<Status>" + task.getStatusString() + "</Status>");
