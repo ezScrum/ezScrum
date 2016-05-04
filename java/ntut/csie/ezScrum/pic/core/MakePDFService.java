@@ -51,7 +51,7 @@ public class MakePDFService {
 				PdfPTable table = new PdfPTable(3);
 				
 				TaskObject task = tasks.get(j);
-				String display = atLestHigh(task);
+				String display = atLeastHigh(task);
 				//System.out.println(task.getName()+"\n");
 				
 				//設定table的寬度
@@ -75,7 +75,7 @@ public class MakePDFService {
 				}
 				else{
 					 task = tasks.get(j);
-					 display = atLestHigh(task);
+					 display = atLeastHigh(task);
 					 j++;
 				}
 				//設定第二個欄位的內容
@@ -90,80 +90,6 @@ public class MakePDFService {
 		}catch (DocumentException de) {
 			log.debug(de.toString());
 		} 
-//		try {
-
-//			BaseFont bfChinese = BaseFont.createFont(ttfPath,
-//					BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-//
-//			PdfWriter.getInstance(document1, new FileOutputStream(path));
-//
-//			document1.open();
-//
-//			for (TaskObject task : tasks) {
-//				PdfPTable outerTable = new PdfPTable(2);
-//				//設定table的寬度
-//				outerTable.setWidthPercentage(10f);
-//				//設定每個欄位的寬度
-//				outerTable.setWidths(new float[]{10f});
-////				outerTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-////				outerTable.getDefaultCell().setBorderWidth(1f);
-////				outerTable.setTotalWidth(10f);
-////				PdfPTable table = new PdfPTable(2);
-//				
-//				//float[] widths = { 10f, 10f };
-//				//table.setWidths(widths);
-//
-//				PdfPCell cell;
-//				Paragraph paragraph;
-//
-//				// Title
-//				cell = new PdfPCell();
-//				//cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
-//				//cell.setBorderWidth(1f);
-//				cell.setColspan(2);
-//				Paragraph titleParagraph = new Paragraph(
-//						"Task Id #" + String.valueOf(task.getSerialId()),
-//						new Font(bfChinese, 12, Font.NORMAL));
-//				//cell.setPadding(6f);
-//				cell.addElement(titleParagraph);
-//
-//				outerTable.addCell(cell);
-//
-//
-//				// Summary and importance
-//				cell = new PdfPCell();
-//				//cell.setBorder(PdfPCell.LEFT);
-//				//cell.setBorderWidth(1f);
-//				//cell.setPaddingLeft(6f);
-//				cell.addElement(new Paragraph(task.getName(), new Font(
-//						bfChinese, 14, Font.NORMAL)));
-//				outerTable.addCell(cell);
-//
-////
-////				cell = new PdfPCell();
-////				//cell.setBorder(PdfPCell.RIGHT);
-////				//cell.setBorderWidth(1f);
-////				paragraph = new Paragraph("Estimate"+"\n" + String.valueOf(task.getEstimate()), new Font(bfChinese, 12,
-////						Font.NORMAL));
-////				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
-////				cell.addElement(paragraph);
-////				outerTable.addCell(cell);
-//
-//
-////				cell = new PdfPCell();
-////				//cell.setBorder(PdfPCell.RIGHT | PdfPCell.BOTTOM);
-////				//cell.setBorderWidth(1f);
-////				outerTable.addCell(cell);		
-//				
-//				//outerTable.addCell(table);
-//				document1.add(outerTable);
-//			}
-//
-//		} catch (DocumentException de) {
-//			log.debug(de.toString());
-//		} catch (IOException ioe) {
-//			log.debug(ioe.toString());
-//		}
 
 		File file = new File(path);
 
@@ -384,7 +310,7 @@ public class MakePDFService {
 
 	}
 	
-	public String atLestHigh(TaskObject task) {
+	public String atLeastHigh(TaskObject task) {
 		String name = task.getName();
 		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
