@@ -39,16 +39,13 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		
 		String[] selectedSerialTasksId = getSelectedTaskId[0].replaceAll("\\[", "").replaceAll("\\]", "").split(",");
 		
-		System.out.println(123);
 		ArrayList<TaskObject> selectedTasks = new ArrayList<TaskObject>();
+		
 		for (String serialTaskId : selectedSerialTasksId) {
-			System.out.println(serialTaskId + " test \n");
-			
 			TaskObject task = TaskObject.get(project.getId(), Long.parseLong(serialTaskId));
 			selectedTasks.add(task);
-			
 		}
-		System.out.println(456);
+
 		request.setAttribute("Tasks", selectedTasks);
 		File file = null;
 		
