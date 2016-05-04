@@ -71,13 +71,14 @@ public class ReleasePlanHelper {
 	// return the releaseID which has the sprintID
 	public long getReleaseIdBySprintId(long sprintId) {
 		long releaseId = -1;
+		
+		SprintObject sprint = SprintObject.get(sprintId);
+		if (sprint == null) {
+			return releaseId;
+	    }
+		
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
-
 		for (ReleaseObject release : releases) {
-			SprintObject sprint = SprintObject.get(sprintId);
-			if (sprint == null) {
-			      continue;
-		    }
 			if (release.containsSprint(sprint)) {
 				return release.getId();
 			}
