@@ -25,11 +25,11 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
 	
-	public File getTaskFile(String ttfPath, ArrayList<TaskObject> tasks) 
+	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) 
 			throws Exception {
-		File temp = File.createTempFile("ezScrum",
+		File tempFile = File.createTempFile("ezScrum",
 				Long.toString(System.nanoTime()));
-		String path = temp.getAbsolutePath();
+		String path = tempFile.getAbsolutePath();
 		
 		
 		Document document1 = new Document(PageSize.A4);

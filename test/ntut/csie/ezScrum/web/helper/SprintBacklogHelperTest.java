@@ -437,7 +437,6 @@ public class SprintBacklogHelperTest {
 		assertEquals(true, actualResponse.contains("<ExistingStories>"));
 		for (int i = 1; i <= stories.size(); i++) {
 			String index = String.valueOf(i);
-			String string = String.format(expectStoryString,index, index, index, index, -1);
 			assertEquals(true, actualResponse.contains(String.format(expectStoryString,
 					index, index, index, index, -1)));
 		}

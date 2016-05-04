@@ -49,26 +49,13 @@ public class ShowSelectableTaskAction extends PermissionAction{
 		long sprintId = -1;
 		if (sprint != null) {
 			sprintId = sprint.getId();
-		}
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
-		
-		// ProductBacklog Helper
-    	ArrayList<TaskObject> tasks = null;
-    	boolean NumberError = false;
-    	// Select from Sprint Backlog
-    	try{
-    		tasks = sprintBacklogHelper.getTaskBySprintId(sprintId);
-		} catch (NumberFormatException e) {
-			System.out.println("class : ShowExistedStoryAction, method : execute, exception : " + e.toString());
-    		NumberError = true;
-		}
-		
-		if (NumberError || tasks == null ) {
+		} else {
 			return new StringBuilder("");
-		} 
-		
+		}
+		// Select from Sprint Backlog
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
+    	ArrayList<TaskObject> tasks = sprintBacklogHelper.getTaskBySprintId(sprintId);
 		StringBuilder sb = new StringBuilder(sprintBacklogHelper.getTasksInSprintResponseText(tasks));
-		
 		return sb;
 	}
 

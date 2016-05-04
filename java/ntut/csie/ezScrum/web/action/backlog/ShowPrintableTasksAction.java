@@ -36,7 +36,7 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 				
 		String[] getSelectedTaskId = request.getParameterValues("selects");
-		
+		// Make ["["1", "2", "3"]"] into ["1", "2", "3"]
 		String[] selectedSerialTasksId = getSelectedTaskId[0].replaceAll("\\[", "").replaceAll("\\]", "").split(",");
 		
 		ArrayList<TaskObject> selectedTasks = new ArrayList<TaskObject>();
@@ -51,11 +51,11 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		
 		try {
 			//直接嵌入server上的pdf字型擋給系統 
-			ServletContext sc = getServlet().getServletContext();
-			String ttfPath = sc.getRealPath("") + "/WEB-INF/otherSetting/uming.ttf";
+			ServletContext servletContext = getServlet().getServletContext();
+			String filePath = servletContext.getRealPath("") + "/WEB-INF/otherSetting/uming.ttf";
 
 			MakePDFService makePDFService = new MakePDFService();
-			file = makePDFService.getTaskFile(ttfPath, selectedTasks);
+			file = makePDFService.getTaskFile(filePath, selectedTasks);
 		} catch(DocumentException de){
 			log.debug(de.toString());
 		} catch (IOException ioe) {
@@ -65,7 +65,7 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		response.setHeader("Content-disposition", "inline; filename=SprintStoryTask.pdf");
 
 		AccountObject account = session.getAccount();
-		//		ScrumRole sr = new ScrumRoleManager().getScrumRole(project, acc);
+		
 		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
 		if (file == null) {
 			throw new Exception(" pdf file is null");
