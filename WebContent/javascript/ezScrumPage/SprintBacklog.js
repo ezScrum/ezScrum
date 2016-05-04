@@ -286,7 +286,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		
 		SelectTasks_Window.showTheWindow_Sprint(this, sprintID);
     },
-    notify_AddExistedStorySuccess: function() {
+    notify_SelectTasksSuccess: function() {
     	SelectTasks_Window.hide();
     	Ext.example.msg("Select Tasks", 'Success.');
     	
