@@ -437,6 +437,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(true, actualResponse.contains("<ExistingStories>"));
 		for (int i = 1; i <= stories.size(); i++) {
 			String index = String.valueOf(i);
+			String string = String.format(expectStoryString,index, index, index, index, -1);
 			assertEquals(true, actualResponse.contains(String.format(expectStoryString,
 					index, index, index, index, -1)));
 		}
@@ -449,21 +450,24 @@ public class SprintBacklogHelperTest {
 		String actualResponse = mSprintBacklogHelper.getTasksInSprintResponseText(
 				tasks).toString();
 
-		String expectTaskString = "<SelectingTasks><Task><Id>1</Id><Link></Link><Name>TEST_TASK_1</Name><StoryId>1</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>2</Id><Link></Link><Name>TEST_TASK_2</Name><StoryId>1</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>3</Id><Link></Link><Name>TEST_TASK_3</Name><StoryId>1</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>4</Id><Link></Link><Name>TEST_TASK_1</Name><StoryId>2</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>5</Id><Link></Link><Name>TEST_TASK_2</Name><StoryId>2</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>6</Id><Link></Link><Name>TEST_TASK_3</Name><StoryId>2</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>7</Id><Link></Link><Name>TEST_TASK_1</Name><StoryId>3</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>8</Id><Link></Link><Name>TEST_TASK_2</Name><StoryId>3</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"<Task><Id>9</Id><Link></Link><Name>TEST_TASK_3</Name><StoryId>3</StoryId><Estimate>8</Estimate><Status>new</Status></Task>"
-								+"</SelectingTasks>";
+		String expectTaskString = "<Task><Id>%s</Id><Link></Link><Name>TEST_TASK_%s</Name><StoryId>%s</StoryId>"
+				+ "<Estimate>8</Estimate><Status>new</Status></Task>";
 		
 		assertEquals(true, actualResponse.contains("<SelectingTasks>"));
-		
-		assertEquals(expectTaskString, actualResponse);
-		
+		for (int i = 1; i <= tasks.size(); i++) {
+			String TaskId = String.valueOf(i);
+			int num = i/3;
+			num++;
+			int temp = i%3;
+			if(temp==0) {
+				temp = 3;
+				num--;
+			}
+			String TaskName = String.valueOf(temp);
+			String StoryId = String.valueOf(num);
+			assertEquals(true, actualResponse.contains(String.format(expectTaskString,
+					TaskId, TaskName, StoryId)));
+		}
 		assertEquals(true, actualResponse.contains("</SelectingTasks>"));
 	}
 }

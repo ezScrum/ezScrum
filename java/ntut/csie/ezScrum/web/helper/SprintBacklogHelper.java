@@ -356,6 +356,7 @@ public class SprintBacklogHelper {
 			if (sprint != null) {
 				serialSprintId = sprint.getSerialId();
 			}
+			sb.append("<Sprint>" + serialSprintId + "</Sprint>");
 			sb.append("<Tag>"
 					+ TranslateSpecialChar.TranslateXMLChar(Translation.Join(story.getTags(),
 							",")) + "</Tag>");
