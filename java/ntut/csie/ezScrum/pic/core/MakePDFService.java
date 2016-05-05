@@ -24,89 +24,80 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
-	
-	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) 
-			throws Exception {
-		File tempFile = File.createTempFile("ezScrum",
-				Long.toString(System.nanoTime()));
+
+	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
+		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
-		
-		
+
 		Document document1 = new Document(PageSize.A4);
-		
+
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
-		
+
 		document1.open();
 		int sizeTotal = tasks.size();
 		int size;
-		int j = 0;
-		if( sizeTotal%2 == 1)
-			size = sizeTotal/2 +1;
-		else 
-			size = sizeTotal/2;
-		try{
-			for(int i = 0; i<size; i++ )
-			{
-				//建立PdfPTable物件並設定其欄位數
+		int taskId = 0;
+		float tableHeight = 100f;
+		// to know total tasks number is odd or even
+		if (sizeTotal % 2 == 1) {
+			size = sizeTotal / 2 + 1;
+		} else {
+			size = sizeTotal / 2;
+		}
+		try {
+			for (int i = 0; i < size; i++) {
+				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
 				PdfPTable table = new PdfPTable(3);
-				
-				TaskObject task = tasks.get(j);
+				TaskObject task = tasks.get(taskId);
 				String display = atLeastHigh(task);
-				//System.out.println(task.getName()+"\n");
-				
-				//設定table的寬度
-				table.setWidthPercentage(100f);
-				//設定每個欄位的寬度
-				table.setWidths(new float[]{4.5f, 1f,4.5f});
-	
-				//設定第一個欄位的內容
+				// 設定table的寬度
+				table.setWidthPercentage(tableHeight);
+				// 設定每個欄位的寬度
+				table.setWidths(new float[] { 4.5f, 1f, 4.5f });
+
+				// 設定第一個欄位的內容
 				PdfPCell cell_1 = new PdfPCell();
 				cell_1.addElement(new Phrase(display));
 				table.addCell(cell_1);
-				j++;
-				
+				taskId++;
+
 				PdfPCell cell_2 = new PdfPCell();
 				cell_2.setBorder(PdfPCell.NO_BORDER);
 				table.addCell(cell_2);
-				
-				if(j>=sizeTotal)
-				{
+
+				if (taskId >= sizeTotal) {
 					display = "";
+				} else {
+					task = tasks.get(taskId);
+					display = atLeastHigh(task);
+					taskId++;
 				}
-				else{
-					 task = tasks.get(j);
-					 display = atLeastHigh(task);
-					 j++;
-				}
-				//設定第二個欄位的內容
+				// 設定第二個欄位的內容
 				PdfPCell cell_3 = new PdfPCell();
 				cell_3.addElement(new Phrase(display));
 				table.addCell(cell_3);
-		
+
 				document1.add(table);
 				document1.add(new Paragraph("\n"));
 			}
 			document1.close();
-		}catch (DocumentException de) {
+		} catch (DocumentException de) {
 			log.debug(de.toString());
-		} 
+		}
 
 		File file = new File(path);
 
 		return file;
 	}
-	
-	public File getFile(String ttfPath, ArrayList<StoryObject> stories)
-			throws Exception {
-		File temp = File.createTempFile("ezScrum",
-				Long.toString(System.nanoTime()));
+
+	public File getFile(String ttfPath, ArrayList<StoryObject> stories) throws Exception {
+		File temp = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = temp.getAbsolutePath();
 
 		Document document1 = new Document(PageSize.A4);
 		try {
 
-			BaseFont bfChinese = BaseFont.createFont(ttfPath,
-					BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+			BaseFont bfChinese = BaseFont.createFont(ttfPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
 			PdfWriter.getInstance(document1, new FileOutputStream(path));
 
@@ -129,8 +120,7 @@ public class MakePDFService {
 				cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
 				cell.setBorderWidth(1f);
 				cell.setColspan(2);
-				Paragraph titleParagraph = new Paragraph(
-						"Sprint Backlog Item #" + String.valueOf(story.getSerialId()),
+				Paragraph titleParagraph = new Paragraph("Sprint Backlog Item #" + String.valueOf(story.getSerialId()),
 						new Font(bfChinese, 12, Font.NORMAL));
 				cell.setPaddingLeft(6f);
 				cell.addElement(titleParagraph);
@@ -146,8 +136,7 @@ public class MakePDFService {
 				cell = new PdfPCell();
 				cell.setBorder(PdfPCell.RIGHT);
 				cell.setBorderWidth(1f);
-				paragraph = new Paragraph("Importance", new Font(bfChinese, 12,
-						Font.NORMAL));
+				paragraph = new Paragraph("Importance", new Font(bfChinese, 12, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 				cell.addElement(paragraph);
 				table.addCell(cell);
@@ -157,8 +146,7 @@ public class MakePDFService {
 				cell.setBorder(PdfPCell.LEFT);
 				cell.setBorderWidth(1f);
 				cell.setPaddingLeft(6f);
-				cell.addElement(new Paragraph(story.getName(), new Font(
-						bfChinese, 14, Font.NORMAL)));
+				cell.addElement(new Paragraph(story.getName(), new Font(bfChinese, 14, Font.NORMAL)));
 				table.addCell(cell);
 
 				innerTable = new PdfPTable(1);
@@ -169,9 +157,7 @@ public class MakePDFService {
 				cell.setMinimumHeight(60f);
 				cell.setPaddingTop(-10f);
 				cell.setVerticalAlignment(PdfPCell.ALIGN_TOP);
-				paragraph = new Paragraph(
-						String.valueOf(story.getImportance()), new Font(
-								bfChinese, 36, Font.NORMAL));
+				paragraph = new Paragraph(String.valueOf(story.getImportance()), new Font(bfChinese, 36, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
 				cell.addElement(paragraph);
@@ -189,16 +175,14 @@ public class MakePDFService {
 				cell.setBorder(PdfPCell.LEFT);
 				cell.setBorderWidth(1f);
 				cell.setPaddingLeft(6f);
-				paragraph = new Paragraph("Notes", new Font(bfChinese, 12,
-						Font.NORMAL));
+				paragraph = new Paragraph("Notes", new Font(bfChinese, 12, Font.NORMAL));
 				cell.addElement(paragraph);
 				table.addCell(cell);
 
 				cell = new PdfPCell();
 				cell.setBorder(PdfPCell.RIGHT);
 				cell.setBorderWidth(1f);
-				paragraph = new Paragraph("Estimate", new Font(bfChinese, 12,
-						Font.NORMAL));
+				paragraph = new Paragraph("Estimate", new Font(bfChinese, 12, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 				cell.addElement(paragraph);
 				table.addCell(cell);
@@ -211,8 +195,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setMinimumHeight(60f);
 				cell.setPaddingBottom(10f);
-				cell.addElement(new Paragraph(story.getNotes(), new Font(
-						bfChinese, 14, Font.NORMAL)));
+				cell.addElement(new Paragraph(story.getNotes(), new Font(bfChinese, 14, Font.NORMAL)));
 
 				innerTable.addCell(cell);
 
@@ -236,8 +219,7 @@ public class MakePDFService {
 				cell.setMinimumHeight(60f);
 				cell.setUseAscender(false);
 				cell.setPaddingTop(-10f);
-				paragraph = new Paragraph(String.valueOf(story.getEstimate()),
-						new Font(bfChinese, 36, Font.NORMAL));
+				paragraph = new Paragraph(String.valueOf(story.getEstimate()), new Font(bfChinese, 36, Font.NORMAL));
 				paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
 				cell.addElement(paragraph);
@@ -260,8 +242,7 @@ public class MakePDFService {
 				cell.setColspan(2);
 				cell.setBorderWidth(1f);
 				cell.setPaddingLeft(6f);
-				paragraph = new Paragraph("How to demo", new Font(bfChinese,
-						12, Font.NORMAL));
+				paragraph = new Paragraph("How to demo", new Font(bfChinese, 12, Font.NORMAL));
 				cell.addElement(paragraph);
 				table.addCell(cell);
 
@@ -272,8 +253,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setMinimumHeight(60f);
 				cell.setPaddingBottom(10f);
-				cell.addElement(new Paragraph(story.getHowToDemo(), new Font(
-						bfChinese, 14, Font.NORMAL)));
+				cell.addElement(new Paragraph(story.getHowToDemo(), new Font(bfChinese, 14, Font.NORMAL)));
 
 				innerTable.addCell(cell);
 
@@ -282,8 +262,7 @@ public class MakePDFService {
 				cell.setBorderWidth(1f);
 				cell.setPadding(5f);
 
-				table.getDefaultCell().setBorder(
-						PdfPCell.LEFT | PdfPCell.BOTTOM);
+				table.getDefaultCell().setBorder(PdfPCell.LEFT | PdfPCell.BOTTOM);
 				table.getDefaultCell().setBorderWidth(1f);
 				table.addCell(cell);
 
@@ -309,15 +288,14 @@ public class MakePDFService {
 		return file;
 
 	}
-	
+
 	public String atLeastHigh(TaskObject task) {
 		String name = task.getName();
 		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
-		if(nameSize < 175)
-		{
+		if (nameSize < 175) {
 			int addEndOfLineNum = nameSize / 35;
-			for(int i = 0; i<(4-addEndOfLineNum);i++){
+			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
 				ans += "\n";
 			}
 		}
@@ -325,5 +303,3 @@ public class MakePDFService {
 		return ans;
 	}
 }
-
-
