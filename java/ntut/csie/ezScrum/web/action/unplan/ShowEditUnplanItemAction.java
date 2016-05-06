@@ -20,7 +20,7 @@ import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 public class ShowEditUnplanItemAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
@@ -52,6 +52,7 @@ public class ShowEditUnplanItemAction extends Action {
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw e;
 		}
 		
 		return null;

@@ -1,0 +1,27 @@
+*** Settings ***
+Library           ../lib/DatabaseHandler.py
+Resource          ../ezScrum_Login.txt
+Library           ../lib/AspectJSwitch.py
+Resource          ../common_resource.txt
+
+*** Keywords ***
+Test Action - ShowEditUnplanItemAction Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Action    ShowEditUnplanItemAction.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+    ${PROJECT_NAME}    Set Variable    Project01
+    Wait Until Page Contains    ${PROJECT_NAME}
+    Select Project    ${PROJECT_NAME}
+    # Switch to Unplanned Page
+    Select Node Product    Unplanned
+    Click Element    xpath=//span[text()="Unplanned Item List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
+    Wait Until Page Contains    ALL
+    Click Element    //div[@class="x-combo-list-item x-combo-selected"]/../div[text()="Sprint #1"]
+    # Turn AspectJ ON
+    Turn Aspectj On By Action Name    ${LOGIN_URL}    ShowEditUnplanItemAction
+
+Test Action - ShowEditUnplanItemAction Teardown
+    # Turn AspectJ OFF
+    Turn Aspectj Off    ${LOGIN_URL}
+    # Clean DB and Exit
+    Clean Database and Exit ezScrum
