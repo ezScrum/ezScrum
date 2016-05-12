@@ -91,7 +91,7 @@ var ExistedStoryReader = new Ext.data.XmlReader({
  * */
 var HandlerRecord = Ext.data.Record.create([ 'Name' ]);
 
-var PartnerReader = new Ext.data.XmlReader({
+var PartnersReader = new Ext.data.XmlReader({
 	record : 'Partner',
 	idPath : 'Name',
 	successProperty : 'Result'	

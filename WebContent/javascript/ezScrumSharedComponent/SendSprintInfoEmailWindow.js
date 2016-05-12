@@ -7,10 +7,7 @@ var PartnerStore_ForSprintInfo = new Ext.data.Store({
     fields: [
    		{name: 'Name'}
     ],
-    //url: 'AjaxGetPartnerList.do',
-    reader : PartnerReader,
-    
-    //autoLoad: true
+    reader : PartnersReader
 });
 
 var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
@@ -18,13 +15,33 @@ var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
     name : 'Partners',
     editable   : false
 });
-/**/
+PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
+	PartnerMenuForSprintInfo.removeAll();
+	
+	for(var i=0; i<this.getCount(); i++) {
+		var record = this.getAt(i);
+		console.log(record);
+		var info = record.get('Name');
+		//console.log(info);
+		PartnerMenuForSprintInfo.add({
+			id		: info,
+			tagId 	: info,
+			text	: info,
+			xtype	: 'menucheckitem',
+			hideOnClick	: false,
+			checkHandler : PartnerMenuForSprintInfo.onCheckItemClick
+		});
+	}
+});
 PartnerTriggerField_SprintInfo.onTriggerClick = function() {
+	
 	// A array of items of the menu
 	var checkedItem = Ext.getCmp('PartnerMenu').findByType('menucheckitem');
-	
+	//console.log(checkedItem);
+
 	// the name list of the project team
 	var partnerMenuList = PartnerTriggerField_SprintInfo.getValue().split(';');
+	//console.log(partnerMenuList);
 	
 	// initial the checked items
 	for(var i=0; i<checkedItem.length; i++) {
@@ -39,32 +56,16 @@ PartnerTriggerField_SprintInfo.onTriggerClick = function() {
 			}
 		}
 	}
-	PartnerMenuForForSprintInfo.showAt(PartnerTriggerField_SprintInfo.getPosition());
+	PartnerMenuForSprintInfo.showAt(PartnerTriggerField_SprintInfo.getPosition());
 };
 
-PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
-	PartnerMenuForForSprintInfo.removeAll();
-	
-	for(var i=0; i<this.getCount(); i++) {
-		var record = this.getAt(i);
-		var info = record.get('Name');
-		
-		PartnerMenuForForSprintInfo.add({
-			id		: info,
-			tagId	: info,
-			text	: info,
-			xtyoe	: 'menucheckitem',
-			hideOnClick	: false,
-			checkHandler : PartnerMenuForForSprintInfo.onCheckItemClick
-		});
-	}
-});
-var PartnerMenuForForSprintInfo = new Ext.menu.Menu({
+
+var PartnerMenuForSprintInfo = new Ext.menu.Menu({
 	/*
      * 當CheckItem被點選之後，更新TagTriggerField上的文字
      */
 	id: 'PartnerMenu',
-	onCheckItemClick: function(item, checked) {
+	onCheckItemClick : function(item, checked){
 		var tagRaw = PartnerTriggerField_SprintInfo.getValue();
 		var tags;
 		if (tagRaw.length != 0) {
@@ -81,7 +82,7 @@ var PartnerMenuForForSprintInfo = new Ext.menu.Menu({
             var index = tags.indexOf(item.text);
             tags.splice(index, 1);
         }
-		PartnerTriggerField_SprintInfo.setValue(tags.join(";"));
+        PartnerTriggerField_SprintInfo.setValue(tags.join(";"));
 	},
 	loadPartnerList : function() {
 		// to request partner list
@@ -100,6 +101,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 	notifyPanel: undefined, // notify panel
 	defaultType: 'textfield',
 	labelAlign : 'right',
+	monitorValid: true,
 	defaults: {
 		width: 500,
 		msgTarget: 'side'
@@ -116,8 +118,9 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		            name: 'Password',
 		            allowBlank: false,
 		            maxLength: 128
-		        },PartnerTriggerField_SprintInfo
-		        ,{
+		        }, 
+		        PartnerTriggerField_SprintInfo,
+		        {
 		            name: 'sprintId',
 		            hidden: true
 		        }],
@@ -147,11 +150,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 			success:function(response){},
 			failure:function(response){}
 		});
-	},
-	reset: function(){
-		this.getForm().reset();
-		PartnerMenuForForSprintInfo.loadPartnerList();
-	}/*,
+	},/*
 	onLoadSuccess: function(response) {
 		var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
 		myMask.hide();
@@ -159,7 +158,11 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		if (ConfirmWidget.confirmAction()) {
 			
 		}
-	}*/
+	},*/
+	reset: function(){
+		this.getForm().reset();
+		PartnerMenuForSprintInfo.loadPartnerList();
+	}
 });
 Ext.reg('sprintInfoForm', ezScrum.SprintInfoForm);
 
@@ -176,11 +179,10 @@ ezScrum.window.SendSprintInfoEmailWindow = Ext.extend(ezScrum.layout.Window, {
 		this.SprintInfoForm = this.items.get(0);
 	},
 	showTheWindow: function(panel, sprintID){
-		this.SprintInfoForm.reset();
-		this.SprintInfoForm.getForm().setValues({
-			SprintId: sprintID
-		});
 		this.SprintInfoForm.notifyPanel = panel;
+		this.SprintInfoForm.reset();
+		this.SprintInfoForm.getForm().setValues({SprintId: sprintID});
+		
 		this.show();
 	}
 });
