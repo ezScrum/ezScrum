@@ -11,8 +11,8 @@ var PartnerStore_ForSprintInfo = new Ext.data.Store({
 });
 
 var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
-    fieldLabel : 'Partners',
-    name : 'Partners',
+    fieldLabel : 'Receivers (ezScrum members)',
+    name : 'Receivers (ezScrum members)',
     editable   : false
 });
 PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
@@ -20,7 +20,6 @@ PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
 	
 	for(var i=0; i<this.getCount(); i++) {
 		var record = this.getAt(i);
-		console.log(record);
 		var info = record.get('Name');
 
 		PartnerMenuForSprintInfo.add({
@@ -107,13 +106,13 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 	initComponent: function() {
 		var config = {
 				items: [{
-					fieldLabel: 'Email',
-		            name: 'Email',
+					fieldLabel: 'Sender Email',
+		            name: 'Sender Email',
 		            allowBlank: false,
 		            maxLength: 128
 		        },{
-		        	fieldLabel: 'Password',
-		            name: 'Password',
+		        	fieldLabel: 'Sender Password',
+		            name: 'Sender Password',
 		            allowBlank: false,
 		            maxLength: 128
 		        }, 
