@@ -22,7 +22,7 @@ PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
 		var record = this.getAt(i);
 		console.log(record);
 		var info = record.get('Name');
-		//console.log(info);
+
 		PartnerMenuForSprintInfo.add({
 			id		: info,
 			tagId 	: info,
@@ -37,11 +37,9 @@ PartnerTriggerField_SprintInfo.onTriggerClick = function() {
 	
 	// A array of items of the menu
 	var checkedItem = Ext.getCmp('PartnerMenu').findByType('menucheckitem');
-	//console.log(checkedItem);
 
 	// the name list of the project team
 	var partnerMenuList = PartnerTriggerField_SprintInfo.getValue().split(';');
-	//console.log(partnerMenuList);
 	
 	// initial the checked items
 	for(var i=0; i<checkedItem.length; i++) {
@@ -62,7 +60,7 @@ PartnerTriggerField_SprintInfo.onTriggerClick = function() {
 
 var PartnerMenuForSprintInfo = new Ext.menu.Menu({
 	/*
-     * 當CheckItem被點選之後，更新TagTriggerField上的文字
+     * When CheckItem was checked，update TagTriggerField's text
      */
 	id: 'PartnerMenu',
 	onCheckItemClick : function(item, checked){
@@ -75,7 +73,7 @@ var PartnerMenuForSprintInfo = new Ext.menu.Menu({
         }
 		if (checked) {
         	if(tagRaw.search(item.text)<0) {
-        		// 若field中已經存在該text, 不將該對應item 勾選
+        		// if field has text, should not check item
             	tags.push(item.text);
         	}
         } else {
@@ -150,15 +148,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 			success:function(response){},
 			failure:function(response){}
 		});
-	},/*
-	onLoadSuccess: function(response) {
-		var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
-		myMask.hide();
-		ConfirmWidget.loadData(response);
-		if (ConfirmWidget.confirmAction()) {
-			
-		}
-	},*/
+	},
 	reset: function(){
 		this.getForm().reset();
 		PartnerMenuForSprintInfo.loadPartnerList();
