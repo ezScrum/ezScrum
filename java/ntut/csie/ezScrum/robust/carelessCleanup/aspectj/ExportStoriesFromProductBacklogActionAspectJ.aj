@@ -8,9 +8,10 @@ import org.apache.struts.action.ActionForward;
 
 
 public aspect ExportStoriesFromProductBacklogActionAspectJ {
-	before() throws IOException:
-        call(void write())
-        && withincode(ActionForward ExportStoriesFromProductBacklogAction.execute(..)) {
+	pointcut findGetWriter() : call(void write())
+    && withincode(ActionForward ExportStoriesFromProductBacklogAction.execute(..));
+	
+	void around() throws IOException : findGetWriter(){
 		if (AspectJSwitch.getInstance().isSwitchOn("ExportStoriesFromProductBacklogAction")) {
 			throw new IOException();
 		}

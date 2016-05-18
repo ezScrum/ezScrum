@@ -10,11 +10,13 @@ import ntut.csie.ezScrum.web.action.unplan.ShowEditUnplanItemAction;
 
 
 public aspect ShowEditUnplanItemActionAspectJ {
-	before() throws IOException:
-        call(PrintWriter getWriter())
-        && withincode(ActionForward ShowEditUnplanItemAction.execute(..)) {
+	pointcut findGetWriter() : call(PrintWriter getWriter())
+    && withincode(ActionForward ShowEditUnplanItemAction.execute(..));
+	
+	PrintWriter around() throws IOException : findGetWriter() {
 		if (AspectJSwitch.getInstance().isSwitchOn("ShowEditUnplanItemAction")) {
 			throw new IOException();
 		}
+		return null;
 	}
 }

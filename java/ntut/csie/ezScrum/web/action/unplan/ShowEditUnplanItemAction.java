@@ -22,7 +22,6 @@ public class ShowEditUnplanItemAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
-
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
 		long serialUnplanId = Long.parseLong(request.getParameter("issueID"));
