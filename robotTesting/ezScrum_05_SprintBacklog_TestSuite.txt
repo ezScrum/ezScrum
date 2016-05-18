@@ -1,4 +1,4 @@
-*** Settings ***
+﻿*** Settings ***
 Force Tags        SprintBacklog
 Resource          keywords/common_resource.txt
 Resource          keywords/ezScrum_Login.txt

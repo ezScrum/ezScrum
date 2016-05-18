@@ -149,9 +149,6 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 	// Load Unplanned Item success
 	onLoadSuccess:function(response) 
 	{
-		var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
-		myMask.hide();
-		
 		// check action permission
 		ConfirmWidget.loadData(response);
 		if (ConfirmWidget.confirmAction()) {
@@ -175,9 +172,7 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 	},
 	onLoadFailure:function(response) 
 	{
-		var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
-		myMask.hide();
-		this.fireEvent('LoadFailure', this, response, this.issueId);
+		Ext.example.msg('Server Error', 'Sorry, fail due to internal server error');
 	},
 	// Update Unplanned Item success
 	onEditSuccess:function(response) 
@@ -208,16 +203,19 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 		myMask.hide();
 		this.fireEvent('EditFailure', this, response, this.issueId);
 	},
-	loadStore:function()
+	loadStore:function(window)
 	{
 		var obj = this;
-		var myMask = new Ext.LoadMask(obj.getEl(), {msg:"Please wait..."});
-		myMask.show();
 		Ext.Ajax.request({
 			url:this.loadUrl,
-			success:function(response){obj.onLoadSuccess(response);},
-			failure:function(response){obj.onLoadFailure(response);},
-			params : {issueID : this.issueId}
+			params : {issueID : this.issueId},
+			success:function(response){
+				window.show();
+				obj.onLoadSuccess(response);
+			},
+			failure:function(response){
+				obj.onLoadFailure(response);
+			}
 		});
 	},
 	reset:function()
@@ -255,9 +253,6 @@ ezScrum.EditUnplannedItemWidget = Ext.extend(Ext.Window, {
 		
 		this.items.get(0).issueId = issueId;
 		this.items.get(0).reset();
-		
-		this.show();
-		
-		this.items.get(0).loadStore();
+		this.items.get(0).loadStore(this);
 	}
 });

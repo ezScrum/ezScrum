@@ -1,0 +1,18 @@
+*** Settings ***
+Resource          keywords/Action/ezScrum_Action.txt
+Resource          keywords/Unplan/ezScrum_Unplan_SetupTeardown.txt
+
+*** Test Cases ***
+Test Action - ShowEditUnplanItemAction
+    [Setup]    Test Action - ShowEditUnplanItemAction Setup
+    # Choose unplan
+    Select Unplan    1    Unplan01
+    # Click Edit Unplanned Item
+    Click Element    xpath=//button[.='Edit Unplanned Item']
+    # Verify no Edit Unplaned Item window pop-up
+    ${EditUnplanItemWindow}=    Set Variable    //span[contains(text(), "Edit Unplanned Item")]
+    Wait Until Element Is Not Visible    ${EditUnplanItemWindow}
+    # Verify error message
+    Wait Until Page Contains    Server Error
+    Wait Until Page Contains    Sorry, fail due to internal server error
+    [Teardown]    Test Action - ShowEditUnplanItemAction Teardown

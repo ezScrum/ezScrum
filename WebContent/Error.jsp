@@ -7,7 +7,7 @@
   </head>
   
   <body>
-	<p>We are so sorry, Non-expected error occurred.</p>
+	<p>We are so sorry for unexpected error.</p>
 	<p>Please contact the ezScrum system administrator.</p>
   </body>
 </html>
