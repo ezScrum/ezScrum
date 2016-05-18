@@ -72,7 +72,7 @@
 <script type="text/javascript" src="javascript/ezScrumSharedComponent/AddExistedStoryWindow.js"></script>
 <script type="text/javascript" src="javascript/ezScrumSharedComponent/AttachFileWindow.js"></script>
 <script type="text/javascript" src="javascript/ezScrumSharedComponent/MoveStoryWindow.js"></script>
-
+<script type="text/javascript" src="javascript/ezScrumSharedComponent/SendSprintInfoEmailWindow.js"></script>
 
 <!-- other support -->
 <script type="text/javascript" src="javascript/AjaxWidget/CommonFormVTypes.js"></script>

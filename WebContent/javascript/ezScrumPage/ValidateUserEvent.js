@@ -6,6 +6,7 @@ function registerListenSessionInSprintBacklog() { // 將sprintBacklog中所有�
 	registerCheckSession(IssueHistory_Window);
 
 	// sprint backlog action
+	registerCheckSession(SendSprintInfoEmailWindow);
 	registerCheckSession(Story_Window); // function of the story window is add and edit story
 	registerCheckSession(AddExistedStory_Window);
 	registerCheckSession(SprintPlan_Window);

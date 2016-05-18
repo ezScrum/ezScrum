@@ -131,7 +131,8 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 					{id:'SprintBacklog_addExistStoryBtn', text:'Add Existing Stories', icon:'images/add.gif', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').addExistStory();}},
 					{id:'SprintBacklog_showPrintableStoryBtn', text:'Printable Stories', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showPrintableStory();}},
 					{id:'SprintBacklog_showSprintInfoBtn', text:'Sprint Information', icon:'images/clipboard.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showSprintInfo();}},
-					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}}
+					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}},
+					{id:'SprintBacklog_sendSprintInfoBtn', text:'Send Sprint Info', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').sendSprintInfo();}}				
 //					,
 //					{id:'SprintBacklog_deleteExistingTaskBtn', text:'Delete Existing Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteExistingTask();}}
 				]
@@ -278,7 +279,15 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
         	this.overdueConfirm_story(Info, record, edit);
         }
     },
-    
+    // select email Receiver
+    sendSprintInfo: function(){
+    	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
+		var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
+		SendSprintInfoEmailWindow.showTheWindow(this, sprintID);
+    },
+    notify_SelectReceiverSuccess: function() {
+    	
+    },
 	// Add Exist Story action
     addExistStory:function() {
     	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;

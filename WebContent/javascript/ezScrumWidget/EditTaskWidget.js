@@ -61,7 +61,6 @@ PartnerStore_ForEditTask.on('load', function(store, records, options) {
 	for(var i=0; i<this.getCount(); i++) {
 		var record = this.getAt(i);
 		var info = record.get('Name');
-			
 		PartnerMenuForEditTask.add({
 			id		: info,
 			tagId 	: info,
@@ -77,10 +76,8 @@ PartnerTriggerField_EditTask.onTriggerClick = function() {
 
 	// A array of items of the menu
 	var checkedItem = Ext.getCmp('PartnerMenu').findByType('menucheckitem');
-	
 	// the name list of the project team
 	var partnerMenuList = PartnerTriggerField_EditTask.getValue().split(';');
-
 	// initial the checked items
 	for(var i=0; i<checkedItem.length; i++) {
 		Ext.getCmp('PartnerMenu').get(checkedItem[i].text).setChecked(false);
