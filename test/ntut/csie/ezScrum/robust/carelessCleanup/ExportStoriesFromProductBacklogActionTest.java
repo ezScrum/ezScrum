@@ -36,6 +36,8 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		// Create Project
 		mCP = new CreateProject(1);
 		mCP.exeCreateForDb();
+		
+		cleanEzscrumExcelTempFiles();
 
 		super.setUp();
 
@@ -185,5 +187,33 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		assertTrue(ezScrumExcels.isEmpty());
 		
 		assertEquals("An uncaught exception was thrown during actionExecute()", exceptionMessage);
+	}
+	
+	private void cleanEzscrumExcelTempFiles() {
+		ArrayList<File> ezScrumExcels = new ArrayList<File>();
+		// Create temp file to get the directory of ezScrumExcel
+		try {
+			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
+			File parentFile = findPathFile.getParentFile();
+			for (File file : parentFile.listFiles()) {
+				// Filter files which file name match "ezScrumExcel"
+				if(!file.isDirectory() && file.getName().contains("ezScrumExcel")){
+					ezScrumExcels.add(file);
+				}
+			}
+			findPathFile.delete();
+		} catch (IOException e) {
+			ResourceManager.recordExceptionMessage(e);
+		}
+
+		// Delete files which name match "ezScrumExcel"
+		for(File file : ezScrumExcels){
+			file.delete();
+		}
+		
+		// Check all ezScrumExcel files deleted
+		for(File file : ezScrumExcels){
+			assertFalse(file.exists());
+		}
 	}
 }
