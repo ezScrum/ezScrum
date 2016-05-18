@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.robust.aspectj.tool.AspectJSwitch;
+import ntut.csie.ezScrum.robust.resource.tool.ResourceManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.ExceptionDuringTestError;
@@ -98,7 +99,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 			}
 			findPathFile.delete();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceManager.recordExceptionMessage(e);
 		}
 
 		// Delete files which name match "ezScrumExcel"
@@ -138,7 +139,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 			}
 			findPathFile.delete();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceManager.recordExceptionMessage(e);
 		}
 		
 		// Check all ezScrumExcel files deleted after export stories
@@ -177,7 +178,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 			}
 			findPathFile.delete();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceManager.recordExceptionMessage(e);
 		}
 		
 		// Check all ezScrumExcel files deleted after export stories
