@@ -58,5 +58,4 @@ public class ShowSelectableTaskAction extends PermissionAction{
 		StringBuilder sb = new StringBuilder(sprintBacklogHelper.getTasksInSprintResponseText(tasks));
 		return sb;
 	}
-
 }

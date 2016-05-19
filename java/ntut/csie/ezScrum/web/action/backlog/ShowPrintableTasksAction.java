@@ -66,11 +66,11 @@ public class ShowPrintableTasksAction extends DownloadAction {
 
 		AccountObject account = session.getAccount();
 		
-		ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
+		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project, account);
 		if (file == null) {
 			throw new Exception(" pdf file is null");
 		}
-		if (sr.getAccessSprintBacklog()) {
+		if (scrumRole.getAccessSprintBacklog()) {
 			String contentType = "application/pdf";
 			return new FileStreamInfo(contentType, file);
 		} else {

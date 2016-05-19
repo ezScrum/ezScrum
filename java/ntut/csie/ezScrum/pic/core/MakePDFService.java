@@ -34,24 +34,24 @@ public class MakePDFService {
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
 
 		document1.open();
-		int sizeTotal = tasks.size();
-		int size;
+		int totalTasksSize = tasks.size();
+		int taskSize;
 		int taskId = 0;
-		float tableHeight = 100f;
+		float tableWidth = 100f;
 		// to know total tasks number is odd or even
-		if (sizeTotal % 2 == 1) {
-			size = sizeTotal / 2 + 1;
+		if (totalTasksSize % 2 == 1) {
+			taskSize = totalTasksSize / 2 + 1;
 		} else {
-			size = sizeTotal / 2;
+			taskSize = totalTasksSize / 2;
 		}
 		try {
-			for (int i = 0; i < size; i++) {
+			for (int i = 0; i < taskSize; i++) {
 				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
 				PdfPTable table = new PdfPTable(3);
 				TaskObject task = tasks.get(taskId);
 				String display = atLeastHigh(task);
 				// 設定table的寬度
-				table.setWidthPercentage(tableHeight);
+				table.setWidthPercentage(tableWidth);
 				// 設定每個欄位的寬度
 				table.setWidths(new float[] { 4.5f, 1f, 4.5f });
 
@@ -65,7 +65,7 @@ public class MakePDFService {
 				cell_2.setBorder(PdfPCell.NO_BORDER);
 				table.addCell(cell_2);
 
-				if (taskId >= sizeTotal) {
+				if (taskId >= totalTasksSize) {
 					display = "";
 				} else {
 					task = tasks.get(taskId);
