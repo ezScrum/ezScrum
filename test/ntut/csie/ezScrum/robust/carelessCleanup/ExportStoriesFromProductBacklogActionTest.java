@@ -28,7 +28,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
-
+		
 		// Initialize database
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -45,6 +45,13 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		setServletConfigFile("/WEB-INF/struts-config.xml");
 		setRequestPathInfo(mActionPath);
 
+		// ================ set initial data =======================
+		ProjectObject project = mCP.getAllProjects().get(0);
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+		request.getSession().setAttribute("Project", project);
+		request.setHeader("Referer", "?projectName=" + project.getName());
+				
 		// ============= release ==============
 		ini = null;
 	}
@@ -72,78 +79,28 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 	public void testExportStoriesFromProductBacklogAction_WithIOExceptionWhenWrite() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		
-		// ================ set initial data =======================
-		ProjectObject project = mCP.getAllProjects().get(0);
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?projectName=" + project.getName());
-
 		String exceptionMessage = "";
 		try {
 			actionPerform();
 		} catch (ExceptionDuringTestError e) {
 			exceptionMessage = e.getMessage();
 		}
-		
-		ArrayList<File> ezScrumExcels = new ArrayList<File>();
-		// Create temp file to get the directory of ezScrumExcel
-		try {
-			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
-			File parentFile = findPathFile.getParentFile();
-			for (File file : parentFile.listFiles()) {
-				// Filter files which file name match "ezScrumExcel"
-				if(!file.isDirectory() && file.getName().contains("ezScrumExcel")){
-					ezScrumExcels.add(file);
-				}
-			}
-			findPathFile.delete();
-		} catch (IOException e) {
-			ResourceManager.recordExceptionMessage(e);
-		}
+		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 
 		// Delete files which name match "ezScrumExcel"
 		for(File file : ezScrumExcels){
 			file.delete();
 		}
-		
 		// Check all ezScrumExcel files deleted
 		for(File file : ezScrumExcels){
 			assertFalse(file.exists());
 		}
-		
 		assertEquals("An uncaught exception was thrown during actionExecute()", exceptionMessage);
 	}
 	
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFiles() {
-		// ================ set initial data =======================
-		ProjectObject project = mCP.getAllProjects().get(0);
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?projectName=" + project.getName());
-
 		actionPerform();
-		
-		ArrayList<File> ezScrumExcels = new ArrayList<File>();
-		// Create temp file to get the directory of ezScrumExcel
-		try {
-			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
-			File parentFile = findPathFile.getParentFile();
-			for (File file : parentFile.listFiles()) {
-				// Filter files which file name match "ezScrumExcel"
-				if(!file.isDirectory() && file.getName().contains("ezScrumExcel")){
-					ezScrumExcels.add(file);
-				}
-			}
-			findPathFile.delete();
-		} catch (IOException e) {
-			ResourceManager.recordExceptionMessage(e);
-		}
-		
+		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 		// Check all ezScrumExcel files deleted after export stories
 		assertTrue(ezScrumExcels.isEmpty());
 	}
@@ -151,45 +108,19 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFilesWhenIOExceptionOccurs() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		
-		// ================ set initial data =======================
-		ProjectObject project = mCP.getAllProjects().get(0);
-
-		// ================ set session info ========================
-		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
-		request.getSession().setAttribute("Project", project);
-		request.setHeader("Referer", "?projectName=" + project.getName());
-
 		String exceptionMessage = "";
 		try {
 			actionPerform();
 		} catch (ExceptionDuringTestError e) {
 			exceptionMessage = e.getMessage();
 		}
-		
-		ArrayList<File> ezScrumExcels = new ArrayList<File>();
-		// Create temp file to get the directory of ezScrumExcel
-		try {
-			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
-			File parentFile = findPathFile.getParentFile();
-			for (File file : parentFile.listFiles()) {
-				// Filter files which file name match "ezScrumExcel"
-				if(!file.isDirectory() && file.getName().contains("ezScrumExcel")){
-					ezScrumExcels.add(file);
-				}
-			}
-			findPathFile.delete();
-		} catch (IOException e) {
-			ResourceManager.recordExceptionMessage(e);
-		}
-		
+		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 		// Check all ezScrumExcel files deleted after export stories
 		assertTrue(ezScrumExcels.isEmpty());
-		
 		assertEquals("An uncaught exception was thrown during actionExecute()", exceptionMessage);
 	}
 	
-	private void cleanEzscrumExcelTempFiles() {
+	private ArrayList<File> getEzScrumExcelTempFiles() {
 		ArrayList<File> ezScrumExcels = new ArrayList<File>();
 		// Create temp file to get the directory of ezScrumExcel
 		try {
@@ -205,12 +136,15 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		} catch (IOException e) {
 			ResourceManager.recordExceptionMessage(e);
 		}
-
+		return ezScrumExcels;
+	}
+	
+	private void cleanEzscrumExcelTempFiles() {
+		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 		// Delete files which name match "ezScrumExcel"
 		for(File file : ezScrumExcels){
 			file.delete();
 		}
-		
 		// Check all ezScrumExcel files deleted
 		for(File file : ezScrumExcels){
 			assertFalse(file.exists());
