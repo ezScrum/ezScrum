@@ -79,14 +79,8 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 	public void testExportStoriesFromProductBacklogAction_WithIOExceptionWhenWrite() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		String exceptionMessage = "";
-		try {
-			actionPerform();
-		} catch (ExceptionDuringTestError e) {
-			exceptionMessage = e.getMessage();
-		}
+		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
 		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
-
 		// Delete files which name match "ezScrumExcel"
 		for(File file : ezScrumExcels){
 			file.delete();
@@ -95,11 +89,10 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		for(File file : ezScrumExcels){
 			assertFalse(file.exists());
 		}
-		assertEquals("An uncaught exception was thrown during actionExecute()", exceptionMessage);
 	}
 	
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFiles() {
-		actionPerform();
+		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
 		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 		// Check all ezScrumExcel files deleted after export stories
 		assertTrue(ezScrumExcels.isEmpty());
@@ -108,16 +101,10 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFilesWhenIOExceptionOccurs() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		String exceptionMessage = "";
-		try {
-			actionPerform();
-		} catch (ExceptionDuringTestError e) {
-			exceptionMessage = e.getMessage();
-		}
+		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
 		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
 		// Check all ezScrumExcel files deleted after export stories
 		assertTrue(ezScrumExcels.isEmpty());
-		assertEquals("An uncaught exception was thrown during actionExecute()", exceptionMessage);
 	}
 	
 	private ArrayList<File> getEzScrumExcelTempFiles() {

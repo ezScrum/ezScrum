@@ -54,7 +54,6 @@ public class ExportStoriesFromProductBacklogAction extends Action {
 			outputStream.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new UnhandledException(e);
 		} finally {
 			// release resource
 			ResourceManager.closeResource(inputStream);
