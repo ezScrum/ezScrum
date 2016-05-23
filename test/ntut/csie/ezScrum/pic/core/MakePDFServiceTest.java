@@ -96,7 +96,7 @@ public class MakePDFServiceTest {
 
 	}
 	@Test
-	public void testAtLeastHigh() {
+	public void testGenerateTaskCellContent() {
 		long taskId = 1;
 
 		// get task one
@@ -105,17 +105,7 @@ public class MakePDFServiceTest {
 		assertEquals("TEST_TASK_1", task.getName());
 		assertEquals(1, task.getSerialId());
 		
-		
 		String ans = "Task Id # 1" + "\n" + "TEST_TASK_1" + "\n\n\n\n" + "                                           Estimate : 8hr";
-		/*String name = task.getName();
-		int nameSize = name.length();
-		if (nameSize < 175) {
-			int addEndOfLineNum = nameSize / 35;
-			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
-				ans += "\n";
-			}
-		}*/
-		//ans += "                                           Estimate : " + task.getEstimate() + "hr";
-		assertEquals(ans, makePDFService.atLeastHigh(task));
+		assertEquals(ans, makePDFService.generateTaskCellContent(task));
 	}
 }

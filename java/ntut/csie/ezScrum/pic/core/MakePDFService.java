@@ -38,20 +38,25 @@ public class MakePDFService {
 		int taskPDFRow;
 		int taskId = 0;
 		float tableWidth = 100f;
+		int field = 3;
+		float fieldWidth[] = { 4.5f, 1f, 4.5f };
 		taskPDFRow = getTaskPDFRow(totalTasksSize);
 		
 		try {
 			for (int i = 0; i < taskPDFRow; i++) {
 				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
-				PdfPTable table = new PdfPTable(3);
-				TaskObject task = tasks.get(taskId);
-				String display = atLeastHigh(task);
+				PdfPTable table = new PdfPTable(field);
+
 				// 設定table的寬度
 				table.setWidthPercentage(tableWidth);
 				// 設定每個欄位的寬度
-				table.setWidths(new float[] { 4.5f, 1f, 4.5f });
+				table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
 
 				// 設定第一個欄位的內容
+								
+				TaskObject task = tasks.get(taskId);
+				String display = generateTaskCellContent(task);
+				
 				PdfPCell cell_1 = new PdfPCell();
 				cell_1.addElement(new Phrase(display));
 				table.addCell(cell_1);
@@ -65,9 +70,10 @@ public class MakePDFService {
 					display = "";
 				} else {
 					task = tasks.get(taskId);
-					display = atLeastHigh(task);
+					display = generateTaskCellContent(task);
 					taskId++;
 				}
+				
 				// 設定第二個欄位的內容
 				PdfPCell cell_3 = new PdfPCell();
 				cell_3.addElement(new Phrase(display));
@@ -294,8 +300,8 @@ public class MakePDFService {
 		}
 		return row;
 	}
-
-	public String atLeastHigh(TaskObject task) {
+	
+	public String generateTaskCellContent(TaskObject task) {
 		String name = task.getName();
 		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
