@@ -10,7 +10,6 @@ import ntut.csie.ezScrum.robust.aspectj.tool.AspectJSwitch;
 import ntut.csie.ezScrum.robust.resource.tool.ResourceManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import servletunit.struts.ExceptionDuringTestError;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCase {
@@ -79,38 +78,58 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 	public void testExportStoriesFromProductBacklogAction_WithIOExceptionWhenWrite() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
-		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
-		// Delete files which name match "ezScrumExcel"
-		for(File file : ezScrumExcels){
-			file.delete();
-		}
-		// Check all ezScrumExcel files deleted
-		for(File file : ezScrumExcels){
-			assertFalse(file.exists());
-		}
+		// invoke ExportStoriesFromProductBacklogAction
+		actionPerform();
+		File ezScrumExcel = getEzScrumExcelTempFile();
+		// if ezScrumExcel exists, getEzScrumExcelTempFile() will return file's instance.
+		assertNotNull(ezScrumExcel);
+		// Delete file which name match "ezScrumExcel"
+		ezScrumExcel.delete();
+		ezScrumExcel = getEzScrumExcelTempFile();
+		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
+		assertNull(ezScrumExcel); 
 	}
 	
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFiles() {
-		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
-		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
-		// Check all ezScrumExcel files deleted after export stories
-		assertTrue(ezScrumExcels.isEmpty());
+		// invoke ExportStoriesFromProductBacklogAction
+		actionPerform(); 
+		File ezScrumExcel = getEzScrumExcelTempFile();
+		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
+		assertNull(ezScrumExcel); 
 	}
 	
 	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFilesWhenIOExceptionOccurs() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		actionPerform(); // invoke ExportStoriesFromProductBacklogAction
-		ArrayList<File> ezScrumExcels = getEzScrumExcelTempFiles();
-		// Check all ezScrumExcel files deleted after export stories
-		assertTrue(ezScrumExcels.isEmpty());
+		// invoke ExportStoriesFromProductBacklogAction
+		actionPerform(); 
+		File ezScrumExcel = getEzScrumExcelTempFile();
+		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
+		assertNull(ezScrumExcel); 
+	}
+	
+	private File getEzScrumExcelTempFile() {
+		try {
+			// Create temp file to get the directory of ezScrumExcel
+			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
+			File parentFile = findPathFile.getParentFile();
+			for (File file : parentFile.listFiles()) {
+				// Filter files which file name match "ezScrumExcel"
+				if(!file.isDirectory() && file.getName().contains("ezScrumExcel")){
+					return file;
+				}
+			}
+			findPathFile.delete();
+		} catch (IOException e) {
+			ResourceManager.recordExceptionMessage(e);
+		}
+		return null;
 	}
 	
 	private ArrayList<File> getEzScrumExcelTempFiles() {
 		ArrayList<File> ezScrumExcels = new ArrayList<File>();
-		// Create temp file to get the directory of ezScrumExcel
 		try {
+			// Create temp file to get the directory of ezScrumExcel
 			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
 			File parentFile = findPathFile.getParentFile();
 			for (File file : parentFile.listFiles()) {

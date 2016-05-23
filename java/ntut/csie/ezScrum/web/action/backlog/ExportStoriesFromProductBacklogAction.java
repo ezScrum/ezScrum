@@ -58,9 +58,9 @@ public class ExportStoriesFromProductBacklogAction extends Action {
 			// release resource
 			ResourceManager.closeResource(inputStream);
 			ResourceManager.closeResource(outputStream);
-			if (tempFile != null) {
-				tempFile.delete();
-			}
+//			if (tempFile != null) {
+//				tempFile.delete();
+//			}
 		}
 		return null;
 	}
