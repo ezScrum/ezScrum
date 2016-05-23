@@ -35,17 +35,13 @@ public class MakePDFService {
 
 		document1.open();
 		int totalTasksSize = tasks.size();
-		int taskSize;
+		int taskPDFRow;
 		int taskId = 0;
 		float tableWidth = 100f;
-		// to know total tasks number is odd or even
-		if (totalTasksSize % 2 == 1) {
-			taskSize = totalTasksSize / 2 + 1;
-		} else {
-			taskSize = totalTasksSize / 2;
-		}
+		taskPDFRow = getTaskPDFRow(totalTasksSize);
+		
 		try {
-			for (int i = 0; i < taskSize; i++) {
+			for (int i = 0; i < taskPDFRow; i++) {
 				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
 				PdfPTable table = new PdfPTable(3);
 				TaskObject task = tasks.get(taskId);
@@ -287,6 +283,16 @@ public class MakePDFService {
 
 		return file;
 
+	}
+	
+	public int getTaskPDFRow(int tasksSize) {
+		int row = 0;
+		if (tasksSize % 2 == 1) {
+			row = tasksSize / 2 + 1;
+		} else {
+			row = tasksSize / 2;
+		}
+		return row;
 	}
 
 	public String atLeastHigh(TaskObject task) {
