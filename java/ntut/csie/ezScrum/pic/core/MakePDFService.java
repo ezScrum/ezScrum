@@ -34,13 +34,13 @@ public class MakePDFService {
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
 
 		document1.open();
-		int totalTasksSize = tasks.size();
+		int tasksArraySize = tasks.size();
 		int taskPDFRow;
-		int taskId = 0;
+		int taskNumberInArray = 0;
 		float tableWidth = 100f;
 		int field = 3;
 		float fieldWidth[] = { 4.5f, 1f, 4.5f };
-		taskPDFRow = getTaskPDFRow(totalTasksSize);
+		taskPDFRow = getTaskPDFRow(tasksArraySize);
 		
 		try {
 			for (int i = 0; i < taskPDFRow; i++) {
@@ -54,30 +54,31 @@ public class MakePDFService {
 
 				// 設定第一個欄位的內容
 								
-				TaskObject task = tasks.get(taskId);
-				String display = generateTaskCellContent(task);
+				PdfPCell leftColumnCell = new PdfPCell();
 				
-				PdfPCell cell_1 = new PdfPCell();
-				cell_1.addElement(new Phrase(display));
-				table.addCell(cell_1);
-				taskId++;
+				TaskObject task = tasks.get(taskNumberInArray);
+				String cellContent = generateTaskCellContent(task);
+				leftColumnCell.addElement(new Phrase(cellContent));
+				table.addCell(leftColumnCell);
+				taskNumberInArray++;
 
-				PdfPCell cell_2 = new PdfPCell();
-				cell_2.setBorder(PdfPCell.NO_BORDER);
-				table.addCell(cell_2);
-
-				if (taskId >= totalTasksSize) {
-					display = "";
-				} else {
-					task = tasks.get(taskId);
-					display = generateTaskCellContent(task);
-					taskId++;
-				}
+				PdfPCell spaceCell = new PdfPCell();
+				spaceCell.setBorder(PdfPCell.NO_BORDER);
+				table.addCell(spaceCell);
 				
 				// 設定第二個欄位的內容
-				PdfPCell cell_3 = new PdfPCell();
-				cell_3.addElement(new Phrase(display));
-				table.addCell(cell_3);
+				PdfPCell rightColumnCell = new PdfPCell();
+				
+				if (taskNumberInArray >= tasksArraySize) {
+					cellContent = "";
+				} else {
+					task = tasks.get(taskNumberInArray);
+					cellContent = generateTaskCellContent(task);
+					taskNumberInArray++;
+				}
+				
+				rightColumnCell.addElement(new Phrase(cellContent));
+				table.addCell(rightColumnCell);
 
 				document1.add(table);
 				document1.add(new Paragraph("\n"));
