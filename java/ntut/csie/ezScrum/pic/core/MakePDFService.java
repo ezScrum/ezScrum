@@ -24,7 +24,9 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
-
+	
+	private int taskNumberInArray = 0;
+	
 	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
 		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
@@ -34,53 +36,27 @@ public class MakePDFService {
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
 
 		document1.open();
+		
 		int tasksArraySize = tasks.size();
 		int taskPDFRow;
-		int taskNumberInArray = 0;
 		float tableWidth = 100f;
 		int field = 3;
 		float fieldWidth[] = { 4.5f, 1f, 4.5f };
-		taskPDFRow = getTaskPDFRow(tasksArraySize);
 		
+		taskPDFRow = getTaskPDFRow(tasksArraySize);	
 		try {
 			for (int i = 0; i < taskPDFRow; i++) {
+				
 				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
 				PdfPTable table = new PdfPTable(field);
 
 				// 設定table的寬度
 				table.setWidthPercentage(tableWidth);
+				
 				// 設定每個欄位的寬度
 				table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
 
-				// 設定第一個欄位的內容
-								
-				PdfPCell leftColumnCell = new PdfPCell();
-				
-				TaskObject task = tasks.get(taskNumberInArray);
-				String cellContent = generateTaskCellContent(task);
-				leftColumnCell.addElement(new Phrase(cellContent));
-				table.addCell(leftColumnCell);
-				taskNumberInArray++;
-
-				PdfPCell spaceCell = new PdfPCell();
-				spaceCell.setBorder(PdfPCell.NO_BORDER);
-				table.addCell(spaceCell);
-				
-				// 設定第二個欄位的內容
-				PdfPCell rightColumnCell = new PdfPCell();
-				
-				if (taskNumberInArray >= tasksArraySize) {
-					cellContent = "";
-				} else {
-					task = tasks.get(taskNumberInArray);
-					cellContent = generateTaskCellContent(task);
-					taskNumberInArray++;
-				}
-				
-				rightColumnCell.addElement(new Phrase(cellContent));
-				table.addCell(rightColumnCell);
-
-				document1.add(table);
+				document1.add(setTableContent(tasks, tasksArraySize, table));
 				document1.add(new Paragraph("\n"));
 			}
 			document1.close();
@@ -93,6 +69,36 @@ public class MakePDFService {
 		return file;
 	}
 
+	public PdfPTable setTableContent(ArrayList<TaskObject> tasks, int tasksArraySize, PdfPTable table) {
+		
+		PdfPCell leftColumnCell = new PdfPCell();
+		
+		TaskObject task = tasks.get(taskNumberInArray);
+		String cellContent = generateTaskCellContent(task);
+		leftColumnCell.addElement(new Phrase(cellContent));
+		table.addCell(leftColumnCell);
+		taskNumberInArray++;
+
+		PdfPCell spaceCell = new PdfPCell();
+		spaceCell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(spaceCell);
+		
+		PdfPCell rightColumnCell = new PdfPCell();
+		
+		if (taskNumberInArray >= tasksArraySize) {
+			cellContent = "";
+		} else {
+			task = tasks.get(taskNumberInArray);
+			cellContent = generateTaskCellContent(task);
+			taskNumberInArray++;
+		}
+		
+		rightColumnCell.addElement(new Phrase(cellContent));
+		table.addCell(rightColumnCell);
+		
+		return table;
+	}
+	
 	public File getFile(String ttfPath, ArrayList<StoryObject> stories) throws Exception {
 		File temp = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = temp.getAbsolutePath();
