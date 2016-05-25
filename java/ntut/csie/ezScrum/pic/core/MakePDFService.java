@@ -25,78 +25,83 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
 	
-	private int taskNumberInArray = 0;
-	
 	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
 		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
-
 		Document document1 = new Document(PageSize.A4);
-
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
-
 		document1.open();
-		
-		int tasksArraySize = tasks.size();
-		int taskPDFRow;
-		float tableWidth = 100f;
-		int field = 3;
-		float fieldWidth[] = { 4.5f, 1f, 4.5f };
-		
-		taskPDFRow = getTaskPDFRow(tasksArraySize);	
 		try {
-			for (int i = 0; i < taskPDFRow; i++) {
-				
-				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
-				PdfPTable table = new PdfPTable(field);
-
-				// 設定table的寬度
-				table.setWidthPercentage(tableWidth);
-				
-				// 設定每個欄位的寬度
-				table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
-
-				document1.add(setTableContent(tasks, tasksArraySize, table));
+			// complete task size to even
+			if (tasks.size() % 2 == 1) {
+				tasks.add(null);
+			}
+			
+			for (int i = 0; i < tasks.size(); i += 2) {
+				// generate table by task
+				PdfPTable table = getPdfTableWithContent(tasks.get(i), tasks.get(i + 1));
+				document1.add(table);
 				document1.add(new Paragraph("\n"));
 			}
 			document1.close();
 		} catch (DocumentException de) {
 			log.debug(de.toString());
 		}
-
 		File file = new File(path);
-
 		return file;
 	}
-
-	public PdfPTable setTableContent(ArrayList<TaskObject> tasks, int tasksArraySize, PdfPTable table) {
+	
+	public PdfPTable generateCustomPdfPTable() {
+		float tableWidth = 100f;
+		int field = 3;
+		float fieldWidth[] = { 4.5f, 1f, 4.5f };
+		PdfPTable table = new PdfPTable(field);
+		// 設定table的寬度
+		table.setWidthPercentage(tableWidth);
 		
+		// 設定每個欄位的寬度
+		try {
+			table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+	
+	public PdfPTable getPdfTableWithContent(TaskObject leftTask, TaskObject rightTask) {
+		PdfPTable table = generateCustomPdfPTable();
+		// set left column cell
 		PdfPCell leftColumnCell = new PdfPCell();
-		
-		TaskObject task = tasks.get(taskNumberInArray);
-		String cellContent = generateTaskCellContent(task);
-		leftColumnCell.addElement(new Phrase(cellContent));
+		String leftColumnCellContent = generateTaskCellContent(leftTask);
+		leftColumnCell.addElement(new Phrase(leftColumnCellContent));
 		table.addCell(leftColumnCell);
-		taskNumberInArray++;
-
+		// set middle column cell
 		PdfPCell spaceCell = new PdfPCell();
 		spaceCell.setBorder(PdfPCell.NO_BORDER);
 		table.addCell(spaceCell);
-		
+		// set right column cell
 		PdfPCell rightColumnCell = new PdfPCell();
-		
-		if (taskNumberInArray >= tasksArraySize) {
-			cellContent = "";
-		} else {
-			task = tasks.get(taskNumberInArray);
-			cellContent = generateTaskCellContent(task);
-			taskNumberInArray++;
-		}
-		
-		rightColumnCell.addElement(new Phrase(cellContent));
+		String rightColumnCellContent = generateTaskCellContent(rightTask);
+		rightColumnCell.addElement(new Phrase(rightColumnCellContent));
 		table.addCell(rightColumnCell);
-		
 		return table;
+	}
+	
+	public String generateTaskCellContent(TaskObject task) {
+		if (task == null) {
+			return "";
+		}
+		String name = task.getName();
+		String taskCardContent = "Task Id # " + task.getSerialId() + "\n" + name;
+		int nameSize = name.length();
+		if (nameSize < 175) {
+			int addEndOfLineNum = nameSize / 35;
+			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
+				taskCardContent += "\n";
+			}
+		}
+		taskCardContent += "                                                        " + task.getEstimate() + " hrs";
+		return taskCardContent;
 	}
 	
 	public File getFile(String ttfPath, ArrayList<StoryObject> stories) throws Exception {
@@ -296,29 +301,5 @@ public class MakePDFService {
 
 		return file;
 
-	}
-	
-	public int getTaskPDFRow(int tasksSize) {
-		int row = 0;
-		if (tasksSize % 2 == 1) {
-			row = tasksSize / 2 + 1;
-		} else {
-			row = tasksSize / 2;
-		}
-		return row;
-	}
-	
-	public String generateTaskCellContent(TaskObject task) {
-		String name = task.getName();
-		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
-		int nameSize = name.length();
-		if (nameSize < 175) {
-			int addEndOfLineNum = nameSize / 35;
-			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
-				ans += "\n";
-			}
-		}
-		ans += "                                           Estimate : " + task.getEstimate() + "hr";
-		return ans;
 	}
 }

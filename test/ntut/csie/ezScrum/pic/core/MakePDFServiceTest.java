@@ -6,39 +6,35 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 
 public class MakePDFServiceTest {
-	private SprintBacklogHelper mSprintBacklogHelper;
-
 	private Configuration mConfig;
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
-
-	private int mStoriesCount = 3;
-	MakePDFService makePDFService;
-	TaskObject task;
+	private MakePDFService mMakePDFService;
+	
 	@Before
 	public void setUp() throws Exception {
-		makePDFService = new MakePDFService();
+		mMakePDFService = new MakePDFService();
 		
 		// initialize database
 		mConfig = new Configuration();
 		mConfig.setTestMode(true);
 		mConfig.save();
 
-		// 初始化 SQL
+		// initialize SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		ini = null;
@@ -65,16 +61,13 @@ public class MakePDFServiceTest {
 		mATTS = new AddTaskToStory(TASK_COUNT, TASK_ESTIMATE, mASTS, mCP);
 		mATTS.exe();
 
-		ProjectObject project = mCP.getAllProjects().get(0);
-		long sprintId = 1;
-		mSprintBacklogHelper = new SprintBacklogHelper(project, sprintId);
 	}
 	@After
 	public void teardown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 讓 config 回到 Production 模式
+		// make config to Production mode
 		mConfig.setTestMode(false);
 		mConfig.save();
 
@@ -83,29 +76,92 @@ public class MakePDFServiceTest {
 		mCS = null;
 		mASTS = null;
 		mATTS = null;
-		mSprintBacklogHelper = null;
 	}
-	@Test
-	public void testGetTaskPDFRow() {
-		int taskSize = 6;
-		
-		assertEquals(3, makePDFService.getTaskPDFRow(taskSize));
 	
-		taskSize = 15;
-		assertEquals(8, makePDFService.getTaskPDFRow(taskSize));
-
-	}
 	@Test
 	public void testGenerateTaskCellContent() {
 		long taskId = 1;
-
 		// get task one
 		TaskObject task = TaskObject.get(taskId);
 		assertEquals(1, task.getId());
 		assertEquals("TEST_TASK_1", task.getName());
 		assertEquals(1, task.getSerialId());
 		
-		String ans = "Task Id # 1" + "\n" + "TEST_TASK_1" + "\n\n\n\n" + "                                           Estimate : 8hr";
-		assertEquals(ans, makePDFService.generateTaskCellContent(task));
+		String ans = "Task Id # 1" + "\n" + "TEST_TASK_1" + "\n\n\n\n" + "                                                        8 hrs";
+		assertEquals(ans, mMakePDFService.generateTaskCellContent(task));
+	}
+	
+	@Test
+	public void testGenerateTaskCellContent_WithNullTask() {
+		assertEquals("", mMakePDFService.generateTaskCellContent(null));
+	}
+	
+	@Test
+	public void testGetPdfTableWithContent_WithOnlyLeftTask() {
+		long taskId = 1;
+		TaskObject task = TaskObject.get(taskId);
+		PdfPTable table = mMakePDFService.getPdfTableWithContent(task, null);
+		assertEquals(3 ,table.getNumberOfColumns());
+		assertEquals(3 ,table.getRow(0).getCells().length);
+		// check left column
+		String leftColumnCellContent = "[Task Id # 1" + "\n" + "TEST_TASK_1" + "\n\n\n\n" + "                                                        8 hrs]";
+		assertEquals(leftColumnCellContent , table.getRow(0).getCells()[0].getCompositeElements().get(0).toString());
+		// check middle column
+		assertEquals(PdfPCell.NO_BORDER , table.getRow(0).getCells()[1].getBorder());
+		// check right column
+		assertEquals("[]" , table.getRow(0).getCells()[2].getCompositeElements().get(0).toString());
+	}
+	
+	@Test
+	public void testGetPdfTableWithContent_WithOnlyRightTask() {
+		long taskId = 2;
+		TaskObject task = TaskObject.get(taskId);
+		PdfPTable table = mMakePDFService.getPdfTableWithContent(null, task);
+		assertEquals(3 ,table.getNumberOfColumns());
+		assertEquals(3 ,table.getRow(0).getCells().length);
+		String leftColumnCellContent = "[]";
+		assertEquals(leftColumnCellContent , table.getRow(0).getCells()[0].getCompositeElements().get(0).toString());
+		// check middle column
+		assertEquals(PdfPCell.NO_BORDER , table.getRow(0).getCells()[1].getBorder());
+		String rightColumnCellContent = "[Task Id # 2" + "\n" + "TEST_TASK_2" + "\n\n\n\n" + "                                                        8 hrs]";
+		assertEquals(rightColumnCellContent , table.getRow(0).getCells()[2].getCompositeElements().get(0).toString());
+	}
+	@Test
+	public void testGetPdfTableWithContent_WithAllTaskNull() {
+		PdfPTable table = mMakePDFService.getPdfTableWithContent(null, null);
+		assertEquals(3 ,table.getNumberOfColumns());
+		assertEquals(3 ,table.getRow(0).getCells().length);
+		String leftColumnCellContent = "[]";
+		assertEquals(leftColumnCellContent , table.getRow(0).getCells()[0].getCompositeElements().get(0).toString());
+		// check middle column
+		assertEquals(PdfPCell.NO_BORDER , table.getRow(0).getCells()[1].getBorder());
+		String rightColumnCellContent = "[]";
+		assertEquals(rightColumnCellContent , table.getRow(0).getCells()[2].getCompositeElements().get(0).toString());
+	}
+	@Test
+	public void testGetPdfTableWithContent_WithTwoTasks() {
+		long taskId = 1;
+		long taskId_2 = 2;
+		TaskObject task = TaskObject.get(taskId);
+		TaskObject task_2 = TaskObject.get(taskId_2);
+		PdfPTable table = mMakePDFService.getPdfTableWithContent(task, task_2);
+		assertEquals(3 ,table.getNumberOfColumns());
+		assertEquals(3 ,table.getRow(0).getCells().length);
+		String leftColumnCellContent = "[Task Id # 1" + "\n" + "TEST_TASK_1" + "\n\n\n\n" + "                                                        8 hrs]";
+		assertEquals(leftColumnCellContent , table.getRow(0).getCells()[0].getCompositeElements().get(0).toString());
+		// check middle column
+		assertEquals(PdfPCell.NO_BORDER , table.getRow(0).getCells()[1].getBorder());
+		String rightColumnCellContent = "[Task Id # 2" + "\n" + "TEST_TASK_2" + "\n\n\n\n" + "                                                        8 hrs]";
+		assertEquals(rightColumnCellContent , table.getRow(0).getCells()[2].getCompositeElements().get(0).toString());
+	}
+	
+	@Test
+	public void testGenerateCustomPdfPTable() {
+		PdfPTable table = mMakePDFService.generateCustomPdfPTable();
+		// Assert table style
+		assertEquals(100f, table.getWidthPercentage());
+		float width[] = table.getAbsoluteWidths();
+		assertEquals(3, table.getNumberOfColumns());
+		
 	}
 }
