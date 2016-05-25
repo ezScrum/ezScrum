@@ -160,8 +160,6 @@ public class MakePDFServiceTest {
 		PdfPTable table = mMakePDFService.generateCustomPdfPTable();
 		// Assert table style
 		assertEquals(100f, table.getWidthPercentage());
-		float width[] = table.getAbsoluteWidths();
 		assertEquals(3, table.getNumberOfColumns());
-		
 	}
 }
