@@ -212,18 +212,21 @@ Test Sprint Backlog - Show Task History
     [Teardown]    Test Sprint Backlog - Show Task History Teardown
 
 Test Sprint Backlog - Printable Task
-    [Setup]    Test Sprint Backlog - Printable Task Setup
-    # set up task name
-    ${taskName}=    Set Variable    task 2 for printable task
-    ${taskEstimate}=    Set Variable    3
-    ${taskRemains}=    Set Variable    3
-    ${taskNotes}=    Set Variable    notes for printable task
-    # add new task
-    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
-    # set up task name
-    ${taskName}=    Set Variable    task 2 for printable task
-    ${taskEstimate}=    Set Variable    3
-    ${taskRemains}=    Set Variable    3
-    ${taskNotes}=    Set Variable    notes for printable task
-    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
+    [Setup]    Test Sprint Backlog - Printable Task Setup    Check_ID_In_Task_Board.sql
+    Click Element    xpath=//div[text()="first"]
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//button[text()="Printable Tasks"]
+    click element    xpath=//span[text()="Story & Task List"]/../../../../../../../div[1]/div/table/tbody/tr/td/table/tbody/tr/td[2]/div/img
+    Wait Until Page Contains    Sprint #1
+    click element    xpath=//div[text()="Sprint #1"]
+    click element    xpath=//button[text()="Printable Tasks"]
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[1]/table/tbody/tr/td[2]    1
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[2]    2
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[3]/table/tbody/tr/td[2]    3
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[1]/table/tbody/tr/td[3]    task1
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[3]    task2
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[3]/table/tbody/tr/td[3]    task3
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[1]/table/tbody/tr/td[4]    1
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[4]    2
+    Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[3]/table/tbody/tr/td[4]    3
+    [Teardown]    Test Sprint Backlog - Printable Task Teardown
