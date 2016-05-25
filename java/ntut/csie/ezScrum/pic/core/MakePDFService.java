@@ -24,59 +24,22 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
-
+	
 	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
 		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
-
 		Document document1 = new Document(PageSize.A4);
-
 		PdfWriter.getInstance(document1, new FileOutputStream(path));
-
 		document1.open();
-		int totalTasksSize = tasks.size();
-		int taskSize;
-		int taskId = 0;
-		float tableWidth = 100f;
-		// to know total tasks number is odd or even
-		if (totalTasksSize % 2 == 1) {
-			taskSize = totalTasksSize / 2 + 1;
-		} else {
-			taskSize = totalTasksSize / 2;
-		}
 		try {
-			for (int i = 0; i < taskSize; i++) {
-				// 建立PdfPTable物件並設定其欄位數*可以自己寫 pdf lib*
-				PdfPTable table = new PdfPTable(3);
-				TaskObject task = tasks.get(taskId);
-				String display = atLeastHigh(task);
-				// 設定table的寬度
-				table.setWidthPercentage(tableWidth);
-				// 設定每個欄位的寬度
-				table.setWidths(new float[] { 4.5f, 1f, 4.5f });
-
-				// 設定第一個欄位的內容
-				PdfPCell cell_1 = new PdfPCell();
-				cell_1.addElement(new Phrase(display));
-				table.addCell(cell_1);
-				taskId++;
-
-				PdfPCell cell_2 = new PdfPCell();
-				cell_2.setBorder(PdfPCell.NO_BORDER);
-				table.addCell(cell_2);
-
-				if (taskId >= totalTasksSize) {
-					display = "";
-				} else {
-					task = tasks.get(taskId);
-					display = atLeastHigh(task);
-					taskId++;
-				}
-				// 設定第二個欄位的內容
-				PdfPCell cell_3 = new PdfPCell();
-				cell_3.addElement(new Phrase(display));
-				table.addCell(cell_3);
-
+			// complete task size to even
+			if (tasks.size() % 2 == 1) {
+				tasks.add(null);
+			}
+			
+			for (int i = 0; i < tasks.size(); i += 2) {
+				// generate table by task
+				PdfPTable table = getPdfTableWithContent(tasks.get(i), tasks.get(i + 1));
 				document1.add(table);
 				document1.add(new Paragraph("\n"));
 			}
@@ -84,12 +47,63 @@ public class MakePDFService {
 		} catch (DocumentException de) {
 			log.debug(de.toString());
 		}
-
 		File file = new File(path);
-
 		return file;
 	}
-
+	
+	public PdfPTable generateCustomPdfPTable() {
+		float tableWidth = 100f;
+		int field = 3;
+		float fieldWidth[] = { 4.5f, 1f, 4.5f };
+		PdfPTable table = new PdfPTable(field);
+		// 設定table的寬度
+		table.setWidthPercentage(tableWidth);
+		
+		// 設定每個欄位的寬度
+		try {
+			table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+	
+	public PdfPTable getPdfTableWithContent(TaskObject leftTask, TaskObject rightTask) {
+		PdfPTable table = generateCustomPdfPTable();
+		// set left column cell
+		PdfPCell leftColumnCell = new PdfPCell();
+		String leftColumnCellContent = generateTaskCellContent(leftTask);
+		leftColumnCell.addElement(new Phrase(leftColumnCellContent));
+		table.addCell(leftColumnCell);
+		// set middle column cell
+		PdfPCell spaceCell = new PdfPCell();
+		spaceCell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(spaceCell);
+		// set right column cell
+		PdfPCell rightColumnCell = new PdfPCell();
+		String rightColumnCellContent = generateTaskCellContent(rightTask);
+		rightColumnCell.addElement(new Phrase(rightColumnCellContent));
+		table.addCell(rightColumnCell);
+		return table;
+	}
+	
+	public String generateTaskCellContent(TaskObject task) {
+		if (task == null) {
+			return "";
+		}
+		String name = task.getName();
+		String taskCardContent = "Task Id # " + task.getSerialId() + "\n" + name;
+		int nameSize = name.length();
+		if (nameSize < 175) {
+			int addEndOfLineNum = nameSize / 35;
+			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
+				taskCardContent += "\n";
+			}
+		}
+		taskCardContent += "                                                        " + task.getEstimate() + " hrs";
+		return taskCardContent;
+	}
+	
 	public File getFile(String ttfPath, ArrayList<StoryObject> stories) throws Exception {
 		File temp = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = temp.getAbsolutePath();
@@ -287,19 +301,5 @@ public class MakePDFService {
 
 		return file;
 
-	}
-
-	public String atLeastHigh(TaskObject task) {
-		String name = task.getName();
-		String ans = "Task Id # " + task.getSerialId() + "\n" + name;
-		int nameSize = name.length();
-		if (nameSize < 175) {
-			int addEndOfLineNum = nameSize / 35;
-			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
-				ans += "\n";
-			}
-		}
-		ans += "                                           Estimate : " + task.getEstimate() + "hr";
-		return ans;
 	}
 }
