@@ -133,7 +133,7 @@ Test Sprint Backlog - Show Task History Teardown
 
 Test Sprint Backlog - Printable Task Setup
     [Arguments]    ${Sql_name}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TestSerialNumber    ${Sql_name}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    ${Sql_name}
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Login Page    ${LOGIN_URL}
 

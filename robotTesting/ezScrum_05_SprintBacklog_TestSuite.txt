@@ -212,7 +212,7 @@ Test Sprint Backlog - Show Task History
     [Teardown]    Test Sprint Backlog - Show Task History Teardown
 
 Test Sprint Backlog - Printable Task
-    [Setup]    Test Sprint Backlog - Printable Task Setup    Check_ID_In_Task_Board.sql
+    [Setup]    Test Sprint Backlog - Printable Task Setup    Printable_Task.sql
     Click Element    xpath=//div[text()="first"]
     Select Node Product    Sprint Backlog
     Click Element    xpath=//button[text()="Printable Tasks"]
