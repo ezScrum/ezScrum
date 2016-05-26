@@ -1,4 +1,4 @@
-Ext.ns('ezScrum');
+/*Ext.ns('ezScrum');
 Ext.ns('ezScrum.layout');
 Ext.ns('ezScrum.window');
 
@@ -16,9 +16,9 @@ var ExistedStory_CheckBoxModel = new Ext.grid.CheckboxSelectionModel({
 	listeners:{
 		selectionchange: function() {
    			if (this.getCount() > 0 || Page_Selected_items.length > 0) {
-				Ext.getCmp('AddExistedStory_Window').getTopToolbar().get('AddExistedStoryBtn').enable();
+				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('AddExistedStoryBtn').enable();
    			} else {
-				Ext.getCmp('AddExistedStory_Window').getTopToolbar().get('AddExistedStoryBtn').disable();
+				Ext.getCmp('SelectTasks_Window').getTopToolbar().get('AddExistedStoryBtn').disable();
    			}
 		}
 	}
@@ -40,8 +40,8 @@ var ExistedStoryColumnModel = function() {
     var columns = [
 
 		ExistedStory_Expander, ExistedStory_CheckBoxModel,
-		{dataIndex: 'Id', header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
-		{dataIndex: 'Tag', header: 'Tag', width: 50},
+		{dataIndex: 'Id23', header: 'Id23', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
+		/*{dataIndex: 'Tag', header: 'Tag', width: 50},
 		{dataIndex: 'Name', header: 'Name', width: 250},
 		{dataIndex: 'Release', header: 'Release', width: 50},
 		{dataIndex: 'Sprint', header: 'Sprint', width: 50},
@@ -79,7 +79,7 @@ var ExistedStoryStore = new Ext.data.Store({
 	proxy : new Ext.ux.data.PagingMemoryProxy(),
 	remoteSort : true
 });
-
+ //console.log(9999999999);
 ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
@@ -106,7 +106,6 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
-				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					ExistedStoryStore.loadData(response.responseXML);
 					ExistedStoryStore.proxy.data = response;
@@ -137,7 +136,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 	sprintID	: '-1',
 	releaseID	: '-1',
 	
-	id			: 'AddExistedStory_Window',
+	id			: 'SelectTasks_Window',
 	title		: 'Select Existed Stories',
 	height		: 500,	
 	viewConfig	: {
@@ -178,11 +177,11 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 	                '-', {
 	                	text : 'Reload',
 	                	icon : 'images/refresh.png',
-	                	handler: function() { Ext.getCmp('AddExistedStory_Window').ExistedStoryGrid.loadDataModel(); }
+	                	handler: function() { Ext.getCmp('SelectTasks_Window').ExistedStoryGrid.loadDataModel(); }
 	                }, {
 	                	text : 'Clean Filters',
 	                	icon : 'images/clear2.png',
-	                	handler : function() { Ext.getCmp('AddExistedStory_Window').ExistedStoryGrid.filters.clearFilters(); }
+	                	handler : function() { Ext.getCmp('SelectTasks_Window').ExistedStoryGrid.filters.clearFilters(); }
 					}, {
 						text : 'Expand All',
 						icon : 'images/folder_out.png',
@@ -199,7 +198,7 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
 						c.refresh.hide();
 					},
 					beforechange: function() {
-						var currentPageSelected = Ext.getCmp('AddExistedStory_Window').getSelections();
+						var currentPageSelected = Ext.getCmp('SelectTasks_Window').getSelections();
 						Page_Selected_items = Page_Selected_items.concat(currentPageSelected);	// 串接所有分頁被選取的項目
 					},
 					change: function() {
@@ -259,10 +258,10 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
     	this.ExistedStoryGrid.loadDataModel();
     },
     doAddExistedStory: function() {
-    	var obj = Ext.getCmp('AddExistedStory_Window');
+    	var obj = Ext.getCmp('SelectTasks_Window');
     	
     	// get selection items
-    	var selections = Page_Selected_items.concat(Ext.getCmp('AddExistedStory_Window').getSelections());
+    	var selections = Page_Selected_items.concat(Ext.getCmp('SelectTasks_Window').getSelections());
     	
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Add Existed Stories..."});
 		loadmask.show();
@@ -314,4 +313,4 @@ ezScrum.window.AddExistedStoryWindow = Ext.extend(ezScrum.layout.Window, {
  * 		1. Release Plan
  * 		2. Sprint Backlog
  * */
-var AddExistedStory_Window = new ezScrum.window.AddExistedStoryWindow();
+//var SelectTasks_Window = new ezScrum.window.AddExistedStoryWindow();

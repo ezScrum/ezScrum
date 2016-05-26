@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONArray;
+
+import com.google.gson.Gson;
+
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -18,10 +22,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-
-import org.codehaus.jettison.json.JSONArray;
-
-import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
 	private ProjectObject mProject;
@@ -114,6 +114,10 @@ public class SprintBacklogHelper {
 
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		return mSprintBacklogMapper.getTasksByStoryId(storyId);
+	}
+	
+	public ArrayList<TaskObject> getTaskBySprintId(long sprintId){
+		return mSprintBacklogMapper.getTasksInSprint();
 	}
 
 	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
@@ -291,7 +295,28 @@ public class SprintBacklogHelper {
 		}
 		return result;
 	}
-
+	/**
+	 * path: showSelectableTask.do class ShowSelectableTaskAction
+	 */
+	public StringBuffer getTasksInSprintResponseText(ArrayList<TaskObject> tasks){
+		StringBuffer sb = new StringBuffer();
+		sb.append("<SelectingTasks>");
+		
+		for(TaskObject task : tasks){
+			sb.append("<Task>");
+			sb.append("<Id>" + task.getSerialId() + "</Id>");
+			sb.append("<Link></Link>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())+ "</Name>");
+			//System.out.println(task.getStoryId());
+			sb.append("<StoryId>" + task.getStoryId() + "</StoryId>");
+			sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
+			sb.append("<Status>" + task.getStatusString() + "</Status>");
+			sb.append("</Task>");
+		}
+		sb.append("</SelectingTasks>");
+		return sb;
+	}
+	
 	/**
 	 * path: AjaxShowStoryfromSprint.do class: AjaxShowStoryFromSprintAction
 	 */

@@ -131,7 +131,8 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 					{id:'SprintBacklog_addExistStoryBtn', text:'Add Existing Stories', icon:'images/add.gif', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').addExistStory();}},
 					{id:'SprintBacklog_showPrintableStoryBtn', text:'Printable Stories', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showPrintableStory();}},
 					{id:'SprintBacklog_showSprintInfoBtn', text:'Sprint Information', icon:'images/clipboard.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showSprintInfo();}},
-					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}}
+					{id:'SprintBacklog_editSprintBtn', text:'Edit Sprint', icon:'images/edit.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').editSprintPlan();}},
+					{id:'SprintBacklog_showPrintableTaskBtn', text:'Printable Tasks', icon:'images/text.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').selectTasks();}}
 //					,
 //					{id:'SprintBacklog_deleteExistingTaskBtn', text:'Delete Existing Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteExistingTask();}}
 				]
@@ -278,7 +279,24 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
         	this.overdueConfirm_story(Info, record, edit);
         }
     },
-    
+    // Select Tasks action
+    selectTasks:function() {
+    	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
+		var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
+		
+		SelectTasks_Window.showTheWindow_Sprint(this, sprintID);
+    },
+    notify_SelectTasksSuccess: function() {
+    	SelectTasks_Window.hide();
+    	Ext.example.msg("Select Tasks", 'Success.');
+    	
+    	this.SprintBacklog_TreeGrid_ID.fireEvent('updateSprintBacklogTree');
+    	
+    	// update title
+    	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
+    	var sprintID = this.SprintBacklog_SprintCombo.getStore().getAt(selectedIndex).get('Id');
+    	this.updateTitle( sprintID );
+    },
 	// Add Exist Story action
     addExistStory:function() {
     	var selectedIndex = this.SprintBacklog_SprintCombo.selectedIndex;
@@ -598,9 +616,11 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 				obj.setTitle(title);		// update Sprint Backlog Title
 				if(forSprintBacklogThisSprintStore.reader.jsonData.Total == 0 ){
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(true);
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(true);
     				Ext.example.msg('Message','no topics to display !!');//設定title時順便跳出該sprintBacklog tree是否為空
 				}else{
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(false);
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(false);
 				}
 				
 				MainLoadMaskHide();
@@ -652,13 +672,16 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_editSprintBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showSprintInfoBtn').setDisabled(disable);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(disable);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(disable);
 	},
 	set_Sprint_Permission_disable:function(disable) {
 		// sprint Action
 		if (disable) { //disable past sprint some functionality
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_addStoryBtn').setDisabled(true);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_addExistStoryBtn').setDisabled(true);
-			
+		    Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(true);
+
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_editSprintBtn').setDisabled(false);				
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showSprintInfoBtn').setDisabled(false);
 		} else { //enable current and future sprint functionality
@@ -666,6 +689,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_addExistStoryBtn').setDisabled(false);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_editSprintBtn').setDisabled(false);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showSprintInfoBtn').setDisabled(false);
+		    Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(false);
 		}
 	},
 	set_Story_Permission_disable:function(disable) {
