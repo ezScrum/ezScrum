@@ -132,8 +132,12 @@ Test Sprint Backlog - Show Task History Teardown
     Exit ezScrum System
 
 Test Sprint Backlog - Printable Task Setup
-    Test Sprint Backlog - PreCondition
-    Select Node Product    Sprint Backlog
-    Create Story With Arguments    story for show task history    0    0    0    ${EMPTY}    for show task history
-    ...    display after show task history
-    Set Test Variable    ${storyName}    story for show task history
+    [Arguments]    ${Sql_name}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    ${Sql_name}
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Login Page    ${LOGIN_URL}
+
+Test Sprint Backlog - Printable Task Teardown
+    Data Base Tear Down
+    Close Browser
+    Close All Browsers
