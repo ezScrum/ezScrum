@@ -9,8 +9,9 @@ import ntut.csie.ezScrum.robust.aspectj.tool.AspectJSwitch;
 import ntut.csie.ezScrum.web.action.unplan.ShowEditUnplanItemAction;
 import javax.servlet.http.HttpServletResponse;
 
-public aspect ShowEditUnplanItemActionAspectJ {
-	pointcut findGetWriter(HttpServletResponse response) : call (PrintWriter HttpServletResponse.getWriter()) 
+public aspect ShowEditUnplanItemActionAspect {
+	pointcut findGetWriter(HttpServletResponse response) : 
+		call (PrintWriter HttpServletResponse.getWriter()) 
 		&& target(response) 
 		&& withincode(ActionForward ShowEditUnplanItemAction.execute(..));
 	
