@@ -42,7 +42,9 @@ public class ShowPrintableTasksAction extends DownloadAction {
 		ArrayList<TaskObject> selectedTasks = new ArrayList<TaskObject>();
 		
 		for (String serialTaskId : selectedSerialTasksId) {
-			TaskObject task = TaskObject.get(project.getId(), Long.parseLong(serialTaskId));
+			long serialId = Long.parseLong(serialTaskId);
+			long projectId = project.getId();
+			TaskObject task = TaskObject.get(projectId, serialId);
 			selectedTasks.add(task);
 		}
 

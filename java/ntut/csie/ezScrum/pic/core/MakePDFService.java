@@ -24,7 +24,7 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
-	
+
 	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
 		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
@@ -36,7 +36,7 @@ public class MakePDFService {
 			if (tasks.size() % 2 == 1) {
 				tasks.add(null);
 			}
-			
+
 			for (int i = 0; i < tasks.size(); i += 2) {
 				// generate table by task
 				PdfPTable table = getPdfTableWithContent(tasks.get(i), tasks.get(i + 1));
@@ -50,7 +50,7 @@ public class MakePDFService {
 		File file = new File(path);
 		return file;
 	}
-	
+
 	public PdfPTable generateCustomPdfPTable() {
 		float tableWidth = 100f;
 		int field = 3;
@@ -58,16 +58,16 @@ public class MakePDFService {
 		PdfPTable table = new PdfPTable(field);
 		// 設定table的寬度
 		table.setWidthPercentage(tableWidth);
-		
+
 		// 設定每個欄位的寬度
 		try {
-			table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2]});
+			table.setWidths(new float[] { fieldWidth[0], fieldWidth[1], fieldWidth[2] });
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
 		return table;
 	}
-	
+
 	public PdfPTable getPdfTableWithContent(TaskObject leftTask, TaskObject rightTask) {
 		PdfPTable table = generateCustomPdfPTable();
 		// set left column cell
@@ -86,7 +86,7 @@ public class MakePDFService {
 		table.addCell(rightColumnCell);
 		return table;
 	}
-	
+
 	public String generateTaskCellContent(TaskObject task) {
 		if (task == null) {
 			return "";
@@ -103,7 +103,7 @@ public class MakePDFService {
 		taskCardContent += "                                                        " + task.getEstimate() + " hrs";
 		return taskCardContent;
 	}
-	
+
 	public File getFile(String ttfPath, ArrayList<StoryObject> stories) throws Exception {
 		File temp = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = temp.getAbsolutePath();
