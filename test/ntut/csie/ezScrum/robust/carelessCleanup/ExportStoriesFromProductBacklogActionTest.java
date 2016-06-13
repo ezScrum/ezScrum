@@ -55,10 +55,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		ini = null;
 	}
 
-	protected void tearDown() throws IOException, Exception {
-		// Turn AspectJ Switch off
-		AspectJSwitch.getInstance().turnOff();
-		
+	protected void tearDown() throws Exception {
 		// Clean database
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
@@ -75,43 +72,23 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		mConfig = null;
 	}
 
-	public void testExportStoriesFromProductBacklogAction_WithIOExceptionWhenWrite() {
+	public void testExportStoriesFromProductBacklogAction() {
 		// Turn AspectJ Switch on
 		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
 		// invoke ExportStoriesFromProductBacklogAction
 		actionPerform();
 		File ezScrumExcel = getEzScrumExcelTempFile();
-		// if ezScrumExcel exists, getEzScrumExcelTempFile() will return file's instance.
-		assertNotNull(ezScrumExcel);
-		// Delete file which name match "ezScrumExcel"
-		ezScrumExcel.delete();
-		ezScrumExcel = getEzScrumExcelTempFile();
-		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
-		assertNull(ezScrumExcel); 
-	}
-	
-	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFiles() {
-		// invoke ExportStoriesFromProductBacklogAction
-		actionPerform(); 
-		File ezScrumExcel = getEzScrumExcelTempFile();
-		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
-		assertNull(ezScrumExcel); 
-	}
-	
-	public void testExportStoriesFromProductBacklogAction_CheckThereIsNoRemainingFilesWhenIOExceptionOccurs() {
-		// Turn AspectJ Switch on
-		AspectJSwitch.getInstance().turnOnByActionName(mActionName);
-		// invoke ExportStoriesFromProductBacklogAction
-		actionPerform(); 
-		File ezScrumExcel = getEzScrumExcelTempFile();
-		// if ezScrumExcel does not exist, getEzScrumExcelTempFile() will return null.
-		assertNull(ezScrumExcel); 
+		// if ezScrumExcel does not exist, 
+		// getEzScrumExcelTempFile() will return null.
+		assertNull(ezScrumExcel);
+		// Turn AspectJ Switch off
+		AspectJSwitch.getInstance().turnOff();
 	}
 	
 	private File getEzScrumExcelTempFile() {
 		try {
 			// Create temp file to get the directory of ezScrumExcel
-			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
+			File findPathFile = File.createTempFile("findFile", Long.toString(System.nanoTime()));
 			File parentFile = findPathFile.getParentFile();
 			for (File file : parentFile.listFiles()) {
 				// Filter files which file name match "ezScrumExcel"
@@ -130,7 +107,7 @@ public class ExportStoriesFromProductBacklogActionTest extends MockStrutsTestCas
 		ArrayList<File> ezScrumExcels = new ArrayList<File>();
 		try {
 			// Create temp file to get the directory of ezScrumExcel
-			File findPathFile = File.createTempFile("fildFile", Long.toString(System.nanoTime()));
+			File findPathFile = File.createTempFile("findFile", Long.toString(System.nanoTime()));
 			File parentFile = findPathFile.getParentFile();
 			for (File file : parentFile.listFiles()) {
 				// Filter files which file name match "ezScrumExcel"
