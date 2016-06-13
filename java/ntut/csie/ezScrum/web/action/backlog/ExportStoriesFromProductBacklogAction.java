@@ -37,13 +37,11 @@ public class ExportStoriesFromProductBacklogAction extends Action {
 			// set the path of the temp file
 			tempFile = File.createTempFile("ezScrumExcel", Long.toString(System.nanoTime()));
 			writeDataToTempFile(project, workbook, tempFile);
-
 			String contentType = "application/vnd.ms-excel";
 			// Read the file from server and stream it
 			response.setContentType(contentType);
 			response.setContentLength((int) tempFile.length());
 			response.setHeader("Content-disposition", "inline; filename=" + project.getName() + "_ProductBacklog.xls");
-
 			outputStream = response.getOutputStream();
 			inputStream = new FileInputStream(tempFile);
 			int bufferSize = 4096;
@@ -58,16 +56,16 @@ public class ExportStoriesFromProductBacklogAction extends Action {
 			// release resource
 			ResourceManager.closeResource(inputStream);
 			ResourceManager.closeResource(outputStream);
-//			if (tempFile != null) {
-//				tempFile.delete();
-//			}
+			if (tempFile != null) {
+				tempFile.delete();
+			}
 		}
 		return null;
 	}
 
-	public void writeDataToTempFile(ProjectObject project, WritableWorkbook workbook, File tempFile) {
+	private void writeDataToTempFile(ProjectObject project, WritableWorkbook workbook, File tempFile) {
 		try {
-			// 建立 Excel
+			// create Excel
 			workbook = Workbook.createWorkbook(tempFile);
 			WritableSheet sheet = workbook.createSheet("BACKLOG", 0);
 			// delicate to excel handler
@@ -76,12 +74,12 @@ public class ExportStoriesFromProductBacklogAction extends Action {
 			ArrayList<StoryObject> stories = new ProductBacklogLogic(project).getStories();
 			handler.save(stories);
 
-			// 寫入excel
+			// write data to WritableWorkbook
 			workbook.write();
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new UnhandledException(e);
 		} finally {
+			// release WritableWorkbook
 			ResourceManager.closeResource(workbook);
 		}
 	}
