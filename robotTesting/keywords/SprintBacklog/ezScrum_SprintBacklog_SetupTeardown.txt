@@ -1,4 +1,4 @@
-﻿*** Settings ***
+*** Settings ***
 Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../common_resource.txt
@@ -24,31 +24,58 @@ Test Sprint Backlog - PostCondition
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test Sprint Backlog - Edit Story Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
     Create Story With Arguments    add story for test edit story    0    0    0    ${EMPTY}    "Note: newStoryNormal"
     ...    "HowToDemo: newStoryNormal"
 
 Test Sprint Backlog - Edit Story Teardown
-    Test Sprint Backlog - PostCondition
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Add Story Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
 
 Test Sprint Backlog - Add Story Teardown
-    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Test Sprint Backlog - PostCondition
     Exit ezScrum System
 
 Test Sprint Backlog - Drop Story Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Drop_Story.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
-    Create Story With Arguments    add story for test drop story    0    0    0    ${EMPTY}    "Note: dropStory"
-    ...    "HowToDemo: dropStory"
+    Comment    Create Story With Arguments    add story for test drop story    0    0    0    ${EMPTY}
+    ...    "Note: dropStory"    "HowToDemo: dropStory"
 
 Test Sprint Backlog - Drop Story Teardown
-    Test Sprint Backlog - PostCondition
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Add Existing Story Setup
@@ -60,6 +87,7 @@ Test Sprint Backlog - Add Existing Story Setup
 
 Test Sprint Backlog - Add Existing Story Teardown
     Test Sprint Backlog - PostCondition
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Edit Sprint Setup
