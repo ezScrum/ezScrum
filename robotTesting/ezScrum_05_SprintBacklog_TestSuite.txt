@@ -1,4 +1,4 @@
-﻿*** Settings ***
+*** Settings ***
 Force Tags        SprintBacklog
 Resource          keywords/common_resource.txt
 Resource          keywords/ezScrum_Login.txt
@@ -92,14 +92,13 @@ Test Sprint Backlog - Add Existing Story
 
 Test Sprint Backlog - Edit Sprint
     [Setup]    Test Sprint Backlog - Edit Sprint Setup
-    ${sprintId}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody//tr//td/div[text()="sprint1 sprint goal"]/../../td[1]/div
+    ${sprintId}=    Get Text    //div[text()="sprint1 sprint goal"]/../../td[1]/div     #//div[@id="SprintPlan_Page_Layout"]//div/table/tbody//tr//td/div[text()="sprint1 sprint goal"]/../../td[1]/div
     ${sprintGoal}=    Set Variable    update sprint goal
     ${sprintInterval}=    Set Variable    3
     ${sprintMembers}=    Set Variable    5
     ${sprintAvaliableDays}=    Set Variable    116
     ${sprintFocusFactor}=    Set Variable    50
     # update sprint information
-    Select Node Product    Sprint Backlog
     Edit Sprint In Sprint Backlog    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
     Wait Until Page Contains    Success.
     # verify sprint information in Sprint Backlog

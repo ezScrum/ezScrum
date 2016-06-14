@@ -86,26 +86,46 @@ Test Sprint Backlog - Add Existing Story Setup
     Select Project    ${PROJECT_NAME}
 
 Test Sprint Backlog - Add Existing Story Teardown
-    Test Sprint Backlog - PostCondition
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Edit Sprint Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Plan
 
 Test Sprint Backlog - Edit Sprint Teardown
-    Test Sprint Backlog - PostCondition
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Add Task Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    Comment    Select Node Product    Sprint Backlog
+    Comment    Create Story With Arguments    story for add task    0    0    0    ${EMPTY}
+    ...    for add task    display after add task
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Add_Task.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
-    Create Story With Arguments    story for add task    0    0    0    ${EMPTY}    for add task
-    ...    display after add task
     Set Test Variable    ${storyName}    story for add task
 
 Test Sprint Backlog - Add Task Teardown
-    Test Sprint Backlog - PostCondition
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Edit Task Setup
