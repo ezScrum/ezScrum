@@ -129,14 +129,24 @@ Test Sprint Backlog - Add Task Teardown
     Exit ezScrum System
 
 Test Sprint Backlog - Edit Task Setup
-    Test Sprint Backlog - PreCondition
+    Comment    Test Sprint Backlog - PreCondition
+    Comment    Select Node Product    Sprint Backlog
+    Comment    Create Story With Arguments    story for edit task    0    0    0    ${EMPTY}
+    ...    for edit task    display after edit task
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Edit_Task.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
-    Create Story With Arguments    story for edit task    0    0    0    ${EMPTY}    for edit task
-    ...    display after edit task
     Set Test Variable    ${storyName}    story for edit task
 
 Test Sprint Backlog - Edit Task Teardown
-    Test Sprint Backlog - PostCondition
+    Comment    Test Sprint Backlog - PostCondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Sprint Backlog - Drop Task Setup
