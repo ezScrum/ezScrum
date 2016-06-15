@@ -63,17 +63,11 @@ CREATE TABLE IF NOT EXISTS `history` (
   `new_value` text,
   `create_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 正在導出表  ezscrum_180.history 的資料：0 rows
 DELETE FROM `history`;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` (`id`, `issue_id`, `issue_type`, `type`, `old_value`, `new_value`, `create_time`) VALUES
-	(3, 2, 3, 1, '', '', 1465889529862),
-	(4, 2, 3, 16, '', '2', 1465889529862),
-	(5, 2, 3, 2, 'story for add task\n', 'story for edit task\n', 1465894157268),
-	(6, 2, 3, 19, 'for add task\n', 'for edit task\n', 1465894157268),
-	(7, 2, 3, 20, 'display after add task\n', 'display after edit task\n', 1465894157268);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 
 
@@ -108,11 +102,11 @@ CREATE TABLE IF NOT EXISTS `project` (
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.project 的資料：0 rows
+-- 正在導出表  ezscrum_180.project 的資料：1 rows
 DELETE FROM `project`;
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
 INSERT INTO `project` (`id`, `name`, `display_name`, `comment`, `product_owner`, `attach_max_size`, `create_time`, `update_time`) VALUES
-	(1, 'localtestProject', 'localtestProjectDisplayName', 'Comment', 'Manager', 2, 1465783123960, 1465783123960);
+	(1, 'Test Project', 'localtestProjectDisplayName', 'Comment', 'Manager', 2, 1461907641573, 1461907641573);
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
 
 
@@ -149,9 +143,11 @@ CREATE TABLE IF NOT EXISTS `release` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.release 的資料：0 rows
+-- 正在導出表  ezscrum_180.release 的資料：1 rows
 DELETE FROM `release`;
 /*!40000 ALTER TABLE `release` DISABLE KEYS */;
+INSERT INTO `release` (`id`, `serial_id`, `name`, `description`, `start_date`, `end_date`, `project_id`, `create_time`, `update_time`) VALUES
+	(1, 1, 'Release 01', 'Description', '2016-04-29 00:00:00', '2016-06-29 00:00:00', 1, 1461907753012, 1461907753012);
 /*!40000 ALTER TABLE `release` ENABLE KEYS */;
 
 
@@ -197,15 +193,15 @@ CREATE TABLE IF NOT EXISTS `scrum_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.scrum_role 的資料：0 rows
+-- 正在導出表  ezscrum_180.scrum_role 的資料：5 rows
 DELETE FROM `scrum_role`;
 /*!40000 ALTER TABLE `scrum_role` DISABLE KEYS */;
 INSERT INTO `scrum_role` (`id`, `access_productBacklog`, `access_sprintPlan`, `access_taskboard`, `access_sprintBacklog`, `access_releasePlan`, `access_retrospective`, `access_unplan`, `access_report`, `access_editProject`, `project_id`, `role`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1465783124000, 1465783124000),
-	(2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1465783124003, 1465783124003),
-	(3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1465783124005, 1465783124005),
-	(4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 3, 1465783124006, 1465783124006),
-	(5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1465783124008, 1465783124008);
+	(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1461907641574, 1461907641574),
+	(2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1461907641596, 1461907641596),
+	(3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1461907641596, 1461907641596),
+	(4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 3, 1461907641597, 1461907641597),
+	(5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1461907641597, 1461907641597);
 /*!40000 ALTER TABLE `scrum_role` ENABLE KEYS */;
 
 
@@ -223,11 +219,11 @@ CREATE TABLE IF NOT EXISTS `serial_number` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.serial_number 的資料：0 rows
+-- 正在導出表  ezscrum_180.serial_number 的資料：1 rows
 DELETE FROM `serial_number`;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
 INSERT INTO `serial_number` (`id`, `project_id`, `release`, `sprint`, `story`, `task`, `unplan`, `retrospective`) VALUES
-	(1, 1, 0, 2, 2, 0, 0, 0);
+	(1, 1, 1, 1, 2, 0, 0, 0);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 
 
@@ -252,11 +248,11 @@ CREATE TABLE IF NOT EXISTS `sprint` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.sprint 的資料：0 rows
+-- 正在導出表  ezscrum_180.sprint 的資料：1 rows
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(2, 2, 'sprint1 sprint goal', 2, 4, 100, 100, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1465785225984, 1465785225984);
+	(1, 1, 'Sprint 01', 2, 3, 32, 41, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1461907713630, 1461907713630);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
@@ -277,13 +273,11 @@ CREATE TABLE IF NOT EXISTS `story` (
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 正在導出表  ezscrum_180.story 的資料：0 rows
 DELETE FROM `story`;
 /*!40000 ALTER TABLE `story` DISABLE KEYS */;
-INSERT INTO `story` (`id`, `project_id`, `serial_id`, `sprint_id`, `name`, `status`, `estimate`, `importance`, `value`, `notes`, `how_to_demo`, `create_time`, `update_time`) VALUES
-	(2, 1, 2, 2, 'story for edit task\n', 1, 0, 0, 0, 'for edit task\n', 'display after edit task\n', 1465889529862, 1465894157268);
 /*!40000 ALTER TABLE `story` ENABLE KEYS */;
 
 

@@ -27,7 +27,7 @@ Test Sprint Backlog - Edit Story Setup
     Comment    Test Sprint Backlog - PreCondition
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Edit_Story.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
@@ -46,7 +46,7 @@ Test Sprint Backlog - Add Story Setup
     Comment    Test Sprint Backlog - PreCondition
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Add_Story.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
@@ -94,7 +94,7 @@ Test Sprint Backlog - Edit Sprint Setup
     Comment    Test Sprint Backlog - PreCondition
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Edit_Sprint.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
