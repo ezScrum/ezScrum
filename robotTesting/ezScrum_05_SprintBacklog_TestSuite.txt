@@ -92,7 +92,7 @@ Test Sprint Backlog - Add Existing Story
 
 Test Sprint Backlog - Edit Sprint
     [Setup]    Test Sprint Backlog - Edit Sprint Setup
-    ${sprintId}=    Get Text    //div[text()="sprint1 sprint goal"]/../../td[1]/div     #//div[@id="SprintPlan_Page_Layout"]//div/table/tbody//tr//td/div[text()="sprint1 sprint goal"]/../../td[1]/div
+    ${sprintId}=    Get Text    //div[text()="sprint1 sprint goal"]/../../td[1]/div    #//div[@id="SprintPlan_Page_Layout"]//div/table/tbody//tr//td/div[text()="sprint1 sprint goal"]/../../td[1]/div
     ${sprintGoal}=    Set Variable    update sprint goal
     ${sprintInterval}=    Set Variable    3
     ${sprintMembers}=    Set Variable    5
@@ -159,8 +159,8 @@ Test Sprint Backlog - Drop Task
     ${taskEstimate}=    Set Variable    3
     ${taskNotes}=    Set Variable    notes for drop task
     # new task
-    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
+    Comment    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Comment    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
     # drop task
     ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
     Drop Task With Arguments    ${taskName}

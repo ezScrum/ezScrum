@@ -141,9 +141,9 @@ CREATE TABLE IF NOT EXISTS `release` (
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.release 的資料：1 rows
+-- 正在導出表  ezscrum_180.release 的資料：0 rows
 DELETE FROM `release`;
 /*!40000 ALTER TABLE `release` DISABLE KEYS */;
 /*!40000 ALTER TABLE `release` ENABLE KEYS */;
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `serial_number` (
 DELETE FROM `serial_number`;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
 INSERT INTO `serial_number` (`id`, `project_id`, `release`, `sprint`, `story`, `task`, `unplan`, `retrospective`) VALUES
-	(1, 1, 0, 2, 0, 0, 0, 0);
+	(1, 1, 0, 1, 0, 0, 0, 0);
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 
 
@@ -244,13 +244,11 @@ CREATE TABLE IF NOT EXISTS `sprint` (
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- 正在導出表  ezscrum_180.sprint 的資料：1 rows
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
-INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(2, 2, 'sprint1 sprint goal', 2, 4, 100, 100, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1466062927714, 1466062927714);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 

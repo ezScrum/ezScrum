@@ -38,7 +38,7 @@ Test Delete Sprint Teardown
 Test Sprint Goal With NewLine Setup
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Create_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Sprint_Goal_With_NewLine.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
@@ -76,7 +76,7 @@ Test Sprint Session Teardown
 Test Check End Date and Demo Date Setup
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Create_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Check_End_Date_and_Demo_Date.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
@@ -90,7 +90,7 @@ Test Check End Date and Demo Date Teardown
 Test Check Recommended Start Date Setup
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Create_Sprint.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Check_Recommended_Start_Date.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
