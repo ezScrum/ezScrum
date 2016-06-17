@@ -75,22 +75,23 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
 	sprintID	: '-1',
-	storyID	: '-1',
+	storyID		: '-1',
 	url			: 'showSelectableTask.do',
 	store		: SelectedTaskStore,
 	colModel	: SelectedTasksColumnModel(),
-	plugins		: [ SelectedTasks_Filter  /* ExistedStory_Expander */],
+	plugins		: [ SelectedTasks_Filter ],
 	sm			: SelectedTasks_CheckBoxModel,
 	viewConfig	: {
         forceFit: true
     },
-   
+    
     loadDataModel: function() {
     	var obj = this;
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "loading info..."});
 		loadmask.show();
+		console.log("I'm outside");
     	Ext.Ajax.request({
-			url: obj.url,
+    		url: obj.url,
 			params: {
 				sprintID: obj.sprintID,
 				storyID: obj.storyID
@@ -98,6 +99,7 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			success: function(response) {
 				ConfirmWidget.loadData(response);
 				console.log(response);
+				console.log("I'm success");
     			if (ConfirmWidget.confirmAction()) {
 					SelectedTaskStore.loadData(response.responseXML);
 					SelectedTaskStore.proxy.data = response;
@@ -109,6 +111,8 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
     			loadmask.hide();
 			},
 			failure: function(response) {
+				console.log("I'm fail\n");
+				console.log(response);
     			var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "loading info..."});
     			loadmask.hide();
     			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');

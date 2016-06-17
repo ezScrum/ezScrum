@@ -23,13 +23,29 @@ Test Product Backlog Suite Setup
     Clean All Story
 
 Test Product Backlog Suite Teardown
-    Clean All Tag
-    Clean All Story
-    Click Image    images/logout.gif
-    Title Should Be    ezScrum Logon!
-    Close Browser
-    # clean DB
+    Comment    Clean All Tag
+    Comment    Clean All Story
+    Comment    Click Image    images/logout.gif
+    Comment    Title Should Be    ezScrum Logon!
+    Comment    Close Browser
+    Comment    # clean DB
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Product Backlog Create Story Identify Invalid Value Setup
+    Comment    #setup
+    Comment    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Comment    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan
+    ...    Create_Sprint.sql
+    Comment    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Comment    Maximize Browser Window
+    Comment    _InputLoginForm    ${userName}    ${userPassword}
+    Comment    #Select project
+    Comment    Select Project    localtestProjectDisplayName
+    Comment    Select Node Product    Product Backlog
+
+Test Product Backlog Create Story Identify Invalid Value Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Edit Story Identify Invalid Value Setup
     Create Story With Arguments    new Edit Story With Invalid Value    0    0    0    ${EMPTY}    "Note: newStoryNormal"
