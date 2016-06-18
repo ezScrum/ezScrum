@@ -9,11 +9,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+import org.docx4j.docProps.variantTypes.Empty;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
 public class GeneratePreviewContentAction extends PermissionAction{
@@ -42,7 +44,7 @@ public class GeneratePreviewContentAction extends PermissionAction{
 		}
 		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
 		StringBuilder result = new StringBuilder();
-		result = getResult(sprint);
+		result = getResult(sprint, project);
 //		String subject = "ezScrum: Sprint "+serialSprintId+" Sprint Info";
 //		String sprintGoal = sprint.getGoal();
 //		String storyInfo ="";
@@ -63,11 +65,13 @@ public class GeneratePreviewContentAction extends PermissionAction{
 //		result.append("</SprintInfo>");
 		return result;
 	}
-	public StringBuilder getResult(SprintObject sprint){
+	public StringBuilder getResult(SprintObject sprint, ProjectObject project){
 		StringBuilder result = new StringBuilder();
 		String subject = "ezScrum: Sprint "+sprint.getSerialId()+" Sprint Info";
-		String sprintGoal = sprint.getGoal();
-		String storyInfo = getStoryInfo(sprint);
+		String sprintGoal = "";
+		if(sprint.getGoal()!="")
+			sprintGoal = sprint.getGoal();
+		String storyInfo = getStoryInfo(sprint, project);
 		String schedule= getSchedule(sprint);
 //		ArrayList<StoryObject> stories = sprint.getStories();
 //		for (StoryObject story : stories) {
@@ -85,11 +89,13 @@ public class GeneratePreviewContentAction extends PermissionAction{
 		result.append("</SprintInfo>");
 		return result;
 	}
-	public String getStoryInfo(SprintObject sprint){
+	public String getStoryInfo(SprintObject sprint, ProjectObject project){
 		String storyInfo ="";
-		ArrayList<StoryObject> stories = sprint.getStories();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, sprint.getId());
+		// stories sorted by importance
+		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 		for (StoryObject story : stories) {
-			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
+			storyInfo = storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
 		}
 		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
 		return storyInfo;
