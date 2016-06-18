@@ -42,18 +42,41 @@ public class GeneratePreviewContentAction extends PermissionAction{
 		}
 		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
 		StringBuilder result = new StringBuilder();
-		String subject = "ezScrum: Sprint "+serialSprintId+" Sprint Info";
+		result = getResult(sprint);
+//		String subject = "ezScrum: Sprint "+serialSprintId+" Sprint Info";
+//		String sprintGoal = sprint.getGoal();
+//		String storyInfo ="";
+//		String schedule= "";
+//		ArrayList<StoryObject> stories = sprint.getStories();
+//		for (StoryObject story : stories) {
+//			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
+//		}
+//		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
+//		schedule += "	 Sprint period :" + sprint.getStartDateString() + " to "+sprint.getDemoDateString()+"\n";
+//		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
+//		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
+//		result.append("<SprintInfo>");
+//		result.append("<subject>").append(subject).append("</subject>");
+//		result.append("<sprintGoal>").append(sprintGoal).append("</sprintGoal>");
+//		result.append("<storyInfo>").append(storyInfo).append("</storyInfo>");
+//		result.append("<schedule>").append(schedule).append("</schedule>");
+//		result.append("</SprintInfo>");
+		return result;
+	}
+	public StringBuilder getResult(SprintObject sprint){
+		StringBuilder result = new StringBuilder();
+		String subject = "ezScrum: Sprint "+sprint.getSerialId()+" Sprint Info";
 		String sprintGoal = sprint.getGoal();
-		String storyInfo ="";
-		String schedule= "";
-		ArrayList<StoryObject> stories = sprint.getStories();
-		for (StoryObject story : stories) {
-			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
-		}
-		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
-		schedule += "	 Sprint period :" + sprint.getStartDateString() + " to "+sprint.getDemoDateString()+"\n";
-		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
-		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
+		String storyInfo = getStoryInfo(sprint);
+		String schedule= getSchedule(sprint);
+//		ArrayList<StoryObject> stories = sprint.getStories();
+//		for (StoryObject story : stories) {
+//			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
+//		}
+//		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
+//		schedule += "	 Sprint period :" + sprint.getStartDateString() + " to "+sprint.getDemoDateString()+"\n";
+//		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
+//		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
 		result.append("<SprintInfo>");
 		result.append("<subject>").append(subject).append("</subject>");
 		result.append("<sprintGoal>").append(sprintGoal).append("</sprintGoal>");
@@ -61,5 +84,21 @@ public class GeneratePreviewContentAction extends PermissionAction{
 		result.append("<schedule>").append(schedule).append("</schedule>");
 		result.append("</SprintInfo>");
 		return result;
+	}
+	public String getStoryInfo(SprintObject sprint){
+		String storyInfo ="";
+		ArrayList<StoryObject> stories = sprint.getStories();
+		for (StoryObject story : stories) {
+			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
+		}
+		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
+		return storyInfo;
+	}
+	public String getSchedule(SprintObject sprint){
+		String schedule= "";
+		schedule += "	 Sprint period :" + sprint.getStartDateString() + " to "+sprint.getDemoDateString()+"\n";
+		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
+		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
+		return schedule;
 	}
 }
