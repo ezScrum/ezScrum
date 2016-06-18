@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.action.backlog;
+package ntut.csie.ezScrum.issue.mail.service.core;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,17 +9,12 @@ import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import servletunit.struts.MockStrutsTestCase;
 
-public class GeneratePreviewContentActionTest extends MockStrutsTestCase {
+public class SprintInfoContentTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
 	private AddStoryToSprint mASTS;
-
-	public GeneratePreviewContentActionTest(String testMethod) {
-		super(testMethod);
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,7 +44,6 @@ public class GeneratePreviewContentActionTest extends MockStrutsTestCase {
 				CREATE_PRODUCTBACKLOG_TYPE);
 		mASTS.exe();
 		
-		super.setUp();
 	}
 
 	@After
@@ -65,12 +59,10 @@ public class GeneratePreviewContentActionTest extends MockStrutsTestCase {
 		ini = null;
 		mCP = null;
 		mConfig = null;
-		super.tearDown();
 	}
 
 	@Test
 	public void testGetResult() {
 		// TODO
 	}
-
 }
