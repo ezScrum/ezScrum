@@ -1,5 +1,12 @@
 package ntut.csie.ezScrum.issue.mail.service.core;
 
+import static org.junit.Assert.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +16,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class SprintInfoContentTest {
 	private CreateProject mCP;
@@ -64,5 +72,26 @@ public class SprintInfoContentTest {
 	@Test
 	public void testGetResult() {
 		// TODO
+	}
+	@Test
+	public void testGetSchedule() {
+		String ans = "	 Sprint period :";
+		Calendar cal = Calendar.getInstance();
+		Date mToday = cal.getTime();
+		String startDate = "";
+		String endDate = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+		startDate = format.format(mToday);
+		cal.add(Calendar.DAY_OF_YEAR, 13);
+		endDate = format.format(cal.getTime());
+		ans = ans + startDate + " to " + endDate+"\n";
+		ans = ans + "	 Daily Scrum : TEST_SPRINTDAILYINFO_1\n";
+		ans = ans + "	 Sprint demo : " + endDate + " Lab1321";
+		
+		SprintInfoContent sprintInfoContent = new SprintInfoContent();
+		ArrayList<SprintObject> sprints = mCS.getSprints();
+		SprintObject sprint = sprints.get(0);
+		String com = sprintInfoContent.getSchedule(sprint);
+		assertEquals(ans, com);
 	}
 }
