@@ -16,7 +16,9 @@ import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 
 public class SprintInfoContentTest {
 	private CreateProject mCP;
@@ -47,11 +49,10 @@ public class SprintInfoContentTest {
 
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
-		
-		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP,
-				CREATE_PRODUCTBACKLOG_TYPE);
+
+		mASTS = new AddStoryToSprint(STORY_COUNT, STORY_ESTIMATE, mCS, mCP, CREATE_PRODUCTBACKLOG_TYPE);
 		mASTS.exe();
-		
+
 	}
 
 	@After
@@ -73,6 +74,41 @@ public class SprintInfoContentTest {
 	public void testGetResult() {
 		// TODO
 	}
+
+	@Test
+	public void testGetStoryInfo_withImportance() {
+		String ans = "	TEST_STORY_3(5)\n	TEST_STORY_2(5)\n	TEST_STORY_1(5)\n";
+		ans = ans + "Estimated velocity : 15.0 story points";
+		ArrayList<StoryObject> stories = mASTS.getStories();
+		int importance = 80;
+		for (StoryObject story : stories) {
+			story.setImportance(importance);
+			story.save();
+			importance += 5;
+		}
+
+		SprintInfoContent sprintInfoContent = new SprintInfoContent();
+		ArrayList<SprintObject> sprints = mCS.getSprints();
+		SprintObject sprint = sprints.get(0);
+		ArrayList<ProjectObject> projects = mCP.getAllProjects();
+		String storiesInfo = sprintInfoContent.getStoryInfo(sprint, projects.get(0));
+		assertEquals(ans, storiesInfo);
+	}
+
+	@Test
+	public void testGetStoryInfo_WithoutImportance() {
+		String ans = "	TEST_STORY_1(5)\n	TEST_STORY_2(5)\n	TEST_STORY_3(5)\n";
+		ans = ans + "Estimated velocity : 15.0 story points";
+		ArrayList<StoryObject> stories = mASTS.getStories();
+
+		SprintInfoContent sprintInfoContent = new SprintInfoContent();
+		ArrayList<SprintObject> sprints = mCS.getSprints();
+		SprintObject sprint = sprints.get(0);
+		ArrayList<ProjectObject> projects = mCP.getAllProjects();
+		String storiesInfo = sprintInfoContent.getStoryInfo(sprint, projects.get(0));
+		assertEquals(ans, storiesInfo);
+	}
+
 	@Test
 	public void testGetSchedule() {
 		String ans = "	 Sprint period :";
@@ -84,10 +120,10 @@ public class SprintInfoContentTest {
 		startDate = format.format(mToday);
 		cal.add(Calendar.DAY_OF_YEAR, 13);
 		endDate = format.format(cal.getTime());
-		ans = ans + startDate + " to " + endDate+"\n";
+		ans = ans + startDate + " to " + endDate + "\n";
 		ans = ans + "	 Daily Scrum : TEST_SPRINTDAILYINFO_1\n";
 		ans = ans + "	 Sprint demo : " + endDate + " Lab1321";
-		
+
 		SprintInfoContent sprintInfoContent = new SprintInfoContent();
 		ArrayList<SprintObject> sprints = mCS.getSprints();
 		SprintObject sprint = sprints.get(0);
