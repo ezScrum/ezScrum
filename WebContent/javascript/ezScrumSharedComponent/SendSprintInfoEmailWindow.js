@@ -15,7 +15,8 @@ var PartnerStore_ForSprintInfo = new Ext.data.Store({
 var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
     fieldLabel : 'Receivers (ezScrum members)',
     name : 'Receivers (ezScrum members)',
-    editable   : false
+    editable   : false,
+    allowBlank: false
 });
 PartnerStore_ForSprintInfo.on('load', function(store, records, options) {
 	isParents = true;
@@ -97,8 +98,9 @@ var PartnerMenuForSprintInfo = new Ext.menu.Menu({
 
 ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 	loadUrl : 'generatePreviewContent.do',
+	sendUrl : 'SendSprintMail.do',
 	bodyStyle: 'padding:15px',
-	labelWidth : 100,
+	labelWidth : 150,
 	SprintRecord: undefined,
 	notifyPanel: undefined, // notify panel
 	defaultType: 'textfield',
@@ -111,7 +113,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 	initComponent: function() {
 		var config = {
 				items: [{
-		        	fieldLabel: 'Subject',
+		        	fieldLabel: 'subject',
 		            name: 'subject',
 		            allowBlank: false,
 		            maxLength: 128
@@ -122,15 +124,16 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		            allowBlank: false,
 		            maxLength: 128
 		        }, {
-		        	fieldLabel: 'Stroy Info',
-		            name: 'storyInfo',
-		            allowBlank: false,
-		            maxLength: 500
-		        },{
 		        	fieldLabel: 'Schedule',
 		            name: 'schedule',
+		            xtype: 'textarea',
+		            allowBlank: false
+		        },{
+		        	fieldLabel: 'Stroy Info',
+		            name: 'storyInfo',
+		            xtype: 'textarea',
 		            allowBlank: false,
-		            maxLength: 128
+					height: 150
 		        },{
 		            name: 'sprintId',
 		            hidden: true
@@ -156,9 +159,11 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		var obj = this;
 		var form = this.getForm();
 		Ext.Ajax.request({
-			//url:this.url,
+			url:this.sendUrl,
 			params:form.getValues(),
-			success:function(response){},
+			success:function(response){
+				obj.onSuccess(response);
+			},
 			failure:function(response){}
 		});
 	},
@@ -172,6 +177,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 				sprintID : this.sprintID
 			},
 			success: function(response) {
+//				console.log(response);
 				obj.onLoadSuccess(response);
 			},
 			failure: function(response) { /* notify logon form, not finish yet */
@@ -183,11 +189,14 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		var record = undefined;
 		ConfirmWidget.loadData(response);
 		if (ConfirmWidget.confirmAction()) {
-			var rs = myReader.readRecords(response.responseXML);
+			var rs = PreviewReader.readRecords(response.responseXML);
 			success = rs.success;
+			console.log(response);
 			if (rs.success) {
 				record = rs.records[0];
+				console.log(rs);
 				if (record) {
+					console.log(response);
 					this.SprintRecord = record;
 					
 					var replaced_Subject = replaceJsonSpecialChar(record.data['subject']);
@@ -196,7 +205,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 					var replaced_Schedule = replaceJsonSpecialChar(record.data['schedule']);
 					// set initial from value
 					this.getForm().setValues({
-						subject: replaced_Subject,
+						subject: record.data['subject'],
 						sprintGoal: replaced_SprintGoal,
 						storyInfo: replaced_StoryInfo,
 						schedule: replaced_Schedule
@@ -228,11 +237,10 @@ ezScrum.window.SendSprintInfoEmailWindow = Ext.extend(ezScrum.layout.Window, {
 	showTheWindow: function(panel, sprintID){
 		this.SprintInfoForm.notifyPanel = panel;
 		this.SprintInfoForm.sprintID = sprintID;
-		this.SprintInfoForm.loadDataModel();
 		this.SprintInfoForm.reset();
 		this.SprintInfoForm.getForm().setValues({SprintId: sprintID});
 		
-		
+		this.SprintInfoForm.loadDataModel();
 		this.show();
 	}
 });
