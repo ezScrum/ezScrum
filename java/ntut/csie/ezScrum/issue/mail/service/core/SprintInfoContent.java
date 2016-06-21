@@ -11,6 +11,9 @@ public class SprintInfoContent {
 	public SprintInfoContent(){}
 	public StringBuilder getResult(SprintObject sprint, ProjectObject project){
 		StringBuilder result = new StringBuilder();
+		System.out.println("");
+		System.out.println(sprint);
+		System.out.println("");
 		String subject = "ezScrum: Sprint "+sprint.getSerialId()+" Sprint Info";
 		String sprintGoal = "";
 		if(sprint.getGoal()!="")
@@ -26,10 +29,12 @@ public class SprintInfoContent {
 //		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
 //		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
 		result.append("<SprintInfo>");
+		result.append("<Sprint>");
 		result.append("<subject>").append(subject).append("</subject>");
 		result.append("<sprintGoal>").append(sprintGoal).append("</sprintGoal>");
 		result.append("<storyInfo>").append(storyInfo).append("</storyInfo>");
 		result.append("<schedule>").append(schedule).append("</schedule>");
+		result.append("</Sprint>");
 		result.append("</SprintInfo>");
 		return result;
 	}

@@ -99,3 +99,20 @@ var PartnersReader = new Ext.data.XmlReader({
 /**
 * This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
 ***********************************************************************************************/
+
+/**********************************************************************************************
+ * This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+ * */
+var SprintRecord = Ext.data.Record.create([ 
+        'subject' , 'sprintGoal', 'storyInfo', 'schedule'
+]);
+
+var PreviewReader = new Ext.data.XmlReader({
+	record : 'Sprint',
+	idPath : 'subject',
+	successProperty : 'Result',
+	totalProperty: 'Total'
+}, SprintRecord);
+/**
+* This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+***********************************************************************************************/
