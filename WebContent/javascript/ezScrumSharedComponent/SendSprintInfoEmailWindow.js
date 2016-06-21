@@ -177,7 +177,6 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 				sprintID : this.sprintID
 			},
 			success: function(response) {
-//				console.log(response);
 				obj.onLoadSuccess(response);
 			},
 			failure: function(response) { /* notify logon form, not finish yet */
@@ -191,12 +190,9 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		if (ConfirmWidget.confirmAction()) {
 			var rs = PreviewReader.readRecords(response.responseXML);
 			success = rs.success;
-			console.log(response);
 			if (rs.success) {
 				record = rs.records[0];
-				console.log(rs);
 				if (record) {
-					console.log(response);
 					this.SprintRecord = record;
 					
 					var replaced_Subject = replaceJsonSpecialChar(record.data['subject']);

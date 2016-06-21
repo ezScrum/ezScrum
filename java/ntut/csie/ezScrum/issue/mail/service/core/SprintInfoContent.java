@@ -29,7 +29,6 @@ public class SprintInfoContent {
 //		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
 //		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
 		result.append("<SprintInfo>");
-		result.append("<Total>1</Total>");
 		result.append("<Sprint>");
 		result.append("<subject>").append(subject).append("</subject>");
 		result.append("<sprintGoal>").append(sprintGoal).append("</sprintGoal>");
