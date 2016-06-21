@@ -125,7 +125,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		        	fieldLabel: 'Stroy Info',
 		            name: 'storyInfo',
 		            allowBlank: false,
-		            maxLength: 128
+		            maxLength: 500
 		        },{
 		        	fieldLabel: 'Schedule',
 		            name: 'schedule',
@@ -165,6 +165,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 	loadDataModel: function() {
 		var obj = this;
 		var form = this.getForm();
+		
 		Ext.Ajax.request({
 			url: obj.loadUrl,
 			params: {
@@ -175,7 +176,7 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 			},
 			failure: function(response) { /* notify logon form, not finish yet */
 			}
-		})
+		});
 	},
 	onLoadSuccess: function(response) {
 		var success = false;
@@ -226,9 +227,11 @@ ezScrum.window.SendSprintInfoEmailWindow = Ext.extend(ezScrum.layout.Window, {
 	},
 	showTheWindow: function(panel, sprintID){
 		this.SprintInfoForm.notifyPanel = panel;
+		this.SprintInfoForm.sprintID = sprintID;
+		this.SprintInfoForm.loadDataModel();
 		this.SprintInfoForm.reset();
 		this.SprintInfoForm.getForm().setValues({SprintId: sprintID});
-		this.SprintInfoForm.loadDataModel();
+		
 		
 		this.show();
 	}

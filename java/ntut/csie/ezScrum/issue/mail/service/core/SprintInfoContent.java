@@ -11,6 +11,9 @@ public class SprintInfoContent {
 	public SprintInfoContent(){}
 	public StringBuilder getResult(SprintObject sprint, ProjectObject project){
 		StringBuilder result = new StringBuilder();
+		System.out.println("");
+		System.out.println(sprint);
+		System.out.println("");
 		String subject = "ezScrum: Sprint "+sprint.getSerialId()+" Sprint Info";
 		String sprintGoal = "";
 		if(sprint.getGoal()!="")
