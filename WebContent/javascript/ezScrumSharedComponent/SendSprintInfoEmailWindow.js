@@ -14,7 +14,7 @@ var PartnerStore_ForSprintInfo = new Ext.data.Store({
 
 var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
     fieldLabel : 'Receivers (ezScrum members)',
-    name : 'Receivers (ezScrum members)',
+    name : 'Receivers',
     editable   : false,
     allowBlank: false
 });
