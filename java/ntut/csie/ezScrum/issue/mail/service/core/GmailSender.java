@@ -41,7 +41,7 @@ public class GmailSender {
 		MimeMultipart multipart = new MimeMultipart();
 		MimeBodyPart messageBody = new MimeBodyPart();
 		try {
-//			message.setFrom(new InternetAddress(username_));
+			message.setFrom(new InternetAddress(username_));
 //			
 //			String[] SplittedStr = address.split(";");
 //			
