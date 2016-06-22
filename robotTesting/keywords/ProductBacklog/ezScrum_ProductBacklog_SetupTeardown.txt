@@ -270,6 +270,15 @@ Test Product Backlog Done Filter Teardown
     Clean All Sprint
 
 Test Product Backlog Search Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Search.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
     # 新增story
     Create Story With Arguments    newStoryFirst    1    1    1    ${EMPTY}    newStoryFirstNote
     ...    newStoryFirstHowToDemo
@@ -311,10 +320,12 @@ Test Product Backlog Search Setup
 Test Product Backlog Search Teardown
     [Documentation]    先重新整理進入product backlog將搜尋狀態清除(由於無法直接透過點選Please Select ...清除搜尋結果)，
     ...    再將所建立的story刪除
-    Reload Page
-    Title Should Be    ezScrum, SSLab NTUT
-    Select Node Product    Product Backlog
-    Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
-    Clean All Story
-    Clean All Sprint
-    Clean Release
+    Comment    Reload Page
+    Comment    Title Should Be    ezScrum, SSLab NTUT
+    Comment    Select Node Product    Product Backlog
+    Comment    Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
+    Comment    Clean All Story
+    Comment    Clean All Sprint
+    Comment    Clean Release
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
