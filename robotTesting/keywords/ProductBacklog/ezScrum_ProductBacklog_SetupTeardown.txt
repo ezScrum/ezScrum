@@ -13,14 +13,15 @@ Resource          ../ReleasePlan/ezScrum_ReleasePlan_Management.txt
 
 *** Keywords ***
 Test Product Backlog Suite Setup
-    Login Page    ${LOGIN_URL}
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Select Node Product    Product Backlog
-    Clean All Tag
-    Clean All Story
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    Wait Until Page Contains Element    createProjectBtn
+    Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Comment    Select Node Product    Product Backlog
+    Comment    Clean All Tag
+    Comment    Clean All Story
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test Product Backlog Suite Teardown
     Comment    Clean All Tag
@@ -30,66 +31,173 @@ Test Product Backlog Suite Teardown
     Comment    Close Browser
     Comment    # clean DB
     Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test Product Backlog Create Story Identify Invalid Value Setup
-    Comment    #setup
-    Comment    Open Browser    ${LOGIN_URL}    ${BROWSER}
-    Comment    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan
-    ...    Create_Sprint.sql
-    Comment    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
-    Comment    Maximize Browser Window
-    Comment    _InputLoginForm    ${userName}    ${userPassword}
-    Comment    #Select project
-    Comment    Select Project    localtestProjectDisplayName
-    Comment    Select Node Product    Product Backlog
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Create_Story_Identify_Invalid_Value.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
 
 Test Product Backlog Create Story Identify Invalid Value Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test Edit Story Identify Invalid Value Setup
-    Create Story With Arguments    new Edit Story With Invalid Value    0    0    0    ${EMPTY}    "Note: newStoryNormal"
-    ...    "HowToDemo: newStoryNormal"
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Edit_Story_Identify_Invalid_Value.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+    Comment    Create Story With Arguments    new Edit Story With Invalid Value    0    0    0    ${EMPTY}
+    ...    "Note: newStoryNormal"    "HowToDemo: newStoryNormal"
 
 Test Edit Story Identify Invalid Value Teardown
-    Delete Story With Arguments    new Edit Story With Invalid Value
+    Comment    Delete Story With Arguments    new Edit Story With Invalid Value
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Create Story Setup
-    Create Tag With Arguments    testTagName
-    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
-    ...    HowToDemo: newStory
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Create_Story.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
 
 Test Create Story Teardown
-    Delete Story With Arguments    newStory
-    Delete Tag With Arguments    testTagName
+    Comment    Delete Story With Arguments    newStory
+    Comment    Delete Tag With Arguments    testTagName
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Create Story With Invalid Value Setup
-    Create Tag With Arguments    testTagName
-    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    testTagName    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
-    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Create_Story_Identify_Invalid_Value.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
 
 Test Create Story With Invalid Value Teardown
     [Arguments]    ${storyID}
-    Delete Tag With Arguments    testTagName
-    Delete Story Use StoryID    ${storyID}
+    Comment    Delete Tag With Arguments    testTagName
+    Comment    Delete Story Use StoryID    ${storyID}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Edit Story Setup
-    Create Tag With Arguments    testTagName
-    Create Story With Arguments    oriStory    5    3    1    testTagName    Note: newStory
-    ...    HowToDemo: newStory
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Edit_Story.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+    Comment    Create Tag With Arguments    testTagName
+    Comment    Create Story With Arguments    oriStory    5    3    1    testTagName
+    ...    Note: newStory    HowToDemo: newStory
 
 Test Edit Story Teardown
     [Arguments]    ${storyID}
-    Delete Tag With Arguments    testTagName
-    Delete Story Use StoryID    ${storyID}
+    Comment    Delete Tag With Arguments    testTagName
+    Comment    Delete Story Use StoryID    ${storyID}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Story History Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Story_History.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+    Comment    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
+    ...    "Note: newStoryNote"    "HowToDemo: newStoryHowToDemo"
+    Comment    Create Story With Arguments| newStory | 5 | 3 | 1 | ${EMPTY} | "Note: newStoryNote" | "HowToDemo: newStoryHowToDemo"
+
+Test Story History Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Remove Story Tag Setup
-    Create Tag With Arguments    testTagName
-    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
-    ...    HowToDemo: newStory
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Remove_Story_Tag.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+    Comment    Create Tag With Arguments    testTagName
+    Comment    Create Story With Arguments    newStory    5    3    1    testTagName
+    ...    Note: newStory    HowToDemo: newStory
 
 Test Remove Story Tag Teardown
-    Delete Story With Arguments    newStory
+    Comment    Delete Story With Arguments    newStory
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Create Tag Setup
+    [Documentation]    建立兩種Tag: 正常字串 & 特殊字元
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Create_Story.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+
+Test Create Tag Teardown
+    [Documentation]    刪除兩種Tag: 正常字串 & 特殊字元
+    Comment    # remove TestData
+    Comment    Delete Tag
+    Comment    Delete Tag
+    Comment    # close Tag Manage window
+    Comment    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
+    Comment    Click Element    xpath=${xpathTagManageClose}
+    ${xpathTagManage} =    Find Current Window Element    Tag Manage    Close
+    Click Element    xpath=${xpathTagManage}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Duplicate Tag Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Duplicate_Tag.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+
+Test Duplicate Tag Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Mark And UnMark Story Tag Setup
     Create Tag With Arguments    markAndUnMarkTag
@@ -100,64 +208,58 @@ Test Mark And UnMark Story Tag Teardown
     Delete Tag With Arguments    markAndUnMarkTag
     Delete Story With Arguments    newStory
 
-Test Create Tag Setup
-    [Documentation]    建立兩種Tag: 正常字串 & 特殊字元
-    # open Tag Manage window
-    Click Element    xpath=//button[text()="Manage Tag"]
-    # add tagName: \ Normal
-    Click Element    xpath=//button[text()="Add Tag"]
-    Input Text    xpath=//input[@name="newTagName"]    ${tsTag}
-    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
-    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
-    Element Enable And Submit    ${xpathAddTag}
-    Wait Until Page Contains    ${tsTag}
-    # add tagName: \ Special
-    Click Element    xpath=//button[text()="Add Tag"]
-    Input Text    xpath=//input[@name="newTagName"]    ${tsTagX}
-    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
-    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
-    Element Enable And Submit    ${xpathAddTag}
-    Wait Until Page Contains    ${tsTagX}
-
-Test Create Tag Teardown
-    [Documentation]    刪除兩種Tag: 正常字串 & 特殊字元
-    # remove TestData
-    Delete Tag
-    Delete Tag
-    # close Tag Manage window
-    ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
-    Click Element    xpath=${xpathTagManageClose}
-
 Test Delete Tag Setup
     [Arguments]    ${tagCount}
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Delete_Tag.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
     # open Tag Manage window
     Click Element    xpath=//button[text()="Manage Tag"]
-    # add Tag
-    : FOR    ${index}    IN RANGE    1    ${tagCount} + 1
-    \    Create Tag    ${tsTag}_${index}
+    Comment    # add Tag
+    Comment    : FOR    ${index}    IN RANGE    1    ${tagCount} + 1
+    Comment    \    Create Tag    ${tsTag}_${index}
 
 Test Delete Tag Teardown
     # close Tag Manage window
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
     Click Element    xpath=${xpathTagManageClose}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Product Backlog Filter Setup
-    # 建立測試資料
-    Create Story With Arguments    newStoryNormal    0    0    0    ${EMPTY}    "Note: newStoryNormal"
-    ...    "HowToDemo: newStoryNormal"
-    Create Story With Arguments    newStoryBacklogged    0    0    0    ${EMPTY}    "Note: newStoryBacklogged"
-    ...    "HowToDemo: newStoryBacklogged"
-    Create Story With Arguments    newStoryDetailed    5    5    5    ${EMPTY}    "Note: newStoryDetailed"
-    ...    "HowToDemo: newStoryDetailed"
-    Create Story With Arguments    newStoryDone    8    8    8    ${EMPTY}    "Note: newStoryDone"
-    ...    "HowToDemo: newStoryDone"
+    Comment    # 建立測試資料
+    Comment    Create Story With Arguments    newStoryNormal    0    0    0    ${EMPTY}
+    ...    "Note: newStoryNormal"    "HowToDemo: newStoryNormal"
+    Comment    Create Story With Arguments    newStoryBacklogged    0    0    0    ${EMPTY}
+    ...    "Note: newStoryBacklogged"    "HowToDemo: newStoryBacklogged"
+    Comment    Create Story With Arguments    newStoryDetailed    5    5    5    ${EMPTY}
+    ...    "Note: newStoryDetailed"    "HowToDemo: newStoryDetailed"
+    Comment    Create Story With Arguments    newStoryDone    8    8    8    ${EMPTY}
+    ...    "Note: newStoryDone"    "HowToDemo: newStoryDone"
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Product_Backlog_Filter.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
 
 Test Product Backlog Filter Teardown
     # 刪除測試資料
-    Delete Story With Arguments    newStoryNormal
-    Delete Story With Arguments    newStoryBacklogged
-    Delete Story With Arguments    newStoryDetailed
-    Delete Story With Arguments    newStoryDone
+    Comment    Delete Story With Arguments    newStoryNormal
+    Comment    Delete Story With Arguments    newStoryBacklogged
+    Comment    Delete Story With Arguments    newStoryDetailed
+    Comment    Delete Story With Arguments    newStoryDone
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Product Backlog Done Filter Teardown
     # 刪除測試資料

@@ -28,6 +28,7 @@ ${tsTagX}         Tag_~!@#$%^&*()_+=-`\|][{}'/":;    # 測試特殊字元
 *** Test Cases ***
 Test ProductBacklog - Create Story Identify Invalid Value
     [Documentation]    Add Story(長度限制),Add Story (測試限制數字欄位),Add Story (測試特殊字元)
+    [Setup]    Test Product Backlog Create Story Identify Invalid Value Setup
     Click Element    xpath=//button[text()="Add Story"]
     Wait Until Page Contains    Add New Story
     Verify Invalid Value Textarea    Name    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
@@ -43,6 +44,7 @@ Test ProductBacklog - Create Story Identify Invalid Value
     ${xpathCreateStoryCancel}=    Find Current Window Element    Add New Story    Cancel
     Element Should Be Visible    xpath=${xpathCreateStoryCancel}
     Click Element    xpath=${xpathCreateStoryCancel}
+    [Teardown]    Test Product Backlog Create Story Identify Invalid Value Teardown
 
 Test ProductBacklog - Edit Story Identify Invalid Value
     [Documentation]    Edit Story(長度限制),Edit Story (測試限制數字欄位),Edit Story (測試特殊字元)
@@ -70,6 +72,9 @@ Test ProductBacklog - Edit Story Identify Invalid Value
 Test ProductBacklog - Create Story
     [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。
     [Setup]    Test Create Story Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
+    ...    HowToDemo: newStory
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
     ...    HowToDemo: newStory
@@ -77,6 +82,9 @@ Test ProductBacklog - Create Story
 
 Test ProductBacklog - Create Story With Invalid Value
     [Setup]    Test Create Story With Invalid Value Setup
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    testTagName    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
+    ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     ${storyID}=    Get Story ID
     Verify Story Information With Arguments    ${storyID}    Tag_~!@#$%^&*()_+=-`\|][{}'/":;    0    0    0    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
     ...    Tag_~!@#$%^&*()_+=-`\|][{}'/":;
@@ -93,8 +101,7 @@ Test ProductBacklog - Edit Story
 
 Test ProductBacklog - Story History
     [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
-    [Setup]    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
-    ...    "Note: newStoryNote"    "HowToDemo: newStoryHowToDemo"
+    [Setup]    Test Story History Setup
     Set Test Variable    ${storyName}    newStory
     # Set Selenium Speed 1
     ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
@@ -103,6 +110,7 @@ Test ProductBacklog - Story History
     Click Element    xpath=//button[text()="Show History"]
     ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
     Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
+    Comment    Click Element    xpath=//button[text()="Close"]
     ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
     Element Enable And Submit    ${xpathIssueHistoryListClose}
     # Set Selenium Speed 0
@@ -165,7 +173,7 @@ Test ProductBacklog - Story History
     # Xpath Should Match X Times //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryFifth")] 0
     # [Teardown] Test Product Backlog Search Teardown
     # Set Selenium Speed 0
-    [Teardown]    Delete Story With Arguments    newStory
+    [Teardown]    Test Story History Teardown
 
 Test ProductBacklog - Remove Story Tag
     [Documentation]    Remove Tag
@@ -173,6 +181,7 @@ Test ProductBacklog - Remove Story Tag
     [Setup]    Test Remove Story Tag Setup
     Delete Tag With Arguments    testTagName
     ${storyID}=    Get Story ID
+    Click Element    xpath=//div[@id="productBacklogGridPanel"]/div[2]/div/div/div/div/div/div/div/div/div/table/tbody/tr
     Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
     ...    HowToDemo: newStory
     [Teardown]    Test Remove Story Tag Teardown
@@ -184,6 +193,22 @@ Test ProductBacklog - Create Tag
     ...    test Tag 'C'RD
     [Tags]    tag
     [Setup]    Test Create Tag Setup
+    # open Tag Manage window
+    Click Element    xpath=//button[text()="Manage Tag"]
+    # add tagName: \ Normal
+    Click Element    xpath=//button[text()="Add Tag"]
+    Input Text    xpath=//input[@name="newTagName"]    ${tsTag}
+    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tsTag}
+    # add tagName: \ Special
+    Click Element    xpath=//button[text()="Add Tag"]
+    Input Text    xpath=//input[@name="newTagName"]    ${tsTagX}
+    ${xpathAddTag} =    Find Current Window Element    Add Tag    Submit
+    Wait Until Page Contains Element    xpath=//table[@class='x-btn \ \ x-btn-noicon ']
+    Element Enable And Submit    ${xpathAddTag}
+    Wait Until Page Contains    ${tsTagX}
     # check if 正常字串 tag added
     Element Text Should Be    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[1]    ${tsTag}
     # check if 特殊字元 tag added
@@ -195,7 +220,8 @@ Test ProductBacklog - Duplicate Tag
     ...
     ...    test Tag C'R'D
     [Tags]    tag
-    [Setup]    Create Tag With Arguments    ${tsTagX}
+    [Setup]    Test Duplicate Tag Setup
+    Create Tag With Arguments     ${tsTagX}
     ${tag}=    Set Variable    ${tsTagX}
     # add already existed Tag
     Click Element    xpath=//button[text()="Manage Tag"]
@@ -218,7 +244,7 @@ Test ProductBacklog - Duplicate Tag
     # close Tag Manage window
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
     Click Element    xpath=${xpathTagManageClose}
-    [Teardown]    Delete Tag With Arguments    ${tsTagX}
+    [Teardown]    Test Duplicate Tag Teardown
 
 Test ProductBacklog - Delete Tag
     [Documentation]    test Tag CR'D'
@@ -228,7 +254,7 @@ Test ProductBacklog - Delete Tag
     # get existed Tag count
     ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}    # stable issue
-    # delete & check
+    # delete & check    \    \    testTagName_3
     : FOR    ${index}    IN RANGE    0    ${tagCount}
     \    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
     \    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
