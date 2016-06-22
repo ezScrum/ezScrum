@@ -42,6 +42,18 @@ public class GmailSender {
 		MimeBodyPart messageBody = new MimeBodyPart();
 		try {
 			message.setFrom(new InternetAddress(username_));
+			
+			String[] SplittedStr = address.split(";");
+			
+			message.setSubject(subject);
+			message.setContent(text, "text/html");
+			
+			for (String Str : SplittedStr) {
+				
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(Str));
+			}
+			
+			
 			return "寄送email結束.";
 		} catch (MessagingException e) {
 			String errorMessage = e.getMessage().toString();
