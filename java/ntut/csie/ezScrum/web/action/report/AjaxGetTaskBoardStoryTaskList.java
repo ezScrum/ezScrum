@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.TaskBoardHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -30,22 +31,28 @@ public class AjaxGetTaskBoardStoryTaskList extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		// get parameter info
-		String sprintIdString = request.getParameter("sprintID");
+		String serialSprintIdString = request.getParameter("sprintID");
 		
-		long sprintId;
+		long serialSprintId;
 		try {
-			sprintId = Long.parseLong(sprintIdString);
+			serialSprintId = Long.parseLong(serialSprintIdString);
 		} catch (Exception e) {
-			sprintId = -1;
+			serialSprintId = -1;
 		}
 
 		String name = "ALL";
 		if (request.getParameter("UserID") != null) { 
 			name = request.getParameter("UserID");	// filter name
 		}
-
+		
+		// Get sprint id
+		long sprintId = -1;
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		return new TaskBoardHelper(project, sprintId).getTaskBoardStoryTaskListText(name);
 	}
 }

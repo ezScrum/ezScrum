@@ -32,7 +32,7 @@ public class AjaxAddNewTagAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Add New Tag in AjaxAddNewTagAction.");
 		// get session info 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		String newTagName = request.getParameter("newTagName");

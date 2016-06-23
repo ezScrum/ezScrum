@@ -33,12 +33,13 @@
     These componets are created for reuse it.
 -->
 <script type="text/javascript" src="javascript/ezScrumLayout/ezScrumLayoutSupport.js"></script>
-
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
 
 <!-- other support -->
 <script type="text/javascript" src="javascript/AjaxWidget/CommonFormVTypes.js"></script>
 <script type="text/javascript" src="javascript/AjaxWidget/Message.js"></script>
+<script type="text/javascript" src="javascript/md5.js"></script>
 <link rel="stylesheet" type="text/css" href="css/Message.css"/>
 
 
@@ -62,13 +63,16 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/Management_ScrumRole_Panel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/PluginGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/DbConfigForm.js"></script>
-
+<script type="text/javascript" src="javascript/ezScrumPanel/ImportForm.js"></script>
 
 <!-- Page -->
 <script type="text/javascript" src="javascript/ezScrumPage/AccountManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ScrumRoleManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/PluginManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/DbConfigPage.js"></script>
+
+<script type="text/javascript" src="javascript/ezScrumPage/ImportPage.js"></script>
+
 <!-- 這2個page似乎拔掉了? 待確認
 <script type="text/javascript" src="javascript/ezScrumPage/CheckUpdateManagement.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPage/ServerManagement.js"></script>

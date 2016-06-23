@@ -32,9 +32,9 @@ public class ViewProjectSummaryAction extends Action {
 		
 		HttpSession session = request.getSession();
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		ProjectHelper projectHelper = new ProjectHelper();
-		String projectName = request.getParameter("PID");
+		String projectName = request.getParameter("projectName");
 		log.debug("Parameter=" + projectName);
 
 		// 比對 project name 是否存在

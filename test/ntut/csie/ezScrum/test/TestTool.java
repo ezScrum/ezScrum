@@ -149,13 +149,12 @@ public class TestTool {
 	/**
 	 * 取得該Sprint的最後一天，不包含週末。
 	 * 
-	 * @param dueDate
+	 * @param endDate
 	 * @return
 	 */
 	public Date getSprintEndDate(int inter, Date startDate) {
-		String dueDate = this.calcaulateDueDate(inter, startDate);
-		Date endDate = DateUtil.nearWorkDate(DateUtil.dayFilter(dueDate), DateUtil.FRONT_DIRECTION);
-		return endDate;
+		String calculatedEndDate = calcaulateEndDate(inter, startDate);
+		return DateUtil.dayFilter(calculatedEndDate);
 	}
 
 	public Date getSprintStartDate(String inter, Date date) {
@@ -173,19 +172,19 @@ public class TestTool {
 	/**
 	 * 計算該Sprint的最後一天，包含週末。
 	 * 
-	 * @param dueDate
+	 * @param endDate
 	 * @return
 	 */
-	public String calcaulateDueDate(int inter, Date startDate) {
-		String dueDateString;
+	public String calcaulateEndDate(int inter, Date startDate) {
+		String endDateString;
 		int interval = inter;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(startDate);
 		calendar.add(Calendar.DATE, interval * 7 - 1);
-		Date dueDate = calendar.getTime();
-		dueDateString = simpleDateFormat.format(dueDate);
-		return dueDateString;
+		Date endDate = calendar.getTime();
+		endDateString = simpleDateFormat.format(endDate);
+		return endDateString;
 	}
 
 	/**

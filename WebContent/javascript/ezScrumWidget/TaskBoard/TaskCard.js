@@ -27,14 +27,13 @@ function renderTaskContext(record) {
 function renderAttachFile(record) {
 	var taskId = record.Id;
 	var fileList = record.AttachFileList;
-
 	if (fileList.length == 0)
 		return "";
 
 	var result = "<p><b>[Attach Files]</b></p>";
 	for ( var i = 0; i < fileList.length; i++) {
 		result += String.format('<p>'+ (i+1) +'. <a href="{0}" target="_blank">{1}</a>&nbsp;&nbsp;'
-							+ '<a href="#" onClick="deleteTaskAttachFile({2}, {3}); false;"><image src="./images/drop2.png"></a>&nbsp;&nbsp;{4}</p>',
+							+ '<a href="#" onClick="deleteTaskAttachFile({2}, {3}); false;"><image src="./images/cancel.png"></a>&nbsp;&nbsp;{4}</p>',
 				fileList[i].FilePath, fileList[i].FileName, fileList[i].FileId, taskId, fileList[i].UploadDate);
 	}
 	return result;
@@ -116,7 +115,6 @@ function createTaskCard(task, storyID) {
 		updateData_AttachFile : function(attachFileList) {
 			var data = this.data;
 			data.AttachFileList = attachFileList;
-            console.log(data);
         	this.items.get(0).update(createTaskContent(data));
 		},
 		updateName : function(name) {

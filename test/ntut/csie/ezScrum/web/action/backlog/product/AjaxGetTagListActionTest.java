@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import servletunit.struts.MockStrutsTestCase;
@@ -35,7 +33,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		
 		// 新增Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCT = new CreateTag(2, mCP);
 		mCT.exe();
@@ -57,17 +55,12 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCT = null;
 		mConfig = null;
@@ -75,7 +68,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 	
 	public void testGetAllTagList(){
 		// ================ set request info ========================
-		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -93,7 +86,7 @@ public class AjaxGetTagListActionTest extends MockStrutsTestCase {
 		for(TagObject tag: tags){
 			sb.append("<IssueTag>");
 			sb.append("<Id>" + tag.getId() + "</Id>");
-			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getName()) + "</Name>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(tag.getName()) + "</Name>");
 			sb.append("</IssueTag>");
 		}
 		sb.append("</TagList>");

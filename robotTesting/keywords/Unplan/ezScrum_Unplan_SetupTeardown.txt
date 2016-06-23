@@ -1,0 +1,55 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../ezScrum_Login.txt
+Resource          ../Project/ezScrum_Project.txt
+Resource          ezScrum_Unplan.txt
+
+*** Keywords ***
+Test Unplan Suite Setup
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Unplan Suite Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Unplan Add Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Unplan    Add_Unplan.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+    # Back to Project List
+    SwitchToPage    ProjectList
+    ${PROJECT_NAME}    Set Variable    Project01
+    Select Project    ${PROJECT_NAME}_DisplayName
+    # Switch to Unplanned Page
+    Select Node Product    Unplanned
+
+Test Unplan Add Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Unplan Edit Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Unplan    Edit_Unplan.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+    # Back to Project Page
+    ${PROJECT_NAME}    Set Variable    Project01
+    Select Project    ${PROJECT_NAME}_DisplayName
+    # Switch Unplanned Page
+    Select Node Product    Unplanned
+
+Test Unplan Edit Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Unplan Delete Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Unplan    Delete_Unplan.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+    # Back to Project Page
+    ${PROJECT_NAME}    Set Variable    Project01
+    Select Project    ${PROJECT_NAME}_DisplayName
+    # Switch Unplanned Page
+    Select Node Product    Unplanned
+
+Test Unplan Delete Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

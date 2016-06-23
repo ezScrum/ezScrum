@@ -18,7 +18,7 @@ ezScrum.Management_ContentPanel = new Ext.Panel({
 	    //CheckUpdateManagementPage, ServerManagementPage
 	    
 	    // Database Config Management index
-	    // 3
-	    DbConfigPage
+	    // 3,       4
+	    DbConfigPage, ImportPage
 	]
 });

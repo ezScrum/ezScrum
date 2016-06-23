@@ -18,7 +18,7 @@ public class AccountLogic {
 	 * @return
 	 */
 	public boolean checkAccount(HttpServletRequest request) {
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 		// 判斷使用者是否為被啟用狀態
 		AccountObject account = userSession.getAccount();

@@ -5,29 +5,25 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
 
 public class PluginWrapperHelperTest {
 	private final String mPluginTestDataPath = "./TestData/PluginData/";
 	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
 	private final String mPluginName = "redminePlugin.war";
-	private Configuration mConfig  = null;
 
 	@Before
 	public void setUp() throws Exception {
-		mConfig = new Configuration();
 		addPluginToWorkspace();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		deletePluginFolder();
-		mConfig = null;
 	}
 
 	@Test

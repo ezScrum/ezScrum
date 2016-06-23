@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 public class StoryObject implements IBaseObject {
-	public final static int STATUS_UNCHECK = 0;
-	public final static int STATUS_DONE = 1;
+	public final static int STATUS_UNCHECK = StatusEnum.NEW;
+	public final static int STATUS_DONE = StatusEnum.CLOSED;
 	public final static int NO_PARENT = -1;
 	public final static int DEFAULT_VALUE = -1;
 	
@@ -47,6 +48,10 @@ public class StoryObject implements IBaseObject {
 		return StoryDAO.getInstance().get(id);
 	}
 	
+	public static StoryObject get(long projectId, long serialId) {
+		return StoryDAO.getInstance().get(projectId, serialId);
+	}
+	
 	public StoryObject(long projectId) {
 		mProjectId = projectId;
 	}
@@ -58,17 +63,17 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public StoryObject setName(String name) {
-		mName = handleSpecialChar(name);
+		mName = name;
 		return this;
 	}
 	
 	public StoryObject setNotes(String notes) {
-		mNotes = handleSpecialChar(notes);
+		mNotes = notes;
 		return this;
 	}
 	
 	public StoryObject setHowToDemo(String howToDemo) {
-		mHowToDemo = handleSpecialChar(howToDemo);
+		mHowToDemo = howToDemo;
 		return this;
 	}
 	
@@ -301,7 +306,6 @@ public class StoryObject implements IBaseObject {
 	 */
 	public void save(long specificTime) {
 		if (exists()) {
-			mUpdateTime = specificTime;
 			doUpdate(specificTime);
 		} else {
 			doCreate();
@@ -375,7 +379,7 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.IMPORTANCE, mImportance)
 			.put(StoryEnum.VALUE, mValue)
 			.put(StoryEnum.ESTIMATE, mEstimate)
-			.put(StoryEnum.STATUS, mStatus)
+			.put(StoryEnum.STATUS, getStatusString())
 			.put(StoryEnum.SPRINT_ID, mSprintId)
 			.put("totalTaskPoint", getTotalTaskPoints())
 			.put("tasks", taskJsonArray)
@@ -385,18 +389,20 @@ public class StoryObject implements IBaseObject {
 		return storyJson;
 	}
 	
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		StoryObject story = StoryDAO.getInstance().get(mId);
 		return story != null;
 	}
 	
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = StoryDAO.getInstance().create(this);
 		saveTags();
 		reload();
-		HistoryDAO.getInstance().create(
-				new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
-						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
+				HistoryObject.TYPE_CREATE, "", "", mCreateTime); 
+		history.save();
 		if (mSprintId != DEFAULT_VALUE) {
 			// Append this story to sprint
 			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mCreateTime);
@@ -410,98 +416,89 @@ public class StoryObject implements IBaseObject {
 		saveTags();
 		
 		if (!mName.equals(oldStory.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName);
+			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName, mUpdateTime);
 		}
 		if (!mNotes.equals(oldStory.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes);
+			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes, mUpdateTime);
 		}
 		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
-			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo);
+			addHistory(HistoryObject.TYPE_HOW_TO_DEMO, oldStory.getHowToDemo(), mHowToDemo, mUpdateTime);
 		}
 		if (mImportance != oldStory.getImportance()) {
-			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance);
+			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance, mUpdateTime);
 		}
 		if (mValue != oldStory.getValue()) {
-			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue);
+			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue, mUpdateTime);
 		}
 		if (mEstimate != oldStory.getEstimate()) {
-			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate);
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate, mUpdateTime);
 		}
 		if (mStatus != oldStory.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus);
+			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus, mUpdateTime);
 		}
 		if (mSprintId != oldStory.getSprintId()) {
 			if (mSprintId == DEFAULT_VALUE) {
 				// Remove this story from sprint
-				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()));				
+				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);				
 			} else if (mSprintId != DEFAULT_VALUE) {
 				// Append this story to sprint
 				if (oldStory.getSprintId() != DEFAULT_VALUE) {
-					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()));
+					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);
 				}
-				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId));
+				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mUpdateTime);
 			}
 		}
 	}
 	
 	private void doUpdate(long specificTime) {
+		mUpdateTime = specificTime;
 		StoryObject oldStory = StoryDAO.getInstance().get(mId);
 		StoryDAO.getInstance().update(this);
 		saveTags();
 		
 		if (!mName.equals(oldStory.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName, specificTime);
+			addHistory(HistoryObject.TYPE_NAME, oldStory.getName(), mName, mUpdateTime);
 		}
 		if (!mNotes.equals(oldStory.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes, specificTime);
+			addHistory(HistoryObject.TYPE_NOTE, oldStory.getNotes(), mNotes, mUpdateTime);
 		}
 		if (!mHowToDemo.equals(oldStory.getHowToDemo())) {
-			addHistory(HistoryObject.TYPE_HOWTODEMO, oldStory.getHowToDemo(), mHowToDemo, specificTime);
+			addHistory(HistoryObject.TYPE_HOW_TO_DEMO, oldStory.getHowToDemo(), mHowToDemo, mUpdateTime);
 		}
 		if (mImportance != oldStory.getImportance()) {
-			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance, specificTime);
+			addHistory(HistoryObject.TYPE_IMPORTANCE, oldStory.getImportance(), mImportance, mUpdateTime);
 		}
 		if (mValue != oldStory.getValue()) {
-			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue, specificTime);
+			addHistory(HistoryObject.TYPE_VALUE, oldStory.getValue(), mValue, mUpdateTime);
 		}
 		if (mEstimate != oldStory.getEstimate()) {
-			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate, specificTime);
+			addHistory(HistoryObject.TYPE_ESTIMATE, oldStory.getEstimate(), mEstimate, mUpdateTime);
 		}
 		if (mStatus != oldStory.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus, specificTime);
+			addHistory(HistoryObject.TYPE_STATUS, oldStory.getStatus(), mStatus, mUpdateTime);
 		}
 		if (mSprintId != oldStory.getSprintId()) {
 			if (mSprintId == DEFAULT_VALUE) {
 				// Remove this story from sprint
-				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), specificTime);				
+				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);				
 			} else if (mSprintId != DEFAULT_VALUE) {
 				// Append this story to sprint
 				if (oldStory.getSprintId() != DEFAULT_VALUE) {
-					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), specificTime);
+					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);
 				}
-				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), specificTime);
+				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mUpdateTime);
 			}
 		}
-	}
-	
-	private void addHistory(int type, int oldValue, int newValue) {
-		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
 	}
 	
 	private void addHistory(int type, int oldValue, int newValue, long specificTime) {
 		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue), specificTime);
 	}
 	
-	private void addHistory(int type, String oldValue, String newValue) {
-		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
-				type, oldValue, newValue, System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
-	}
-	
 	private void addHistory(int type, String oldValue, String newValue, long specificTime) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_STORY,
 				type, oldValue, newValue, specificTime);
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 	
 	private void resetData(StoryObject story) {
@@ -545,7 +542,6 @@ public class StoryObject implements IBaseObject {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void saveTags() {
 		if (mUpdateTags) {
 			ArrayList<Long> oldTags = new ArrayList<Long>();
@@ -553,7 +549,9 @@ public class StoryObject implements IBaseObject {
 				oldTags.add(tag.getId());
 			}
 			
+			@SuppressWarnings("unchecked")
 			ArrayList<Long> deleteTags = (ArrayList<Long>) CollectionUtils.subtract(oldTags, mCacheTagsId);
+			@SuppressWarnings("unchecked")
 			ArrayList<Long> addTags = (ArrayList<Long>) CollectionUtils.subtract(mCacheTagsId, oldTags);
 			
 			for (Long tagId : deleteTags) {
@@ -567,12 +565,5 @@ public class StoryObject implements IBaseObject {
 			mCacheTagsId = new ArrayList<Long>();
 			mUpdateTags = false;
 		}
-	}
-	
-	private String handleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
 	}
 }

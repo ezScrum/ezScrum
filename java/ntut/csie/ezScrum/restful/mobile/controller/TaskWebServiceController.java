@@ -80,7 +80,7 @@ public class TaskWebServiceController {
 			decoder.decodeProjectName(projectName);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
-			existedTaskListJson = mTaskWebService.getTasksWithNoParent();
+			existedTaskListJson = mTaskWebService.getDroppedTasks();
 		} catch (LogonException e) {
 			System.out
 					.println("class: TaskWebServiceController, "
@@ -203,7 +203,7 @@ public class TaskWebServiceController {
 			decoder.decodeProjectName(projectName);
 			mTaskWebService = new TaskWebService(decoder.getDecodeUsername(),
 					decoder.getDecodePwd(), decoder.getDecodeProjectName());
-			mTaskWebService.dropTask(taskId, storyId);
+			mTaskWebService.dropTask(taskId);
 		} catch (IOException e) {
 			System.out.println("class: TaskWebServiceController, "
 					+ "method: dropTask, " + "api:InformationDecoder, "

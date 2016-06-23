@@ -12,17 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.jcis.core.util.CloseStreamUtil;
-import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -42,6 +31,16 @@ import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.time.SimpleTimePeriod;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
+import ntut.csie.jcis.core.util.CloseStreamUtil;
+import ntut.csie.jcis.core.util.DateUtil;
+
 public class ScheduleReport {
 	private final long mOneDay = 24 * 3600 * 1000;
 	private Date mStartDate = new Date();
@@ -56,7 +55,7 @@ public class ScheduleReport {
 	private String mSprintGoal = "";
 	private int mSize = 0;
 
-	public ScheduleReport(ProjectObject project, IUserSession session, int iteration) {
+	public ScheduleReport(ProjectObject project, IUserSession session, long iteration) {
 		mProject = project;
 		mIteration = iteration;
 	}
@@ -85,9 +84,12 @@ public class ScheduleReport {
 	}
 
 	public String getPath() {
-		String link = "./Workspace/" + mProject.getName() + "/"
-				+ IProject.METADATA + "/" + mFolderName + "/Sprint"
-				+ mIteration + "/" + mFileName;
+		String workspaceDirectory = "./Workspace/";
+		String metadataFolderName = "/_metadata/";
+		String sprintFolderTitle = "/Sprint";
+		String slash = "/";
+		String link = workspaceDirectory + mProject.getName() + metadataFolderName + mFolderName + sprintFolderTitle
+				+ mIteration + slash + mFileName;
 		return link;
 	}
 
@@ -236,9 +238,9 @@ public class ScheduleReport {
 	}
 
 	private void saveChart(JFreeChart chart) {
-		IProject iProject = new ProjectMapper().getProjectByID(mProject.getName());
-		mChartPath = iProject.getFolder(IProject.METADATA).getFullPath()
-				+ File.separator + mFolderName + File.separator + "Sprint"
+		Configuration configuration = new Configuration();
+		String metadataFolderName = "_metadata";
+		mChartPath = configuration.getWorkspacePath() + File.separator + mProject.getName() + File.separator + metadataFolderName + File.separator + mFolderName + File.separator + "Sprint"
 				+ mIteration + File.separator + mFileName;
 
 		File f = new File(mChartPath);

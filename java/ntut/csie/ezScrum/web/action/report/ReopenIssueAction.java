@@ -36,7 +36,7 @@ public class ReopenIssueAction extends PermissionAction {
 		log.info("Reopen Issue in ReopenIssueAction.");
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		long issueId = Long.parseLong(request.getParameter("Id"));

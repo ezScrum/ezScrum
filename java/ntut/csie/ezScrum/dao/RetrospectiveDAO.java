@@ -24,10 +24,8 @@ public class RetrospectiveDAO extends
 
 	@Override
 	public long create(RetrospectiveObject retrospective) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(retrospective.getProjectId());
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(retrospective.getProjectId());
 
 		long retorspectiveSerialId = serialNumber.getRetrospectiveId() + 1;
 
@@ -36,11 +34,11 @@ public class RetrospectiveDAO extends
 		valueSet.addInsertValue(RetrospectiveEnum.NAME, retrospective.getName());
 		valueSet.addInsertValue(RetrospectiveEnum.DESCRIPTION, retrospective.getDescription());
 		valueSet.addInsertValue(RetrospectiveEnum.TYPE, retrospective.getType());
-		valueSet.addInsertValue(RetrospectiveEnum.STATUS, RetrospectiveObject.STATUS_NEW); // 新增後的狀態為new
+		valueSet.addInsertValue(RetrospectiveEnum.STATUS, retrospective.getStatus());
 		valueSet.addInsertValue(RetrospectiveEnum.SPRINT_ID, retrospective.getSprintId());
 		valueSet.addInsertValue(RetrospectiveEnum.PROJECT_ID, retrospective.getProjectId());
-		valueSet.addInsertValue(RetrospectiveEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(RetrospectiveEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(RetrospectiveEnum.CREATE_TIME, retrospective.getCreateTime());
+		valueSet.addInsertValue(RetrospectiveEnum.UPDATE_TIME, retrospective.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
@@ -55,6 +53,28 @@ public class RetrospectiveDAO extends
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
 		valueSet.addEqualCondition(RetrospectiveEnum.ID, id);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		RetrospectiveObject retrospective = null;
+		try {
+			if (result.next()) {
+				retrospective = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return retrospective;
+	}
+	
+	public RetrospectiveObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(RetrospectiveEnum.SERIAL_ID, serialId);
 
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
@@ -98,23 +118,100 @@ public class RetrospectiveDAO extends
 		return mControl.executeUpdate(query);
 	}
 	
-	public ArrayList<RetrospectiveObject> getRetrospectivesBySprintId(long sprintId) {
+	public ArrayList<RetrospectiveObject> getGoodsBySprintId(long sprintId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
 		valueSet.addEqualCondition(RetrospectiveEnum.SPRINT_ID, sprintId);
+		valueSet.addTextFieldEqualCondition(RetrospectiveEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
-		ArrayList<RetrospectiveObject> retrospectives = new ArrayList<>();
+		ArrayList<RetrospectiveObject> goods = new ArrayList<RetrospectiveObject>();
 		try {
 			while (result.next()) {
-				retrospectives.add(convert(result));
+				goods.add(convert(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			closeResultSet(result);
 		}
-		return retrospectives;
+		return goods;
+	}
+	
+	public ArrayList<RetrospectiveObject> getImprovementsBySprintId(long sprintId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.SPRINT_ID, sprintId);
+		valueSet.addTextFieldEqualCondition(RetrospectiveEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<RetrospectiveObject> improvements = new ArrayList<>();
+		try {
+			while (result.next()) {
+				improvements.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return improvements;
+	}
+	
+	/**
+	 * Get all goods.
+	 * 
+	 * @param projectId
+	 * @return All goods which in this project
+	 */
+	public ArrayList<RetrospectiveObject> getGoodsByProjectId(long projectId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.PROJECT_ID, projectId);
+		valueSet.addTextFieldEqualCondition(RetrospectiveEnum.TYPE, RetrospectiveObject.TYPE_GOOD);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		ArrayList<RetrospectiveObject> goods = new ArrayList<RetrospectiveObject>();
+		try {
+			while (result.next()) {
+				goods.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		
+		return goods;
+	}
+	
+	/**
+	 * Get all improvements.
+	 * 
+	 * @param projectId
+	 * @return All improvements which in this project
+	 */
+	public ArrayList<RetrospectiveObject> getImprovementsByProjectId(long projectId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(RetrospectiveEnum.TABLE_NAME);
+		valueSet.addEqualCondition(RetrospectiveEnum.PROJECT_ID, projectId);
+		valueSet.addTextFieldEqualCondition(RetrospectiveEnum.TYPE, RetrospectiveObject.TYPE_IMPROVEMENT);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		ArrayList<RetrospectiveObject> improvements = new ArrayList<RetrospectiveObject>();
+		try {
+			while (result.next()) {
+				improvements.add(convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		
+		return improvements;
 	}
 
 	public static RetrospectiveObject convert(ResultSet result) throws SQLException{

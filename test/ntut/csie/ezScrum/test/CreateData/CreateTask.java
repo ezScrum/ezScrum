@@ -3,11 +3,13 @@ package ntut.csie.ezScrum.test.CreateData;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import ntut.csie.ezScrum.dao.ProjectDAO;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.jcis.resource.core.IProject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import ntut.csie.ezScrum.dao.ProjectDAO;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class CreateTask {
 	private static Log mlog = LogFactory.getLog(CreateTask.class);
@@ -41,7 +43,7 @@ public class CreateTask {
 
 	public CreateTask(int count, CreateProject CP) {
 		mTaskAmount = count;
-		mProjectAmount = CP.getProjectList().size();
+		mProjectAmount = CP.getAllProjects().size();
 		mCP = CP;
 		Calendar cal = Calendar.getInstance();
 		mSpecificTime = cal.getTime();
@@ -75,7 +77,7 @@ public class CreateTask {
 
 			for (int i = 0; i < mProjectAmount; i++) {
 				// 此路徑為開發端的 TestData/MyWorkspace/
-				IProject project = mCP.getProjectList().get(i);
+				ProjectObject project = mCP.getAllProjects().get(i);
 
 				long Default_storyID = 1;
 
@@ -95,7 +97,7 @@ public class CreateTask {
 			}
 		} else {
 			for (int j = 0; j < mTaskAmount; j++) {
-				IProject project = mCP.getProjectList().get(0);
+				ProjectObject project = mCP.getAllProjects().get(0);
 
 				String TaskName = getDefault_TASK_NAME(j + 1);
 				String TaskNote = getDefault_TASK_NOTE(j + 1);
@@ -124,9 +126,9 @@ public class CreateTask {
 		storyTosprint.exe(); // 執行 - 將 stories 區分到每個 sprints
 	}
 
-	private TaskObject addTask(IProject p, String name, int estimate, long handlerId,
+	private TaskObject addTask(ProjectObject project, String name, int estimate, long handlerId,
 			ArrayList<Long> partners, String notes, long storyId, Date date) {
-		long projectId = ProjectDAO.getInstance().get(p.getName()).getId();
+		long projectId = ProjectDAO.getInstance().get(project.getName()).getId();
 		TaskObject task = new TaskObject(projectId);
 		task.setName(name).setNotes(notes).setEstimate(estimate)
 				.setHandlerId(handlerId).setStoryId(storyId)

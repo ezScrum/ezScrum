@@ -8,18 +8,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.UnplannedObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import com.google.gson.Gson;
+
+import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.UnplanObject;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 public class ShowIssueHistoryAction extends PermissionAction {
 	private static Log log = LogFactory.getLog(ShowIssueHistoryAction.class);
@@ -40,26 +42,29 @@ public class ShowIssueHistoryAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Show Issue History. ");
 
+		// Get Project
+		ProjectObject project = SessionManager.getProject(request);
+		
 		// get parameter info
-		long issueId = Long.parseLong(request.getParameter("issueID"));
+		long serialIssueId = Long.parseLong(request.getParameter("issueID"));
 		String issueType = request.getParameter("issueType");
 
 		// 用 Gson 轉換 issue 為 json 格式傳出
 		IssueHistoryUI ihui = null;
 		if (issueType.equals("Task")) {
-			TaskObject task = TaskObject.get(issueId);
+			TaskObject task = TaskObject.get(project.getId(), serialIssueId);
 			if (task != null) {
 				ihui = new IssueHistoryUI(task);
 			}
 		} else if (issueType.equals("Story")){
-			StoryObject story = StoryObject.get(issueId);
+			StoryObject story = StoryObject.get(project.getId(), serialIssueId);
 			if (story != null) {
 				ihui = new IssueHistoryUI(story);
 			}
 		} else {
-			UnplannedObject unplanned = UnplannedObject.get(issueId);
-			if (unplanned != null) {
-				ihui = new IssueHistoryUI(unplanned);
+			UnplanObject unplan = UnplanObject.get(project.getId(), serialIssueId);
+			if (unplan != null) {
+				ihui = new IssueHistoryUI(unplan);
 			}
 		}
 		Gson gson = new Gson();
@@ -74,15 +79,15 @@ public class ShowIssueHistoryAction extends PermissionAction {
 
 		private List<IssueHistoryList> IssueHistories = new LinkedList<IssueHistoryList>();
 		
-		public IssueHistoryUI(UnplannedObject unplanned) {
-			if (unplanned != null) {
-				Id = unplanned.getId();
+		public IssueHistoryUI(UnplanObject unplan) {
+			if (unplan != null) {
+				Id = unplan.getId();
 				Link = "";
-				Name = unplanned.getName();
-				IssueType = "Unplanned";
+				Name = unplan.getName();
+				IssueType = "Unplan";
 
-				if (unplanned.getHistories().size() > 0) {
-					for (HistoryObject history : unplanned.getHistories()) {
+				if (unplan.getHistories().size() > 0) {
+					for (HistoryObject history : unplan.getHistories()) {
 						if (history.getDescription().length() > 0) {
 							IssueHistories.add(new IssueHistoryList(history));
 						}

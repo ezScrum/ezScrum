@@ -3,19 +3,18 @@ package ntut.csie.ezScrum.web.action.backlog.sprint;
 import java.io.File;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.jcis.resource.core.IProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	private IProject mIProject;
+	private ProjectObject mProject;
 	private final String mActionPath = "/showExistedStory";
 
 	public ShowExistedStoryActionTest(String testName) {
@@ -33,13 +32,13 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 
 		// create Project
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// create Sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 		
-		mIProject = mCP.getProjectList().get(0);
+		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
 
@@ -56,20 +55,15 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
-		mIProject = null;
+		mProject = null;
 		mConfig = null;
 	}
 
@@ -81,8 +75,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String releaseId = "-1";
 		
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
 
@@ -112,8 +106,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		long sprintId = mCS.getSprintsId().get(0);
 		String releaseId = "-1";
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintId));
 		addRequestParameter("releaseID", releaseId);
 
@@ -142,7 +136,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 					.append("<Status>").append(storyStatus).append("</Status>")
 					.append("<Notes>").append("TEST_STORY_NOTE_" + 1).append("</Notes>")
 					.append("<HowToDemo>").append("TEST_STORY_DEMO_" + 1).append("</HowToDemo>")
-					.append("<Release></Release>")
+					.append("<Release>-1</Release>")
 					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
 					.append("<Tag></Tag>")
 				.append("</Story>")
@@ -156,7 +150,7 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 					.append("<Status>").append(storyStatus).append("</Status>")
 					.append("<Notes>").append("TEST_STORY_NOTE_" + 2).append("</Notes>")
 					.append("<HowToDemo>").append("TEST_STORY_DEMO_" + 2).append("</HowToDemo>")
-					.append("<Release></Release>")
+					.append("<Release>-1</Release>")
 					.append("<Sprint>").append(releaseIdAndSprintId).append("</Sprint>")
 					.append("<Tag></Tag>")
 				.append("</Story>")
@@ -173,8 +167,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String releaseId = "-1";
 		
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
 
@@ -201,8 +195,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String releaseId = "ReleaseNumberFormatException";
 		
 		// ================ set request info ========================
-		String projectName = mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
 
@@ -229,8 +223,8 @@ public class ShowExistedStoryActionTest extends MockStrutsTestCase {
 		String releaseId = "";
 		
 		// ================ set request info ========================
-		String projectName = this.mIProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		String projectName = this.mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 		addRequestParameter("releaseID", releaseId);
 

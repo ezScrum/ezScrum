@@ -172,7 +172,7 @@ ezScrum.window.DoneIssueWindow = Ext.extend(ezScrum.layout.Window, {
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.window.DoneIssueWindow.superclass.initComponent.apply(this, arguments);
-
+		
 		this.addEvents('DoneSuccess', 'DoneFailure', 'LoadFailure');		
 		this.items.get(0).on('DOSuccess', function(obj, response, record) { this.fireEvent('DoneSuccess', this, response, record); }, this);
 		this.items.get(0).on('DOFailure', function(obj, response) { this.fireEvent('DoneFailure', this, response); }, this);

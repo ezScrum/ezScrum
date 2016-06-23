@@ -1,15 +1,13 @@
 package ntut.csie.ezScrum.web.dataObject;
 
-import java.sql.SQLException;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.web.databaseEnum.SerialNumberEnum;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 /**
- * releaseId, sprintId, storyId, taskId, unplannedId, retrospectiveId
+ * releaseId, sprintId, storyId, taskId, unplanId, retrospectiveId
  * 預設為 0, 為當下物件的數量, 若要拿 serialId 必須加 1
  * @author cutecool
  */
@@ -20,30 +18,16 @@ public class SerialNumberObject implements IBaseObject {
 	private long mSprintId = -1;
 	private long mStoryId = -1;
 	private long mTaskId = -1;
-	private long mUnplannedId = -1;
+	private long mUnplanId = -1;
 	private long mRetrospectiveId = -1;
 	
-	public SerialNumberObject() {}
-	
-	public SerialNumberObject(long projectId, long releaseId, long sprintId,
-			long storyId, long taskId, long unplannedId, long retrospectiveId) {
+	public SerialNumberObject(long projectId) {
 		mProjectId = projectId;
-		mReleaseId = releaseId;
-		mSprintId = sprintId;
-		mStoryId = storyId;
-		mTaskId = taskId;
-		mUnplannedId = unplannedId;
-		mRetrospectiveId = retrospectiveId;
 	}
 	
-	public SerialNumberObject setId(long id) {
+	public SerialNumberObject(long id, long projectId) {
 		mId = id;
-		return this;
-	}
-	
-	public SerialNumberObject setProjectId(long projectId) {
 		mProjectId = projectId;
-		return this;
 	}
 	
 	public SerialNumberObject setReleaseId(long releaseId) {
@@ -66,8 +50,8 @@ public class SerialNumberObject implements IBaseObject {
 		return this;
 	}
 	
-	public SerialNumberObject setUnplannedId(long unplannedId) {
-		mUnplannedId = unplannedId;
+	public SerialNumberObject setUnplanId(long unplanId) {
+		mUnplanId = unplanId;
 		return this;
 	}
 	
@@ -100,8 +84,8 @@ public class SerialNumberObject implements IBaseObject {
 		return mTaskId;
 	}
 	
-	public long getUnplannedId() {
-		return mUnplannedId;
+	public long getUnplanId() {
+		return mUnplanId;
 	}
 	
 	public long getRetrospectiveId() {
@@ -109,16 +93,17 @@ public class SerialNumberObject implements IBaseObject {
 	}
 	
 	public JSONObject toJSON() throws JSONException {
-		JSONObject object = new JSONObject();
-		object
+		JSONObject serialNumberJson = new JSONObject();
+		serialNumberJson
+		    .put(SerialNumberEnum.ID, mId)
 			.put(SerialNumberEnum.PROJECT_ID, mProjectId)
 			.put(SerialNumberEnum.RELEASE, mReleaseId)
 			.put(SerialNumberEnum.SPRINT, mSprintId)
 			.put(SerialNumberEnum.STORY, mStoryId)
 			.put(SerialNumberEnum.TASK, mTaskId)
-			.put(SerialNumberEnum.UNPLANNED, mUnplannedId)
+			.put(SerialNumberEnum.UNPLAN, mUnplanId)
 			.put(SerialNumberEnum.RETROSPECTIVE, mRetrospectiveId);
-		return object;
+		return serialNumberJson;
 	}
 	
 	public void save() {
@@ -138,26 +123,16 @@ public class SerialNumberObject implements IBaseObject {
 		SerialNumberDAO.getInstance().update(this);
 	}
 	
-	/**
-	 * Using projectId to get serial number
-	 * @param projectId
-	 * @throws SQLException
-	 */
-	public static SerialNumberObject get(long projectId) {
-		return SerialNumberDAO.getInstance().get(projectId);
+	public static SerialNumberObject get(long id) {
+		return SerialNumberDAO.getInstance().get(id);
+	}
+	
+	public static SerialNumberObject getByProjectId(long projectId) {
+		return SerialNumberDAO.getInstance().getByProjectId(projectId);
 	}
 	
 	@Override
-	public void reload() {
-		if (exists()) {
-			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mProjectId);
-			resetData(serialNumber);
-		} else {
-			System.out.println("Record not exists");
-		}
-	}
-	
-	public boolean dalete() {
+	public boolean delete() {
 		boolean success = SerialNumberDAO.getInstance().delete(mId);
 		if (success) {
 			mId = -1;
@@ -165,7 +140,16 @@ public class SerialNumberObject implements IBaseObject {
 		return success;
 	}
 	
-	private boolean exists() {
+	@Override
+	public void reload() {
+		if (exists()) {
+			SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mId);
+			resetData(serialNumber);
+		}
+	}
+	
+	@Override
+	public boolean exists() {
 		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(mId);
 		return serialNumber != null;
 	}
@@ -173,15 +157,11 @@ public class SerialNumberObject implements IBaseObject {
 	private void resetData(SerialNumberObject serialNumber) {
 		mId = serialNumber.getId();
 		mProjectId = serialNumber.getProjectId();
+		mSprintId = serialNumber.getSprintId();
 		mReleaseId = serialNumber.getReleaseId();
 		mStoryId = serialNumber.getStoryId();
 		mTaskId = serialNumber.getTaskId();
-		mUnplannedId = serialNumber.getUnplannedId();
+		mUnplanId = serialNumber.getUnplanId();
 		mRetrospectiveId = serialNumber.getRetrospectiveId();
-	}
-
-	@Override
-	public boolean delete() {
-		return false;
 	}
 }

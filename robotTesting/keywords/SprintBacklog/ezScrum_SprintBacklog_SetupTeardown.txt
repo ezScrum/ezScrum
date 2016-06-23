@@ -52,18 +52,11 @@ Test Sprint Backlog - Drop Story Teardown
     Exit ezScrum System
 
 Test Sprint Backlog - Add Existing Story Setup
-    Test Sprint Backlog - PreCondition
-    Select Node Product    Product Backlog
-    # story information for add
-    ${storyName}=    Set Variable    add story for test add existing story
-    ${value}=    Set Variable    3
-    ${estimate}=    Set Variable    5
-    ${importance}=    Set Variable    8
-    ${notes}=    Set Variable    add story for notes
-    ${howToDemo}=    Set Variable    add story for how to demo
-    # add story
-    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Add_Existing_Stories.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+    ${PROJECT_NAME}    Set Variable    Project01
+    Select Project    ${PROJECT_NAME}
 
 Test Sprint Backlog - Add Existing Story Teardown
     Test Sprint Backlog - PostCondition

@@ -10,20 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TranslateSpecialCharTest {
-	private TranslateSpecialChar mTranslateSpecialChar = null;
 	private List<String> mTestStr;
 	private List<String> mVerifyStr;
 	
 	@Before
-	public void setUp() throws Exception {
-		mTranslateSpecialChar = new TranslateSpecialChar();
+	public void setUp() {
 		mTestStr = new ArrayList<String>();
 		mVerifyStr = new ArrayList<String>();
 	}
 	
 	@After
-	public void tearDown() throws Exception {
-		mTranslateSpecialChar = null;
+	public void tearDown() {
 		mTestStr.clear();
 		mVerifyStr.clear();
 	}
@@ -41,7 +38,7 @@ public class TranslateSpecialCharTest {
 		mVerifyStr.add("''\\\\");
 		
 		for(int i = 0; i < mTestStr.size(); i++) {
-			assertEquals(mVerifyStr.get(i), mTranslateSpecialChar.TranslateDBChar(mTestStr.get(i)));
+			assertEquals(mVerifyStr.get(i), TranslateSpecialChar.TranslateDBChar(mTestStr.get(i)));
 		}
 	}
 	
@@ -60,7 +57,7 @@ public class TranslateSpecialCharTest {
 		mVerifyStr.add("&lt;&gt;");
 		
 		for(int i = 0; i < mTestStr.size(); i++) {
-			assertEquals(mVerifyStr.get(i), mTranslateSpecialChar.TranslateXMLChar(mTestStr.get(i)));
+			assertEquals(mVerifyStr.get(i), TranslateSpecialChar.TranslateXMLChar(mTestStr.get(i)));
 		}
 	}
 	
@@ -77,7 +74,7 @@ public class TranslateSpecialCharTest {
 		mVerifyStr.add("\\n");
 		
 		for(int i = 0; i < mTestStr.size(); i++) {
-			assertEquals(mVerifyStr.get(i), mTranslateSpecialChar.TranslateJSONChar(mTestStr.get(i)));
+			assertEquals(mVerifyStr.get(i), TranslateSpecialChar.TranslateJSONChar(mTestStr.get(i)));
 		}
 	}
 	
@@ -90,7 +87,7 @@ public class TranslateSpecialCharTest {
 		mVerifyStr.add("None");
 		
 		for(int i = 0; i < mTestStr.size(); i++) {
-			assertEquals(mVerifyStr.get(0), mTranslateSpecialChar.HandleNullString(mTestStr.get(i)));
+			assertEquals(mVerifyStr.get(0), TranslateSpecialChar.HandleNullString(mTestStr.get(i)));
 		}
 	}
 	

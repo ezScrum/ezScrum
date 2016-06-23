@@ -6,15 +6,14 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SprintBacklogLogic {
 	private ProjectObject mProject;
@@ -351,12 +350,12 @@ public class SprintBacklogLogic {
 		}
 	}
 	
-	public void addStoriesToSprint(ArrayList<Long> storiesId, long sprintId) {
-		for (long storyId : storiesId) {
-			StoryObject story = mSprintBacklogMapper.getStory(storyId);
+	public void addStoriesToSprint(ArrayList<Long> serialStoriesId, long sprintId) {
+		for (long serialStoryId : serialStoriesId) {
+			StoryObject story = StoryObject.get(mProject.getId(), serialStoryId);
 			if (sprintId > 0 && story != null) {
-				// 更新 Story 與 Sprint 對應的關係
-				mSprintBacklogMapper.updateStoryRelation(storyId, sprintId, story.getEstimate(), story.getImportance(), new Date());
+				// Update the relation between story and sprint
+				mSprintBacklogMapper.updateStoryRelation(serialStoryId, sprintId, story.getEstimate(), story.getImportance(), new Date());
 			}
 		}
 	}

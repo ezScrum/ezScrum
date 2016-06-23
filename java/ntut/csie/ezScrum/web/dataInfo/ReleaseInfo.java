@@ -11,7 +11,7 @@ public class ReleaseInfo {
 	public String name = "";
 	public String description = "";
 	public String startDate = "";
-	public String dueDate = "";
+	public String endDate = "";
 	
 	public ReleaseInfo() {}
 	
@@ -29,6 +29,6 @@ public class ReleaseInfo {
 		name = release.getString(ReleaseEnum.NAME);
 		description = release.getString(ReleaseEnum.DESCRIPTION);
 		startDate = release.getString(SprintEnum.START_DATE);
-		dueDate = release.getString(SprintEnum.DUE_DATE);
+		endDate = release.getString(SprintEnum.END_DATE);
 	}
 }

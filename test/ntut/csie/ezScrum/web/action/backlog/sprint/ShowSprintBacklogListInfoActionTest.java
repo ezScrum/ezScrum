@@ -6,17 +6,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -43,7 +40,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 		
 		mCS = new CreateSprint(2, mCP);
@@ -64,10 +61,6 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -75,7 +68,6 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
 	}
@@ -88,7 +80,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
@@ -125,7 +117,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		
 		// ================ set session info ========================
@@ -141,7 +133,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		String actualResponseText = response.getWriterBuffer().toString();
 		
 		//	story
-		String storyType = "\"Type\":\"Story\"";
+		String storyType = "\"IssueType\":\"Story\"";
 		String storyName = "\"Name\":\"TEST_STORY_1\"";
 		String storyImportance = "\"Importance\":\"100\"";
 		String storyValue = "\"Value\":\"50\"";
@@ -155,7 +147,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		assertTrue(actualResponseText.contains(storyNotes));
 		
 		//	task
-		String taskType = "\"Type\":\"Task\"";
+		String taskType = "\"IssueType\":\"Task\"";
 		String taskName = "\"Name\":\"TEST_TASK_1\"";
 		String taskValue = "\"Value\":\"\"";
 		String taskEstimatation = "\"Estimate\":\"2\"";
@@ -181,7 +173,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", String.valueOf(sprintsId.get(0)));
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
@@ -221,7 +213,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 		TaskDate = getStoryDate.getDateList(currentDate, 10);
 		
 		StringBuilder expectedResponseTest = new StringBuilder();
-		expectedResponseTest.append("[{\"Type\":\"" + issueType + "\"")
+		expectedResponseTest.append("[{\"IssueType\":\"" + issueType + "\"")
 							.append(",\"ID\":\"" + storyId + "\"")
 							.append(",\"Tag\":\"\"")
 							.append(",\"Name\":\"" + storyName + "\"")
@@ -246,7 +238,7 @@ public class ShowSprintBacklogListInfoActionTest extends MockStrutsTestCase{
 							.append(",\"expanded\":false")
 							.append(",\"id\":\"Story:1\"")
 							.append(",\"cls\":\"folder\"")
-							.append(",\"children\":[{\"Type\":\"" + taskType + "\"")
+							.append(",\"children\":[{\"IssueType\":\"" + taskType + "\"")
 							.append(",\"ID\":\"" + taskId + "\"")
 							.append(",\"Tag\":\"\"")
 							.append(",\"Name\":\"" + taskName + "\"")

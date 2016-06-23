@@ -16,7 +16,7 @@ public class AjaxModifyProjectAction extends PermissionAction {
 
 	@Override
 	public boolean isValidAction() {
-		return super.getScrumRole().getEditProject();
+		return super.getScrumRole().getAccessEditProject();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class AjaxModifyProjectAction extends PermissionAction {
 		String comment = CheckStringValue(request.getParameter("Commnet"));
 		String projectManager = CheckStringValue(request.getParameter("ProjectManager"));
 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		project
 			.setDisplayName(projectDisplayName)
 			.setAttachFileSize(Long.parseLong(attachFileSize))

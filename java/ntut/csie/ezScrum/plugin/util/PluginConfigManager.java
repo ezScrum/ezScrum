@@ -15,25 +15,24 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
-import ntut.csie.jcis.resource.core.ResourceFacade;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.protocal.PluginConfig;
 
 public class PluginConfigManager {
-
-	private final String workspacePath = ResourceFacade.getWorkspace().getRoot().getFullPath().getPathString();
-	private String filePath;
-	private final String configFileName = "/pluginConfig.conf";
+	private Configuration mConfig = new Configuration();
+	private String mFilePath;
+	private final String mConfigFileName = "/pluginConfig.conf";
 
 	public PluginConfigManager() {
-		this.filePath = this.workspacePath + "/_metadata/" + this.configFileName;
+		mFilePath = mConfig.getWorkspacePath() + File.separator + "_metadata" + File.separator + mConfigFileName;
 	}
 	
 	public PluginConfigManager(String projectName) {
-		this.filePath = this.workspacePath + "//" + projectName + "/_metadata/" + this.configFileName;
+		mFilePath = mConfig.getWorkspacePath() + File.separator + projectName + File.separator + "_metadata" + File.separator + mConfigFileName;
 	}
 
 	public PluginConfig getAvailablePluginConfigByPluginId(String pluginId) {
-		for (PluginConfig pluginConfig : this.getPluginConfigList()) {
+		for (PluginConfig pluginConfig : getPluginConfigList()) {
 			if (pluginConfig.getId().equals(pluginId) && pluginConfig.isAvailable()) {
 				return pluginConfig;
 			}
@@ -42,7 +41,7 @@ public class PluginConfigManager {
 	}
 
 	public void removeConfigUIByPluginUIId(String pluginUIId) {
-		List<PluginConfig> pluginConfigList = this.getPluginConfigList();
+		List<PluginConfig> pluginConfigList = getPluginConfigList();
 		for (PluginConfig pluginConfig : pluginConfigList) {
 			if (pluginConfig.getId().equals(pluginUIId)) {
 				pluginConfigList.remove(pluginConfig);
@@ -51,14 +50,14 @@ public class PluginConfigManager {
 		}
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(pluginConfigList);
-		this.replaceFileContent(jsonString);
+		replaceFileContent(jsonString);
 	}
 
 	private List<PluginConfig> getPluginConfigList() {
 		List<PluginConfig> pluginConfigList = new ArrayList<PluginConfig>();
-		if (!this.readFileContent().equals("")) {
+		if (!readFileContent().equals("")) {
 			JsonParser parser = new JsonParser();
-			JsonArray pluginJsonArray = parser.parse(this.readFileContent()).getAsJsonArray();
+			JsonArray pluginJsonArray = parser.parse(readFileContent()).getAsJsonArray();
 			Gson gson = new Gson();
 			for (int i = 0; i < pluginJsonArray.size(); i++) {
 				PluginConfig pluginConfig = gson.fromJson(pluginJsonArray.get(i), PluginConfig.class);
@@ -69,7 +68,7 @@ public class PluginConfigManager {
 	}
 
 	public void replaceFileContent(String content) {
-		File pluginConfigFile = new File(this.filePath);
+		File pluginConfigFile = new File(mFilePath);
 		if (!pluginConfigFile.exists()) {
 			try {
 				pluginConfigFile.createNewFile();
@@ -77,13 +76,13 @@ public class PluginConfigManager {
 				e.printStackTrace();
 			}
 		}
-		this.cleanFileContent();
-		this.writeFileContent(content);
+		cleanFileContent();
+		writeFileContent(content);
 	}
 
 	private void cleanFileContent() {
 		try {
-			BufferedWriter erasor = new BufferedWriter(new FileWriter(filePath));
+			BufferedWriter erasor = new BufferedWriter(new FileWriter(mFilePath));
 			erasor.write("");
 			erasor.flush();
 			erasor.close();
@@ -95,7 +94,7 @@ public class PluginConfigManager {
 	private void writeFileContent(String content) {// 寫入檔案內容
 		try {
 			// Create file
-			FileWriter fireWriter = new FileWriter(filePath);
+			FileWriter fireWriter = new FileWriter(mFilePath);
 			BufferedWriter bufferWriter = new BufferedWriter(fireWriter);
 			bufferWriter.write(content);
 			// Close resource
@@ -111,11 +110,11 @@ public class PluginConfigManager {
 		String result = "";
 		try {
 			// 將舊的內容讀出
-			File file = new File(filePath);
+			File file = new File(mFilePath);
 			if (!file.exists()) {// file is not existed, means first read file
 				return "";
 			}
-			FileInputStream fileInpuStream = new FileInputStream(filePath);
+			FileInputStream fileInpuStream = new FileInputStream(mFilePath);
 			DataInputStream dataInputStream = new DataInputStream(fileInpuStream);
 			BufferedReader bufferReader = new BufferedReader(new InputStreamReader(dataInputStream));
 			String strLine;

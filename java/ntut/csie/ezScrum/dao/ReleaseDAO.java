@@ -25,10 +25,8 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 
 	@Override
 	public long create(ReleaseObject release) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				release.getProjectId());
 
 		long releaseSerialId = serialNumber.getReleaseId() + 1;
@@ -40,11 +38,11 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 				release.getDescription());
 		valueSet.addInsertValue(ReleaseEnum.START_DATE,
 				release.getStartDateString());
-		valueSet.addInsertValue(ReleaseEnum.DUE_DATE,
-				release.getDueDateString());
+		valueSet.addInsertValue(ReleaseEnum.END_DATE,
+				release.getEndDateString());
 		valueSet.addInsertValue(ReleaseEnum.PROJECT_ID, release.getProjectId());
-		valueSet.addInsertValue(ReleaseEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(ReleaseEnum.CREATE_TIME, release.getCreateTime());
+		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
@@ -76,6 +74,28 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		}
 		return release;
 	}
+	
+	public ReleaseObject get(long projectId, long serilaId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ReleaseEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ReleaseEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(ReleaseEnum.SERIAL_ID, serilaId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		ReleaseObject release = null;
+		try {
+			if (result.next()) {
+				release = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return release;
+	}
 
 	@Override
 	public boolean update(ReleaseObject release) {
@@ -84,7 +104,7 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		valueSet.addInsertValue(ReleaseEnum.NAME, release.getName());
 		valueSet.addInsertValue(ReleaseEnum.DESCRIPTION, release.getDescription());
 		valueSet.addInsertValue(ReleaseEnum.START_DATE, release.getStartDateString());
-		valueSet.addInsertValue(ReleaseEnum.DUE_DATE, release.getDueDateString());
+		valueSet.addInsertValue(ReleaseEnum.END_DATE, release.getEndDateString());
 		valueSet.addInsertValue(ReleaseEnum.UPDATE_TIME, release.getUpdateTime());
 		valueSet.addEqualCondition(ReleaseEnum.ID, release.getId());
 		String query = valueSet.getUpdateQuery();
@@ -132,7 +152,7 @@ public class ReleaseDAO extends AbstractDAO<ReleaseObject, ReleaseObject> {
 		release.setName(result.getString(ReleaseEnum.NAME))
 				.setDescription(result.getString(ReleaseEnum.DESCRIPTION))
 				.setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.START_DATE)))
-				.setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.DUE_DATE)))
+				.setEndDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(ReleaseEnum.END_DATE)))
 				.setCreateTime(result.getLong(ReleaseEnum.CREATE_TIME))
 				.setUpdateTime(result.getLong(ReleaseEnum.UPDATE_TIME));
 		return release;

@@ -5,12 +5,11 @@ import java.security.MessageDigest;
 import ntut.csie.ezScrum.web.dataObject.TokenObject;
 
 public class TokenValidator {
-	
 	private final static boolean CHECK_TIME = true;
 	private final static boolean CHECK_PUBLIC_TOKEN = true;
 	private final static boolean CHECK_DISPOSABLE_TOKEN = true;
 	private final static int EXPIRED_TIME = 60;
-
+	
 	public static boolean verify(long accountId, String clientPublicToken,
 	        String clientDisposableToken, long timestamp) throws Exception {
 		TokenObject token = TokenObject.get(accountId, clientPublicToken);

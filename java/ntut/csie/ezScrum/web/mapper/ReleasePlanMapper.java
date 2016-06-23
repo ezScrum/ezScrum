@@ -18,7 +18,7 @@ public class ReleasePlanMapper {
 		release.setName(releaseInfo.name)
 		       .setDescription(releaseInfo.description)
 		       .setStartDate(releaseInfo.startDate)
-		       .setDueDate(releaseInfo.dueDate)
+		       .setEndDate(releaseInfo.endDate)
 		       .save();
 		return release.getId();
 	}
@@ -37,7 +37,7 @@ public class ReleasePlanMapper {
 		release.setName(releaseInfo.name)
 		       .setDescription(releaseInfo.description)
 		       .setStartDate(releaseInfo.startDate)
-		       .setDueDate(releaseInfo.dueDate)
+		       .setEndDate(releaseInfo.endDate)
 		       .save();
 	}
 	

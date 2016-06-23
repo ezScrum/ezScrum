@@ -7,26 +7,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.dao.AttachFileDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
-import ntut.csie.jcis.core.util.DateUtil;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author samhuang 2014/12/23
- */
+import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.jcis.core.util.DateUtil;
+
 public class TaskObjectTest {
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
@@ -43,7 +38,7 @@ public class TaskObjectTest {
 		ini.exe();
 
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mProjectId = mCP.getAllProjects().get(0).getId();
 	}
@@ -52,10 +47,6 @@ public class TaskObjectTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -69,70 +60,108 @@ public class TaskObjectTest {
 	public void testSetPartnersId() {
 		long TEST_TASK_ID = 1;
 		long projectId = mCP.getAllProjects().get(0).getId();
+		// Create account
+		AccountObject account1 = new AccountObject("account1"); // handler
+		account1.save();
+		AccountObject account2 = new AccountObject("account2"); // old partner1
+		account2.save();
+		AccountObject account3 = new AccountObject("account3"); // old partner2, new partner1
+		account3.save();
+		AccountObject account4 = new AccountObject("account4"); // new partner2
+		account4.save();
+		ArrayList<Long> oldPartnersId = new ArrayList<>();
+		oldPartnersId.add(account2.getId());
+		oldPartnersId.add(account3.getId());
+		ArrayList<Long> newPartnersId = new ArrayList<>();
+		newPartnersId.add(account3.getId());
+		newPartnersId.add(account4.getId());
 		// create a task
 		TaskObject task = new TaskObject(projectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		task.setName("TEST_NAME").setHandlerId(account1.getId()).setPartnersId(oldPartnersId).save();
 		// before testSetPartnersId
-		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
-		assertEquals(0, partnersId.size());
-		// set one partner
-		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		task.setPartnersId(testPartnersId);
-		// testSetPartnersId_withOnePartner
-		partnersId.clear();
-		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
-		assertEquals(1, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
+		ArrayList<Long> oldPartnersFromDAO = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, oldPartnersFromDAO.size());
+		assertEquals(account2.getId(), oldPartnersFromDAO.get(0));
+		assertEquals(account3.getId(), oldPartnersFromDAO.get(1));
+		// set new partners
+		task.setPartnersId(newPartnersId).save();
+		// test partners
+		ArrayList<Long> newPartnersFromDAO = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
+		assertEquals(2, newPartnersFromDAO.size());
+		assertEquals(account3.getId(), newPartnersFromDAO.get(0));
+		assertEquals(account4.getId(), newPartnersFromDAO.get(1));
+		// test partners history
+		ArrayList<HistoryObject> histories = task.getHistories();
+		assertEquals(3, histories.size());
+		assertEquals(HistoryObject.TYPE_REMOVE_PARTNER, histories.get(1).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_TASK, histories.get(1).getIssueType());
+		assertEquals(task.getId(), histories.get(1).getIssueId());
+		assertEquals(account2.getId(), Long.parseLong(histories.get(1).getNewValue())); // account2 remove from task
+		assertEquals("Remove Partner", histories.get(1).getHistoryTypeString());
+		assertEquals(account2.getUsername(), histories.get(1).getDescription());
+		assertEquals(HistoryObject.TYPE_ADD_PARTNER, histories.get(2).getHistoryType());
+		assertEquals(IssueTypeEnum.TYPE_TASK, histories.get(2).getIssueType());
+		assertEquals(task.getId(), histories.get(2).getIssueId());
+		assertEquals(account4.getId(), Long.parseLong(histories.get(2).getNewValue())); // add account4 to task
+		assertEquals("Add Partner", histories.get(2).getHistoryTypeString());
+		assertEquals(account4.getUsername(), histories.get(2).getDescription());
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartners() {
 		long TEST_TASK_ID = 1;
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		task.setName("TEST_NAME").save();
 		// before testSetPartnersId
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(0, partnersId.size());
 		// set two partners
 		ArrayList<Long> testPartnersId = new ArrayList<Long>();
-		testPartnersId.add(1L);
-		testPartnersId.add(2L);
-		task.setPartnersId(testPartnersId);
+		testPartnersId.add(account1.getId());
+		testPartnersId.add(account2.getId());
+		task.setPartnersId(testPartnersId).save();
 		// testSetPartnersId_withTwoPartners
 		partnersId.clear();
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(1L, partnersId.get(0));
-		assertEquals(2L, partnersId.get(1));
+		assertEquals(account1.getId(), partnersId.get(0));
+		assertEquals(account2.getId(), partnersId.get(1));
 	}
 
 	@Test
 	public void testSetPartnersId_WithTwoPartnersAddOneAndRemoveOnePartner() {
 		long TEST_TASK_ID = 1;
-		// create a task
-		TaskObject task = new TaskObject(mProjectId);
-		task.setName("TEST_NAME").setEstimate(10).setActual(0);
-		task.save();
+		// Create account
+		AccountObject account1 = new AccountObject("account1");
+		account1.save();
+		AccountObject account2 = new AccountObject("account2");
+		account2.save();
+		AccountObject account3 = new AccountObject("account3");
+		account3.save();
 		// set two partners
 		ArrayList<Long> oldPartnersId = new ArrayList<Long>();
-		oldPartnersId.add(1L);
-		oldPartnersId.add(2L);
-		task.setPartnersId(oldPartnersId);
+		oldPartnersId.add(account1.getId());
+		oldPartnersId.add(account2.getId());
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setPartnersId(oldPartnersId).save();
 		// testSetPartnersId_withTwoPartnersAddOneAndRemoveOnePartner
 		ArrayList<Long> newPartnersId = new ArrayList<Long>();
-		newPartnersId.add(2L);
-		newPartnersId.add(3L);
-		task.setPartnersId(newPartnersId);
+		newPartnersId.add(account2.getId());
+		newPartnersId.add(account3.getId());
+		task.setPartnersId(newPartnersId).save();
 		List<Long> partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		partnersId.clear();
 		partnersId = TaskDAO.getInstance().getPartnersId(TEST_TASK_ID);
 		assertEquals(2, partnersId.size());
-		assertEquals(2L, partnersId.get(0));
-		assertEquals(3L, partnersId.get(1));
+		assertEquals(account2.getId(), partnersId.get(0));
+		assertEquals(account3.getId(), partnersId.get(1));
 	}
 
 	@Test
@@ -458,12 +487,10 @@ public class TaskObjectTest {
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
 
-		AttachFileObject.Builder builder = new AttachFileObject.Builder();
-		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile = builder.build();
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(1, task.getAttachFiles().size());
 	}
@@ -491,25 +518,21 @@ public class TaskObjectTest {
 		String TEST_FILE_CONTENT_TYPE = "jpg";
 		long TEST_CREATE_TIME = System.currentTimeMillis();
 
-		AttachFileObject.Builder builder = new AttachFileObject.Builder();
-		builder.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType(TEST_FILE_CONTENT_TYPE).setIssueId(task.getId())
 				.setIssueType(IssueTypeEnum.TYPE_TASK).setName(TEST_FILE_NAME)
-				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile = builder.build();
-		AttachFileDAO.getInstance().create(attachFile);
+				.setPath(TEST_FILE_PATH).setCreateTime(TEST_CREATE_TIME).save();
 
 		String TEST_FILE2_NAME = "TEST_FILE_NAME";
 		String TEST_FILE2_PATH = "/TEST_PATH";
 		String TEST_FILE2_CONTENT_TYPE = "jpg";
 
 		// second attach file
-		AttachFileObject.Builder builder2 = new AttachFileObject.Builder();
-		builder2.setContentType(TEST_FILE2_CONTENT_TYPE)
+		AttachFileObject attachFile2 = new AttachFileObject();
+		attachFile2.setContentType(TEST_FILE2_CONTENT_TYPE)
 				.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
 				.setName(TEST_FILE2_NAME).setPath(TEST_FILE2_PATH)
-				.setCreateTime(TEST_CREATE_TIME);
-		AttachFileObject attachFile2 = builder2.build();
-		AttachFileDAO.getInstance().create(attachFile2);
+				.setCreateTime(TEST_CREATE_TIME).save();
 
 		assertEquals(2, task.getAttachFiles().size());
 	}
@@ -538,13 +561,35 @@ public class TaskObjectTest {
 		int TEST_ACTUAL = 1;
 		int TEST_REMAIN = 2;
 		long TEST_PROJECT = 1;
-		long TEST_STORY_ID = 5;
+		
+		String sprintGoal = "TEST_SPRINT_GOAL";
+		String sprintDailyInfo = "TEST_SPRINT_DAILY_INFO";
+		String sprintDemoPlace = "TEST_SPRINT_DEMO_PLACE";
+		String sprintStartDate = "2015/05/28";
+		String sprintDemoDate = "2015/06/11";
+		String sprintEndDate = "2015/06/11";
+		
+		// create sprint
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setInterval(2).setTeamSize(5)
+				.setAvailableHours(100).setFocusFactor(70)
+				.setGoal(sprintGoal).setStartDate(sprintStartDate)
+				.setEndDate(sprintEndDate).setDailyInfo(sprintDailyInfo)
+				.setDemoDate(sprintDemoDate).setDemoPlace(sprintDemoPlace)
+				.save();
+		
+		// create story
+		StoryObject story = new StoryObject(mProjectId);
+		story.setName("TEST_NAME").setNotes("TEST_NOTE")
+				.setHowToDemo("TEST_HOW_TO_DEMO").setImportance(1).setValue(2)
+				.setEstimate(3).setStatus(StoryObject.STATUS_DONE)
+				.setSprintId(sprint.getId()).save();
 
 		TaskObject task = new TaskObject(TEST_PROJECT);
 		task.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
 				.setActual(TEST_ACTUAL).setRemains(TEST_REMAIN)
 				.setStatus(TaskObject.STATUS_DONE)
-				.setHandlerId(handler.getId()).setStoryId(TEST_STORY_ID).save();
+				.setHandlerId(handler.getId()).setStoryId(story.getId()).save();
 		ArrayList<Long> partners = new ArrayList<Long>();
 		partners.add(partner.getId());
 		task.addPartner(partner.getId());
@@ -557,7 +602,7 @@ public class TaskObjectTest {
 		assertEquals(TEST_ACTUAL, json.getInt(TaskEnum.ACTUAL));
 		assertEquals(TEST_ESTIMATE, json.getInt(TaskEnum.REMAIN));
 		assertEquals(TEST_PROJECT, json.getInt(TaskEnum.PROJECT_ID));
-		assertEquals(TEST_STORY_ID, json.getInt(TaskEnum.STORY_ID));
+		assertEquals(story.getId(), json.getInt(TaskEnum.STORY_ID));
 
 		JSONObject handlerJson = json.getJSONObject(TaskEnum.HANDLER);
 		assertEquals(handler.getId(), handlerJson.getLong(AccountEnum.ID));
@@ -667,19 +712,14 @@ public class TaskObjectTest {
 		assertEquals(5, task.getEstimate());
 		assertEquals(3, task.getRemains());
 		assertEquals(1, task.getActual());
-
-		try {
-			task.reload();
-
-			assertEquals(1, task.getId());
-			assertEquals(1, task.getSerialId());
-			assertEquals("TEST_NAME", task.getName());
-			assertEquals("TEST_NOTES", task.getNotes());
-			assertEquals(10, task.getEstimate());
-			assertEquals(10, task.getRemains());
-			assertEquals(0, task.getActual());
-		} catch (Exception e) {
-		}
+		task.reload();
+		assertEquals(1, task.getId());
+		assertEquals(1, task.getSerialId());
+		assertEquals("TEST_NAME", task.getName());
+		assertEquals("TEST_NOTES", task.getNotes());
+		assertEquals(10, task.getEstimate());
+		assertEquals(10, task.getRemains());
+		assertEquals(0, task.getActual());
 	}
 
 	@Test
@@ -849,13 +889,7 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history
 		Date changeStatusDate = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history = new HistoryObject();
-		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(task.getRemains()))
-				.setNewValue(String.valueOf(5))
-				.setCreateTime(changeStatusDate.getTime());
-		history.save();
+		task.setRemains(5).save(changeStatusDate.getTime());
 		// check task remains after add a update task remains history
 		assertEquals(5, task.getRemains(specificDate));
 	}
@@ -871,22 +905,10 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(specificDate));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(task.getRemains()))
-				.setNewValue(String.valueOf(5))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(5).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/04-16:14:01", DateUtil._16DIGIT_DATE_TIME);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(5))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(8).save(changeRemainsDate2.getTime());
 		// check task remains after add two change remains histories
 		assertEquals(8, task.getRemains(specificDate));
 	}
@@ -902,40 +924,16 @@ public class TaskObjectTest {
 		assertEquals(10, task.getRemains(firstDate));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(10))
-				.setNewValue(String.valueOf(9))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(9).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(9))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(8).save(changeRemainsDate2.getTime());
 		// create a update task remains history3
 		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/07", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history3 = new HistoryObject();
-		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(8))
-				.setNewValue(String.valueOf(7))
-				.setCreateTime(changeRemainsDate3.getTime());
-		history3.save();
+		task.setRemains(7).save(changeRemainsDate3.getTime());
 		// create a update task remains history4
 		Date changeRemainsDate4 = DateUtil.dayFillter("2015/02/08", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history4 = new HistoryObject();
-		history4.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(7))
-				.setNewValue(String.valueOf(6))
-				.setCreateTime(changeRemainsDate4.getTime());
-		history4.save();
+		task.setRemains(6).save(changeRemainsDate4.getTime());
 		// check task remains after add five change remains histories
 		assertEquals(10, task.getRemains(firstDate));
 		assertEquals(9, task.getRemains(changeRemainsDate1));
@@ -954,31 +952,13 @@ public class TaskObjectTest {
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
 		// create a update task remains history1
 		Date changeRemainsDate1 = DateUtil.dayFillter("2015/02/03", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history1 = new HistoryObject();
-		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(13))
-				.setNewValue(String.valueOf(8))
-				.setCreateTime(changeRemainsDate1.getTime());
-		history1.save();
+		task.setRemains(8).save(changeRemainsDate1.getTime());
 		// create a update task remains history2
 		Date changeRemainsDate2 = DateUtil.dayFillter("2015/02/05", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history2 = new HistoryObject();
-		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(8))
-				.setNewValue(String.valueOf(6))
-				.setCreateTime(changeRemainsDate2.getTime());
-		history2.save();
+		task.setRemains(6).save(changeRemainsDate2.getTime());
 		// create a update task remains history3
 		Date changeRemainsDate3 = DateUtil.dayFillter("2015/02/06", DateUtil._8DIGIT_DATE_1);
-		HistoryObject history3 = new HistoryObject();
-		history3.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
-				.setHistoryType(HistoryObject.TYPE_REMAIMS)
-				.setOldValue(String.valueOf(6))
-				.setNewValue(String.valueOf(3))
-				.setCreateTime(changeRemainsDate3.getTime());
-		history3.save();
+		task.setRemains(3).save(changeRemainsDate3.getTime());
 		// check task remains after add three change remains histories
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/01", DateUtil._8DIGIT_DATE_1)));
 		assertEquals(13, task.getRemains(DateUtil.dayFillter("2015/02/02", DateUtil._8DIGIT_DATE_1)));

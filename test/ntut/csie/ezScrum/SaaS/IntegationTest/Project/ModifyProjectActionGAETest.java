@@ -57,7 +57,7 @@ public class ModifyProjectActionGAETest extends MockStrutsTestCase {
 		addRequestParameter("ProjectManager", expectProjectManager);
 		
 		String projectName = project.getName();
-		request.setHeader("Referer", "?PID=" + project.getName());
+		request.setHeader("Referer", "?projectName=" + project.getName());
 		
 		// ================ set session info ========================
 		request.getSession().setAttribute( projectName, project );

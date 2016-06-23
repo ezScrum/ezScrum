@@ -4,13 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import servletunit.struts.MockStrutsTestCase;
@@ -37,7 +36,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 
 		// 新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		// ================ set action info ========================
@@ -53,17 +52,12 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mConfig = null;
 	}
@@ -71,7 +65,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 	public void testShowProductBacklogAction_NoStory() {
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		addRequestParameter("FilterType", "");
 
@@ -100,7 +94,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CPB.exe();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		addRequestParameter("FilterType", "");
 
@@ -133,7 +127,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 					.append("\"Notes\":\"").append(CPB.getStories().get(i).getNotes()).append("\",")
 					.append("\"HowToDemo\":\"").append(CPB.getStories().get(i).getHowToDemo()).append("\",")
 					.append("\"Link\":\"\",")
-					.append("\"Release\":\"\",")
+					.append("\"Release\":\"None\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"DETAIL\",")
 					.append("\"Attach\":false,")
@@ -156,7 +150,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		ArrayList<StoryObject> stories = CPB.getStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "BACKLOG";
 		addRequestParameter("FilterType", filterType);
@@ -191,7 +185,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 					.append("\"Notes\":\"").append(story.getNotes()).append("\",")
 					.append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
 					.append("\"Link\":\"\",")
-					.append("\"Release\":\"\",")
+					.append("\"Release\":\"None\",")
 					.append("\"Sprint\":\"None\",")
 					.append("\"FilterType\":\"BACKLOG\",")
 					.append("\"Attach\":false,")
@@ -229,7 +223,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "DONE";
 		addRequestParameter("FilterType", filterType);
@@ -269,7 +263,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append(expectedStoryNote).append("\",")
 				.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo)
 				.append("\",")
-				.append("\"Link\":\"\",").append("\"Release\":\"\",")
+				.append("\"Link\":\"\",").append("\"Release\":\"None\",")
 				.append("\"Sprint\":").append(SprintId).append(",")
 				.append("\"FilterType\":\"DONE\",").append("\"Attach\":false,")
 				.append("\"AttachFileList\":[]").append("}]}");
@@ -301,7 +295,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		CIS.exeCloseStories();
 		// ================ set request info ========================
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 
 		String filterType = "DETAIL";
 		addRequestParameter("FilterType", filterType);
@@ -339,7 +333,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.append(expectedStoryNote).append("\",")
 				.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo)
 				.append("\",")
-				.append("\"Link\":\"\",").append("\"Release\":\"\",")
+				.append("\"Link\":\"\",").append("\"Release\":\"None\",")
 				.append("\"Sprint\":\"None\",")
 				.append("\"FilterType\":\"DETAIL\",")
 				.append("\"Attach\":false,").append("\"AttachFileList\":[]")

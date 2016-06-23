@@ -7,24 +7,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.dao.AttachFileDAO;
-import ntut.csie.ezScrum.dao.StoryDAO;
-import ntut.csie.ezScrum.dao.TagDAO;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * @author samhuang 2015/03/12
- * 
- */
+import ntut.csie.ezScrum.dao.StoryDAO;
+import ntut.csie.ezScrum.dao.TagDAO;
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+
 public class StoryObjectTest {
 	private Configuration mConfig = null;
 	private CreateProject mCP = null;
@@ -41,7 +34,7 @@ public class StoryObjectTest {
 		ini.exe();
 
 		mCP = new CreateProject(mPROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mProjectId = mCP.getAllProjects().get(0).getId();
 	}
@@ -50,10 +43,6 @@ public class StoryObjectTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
@@ -142,7 +131,7 @@ public class StoryObjectTest {
 		assertEquals("TEST_NOTE2", history.getNewValue());
 
 		history = histories.get(4);
-		assertEquals(HistoryObject.TYPE_HOWTODEMO, history.getHistoryType());
+		assertEquals(HistoryObject.TYPE_HOW_TO_DEMO, history.getHistoryType());
 		assertEquals("TEST_HOW_TO_DEMO", history.getOldValue());
 		assertEquals("TEST_HOW_TO_DEMO2", history.getNewValue());
 
@@ -163,8 +152,8 @@ public class StoryObjectTest {
 
 		history = histories.get(8);
 		assertEquals(HistoryObject.TYPE_STATUS, history.getHistoryType());
-		assertEquals("1", history.getOldValue());
-		assertEquals("0", history.getNewValue());
+		assertEquals("3", history.getOldValue());
+		assertEquals("1", history.getNewValue());
 
 		history = histories.get(9);
 		assertEquals(HistoryObject.TYPE_REMOVE, history.getHistoryType());
@@ -360,11 +349,9 @@ public class StoryObjectTest {
 	public void testGetAttachFiles() {
 		StoryObject story = createStory();
 
-		AttachFileObject.Builder fileBuilder = new AttachFileObject.Builder();
-		fileBuilder.setContentType("jpg").setIssueId(story.getId())
-				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH");
-		AttachFileObject attachFile = fileBuilder.build();
-		AttachFileDAO.getInstance().create(attachFile);
+		AttachFileObject attachFile = new AttachFileObject();
+		attachFile.setContentType("jpg").setIssueId(story.getId())
+				.setIssueType(IssueTypeEnum.TYPE_STORY).setName("FILE_1").setPath("/TEST_PATH").save();
 		
 		attachFile = story.getAttachFiles().get(0);
 		assertEquals(1, story.getAttachFiles().size());

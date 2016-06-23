@@ -62,13 +62,12 @@ ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 			myMask.show();
 			var obj = this;
 			var readUrl = this.url + "?issueID=" + this.issueId + '&issueType=' + this.issueType;
-			
 			this.getForm().submit({
 				url:readUrl,
 				params: {projectName: obj.projectName,
 						 entryPoint: obj.notifyPanel.entryPoint},
 				success: function(form, action) {
-			       obj.onSuccess(action);
+			       obj.onSuccess(action, obj.issueType);
 			    },
 			    failure:function(form, action){
 			    	obj.onFailure(action);
@@ -77,7 +76,7 @@ ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 		}
 
 	},
-	onSuccess:function(response) 
+	onSuccess:function(response, issueType) 
 	{
 		var success = false;
 		
@@ -93,7 +92,12 @@ ezScrum.AttachFileForm = Ext.extend(Ext.form.FormPanel, {
 		{
 			var rs = jsonCustomIssueReader.readRecords(response.result);
 		}else{
-			var rs = jsonStoryReader.readRecords(response.result);
+			var rs;
+			if (issueType == "Story") {
+				rs = jsonStoryReader.readRecords(response.result);
+			} else if (issueType == "Task") {
+				rs = jsonTaskReader.readRecords(response.result);
+			}
 		}
 		success = rs.success;
 		if(rs.success && rs.totalRecords > 0) {

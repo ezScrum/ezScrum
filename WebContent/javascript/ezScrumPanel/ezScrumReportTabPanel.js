@@ -6,12 +6,12 @@ var ezScrumReportTabForm = {
 	items: [{
 			title: 'Remaining Work Report',
 			id   : 'remainingWorkReport',
-	    	url  : 'showRemainingReport.do?PID=' + getURLParameter("PID"),
+	    	url  : 'showRemainingReport.do?projectName=' + getURLParameter("projectName"),
 	    	html : '<iframe id="remainingWorkReport" name="remainingWorkReport" src=showRemainingReport.do width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>'
     	},{
     		title: 'Schedule Report',
     		id   : 'scheduleReport',
-    		url  : 'showScheduleReport.do?PID=' + getURLParameter("PID"),
+    		url  : 'showScheduleReport.do?projectName=' + getURLParameter("projectName"),
     		html : '<iframe id="scheduleReport" name="scheduleReport" src=showScheduleReport.do width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>'
     	}
 //    	,{	

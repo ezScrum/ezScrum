@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -23,10 +26,6 @@ import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic.SprintBacklogDateColumn;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.core.util.DateUtil;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SprintBacklogLogicTest {
 	private SprintBacklogLogic mSprintBacklogLogic = null;
@@ -58,7 +57,7 @@ public class SprintBacklogLogicTest {
 		String STORY_COLUMNBESET = "EST";
 
 		mCP = new CreateProject(PROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
@@ -79,10 +78,6 @@ public class SprintBacklogLogicTest {
 	public void tearDown() {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
@@ -264,7 +259,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintStartWorkDate() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -277,7 +272,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintStartWorkDate_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -290,7 +285,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintEndWorkDate() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -303,7 +298,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintEndWorkDate_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -316,7 +311,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintWorkDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/08")
-		.setDueDate("2015/07/21")
+		.setEndDate("2015/07/21")
 		.setDemoDate("2015/07/21");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -329,7 +324,7 @@ public class SprintBacklogLogicTest {
 	public void testGetSprintWorkDays_WithSprintOfFiveDays() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		sprint.setStartDate("2015/07/13")
-		.setDueDate("2015/07/17")
+		.setEndDate("2015/07/17")
 		.setDemoDate("2015/07/17");
 		sprint.save();
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -342,7 +337,7 @@ public class SprintBacklogLogicTest {
 	public void testIsOutOfSprint() {
 		SprintObject sprint = mCS.getSprints().get(0);
 		assertTrue(!mSprintBacklogLogic.isOutOfSprint());
-		sprint.setDueDate(getDate(new Date(), -1)).save();;
+		sprint.setEndDate(getDate(new Date(), -1)).save();;
 		mSprintBacklogLogic = new SprintBacklogLogic(mProject, sprint.getId());
 		assertTrue(mSprintBacklogLogic.isOutOfSprint());
 	}

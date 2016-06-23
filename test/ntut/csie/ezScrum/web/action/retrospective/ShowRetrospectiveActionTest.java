@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
@@ -18,7 +17,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private Configuration mConfig;
-	
 	private ArrayList<RetrospectiveObject> mGoodRetrospectives;
 	private ArrayList<RetrospectiveObject> mImprovementRetrospectives;
 	
@@ -35,7 +33,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 		
 		// Initial ArrayList
 		mGoodRetrospectives = new ArrayList<RetrospectiveObject>();
@@ -55,11 +53,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -72,7 +66,6 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
@@ -94,7 +87,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -125,7 +118,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -135,7 +128,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	verifyNoActionErrors();
   
     	// 比對資料是否正確(sprintID = -1)
-    	String expected = "<Retrospectives><Sprint><Id>1</Id><Name>Sprint #1</Name></Sprint></Retrospectives>";
+    	String expected = "<Retrospectives><Sprint><Id>null</Id><Name>Sprint #null</Name></Sprint></Retrospectives>";
     	assertEquals(expected, response.getWriterBuffer().toString());   	    	
 	}		
 	
@@ -169,7 +162,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -213,7 +206,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -265,7 +258,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());	
 		request.getSession().setAttribute("Project", project);
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 
@@ -279,8 +272,7 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
     	assertEquals(expected, response.getWriterBuffer().toString());	   	    	
     }
 	
-	private String genXML(long sprintId) {
-    	TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();				
+	private String genXML(long sprintId) {			
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Retrospectives><Sprint><Id>" + sprintId + "</Id><Name>Sprint #" + sprintId + "</Name></Sprint>");
 		
@@ -291,9 +283,9 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 				sb.append("<Id>" + goodRetrospective.getId() + "</Id>");
 				sb.append("<Link></Link>");
 				sb.append("<SprintID>" + goodRetrospective.getSprintId() + "</SprintID>");
-				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getName()) + "</Name>");
+				sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(goodRetrospective.getName()) + "</Name>");
 				sb.append("<Type>" + goodRetrospective.getType() + "</Type>");
-				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(goodRetrospective.getDescription()) + "</Description>");
+				sb.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(goodRetrospective.getDescription()) + "</Description>");
 				sb.append("<Status>" + goodRetrospective.getStatus() + "</Status>");
 				sb.append("</Retrospective>");
 			}
@@ -306,9 +298,9 @@ public class ShowRetrospectiveActionTest extends MockStrutsTestCase {
 				sb.append("<Id>" + improvementRetrospective.getId() + "</Id>");
 				sb.append("<Link></Link>");
 				sb.append("<SprintID>" + improvementRetrospective.getSprintId() + "</SprintID>");
-				sb.append("<Name>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getName()) + "</Name>");
+				sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(improvementRetrospective.getName()) + "</Name>");
 				sb.append("<Type>" + improvementRetrospective.getType() + "</Type>");
-				sb.append("<Description>" + translateSpecialChar.TranslateXMLChar(improvementRetrospective.getDescription()) + "</Description>");
+				sb.append("<Description>" + TranslateSpecialChar.TranslateXMLChar(improvementRetrospective.getDescription()) + "</Description>");
 				sb.append("<Status>" + improvementRetrospective.getStatus() + "</Status>");
 				sb.append("</Retrospective>");
 			}

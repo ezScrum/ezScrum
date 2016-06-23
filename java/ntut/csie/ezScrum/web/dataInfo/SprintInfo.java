@@ -7,13 +7,14 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class SprintInfo {
 	public long id = -1;
+	public long serialId = -1;
 	public int interval = 0;
 	public int teamSize = 0;
 	public int hoursCanCommit = 0;
 	public int focusFactor = 0;
 	public String sprintGoal = "";
 	public String startDate = "";
-	public String dueDate = "";
+	public String endDate = "";
 	public String demoDate = "";
 	public String demoPlace = "";
 	public String dailyInfo = "";
@@ -40,6 +41,7 @@ public class SprintInfo {
 		demoDate = sprint.getString(SprintEnum.DEMO_DATE);
 		demoPlace = sprint.getString(SprintEnum.DEMO_PLACE);
 		dailyInfo = sprint.getString(SprintEnum.DAILY_INFO);
-		dueDate = sprint.getString(SprintEnum.DUE_DATE);
+		endDate = sprint.getString(SprintEnum.END_DATE);
+		serialId = sprint.getLong(SprintEnum.SERIAL_ID);
 	}
 }

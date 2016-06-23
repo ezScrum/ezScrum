@@ -6,7 +6,7 @@ import java.util.Date;
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
-import ntut.csie.ezScrum.dao.UnplannedDAO;
+import ntut.csie.ezScrum.dao.UnplanDAO;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.core.util.DateUtil;
 
@@ -16,11 +16,10 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class SprintObject implements IBaseObject {
 	private final static int DEFAULT_VALUE = -1;
-
+	public final static int NO_PARENT = -1;
 	private long mId = DEFAULT_VALUE;
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
-
 	private int mInterval = 0;
 	private int mTeamSize = 0;
 	private int mAvailableHours = 0;
@@ -28,10 +27,9 @@ public class SprintObject implements IBaseObject {
 	private String mGoal = "";
 	private Date mStartDate = new Date();
 	private Date mDemoDate = new Date();
-	private Date mDueDate = new Date();
+	private Date mEndDate = new Date();
 	private String mDemoPlace = "";
 	private String mDailyInfo = "";
-
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
 
@@ -75,8 +73,8 @@ public class SprintObject implements IBaseObject {
 		return this;
 	}
 
-	public SprintObject setDueDate(String dueDate) {
-		mDueDate = DateUtil.dayFilter(dueDate);
+	public SprintObject setEndDate(String endDate) {
+		mEndDate = DateUtil.dayFilter(endDate);
 		return this;
 	}
 
@@ -141,8 +139,8 @@ public class SprintObject implements IBaseObject {
 		return DateUtil.formatBySlashForm(mStartDate);
 	}
 
-	public String getDueDateString() {
-		return DateUtil.formatBySlashForm(mDueDate);
+	public String getEndDateString() {
+		return DateUtil.formatBySlashForm(mEndDate);
 	}
 
 	public String getDemoDateString() {
@@ -168,28 +166,25 @@ public class SprintObject implements IBaseObject {
 	public static SprintObject get(long id) {
 		return SprintDAO.getInstance().get(id);
 	}
+	
+	public static SprintObject get(long projectId, long serialId) {
+		return SprintDAO.getInstance().get(projectId, serialId);
+	}
 
 	public ArrayList<StoryObject> getStories() {
 		return StoryDAO.getInstance().getStoriesBySprintId(mId);
 	}
 	
-	public ArrayList<RetrospectiveObject> getRetrospectiveByType(String type) {
-		ArrayList<RetrospectiveObject> retrospectives = getRetrospectives();
-		ArrayList<RetrospectiveObject> filteredRetrospectives = new ArrayList<>();
-		for (RetrospectiveObject retrospective : retrospectives) {
-			if (retrospective.getType().equals(type)) {
-				filteredRetrospectives.add(retrospective);
-			}
-		}
-		return filteredRetrospectives;
+	public ArrayList<RetrospectiveObject> getGoods() {
+		return RetrospectiveDAO.getInstance().getGoodsBySprintId(mId);
 	}
 	
-	private ArrayList<RetrospectiveObject> getRetrospectives() {
-		return RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(mId);
+	public ArrayList<RetrospectiveObject> getImprovements() {
+		return RetrospectiveDAO.getInstance().getImprovementsBySprintId(mId);
 	}
 
-    public ArrayList<UnplannedObject> getUnplanneds() {
-		return UnplannedDAO.getInstance().getUnplannedBySprintId(mId);
+    public ArrayList<UnplanObject> getUnplans() {
+		return UnplanDAO.getInstance().getUnplanBySprintId(mId);
 	}
 
 	@Override
@@ -221,6 +216,7 @@ public class SprintObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = SprintDAO.getInstance().create(this);
 		reload();
 	}
@@ -253,14 +249,15 @@ public class SprintObject implements IBaseObject {
 		setUpdateTime(sprint.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		SprintObject sprint = SprintDAO.getInstance().get(mId);
 		return sprint != null;
 	}
 
 	public boolean contains(Date date) {
 		if ((date.compareTo(mStartDate) >= 0)
-				&& (date.compareTo(mDueDate) <= 0)) {
+				&& (date.compareTo(mEndDate) <= 0)) {
 			return true;
 		}
 		return false;
@@ -359,7 +356,7 @@ public class SprintObject implements IBaseObject {
 		sprintJson.put(SprintEnum.ID, mId).put(SprintEnum.PROJECT_ID, mProjectId)
 				.put(SprintEnum.SERIAL_ID, mSerialId)
 				.put(SprintEnum.START_DATE, getStartDateString())
-				.put(SprintEnum.DUE_DATE, getDueDateString())
+				.put(SprintEnum.END_DATE, getEndDateString())
 				.put(SprintEnum.INTERVAL, mInterval)
 				.put(SprintEnum.TEAM_SIZE, mTeamSize)
 				.put(SprintEnum.SERIAL_ID, mSerialId)

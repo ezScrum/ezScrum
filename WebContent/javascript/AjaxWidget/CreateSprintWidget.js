@@ -106,12 +106,12 @@ var DemoDate = new Ext.form.DateField({
             anchor     : '95%'
         });
 
-var DueDate = new Ext.form.DateField({
+var EndDate = new Ext.form.DateField({
             disabled   : true,
-            fieldLabel : 'Due Date',
+            fieldLabel : 'End Date',
             format     : 'Y/m/d',
             altFormats : 'Y/m/d',
-            name       : 'DueDate',
+            name       : 'EndDate',
             anchor     : '95%'
         });
 
@@ -188,11 +188,11 @@ ezScrum.ShowSprintDetailWin = Ext.extend(Ext.Window, {
                 
                 if (StartDate.isValid())
                 {
-                    // 計算DueDate
+                    // 計算EndDate
                     var tmp = StartDate.getValue().add(Date.DAY, parseInt(record
                                     .get('Interval'))
                                     * 7 - 1);
-                    DueDate.setValue(tmp);
+                    EndDate.setValue(tmp);
                     DemoDate.setMinValue(StartDate.getValue());
                     DemoDate.setMaxValue(tmp);
                 }
@@ -227,12 +227,12 @@ ezScrum.ShowSprintDetailWin = Ext.extend(Ext.Window, {
 	                // 取出StartDate
 	                var preStartDate = Date.parseDate(record.get('StartDate'),
 	                        'Y/m/d');
-	                // 計算DueDate
-	                var preDueDate = preStartDate.add(Date.DAY, parseInt(record
+	                // 計算EndDate
+	                var preEndDate = preStartDate.add(Date.DAY, parseInt(record
 	                                .get('Interval'))
 	                                * 7 - 1);
-	                // DueDate的下一天就為下一個Sprint的預設的開始日期
-	                StartDate.setValue(preDueDate.add(Date.DAY, 1));
+	                // EndDate的下一天就為下一個Sprint的預設的開始日期
+	                StartDate.setValue(preEndDate.add(Date.DAY, 1));
 	
 	                // 設定DemoDate可選擇的最小範圍，也就是StartDate
 	                DemoDate.setMinValue(StartDate.getValue());
@@ -272,7 +272,7 @@ ezScrum.SprintDetail = Ext.extend(Ext.FormPanel, {
                 var config = {
                     autoScroll : true,
                     // 建立Form的表單
-                    items      : [Id, SprintGoal, StartDate, Interval, DueDate,
+                    items      : [Id, SprintGoal, StartDate, Interval, EndDate,
                             Members, StoryPoint, ManDays, FocusFactor,
                             DemoDate, DemoPlace, DailyScrum],
                     buttons    : [{
@@ -296,17 +296,17 @@ ezScrum.SprintDetail = Ext.extend(Ext.FormPanel, {
                 this.addEvents('SubmitSuccess', 'SubmitFailure');
 
                 /*-----------------------------------------------------------
-                 *  Interval與StartDate的Value改變事件處理(計算DueDate)
+                 *  Interval與StartDate的Value改變事件處理(計算EndDate)
                  *-------------------------------------------------------------*/
                 Interval.addListener('change', function(interval, newValue,
                                 oldValue)
                         {
                             if (StartDate.isValid())
                             {
-                                DueDate.setValue(StartDate.getValue().add(
+                                EndDate.setValue(StartDate.getValue().add(
                                         Date.DAY, (newValue ^ 0) * 7 -1));
-                                DemoDate.setMaxValue(DueDate.getValue());
-                                DemoDate.setValue(DueDate.getValue());
+                                DemoDate.setMaxValue(EndDate.getValue());
+                                DemoDate.setValue(EndDate.getValue());
                             }
 
                         }, this);
@@ -316,11 +316,11 @@ ezScrum.SprintDetail = Ext.extend(Ext.FormPanel, {
                         {
                             if (Interval.isValid())
                             {
-                                DueDate.setValue(newValue.add(Date.DAY,
+                                EndDate.setValue(newValue.add(Date.DAY,
                                         (Interval.getValue() ^ 0) * 7 -1));
                                 DemoDate.setMinValue(StartDate.getValue());
-                                DemoDate.setMaxValue(DueDate.getValue());
-                                DemoDate.setValue(DueDate.getValue());
+                                DemoDate.setMaxValue(EndDate.getValue());
+                                DemoDate.setValue(EndDate.getValue());
                             }
 
                         });
@@ -383,8 +383,8 @@ ezScrum.SprintDetail = Ext.extend(Ext.FormPanel, {
                 DemoDate.setValue("");
                 DemoPlace.setValue("");
                 FocusFactor.setValue("");
-                DueDate.setValue("");
-                DueDate.reset();
+                EndDate.setValue("");
+                EndDate.reset();
             }
         })
 

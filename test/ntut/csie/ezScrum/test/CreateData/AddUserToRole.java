@@ -1,36 +1,32 @@
 package ntut.csie.ezScrum.test.CreateData;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class AddUserToRole {
 	private CreateProject mCP;
 	private CreateAccount mCA;
 	private AccountObject mAccount = null;
-	private IProject mProject = null;
-	private ProjectObject mProjectObject = null;
-	private Configuration mConfig = new Configuration();
+	private ProjectObject mProject = null;
 
 	public AddUserToRole(CreateProject CP, CreateAccount CA) {
 		mCP = CP;
 		mCA = CA;
 		mAccount = mCA.getAccountList().get(0);
-		mProject = mCP.getProjectList().get(0);
-		mProjectObject = mCP.getAllProjects().get(0);
+		mProject = mCP.getAllProjects().get(0);
+		mProject = mCP.getAllProjects().get(0);
 	}
 
 	/**
 	 * 指定目前要新增的專案 Index
 	 */
 	public void setProjectIndex(int index) {
-		if (index < mCP.getProjectList().size()) {
-			mProject = mCP.getProjectList().get(index);
+		if (index < mCP.getAllProjects().size()) {
+			mProject = mCP.getAllProjects().get(index);
 		}
 	}
 
@@ -42,19 +38,9 @@ public class AddUserToRole {
 			mAccount = mCA.getAccountList().get(index);
 		}
 	}
-
-	/**
-	 * 取得目前指定的 Project
-	 */
-	public IProject getNowProject() {
-		return mProject;
-	}
 	
-	/**
-	 * 取得目前指定的 Project
-	 */
-	public ProjectObject getNowProjectObject() {
-		return mProjectObject;
+	public ProjectObject getNowProject() {
+		return mProject;
 	}
 
 	/**
@@ -64,20 +50,11 @@ public class AddUserToRole {
 		return mAccount;
 	}
 
-//	/**
-//	 * 將目前指定的 Account 加入 Admin 角色
-//	 */
-//	public void exe_System() {
-//		String res = ScrumEnum.SYSTEM;
-//		String op = ScrumEnum.SCRUMROLE_ADMIN;
-//		updateAccount(res, op);
-//	}
-
 	/**
 	 * 將目前指定的 Account 加入 Product Owner 角色
 	 */
 	public void exe_PO() {
-		long projectId = mProjectObject.getId();
+		long projectId = mProject.getId();
 		updateAccount(projectId, ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 	}
 
@@ -85,7 +62,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Scrum Team 角色
 	 */
 	public void exe_ST() {
-		long projectId = mProjectObject.getId();
+		long projectId = mProject.getId();
 		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMTEAM);
 	}
 
@@ -93,7 +70,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Scrum Master 角色
 	 */
 	public void exe_SM() {
-		long projectId = mProjectObject.getId();
+		long projectId = mProject.getId();
 		updateAccount(projectId, ScrumEnum.SCRUMROLE_SCRUMMASTER);
 	}
 
@@ -101,7 +78,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Stakeholder 角色
 	 */
 	public void exe_Sh() {
-		long projectId = mProjectObject.getId();
+		long projectId = mProject.getId();
 		updateAccount(projectId, ScrumEnum.SCRUMROLE_STAKEHOLDER);
 	}
 
@@ -109,7 +86,7 @@ public class AddUserToRole {
 	 * 將目前指定的 Account 加入 Guest 角色
 	 */
 	public void exe_Guest() {
-		long projectId = mProjectObject.getId();
+		long projectId = mProject.getId();
 		updateAccount(projectId, ScrumEnum.SCRUMROLE_GUEST);
 	}
 

@@ -9,19 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 public class StoryDAOTest {
 	private MySQLControl mControl = null;
@@ -40,7 +39,7 @@ public class StoryDAOTest {
 		ini.exe();
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connect();
@@ -53,10 +52,6 @@ public class StoryDAOTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -248,7 +243,7 @@ public class StoryDAOTest {
 	}
 	
 	@Test
-	public void testGetStoriesWithNoParent() {
+	public void testGetDroppedStories() {
 		// create three test data
 		for (int i = 0; i < 3; i++) {
 			StoryObject story = new StoryObject(sProjectId);
@@ -264,8 +259,8 @@ public class StoryDAOTest {
 			assertNotSame(-1, storyId);
 		}
 		
-		// get wild stories
-		ArrayList<StoryObject> stories = StoryDAO.getInstance().getStoriesWithNoParent(sProjectId);
+		// get dropped stories
+		ArrayList<StoryObject> stories = StoryDAO.getInstance().getDroppedStories(sProjectId);
 		assertEquals(2, stories.size());
 	}
 	

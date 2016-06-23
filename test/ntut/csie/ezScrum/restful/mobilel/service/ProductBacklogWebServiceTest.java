@@ -5,14 +5,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -20,13 +26,6 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.jcis.account.core.LogonException;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProductBacklogWebServiceTest {
 	private int mProjectCount = 1;
@@ -52,7 +51,7 @@ public class ProductBacklogWebServiceTest {
 
 		// 新增一測試專案
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCR = new CreateRelease(mReleaseCount, mCP);
 		mCR.exe();
@@ -65,11 +64,7 @@ public class ProductBacklogWebServiceTest {
 	public void tearDown() {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 		
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -149,7 +144,7 @@ public class ProductBacklogWebServiceTest {
 		assertEquals(story.getImportance(), storyJson.getInt("importance"));
 		assertEquals(story.getValue(), storyJson.getInt("value"));
 		assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-		assertEquals(story.getStatus(), storyJson.getInt("status"));
+		assertEquals(story.getStatusString(), storyJson.getString("status"));
 		assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
 	}
 	
@@ -184,7 +179,7 @@ public class ProductBacklogWebServiceTest {
 			assertEquals(story.getImportance(), storyJson.getInt("importance"));
 			assertEquals(story.getValue(), storyJson.getInt("value"));
 			assertEquals(story.getEstimate(), storyJson.getInt("estimate"));
-			assertEquals(story.getStatus(), storyJson.getInt("status"));
+			assertEquals(story.getStatusString(), storyJson.getString("status"));
 			assertEquals(story.getSprintId(), storyJson.getLong("sprint_id"));
 		}
 	}
@@ -198,7 +193,7 @@ public class ProductBacklogWebServiceTest {
 		// Web service 物件
 		ProductBacklogWebService service = new ProductBacklogWebService(username, password, projectName);
 		// 建立 ProductBacklog
-		mCPB = new CreateProductBacklog(0, mEstimate, mCP, "EST");
+		mCPB = new CreateProductBacklog(1, mEstimate, mCP, "EST");
 		mCPB.exe();
 		
 		JSONObject storyJson = new JSONObject();
@@ -222,9 +217,11 @@ public class ProductBacklogWebServiceTest {
 		TagObject tag3 = new TagObject("QWQ", mProject.getId());
 		tag3.save();
 		
+		StoryObject story = mCPB.getStories().get(0);
 		storyJson = new JSONObject();
 		storyJson
 			.put("id", 1)
+			.put("serial_id", story.getSerialId())
 			.put("name", "QQ")
 			.put("importance", 90)
 			.put("estimate", 8)

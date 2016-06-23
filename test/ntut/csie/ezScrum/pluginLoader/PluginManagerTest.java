@@ -1,33 +1,29 @@
 package ntut.csie.ezScrum.pluginLoader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
-import ntut.csie.protocal.Action;
-import ntut.csie.ui.protocol.UIConfig;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.test.CreateData.PluginMockDataHelper;
+import ntut.csie.protocal.Action;
+import ntut.csie.ui.protocol.UIConfig;
+
 public class PluginManagerTest {
-	
 	private final String mPluginTestDataPath = "./TestData/PluginData/";
 	private final String mPluginWorkspacePath = "./WebContent/pluginWorkspace/";
 	private final String mPluginName = "redminePlugin.war";
 	private final String mPluginInPluginWorkspacePath = mPluginWorkspacePath + mPluginName.replace(".war", "") + "/";
 	private final String mConfigFileName = "config.conf";
 	private PluginManager mPluginManager;
-	private Configuration mConfig  = null;
 	
 	@Before
 	public void setUp() throws Exception {
-		mConfig = new Configuration();
 		PluginMockDataHelper.createResourcePropertyFile();
 		mPluginManager = new PluginManager();
 	}
@@ -38,7 +34,6 @@ public class PluginManagerTest {
 		PluginMockDataHelper.deleteResourcePropertyFile();
 		this.deleteMockFile();
 		mPluginManager = null;
-		mConfig = null;
 	}
 
 	/**

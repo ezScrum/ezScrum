@@ -26,16 +26,15 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class ShowRemainingReportAction extends Action {
-
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
-		String sprintId = request.getParameter("sprintID");
+		String serialSprintId = request.getParameter("sprintID");
 		String category = request.getParameter("type");
 		String date = request.getParameter("Date");
 
@@ -57,8 +56,7 @@ public class ShowRemainingReportAction extends Action {
 		}
 
 		String[] TypeList = new String[] { ScrumEnum.TASK_ISSUE_TYPE,
-				ScrumEnum.STORY_ISSUE_TYPE, ScrumEnum.ISSUE_ISSUE_TYPE,
-				ScrumEnum.BUG_ISSUE_TYPE, ScrumEnum.FEATURE_ISSUE_TYPE };
+				ScrumEnum.STORY_ISSUE_TYPE};
 
 		request.setAttribute("TypeList", TypeList);
 		request.setAttribute("type", category); // set catetory combo
@@ -103,10 +101,12 @@ public class ShowRemainingReportAction extends Action {
 				request.setAttribute("setDate", format.format(currentDate));
 			} else {
 				// generate by sprint
-				if (sprintId == null) {
+				if (serialSprintId == null) {
 					currentId = sprintPlanHelper.getCurrentSprint().getId();
 				} else {
-					currentId = Integer.parseInt(sprintId);
+					long serialId = Integer.parseInt(serialSprintId);
+					SprintObject sprint = SprintObject.get(project.getId(), serialId);
+					currentId = sprint.getId();
 				}
 
 				report = new RemainingWorkReport(project, session, category,
@@ -114,13 +114,13 @@ public class ShowRemainingReportAction extends Action {
 
 				request.setAttribute("setDate", "");
 			}
-
-			request.setAttribute("iteration", currentId);
+			SprintObject sprint = SprintObject.get(currentId);
+			request.setAttribute("iteration", sprint.getSerialId());
 			request.setAttribute("RemainingWorkReport", report);
 
 			AccountObject account = session.getAccount();
 			ScrumRole sr = new ScrumRoleLogic().getScrumRole(project, account);
-			if (sr.getReadReport()) {
+			if (sr.getAccessReport()) {
 				return mapping.findForward("success");
 			}
 		} catch (Exception e) {

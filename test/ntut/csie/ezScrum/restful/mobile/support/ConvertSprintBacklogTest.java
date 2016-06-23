@@ -6,24 +6,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
-import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.HistoryObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class ConvertSprintBacklogTest {
 	private CreateProject mCP;
@@ -46,7 +45,7 @@ public class ConvertSprintBacklogTest {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// 新增 Sprint
 		mCS = new CreateSprint(mSprintCount, mCP);
@@ -64,10 +63,6 @@ public class ConvertSprintBacklogTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -76,7 +71,6 @@ public class ConvertSprintBacklogTest {
 		ini = null;
 		mCP = null;
 		mCS = null;
-		projectManager = null;
 		mConfig = null;
 		mSprints = null;
 	}
@@ -95,7 +89,7 @@ public class ConvertSprintBacklogTest {
 		assertEquals(sprint.getGoal(), responseJson.getString("sprintGoal"));
 		assertEquals(sprint.getStartDateString(), responseJson.getString("startDate"));
 		assertEquals(sprint.getDemoDateString(), responseJson.getString("demoDate"));
-		assertEquals(sprint.getDueDateString(), responseJson.getString("dueDate"));
+		assertEquals(sprint.getEndDateString(), responseJson.getString("endDate"));
 		assertEquals(sprint.getInterval(), responseJson.getInt("interval"));
 		assertEquals(sprint.getTeamSize(), responseJson.getInt("members"));
 		assertEquals(sprint.getAvailableHours(), responseJson.getInt("hoursCanCommit"));
@@ -126,7 +120,7 @@ public class ConvertSprintBacklogTest {
 			assertEquals(sprint.getGoal(), sprintJson.getString("sprintGoal"));
 			assertEquals(sprint.getStartDateString(), sprintJson.getString("startDate"));
 			assertEquals(sprint.getDemoDateString(), sprintJson.getString("demoDate"));
-			assertEquals(sprint.getDueDateString(), sprintJson.getString("dueDate"));
+			assertEquals(sprint.getEndDateString(), sprintJson.getString("endDate"));
 			assertEquals(sprint.getInterval(), sprintJson.getInt("interval"));
 			assertEquals(sprint.getTeamSize(), sprintJson.getInt("members"));
 			assertEquals(sprint.getAvailableHours(), sprintJson.getInt("hoursCanCommit"));

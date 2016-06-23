@@ -8,32 +8,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataInfo.SprintInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+
 public class SprintPlanMapperTest {
 	private static Log mlog = LogFactory.getLog(SprintPlanMapperTest.class);
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateProductBacklog mCPB;
-
 	private int mProjectCount = 1;
 	private int mSprintCount = 1;
 	private int mStoryCount = 2;
-
 	private SprintPlanMapper mSprintPlanMapper = null;
 	private Configuration mConfig = null;
 
@@ -49,7 +46,7 @@ public class SprintPlanMapperTest {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCS = new CreateSprint(mSprintCount, mCP);
 		mCS.exe();
@@ -73,10 +70,6 @@ public class SprintPlanMapperTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -87,7 +80,6 @@ public class SprintPlanMapperTest {
 		mCS = null;
 		mCPB = null;
 		mSprintPlanMapper = null;
-		projectManager = null;
 		mConfig = null;
 	}
 
@@ -104,7 +96,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/24";
+		sprintInfo.endDate = "2015/06/24";
 
 		// call SprintPlanMapper addSprintPlan
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
@@ -166,6 +158,8 @@ public class SprintPlanMapperTest {
 	public void testUpdateSprint() {
 		SprintInfo sprintInfo = new SprintInfo();
 		sprintInfo.id = mCS.getSprintsId().get(0);
+		SprintObject tempSprint = SprintObject.get(sprintInfo.id);
+		sprintInfo.serialId = tempSprint.getSerialId();
 		sprintInfo.interval = 2;
 		sprintInfo.teamSize = 2;
 		sprintInfo.hoursCanCommit = 120;
@@ -175,8 +169,8 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/25";
 		sprintInfo.demoPlace = "Lab1321_NEW";
 		sprintInfo.dailyInfo = "12:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/25";
-
+		sprintInfo.endDate = "2015/06/25";
+		
 		// call updateSprintPlan
 		mSprintPlanMapper.updateSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(mCS.getSprintsId().get(0));
@@ -216,7 +210,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/07/01";
 		sprintInfo.demoPlace = "Lab1324";
 		sprintInfo.dailyInfo = "17:10@Lab1324";
-		sprintInfo.dueDate = "2015/07/01";
+		sprintInfo.endDate = "2015/07/01";
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(sprintId);
 		
@@ -249,7 +243,7 @@ public class SprintPlanMapperTest {
 		sprintInfo.demoDate = "2015/06/24";
 		sprintInfo.demoPlace = "Lab1321";
 		sprintInfo.dailyInfo = "11:10@Lab1321";
-		sprintInfo.dueDate = "2015/06/24";
+		sprintInfo.endDate = "2015/06/24";
 		// addSprint
 		long sprintId = mSprintPlanMapper.addSprint(sprintInfo);
 		SprintObject sprint = SprintObject.get(sprintId);

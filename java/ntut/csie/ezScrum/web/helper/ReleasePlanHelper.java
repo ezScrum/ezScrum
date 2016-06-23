@@ -71,10 +71,14 @@ public class ReleasePlanHelper {
 	// return the releaseID which has the sprintID
 	public long getReleaseIdBySprintId(long sprintId) {
 		long releaseId = -1;
+		
+		SprintObject sprint = SprintObject.get(sprintId);
+		if (sprint == null) {
+			return releaseId;
+	    }
+		
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
-
 		for (ReleaseObject release : releases) {
-			SprintObject sprint = SprintObject.get(sprintId);
 			if (release.containsSprint(sprint)) {
 				return release.getId();
 			}
@@ -114,7 +118,6 @@ public class ReleasePlanHelper {
 
 	public String setJson(ArrayList<ReleaseObject> releases,
 			SprintPlanHelper sprintPlanHelper) {
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		StringBuilder stringBuilder = new StringBuilder("[");
 		boolean isFirstRelease = true;
 		for (ReleaseObject release : releases) {
@@ -127,19 +130,19 @@ public class ReleasePlanHelper {
 			}
 			stringBuilder.append("Type:\'Release\',");
 			stringBuilder.append("ID:\'");
-			stringBuilder.append(release.getId());
+			stringBuilder.append(release.getSerialId());
 			stringBuilder.append("\',");
 			stringBuilder.append("Name:\'");
-			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getName()));
+			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getName()));
 			stringBuilder.append("\',");
 			stringBuilder.append("StartDate:\'");
 			stringBuilder.append(release.getStartDateString());
 			stringBuilder.append("\',");
 			stringBuilder.append("EndDate:\'");
-			stringBuilder.append(release.getDueDateString());
+			stringBuilder.append(release.getEndDateString());
 			stringBuilder.append("\',");
 			stringBuilder.append("Description:\'");
-			stringBuilder.append(translateSpecialChar.TranslateJSONChar(release.getDescription()));
+			stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(release.getDescription()));
 			stringBuilder.append("\',");
 			
 
@@ -317,7 +320,6 @@ public class ReleasePlanHelper {
 	// 透過release 將 sprint 的資訊寫成 Json
 	private String setSprintToJson(ReleaseObject release,
 			SprintPlanHelper sprintPlanHelper) {
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
 		StringBuilder stringBuilder = new StringBuilder("");
 		if (release.getSprints() != null) { // 有 sprint 資訊，則抓取 sprint 的 xml 資料
 			boolean isFirstSprint = true;
@@ -332,16 +334,16 @@ public class ReleasePlanHelper {
 				}
 				stringBuilder.append("Type:\'Sprint\',");
 				stringBuilder.append("ID:\'");
-				stringBuilder.append(sprint.getId());
+				stringBuilder.append(sprint.getSerialId());
 				stringBuilder.append("\',");
 				stringBuilder.append("Name:\'");
-				stringBuilder.append(translateSpecialChar.TranslateJSONChar(sprint.getGoal()));
+				stringBuilder.append(TranslateSpecialChar.TranslateJSONChar(sprint.getGoal()));
 				stringBuilder.append("\',");
 				stringBuilder.append("StartDate:\'");
 				stringBuilder.append(sprint.getStartDateString());
 				stringBuilder.append("\',");
 				stringBuilder.append("EndDate:\'");
-				stringBuilder.append(sprint.getDueDateString());
+				stringBuilder.append(sprint.getEndDateString());
 				stringBuilder.append("\',");
 				stringBuilder.append("Interval:\'");
 				stringBuilder.append(sprint.getInterval());
@@ -373,8 +375,14 @@ public class ReleasePlanHelper {
 			for (int i = 0; i < stories.size(); i++) {
 
 				long sprintId = stories.get(i).getSprintId();
+				// Get serial sprint id
+				long serialSprintId = -1;
+				SprintObject sprint = SprintObject.get(sprintId);
+				if (sprint != null) {
+					serialSprintId = sprint.getSerialId();
+				}
 				stringBuilder.append("<Story>");
-				stringBuilder.append("<Id>" + stories.get(i).getId() + "</Id>");
+				stringBuilder.append("<Id>" + stories.get(i).getSerialId() + "</Id>");
 				stringBuilder.append("<Link></Link>");
 				stringBuilder.append("<Name>"
 						+ replaceStr(stories.get(i).getName()) + "</Name>");
@@ -391,8 +399,8 @@ public class ReleasePlanHelper {
 				stringBuilder.append("<HowToDemo>"
 						+ replaceStr(stories.get(i).getHowToDemo())
 						+ "</HowToDemo>");
-				stringBuilder.append("<Release>" + releaseId + "</Release>");
-				stringBuilder.append("<Sprint>" + sprintId + "</Sprint>");
+				stringBuilder.append("<Release>" + release.getSerialId() + "</Release>");
+				stringBuilder.append("<Sprint>" + serialSprintId + "</Sprint>");
 				stringBuilder.append("<Tag>"
 						+ replaceStr(joinTagOnStory(stories.get(i)
 								.getTags(), ",")) + "</Tag>");
@@ -460,17 +468,17 @@ public class ReleasePlanHelper {
 	}
 	
 	public StringBuilder checkReleaseDateOverlapping(long releaseId, String startDateString,
-			String dueDateString, String action) {
+			String endDateString, String action) {
 		ArrayList<ReleaseObject> releases = mReleasePlanMapper.getReleases();
 		Date startDate = DateUtil.dayFilter(startDateString);
-		Date dueDate = DateUtil.dayFilter(dueDateString);
+		Date endDate = DateUtil.dayFilter(endDateString);
 		String result = "legal";
 		for (ReleaseObject release : releases) {
 			if (action.equals("edit") && (releaseId == release.getId())) {// 不與自己比較
 				continue;
 			}
 			// check 日期的頭尾是否有在各個 release plan 日期範圍內
-			if (release.contains(startDate) || release.contains(dueDate)) {
+			if (release.contains(startDate) || release.contains(endDate)) {
 				result = "illegal";
 				break;
 			}

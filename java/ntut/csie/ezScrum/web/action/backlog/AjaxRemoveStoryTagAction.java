@@ -31,7 +31,7 @@ public class AjaxRemoveStoryTagAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Remove Story Tag in AjaxRemoveStoryTagAction.");
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		long storyId = Long.parseLong(request.getParameter("storyId"));

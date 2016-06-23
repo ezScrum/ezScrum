@@ -77,8 +77,7 @@ public class ProductBacklogWebService extends ProjectWebService {
 		
 		try {
 			StoryInfo storyInfo = new StoryInfo(storyJson);
-			long storyId = storyInfo.id;
-			mProductBacklogHelper.updateStory(storyId, storyInfo);
+			mProductBacklogHelper.updateStory(storyInfo);
 			mResponse = mConvertProductBacklog.updateStory(true);
 		} catch (Exception e) {
 			mResponse = mConvertProductBacklog.updateStory(false);

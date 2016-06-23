@@ -13,7 +13,7 @@ var saveBtnHandler = function(btn) {
 	      	    },
 	      	    success: function(resp) {
 	      	    	var projectName = resp.responseText;
-	      	    	location.replace("./viewProject.do?PID=" + projectName );
+	      	    	location.replace("./viewProject.do?projectName=" + projectName );
 	      	   } 
 	      	});
 	    }

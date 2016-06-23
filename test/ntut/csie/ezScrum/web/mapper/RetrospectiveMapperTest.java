@@ -1,20 +1,20 @@
 package ntut.csie.ezScrum.web.mapper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.RetrospectiveInfo;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.web.dataInfo.RetrospectiveInfo;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 
 public class RetrospectiveMapperTest {
 	private ProjectObject mProject = null;
@@ -41,7 +41,7 @@ public class RetrospectiveMapperTest {
 		mSprint.save();
 
 		// create retrospective mapper
-		mRetrospectiveMapper = new RetrospectiveMapper(mProject, mSprint.getId());
+		mRetrospectiveMapper = new RetrospectiveMapper(mProject);
 
 		// ============= release ==============
 		ini = null;
@@ -53,10 +53,6 @@ public class RetrospectiveMapperTest {
 		InitialSQL initialSQL = new InitialSQL(mConfig);
 		initialSQL.exe();
 
-		// delete external files
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-
 		// set normal mode
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -66,7 +62,6 @@ public class RetrospectiveMapperTest {
 		mProject = null;
 		mSprint = null;
 		mRetrospectiveMapper = null;
-		projectManager = null;
 		mConfig = null;
 	}
 	
@@ -77,6 +72,7 @@ public class RetrospectiveMapperTest {
 		retrospectiveInfo.description = "TEST_RETROSPECTIVE_DESCRIPTION";
 		retrospectiveInfo.type = RetrospectiveObject.TYPE_GOOD;
 		retrospectiveInfo.status = RetrospectiveObject.STATUS_NEW;
+		retrospectiveInfo.sprintId = mSprint.getId();
 		long retrospectiveId = mRetrospectiveMapper.addRetrospective(retrospectiveInfo);
 		assertTrue(retrospectiveId > 0);
 		RetrospectiveObject retrospective = RetrospectiveObject.get(retrospectiveId);
@@ -101,7 +97,7 @@ public class RetrospectiveMapperTest {
 		long retrospectiveId = retrospective.getId();
 		assertTrue(retrospectiveId > 0);
 		RetrospectiveInfo retrospectiveInfo = new RetrospectiveInfo();
-		retrospectiveInfo.id = retrospectiveId;
+		retrospectiveInfo.serialId = retrospective.getSerialId();
 		retrospectiveInfo.name = "TEST_RETROSPECTIVE_NAME_UPDATE";
 		retrospectiveInfo.description = "TEST_RETROSPECTIVE_DESCRIPTION_UPDATE";
 		retrospectiveInfo.type = RetrospectiveObject.TYPE_IMPROVEMENT;
@@ -128,7 +124,7 @@ public class RetrospectiveMapperTest {
 		             .save();
 		long retrospectiveId = retrospective.getId();
 		assertTrue(retrospectiveId > 0);
-		mRetrospectiveMapper.deleteRetrospective(retrospectiveId);
+		mRetrospectiveMapper.deleteRetrospective(retrospective.getProjectId(), retrospective.getSerialId());
 		retrospective = RetrospectiveObject.get(retrospectiveId);
 		assertNull(retrospective);
 	}

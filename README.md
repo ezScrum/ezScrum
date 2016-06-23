@@ -11,12 +11,19 @@ ezScrum is a process management tool for Scrum.
 
 Version
 ------------
-1.8.0 Alpha2
+1.8.0 Alpha 3
 
 
 License
 ------------
 GPL V2
+
+
+Upgrade ezScrum
+------------
+In order to upgrade ezScrum and save all old project data for you, we need your assistance to fill out a questionnaire.
+[https://ezscrum.typeform.com/to/iPXgBP
+](https://ezscrum.typeform.com/to/iPXgBP "https://ezscrum.typeform.com/to/iPXgBP")
 
 Snapshot
 ------------

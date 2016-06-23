@@ -21,7 +21,7 @@ public class ShowProjectInfoFormAction extends Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response) {
     	try {
-	        ProjectObject project = SessionManager.getProjectObject(request);
+	        ProjectObject project = SessionManager.getProject(request);
 	        
 	        long fileSize = project.getAttachFileSize();
 	        String attachFileSize = "";

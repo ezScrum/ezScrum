@@ -31,7 +31,7 @@ public class AjaxGetProjectDescriptionAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info(" Get Project Description. In Project Summary Page.");
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		ProjectUI pui = new ProjectUI(project);
 		return new StringBuilder((new Gson()).toJson(pui));
 	}

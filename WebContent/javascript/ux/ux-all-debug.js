@@ -3843,7 +3843,7 @@ Ext.grid.GroupSummary.Calculations = Ext.ux.grid.GroupSummary.Calculations;
             projectId: 100,     project: 'House',
             taskId:    112, description: 'Paint',
             estimate:    6,        rate:     150,
-            due:'06/24/2007'
+            end:'06/24/2007'
         },
         ...
     ],
@@ -3851,7 +3851,7 @@ Ext.grid.GroupSummary.Calculations = Ext.ux.grid.GroupSummary.Calculations;
     summaryData: {
         'House': {
             description: 14, estimate: 9,
-                   rate: 99, due: new Date(2009, 6, 29),
+                   rate: 99, end: new Date(2009, 6, 29),
                    cost: 999
         }
     }
@@ -3881,7 +3881,7 @@ grid.on('afteredit', function(){
         // HybridSummary class implements updateSummaryData
         summary.updateSummaryData(groupValue,
             // create data object based on configured dataIndex
-            {description: 22, estimate: 888, rate: 888, due: new Date(), cost: 8});
+            {description: 22, estimate: 888, rate: 888, end: new Date(), cost: 8});
     }, 2000);
 });
      * </code></pre>

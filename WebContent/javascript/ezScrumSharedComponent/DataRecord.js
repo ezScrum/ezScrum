@@ -85,3 +85,34 @@ var ExistedStoryReader = new Ext.data.XmlReader({
 /**
 * This is for ezScrumSharedComponent/AddExistedStoryWindow.js
 ***********************************************************************************************/
+
+/**********************************************************************************************
+ * This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+ * */
+var HandlerRecord = Ext.data.Record.create([ 'Name' ]);
+
+var PartnersReader = new Ext.data.XmlReader({
+	record : 'Partner',
+	idPath : 'Name',
+	successProperty : 'Result'	
+}, HandlerRecord);
+/**
+* This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+***********************************************************************************************/
+
+/**********************************************************************************************
+ * This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+ * */
+var SprintRecord = Ext.data.Record.create([ 
+        'subject' , 'sprintGoal', 'storyInfo', 'schedule', 'sprintId'
+]);
+
+var PreviewReader = new Ext.data.XmlReader({
+	record : 'Sprint',
+	idPath : 'subject',
+	successProperty : 'Result',
+	totalProperty: 'Total'
+}, SprintRecord);
+/**
+* This is for ezScrumSharedComponent/SendSprintInfoEmailWindow.js
+***********************************************************************************************/

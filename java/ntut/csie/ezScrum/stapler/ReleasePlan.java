@@ -2,19 +2,16 @@ package ntut.csie.ezScrum.stapler;
 
 import java.util.List;
 
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 import ntut.csie.ezScrum.plugin.util.PluginConfigManager;
 import ntut.csie.protocal.PluginConfig;
 import ntut.csie.ui.protocol.EzScrumUI;
 import ntut.csie.ui.protocol.ReleasePlanUI;
 
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
 public class ReleasePlan {
-	private String mProjectName;
-
-	public ReleasePlan(String projectName) {
-		mProjectName = projectName;
+	public ReleasePlan() {
 	}
 
 	// it is a stapler sample ->rest url http://localhost:8080/ezScrum/ReleasePlan/someOperation

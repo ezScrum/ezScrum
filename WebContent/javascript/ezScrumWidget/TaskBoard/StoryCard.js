@@ -19,17 +19,15 @@ function renderStoryHeader(record, edit, history, upload) {
 // 顯示Story的Attach File
 function renderStoryAttachFile(record) {
 	// <p><b>Attach Files:</b><br /><a href="{0}" target="_blank">{1}</a>
-	
 	var storyId = record.get('Id');
 	var fileList = record.get('AttachFileList');
-
 	if (fileList.length == 0)
 		return "";
 
 	var result = "<p><b>[Attach Files]</b></p>";
 	for (var i = 0; i < fileList.length; i++) {
 		result += String.format('<p>'+ (i+1) +'. <a href="{0}" target="_blank">{1}</a>&nbsp;&nbsp;'
-		 					  + '<a href="#" onClick="deleteStoryAttachFile({2}, {3}); false;"><image src="./images/drop2.png"></a>&nbsp;&nbsp;{4}</p>',
+		 					  + '<a href="#" onClick="deleteStoryAttachFile({2}, {3}); false;"><image src="./images/cancel.png"></a>&nbsp;&nbsp;{4}</p>',
 				fileList[i].FilePath, fileList[i].FileName, fileList[i].FileId, storyId, fileList[i].UploadDate);
 	}
 	return result;

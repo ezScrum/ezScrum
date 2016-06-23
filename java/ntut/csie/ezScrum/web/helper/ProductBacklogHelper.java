@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -81,25 +82,33 @@ public class ProductBacklogHelper {
 	 * @param storyInfo
 	 * @return StoryObject
 	 */
-	public StoryObject updateStory(long id, StoryInfo storyInfo) {
+	public StoryObject updateStory(StoryInfo storyInfo) {
 		mProductBacklogMapper.updateStory(storyInfo);
-		return mProductBacklogMapper.getStory(id);
+		return mProductBacklogMapper.getStory(mProject.getId(), storyInfo.serialId);
 	}
-
-	/**
-	 * delete story and get json text
-	 * 
-	 * @param storyId
-	 * @return StringBuilder
-	 */
+	
 	public StringBuilder deleteStory(long storyId) {
-		StoryObject story = getStory(storyId);
+		StoryObject story = StoryObject.get(storyId);
 		StringBuilder result = new StringBuilder("");
 
 		if (story != null) {
 			removeTask(storyId);
 			mProductBacklogMapper.deleteStory(storyId);
-			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + storyId + "}]}");
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + story.getSerialId() + "}]}");
+		} else {
+			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
+		}
+		return result;
+	}
+	
+	public StringBuilder deleteStory(Long projectId, long serialStoryId) {
+		StoryObject story = getStory(projectId, serialStoryId);
+		StringBuilder result = new StringBuilder("");
+
+		if (story != null) {
+			removeTask(projectId, serialStoryId);
+			mProductBacklogMapper.deleteStory(projectId, serialStoryId);
+			result.append("{\"success\":true, \"Total\":1, \"Stories\":[{\"Id\":" + serialStoryId + "}]}");
 		} else {
 			result.append("{\"success\":false, \"Total\":0, \"Stories\":[{}]}");
 		}
@@ -120,7 +129,7 @@ public class ProductBacklogHelper {
 			for (int i = 0; i < tags.size(); i++) {
 				sb.append("<IssueTag>");
 				sb.append("<Id>" + tags.get(i).getId() + "</Id>");
-				sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tags.get(i).getName()) + "</Name>");
+				sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(tags.get(i).getName()) + "</Name>");
 				sb.append("</IssueTag>");
 			}
 			sb.append("</TagList>");
@@ -145,7 +154,7 @@ public class ProductBacklogHelper {
 		} else if (isTagExist(newTagName)) {
 			// 轉換"&", "<", ">", """, 通過XML語法
 			// 因為"\","'"對xml沒影響, 所以使用original(未轉換)
-			newTagName = new TranslateSpecialChar().TranslateXMLChar(original_tagname);
+			newTagName = TranslateSpecialChar.TranslateXMLChar(original_tagname);
 			sb = new StringBuilder("<Tags><Result>false</Result><Message>Tag Name : " + newTagName + " already exist</Message></Tags>");
 		} else {
 			addNewTag(newTagName);
@@ -154,7 +163,7 @@ public class ProductBacklogHelper {
 			sb.append("<Tags><Result>true</Result>");
 			sb.append("<IssueTag>");
 			sb.append("<Id>" + tag.getId() + "</Id>");
-			sb.append("<Name>" + new TranslateSpecialChar().TranslateXMLChar(tag.getName()) + "</Name>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(tag.getName()) + "</Name>");
 			sb.append("</IssueTag>");
 			sb.append("</Tags>");
 		}
@@ -252,16 +261,16 @@ public class ProductBacklogHelper {
 		return null;
 	}
 	
-	public ArrayList<TaskObject> getTasksWithNoParent() {
+	public ArrayList<TaskObject> getDroppedTasks() {
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
-		tasks = mProject.getTasksWithNoParent();
+		tasks = mProject.getDroppedTasks();
 		return tasks;
 	}
 
 	/**
 	 * remove task 跟 story 之間的關係
 	 * 
-	 * @param storyId
+	 * @param serialStoryId
 	 */
 	private void removeTask(long storyId) {
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
@@ -270,7 +279,18 @@ public class ProductBacklogHelper {
 		// drop Tasks
 		if (tasks.size() > 0) {
 			for (TaskObject task : tasks)
-				mProductBacklogMapper.removeTask(task.getId(), storyId);
+				mProductBacklogMapper.removeTask(task.getId(), story.getId());
+		}
+	}
+	
+	private void removeTask(long projectId, long serialStoryId) {
+		StoryObject story = mProductBacklogMapper.getStory(projectId, serialStoryId);
+		// 取得story的的task列表
+		ArrayList<TaskObject> tasks = story.getTasks();
+		// drop Tasks
+		if (tasks.size() > 0) {
+			for (TaskObject task : tasks)
+				mProductBacklogMapper.removeTask(task.getId(), story.getId());
 		}
 	}
 
@@ -301,6 +321,16 @@ public class ProductBacklogHelper {
 	 */
 	public StoryObject getStory(long storyId) {
 		return mProductBacklogMapper.getStory(storyId);
+	}
+	
+	/**
+	 * 取得 story 或 task
+	 * 
+	 * @param storyId
+	 * @return StoryObject
+	 */
+	public StoryObject getStory(long projectId, long serialStoryId) {
+		return mProductBacklogMapper.getStory(projectId, serialStoryId);
 	}
 
 	/**
@@ -364,25 +394,26 @@ public class ProductBacklogHelper {
 
 	public long addAttachFile(AttachFileInfo attachFileInfo, File file) throws IOException {
 		// create folder to put file
-		String folderPath = System.getProperty("ntut.csie.jcis.resource.WorkspaceRoot") + File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
-		new File(folderPath).mkdirs();
-
-		attachFileInfo.path = folderPath + File.separator + System.currentTimeMillis() + "_" + attachFileInfo.name;
-		File targetFile = new File(attachFileInfo.path);
-
+		Configuration configuration = new Configuration();
+		String folderPath = File.separator + "AttachFile" + File.separator + attachFileInfo.projectName;
+		String fileName = System.currentTimeMillis() + "_" + attachFileInfo.name;
+		String relativeFilePath = folderPath + File.separator + fileName;
+		String absoluteFilePath = new File(configuration.getWorkspacePath() + relativeFilePath).getAbsolutePath();
+		attachFileInfo.path = relativeFilePath;
+		new File(configuration.getWorkspacePath() + folderPath).mkdirs();
+		File targetFile = new File(absoluteFilePath);
 		// move file from tmp folder to "AttachFile" folder
 		copyFile(file, targetFile);
-
+		// remove tmp file
+		file.delete();
 		return mProductBacklogMapper.addAttachFile(attachFileInfo);
 	}
 
 	public void deleteAttachFile(long fileId) {
 		AttachFileObject attachFile = getAttachFile(fileId);
-
-		File file = new File(attachFile.getPath());
+		File file = new File(attachFile.getFullPath());
 		file.delete();
-
-		mProductBacklogMapper.deleteAttachFile(fileId);
+		attachFile.delete();
 	}
 
 	// for ezScrum v1.8

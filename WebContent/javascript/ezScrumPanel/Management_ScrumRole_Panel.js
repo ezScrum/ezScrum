@@ -141,10 +141,10 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 					name: 'AccessRetrospective',
 					ref: '../ScrumRole_AccessRetrospective_refID'
 				}, {
-					boxLabel: '<b>AccessUnplanned</b>',
-					inputValue: 'AccessUnplanned',
-					name: 'AccessUnplanned',
-					ref: '../ScrumRole_AccessUnplanned_refID'
+					boxLabel: '<b>AccessUnplan</b>',
+					inputValue: 'AccessUnplan',
+					name: 'AccessUnplan',
+					ref: '../ScrumRole_AccessUnplan_refID'
 				}, {
 					boxLabel: '<b>AccessReport</b>',
 					inputValue: 'AccessReport',
@@ -211,7 +211,7 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 		this.ScrumRole_AccessSprintBacklog_refID.setValue(eval(obj.AccessSprintBacklog));
 		this.ScrumRole_AccessTaskboard_refID.setValue(eval(obj.AccessTaskboard));
 		this.ScrumRole_AccessRetrospective_refID.setValue(eval(obj.AccessRetrospective));
-		this.ScrumRole_AccessUnplanned_refID.setValue(eval(obj.AccessUnplanned));
+		this.ScrumRole_AccessUnplan_refID.setValue(eval(obj.AccessUnplan));
 		this.ScrumRole_AccessReport_refID.setValue(eval(obj.AccessReport));
 		this.ScrumRole_AccessEditProject_refID.setValue(eval(obj.AccessEditProject));
 	},
@@ -224,7 +224,7 @@ ezScrum.Management_ScrumRole_PermissionList_Panel = Ext.extend(Ext.Panel, {
 		PermissionList["AccessSprintBacklog"] = this.ScrumRole_AccessSprintBacklog_refID.getValue();
 		PermissionList["AccessTaskboard"] = this.ScrumRole_AccessTaskboard_refID.getValue();
 		PermissionList["AccessRetrospective"] = this.ScrumRole_AccessRetrospective_refID.getValue();
-		PermissionList["AccessUnplanned"] = this.ScrumRole_AccessUnplanned_refID.getValue();
+		PermissionList["AccessUnplan"] = this.ScrumRole_AccessUnplan_refID.getValue();
 		PermissionList["AccessReport"] = this.ScrumRole_AccessReport_refID.getValue();
 		PermissionList["AccessEditProject"] = this.ScrumRole_AccessEditProject_refID.getValue();
 

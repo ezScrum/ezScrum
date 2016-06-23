@@ -9,21 +9,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ReleaseInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ReleasePlanHelperTest {
 	private ReleasePlanHelper mReleasePlanHelper;
@@ -43,7 +42,7 @@ public class ReleasePlanHelperTest {
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(mProjectCount); // 新增一個 Project
-		mCP.exeCreate(); // 執行
+		mCP.exeCreateForDb(); // 執行
 
 		mCR = new CreateRelease(mReleaseCount, mCP); // 專案新增三個
 		// Release
@@ -53,11 +52,7 @@ public class ReleasePlanHelperTest {
 	@After
 	public void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -65,7 +60,6 @@ public class ReleasePlanHelperTest {
 		
 		// release
 		mReleasePlanHelper = null;
-		projectManager = null;
 		mCP = null;
 		mCR = null;
 		mConfig = null;
@@ -125,7 +119,7 @@ public class ReleasePlanHelperTest {
 		Calendar cal = Calendar.getInstance();
 		Date NewStartDate = cal.getTime(); // set New Start Date
 		cal.add(Calendar.DAY_OF_YEAR, 180);
-		Date NewDueDate = cal.getTime(); // set New End Date
+		Date NewEndDate = cal.getTime(); // set New End Date
 
 		// edit 判斷式的測試
 		long lastId = releases.get(releases.size() - 1).getId(); // 修改最後一筆資訊
@@ -136,7 +130,7 @@ public class ReleasePlanHelperTest {
 		releaseInfo.id = lastId;
 		releaseInfo.name = NewName;
 		releaseInfo.startDate = format.format(NewStartDate).toString();
-		releaseInfo.dueDate = format.format(NewDueDate).toString();
+		releaseInfo.endDate = format.format(NewEndDate).toString();
 		releaseInfo.description = NewDesc;
 		mReleasePlanHelper.editRelease(releaseInfo);
 
@@ -145,7 +139,7 @@ public class ReleasePlanHelperTest {
 		assertEquals(NewName, editRelease.getName());
 		assertEquals(NewDesc, editRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), editRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), editRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), editRelease.getEndDateString());
 
 		// save 判斷式的測試
 		lastId++;
@@ -153,7 +147,7 @@ public class ReleasePlanHelperTest {
 		releaseInfo.id = lastId;
 		releaseInfo.name = "ReleaseName-New";
 		releaseInfo.startDate = format.format(NewStartDate).toString();
-		releaseInfo.dueDate = format.format(NewDueDate).toString();
+		releaseInfo.endDate = format.format(NewEndDate).toString();
 		releaseInfo.description = "ReleaseDesc-New";
 		mReleasePlanHelper.createRelease(releaseInfo);
 		ReleaseObject saveRelease = mReleasePlanHelper.getReleasePlan(lastId);
@@ -162,7 +156,7 @@ public class ReleasePlanHelperTest {
 		assertEquals("ReleaseName-New", saveRelease.getName());
 		assertEquals("ReleaseDesc-New", saveRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), saveRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), saveRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), saveRelease.getEndDateString());
 
 		// default 除錯測試
 		mReleasePlanHelper.editRelease(releaseInfo);
@@ -171,7 +165,7 @@ public class ReleasePlanHelperTest {
 		assertEquals("ReleaseName-New", otherRelease.getName());
 		assertEquals("ReleaseDesc-New", otherRelease.getDescription());
 		assertEquals(format.format(NewStartDate).toString(), otherRelease.getStartDateString());
-		assertEquals(format.format(NewDueDate).toString(), otherRelease.getDueDateString());
+		assertEquals(format.format(NewEndDate).toString(), otherRelease.getEndDateString());
 	}
 	
 	@Test

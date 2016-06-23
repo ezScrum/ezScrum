@@ -8,24 +8,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.dao.SerialNumberDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.ProjectInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProjectMapperTest{
 	private long mProjectId = 0;
@@ -54,10 +53,6 @@ public class ProjectMapperTest{
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -158,7 +153,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ProductOwner
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ProductOwner);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ProductOwner);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -184,7 +179,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumMaster
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumMaster);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumMaster);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -211,7 +206,7 @@ public class ProjectMapperTest{
 		account.save();
 		
 		// create project role - ScrumTeam
-		boolean createAcountResult = account.createProjectRole(mProjectId, RoleEnum.ScrumTeam);
+		boolean createAcountResult = account.joinProjectWithScrumRole(mProjectId, RoleEnum.ScrumTeam);
 		assertTrue(createAcountResult);
 		
 		// get project scrum workers username
@@ -243,7 +238,13 @@ public class ProjectMapperTest{
 		
 		// 新建 project，也把 serial number 建起來
 		mProjectId = project.getId();
-		SerialNumberDAO serialnumberDAO = SerialNumberDAO.getInstance();
-		serialnumberDAO.create(new SerialNumberObject(mProjectId, 0, 0, 0, 0, 0, 0));
+		SerialNumberObject serialNumber = new SerialNumberObject(mProjectId);
+		serialNumber.setReleaseId(0)
+	    		    .setRetrospectiveId(0)
+	    		    .setSprintId(0)
+	    		    .setStoryId(0)
+	    		    .setTaskId(0)
+	    		    .setUnplanId(0);
+		SerialNumberDAO.getInstance().create(serialNumber);
 	}
 }

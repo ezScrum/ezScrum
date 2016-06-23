@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -29,7 +27,6 @@ public class TaskBoard {
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private ArrayList<StoryObject> mStories;
-	private ArrayList<StoryObject> mDroppedStories;
 	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
 	private LinkedHashMap<Date, Double> mDateToStoryPoint;
 	private LinkedHashMap<Date, Double> mDateToTaskIdealPoint;
@@ -64,9 +61,6 @@ public class TaskBoard {
 	private void init() {
 		// 取得目前最新的Story與Task狀態
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
-		// 取得曾經被drop掉的Story與其底下的Task
-		mDroppedStories = mSprintBacklogMapper.getStoriesWithNoParent();
-		
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
 			Date sprintStartWorkDate = mSprintBacklogLogic.getSprintStartWorkDate();
@@ -155,67 +149,32 @@ public class TaskBoard {
 	private double[] getPointByDate(Date date) {
 		double[] point = {0, 0};
 
-		/************************************************************
-		 * 依照Type取出當天的Story或者是Task來進行計算
-		 *************************************************************/
+		// 依照Type取出當天的Story或者是Task來進行計算
 		// 因為輸入的日期為當日的0:0:0,但在23:59:59之前也算當日，所以必需多加一日做為當天的計算
-		Date dueDate = new Date(date.getTime() + mOneDay);
+		Date endDate = new Date(date.getTime() + mOneDay);
 
 		// 尋訪現有的所有Story
 		for (StoryObject story : mStories) {
 			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (story.getStatus(dueDate) == StoryObject.STATUS_DONE) {
+			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
 
 			try {
-				/***************
-				 * 計算Story點數
-				 ***************/
-				point[0] += getStoryPoint(dueDate, story);
+				// 計算Story點數
+				point[0] += getStoryPoint(endDate, story);
 
-				/***************
-				 * 計算Task點數
-				 ***************/
+				// 計算Task點數
 				// 取得這個Story底下的Task點數
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
-					if(task.getStatus(dueDate) == TaskObject.STATUS_DONE) {
+					if(task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 						continue;
 					}
-					point[1] += getTaskPoint(dueDate, task);
+					point[1] += getTaskPoint(endDate, task);
 				}
 			} catch (Exception e) {
 				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
-				continue;
-			}
-		}
-
-		// 尋訪現有的所有Droped Story
-		for (StoryObject story : mDroppedStories) {
-			// 已經closed的Story就不用算他的點數啦，連Task都省掉了
-			if (story.getStatus(dueDate) == StoryObject.STATUS_DONE) {
-				continue;
-			}
-			try {
-				/***************
-				 * 計算Story點數
-				 ***************/
-				point[0] += getStoryPoint(dueDate, story);
-
-				/***************
-				 * 計算Task點數
-				 ***************/
-				// 取得這個Story底下的Task點數
-				ArrayList<TaskObject> tasks = story.getTasks();
-				for (TaskObject task : tasks) {
-					// 已經closed的task就不用算他的點數啦
-					if (task.getStatus(dueDate) == TaskObject.STATUS_DONE) {
-						continue;
-					}
-					point[1] += getTaskPoint(dueDate, task);
-				}
-			} catch (Exception e) {
 				continue;
 			}
 		}
@@ -331,16 +290,6 @@ public class TaskBoard {
 
 		// 產生圖表
 		chartUtil.createChart(chartPath);
-	}
-
-	public Map<Integer, String> getResolutionMap() {
-		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
-		map.put(ITSEnum.FIXED_RESOLUTION, ITSEnum.S_FIXED_RESOLUTION);
-		map.put(ITSEnum.UNABLE_TO_REPRODUCE_RESOLUTION, ITSEnum.S_UNABLE_TO_REPRODUCE_RESOLUTION);
-		map.put(ITSEnum.NOT_FIXABLE_RESOLUTION, ITSEnum.S_NOT_FIXABLE_RESOLUTION);
-		map.put(ITSEnum.DUPLICATE_RESOLUTION, ITSEnum.S_DUPLICATE_RESOLUTION);
-		map.put(ITSEnum.WONT_FIX_RESOLUTION, ITSEnum.S_WONT_FIX_RESOLUTION);
-		return map;
 	}
 
 	public String getGeneratedTime() {

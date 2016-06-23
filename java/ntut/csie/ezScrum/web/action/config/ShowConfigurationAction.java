@@ -16,7 +16,7 @@ public class ShowConfigurationAction extends PermissionAction{
 
 	@Override
     public boolean isValidAction() {
-	    return super.getScrumRole().getEditProject();
+	    return super.getScrumRole().getAccessEditProject();
     }
 
 	@Override

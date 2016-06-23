@@ -10,9 +10,9 @@ import java.util.List;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
@@ -61,7 +61,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -94,7 +94,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -125,7 +125,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// update 
@@ -158,7 +158,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -196,7 +196,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		
@@ -221,7 +221,7 @@ public class AccountDAOTest {
 		for(int i = 0; i < 3; i++){
 			AccountObject account = new AccountObject(userName + (i + 1));
 			account.setNickName(nickName + (i + 1)).setEmail(email + (i + 1))
-			       .setPassword(password + (i + 1)).setEnable(enable);
+			       .setPassword(password + (i + 1)).setEnable(enable).setCreateTime(System.currentTimeMillis());
 			long accountId = AccountDAO.getInstance().create(account);
 			assertNotSame(-1, accountId);
 		}
@@ -241,7 +241,7 @@ public class AccountDAOTest {
 		// create
 		AccountObject account = new AccountObject(userName);
 		account.setNickName(nickName).setEmail(email)
-		       .setPassword(password).setEnable(enable);
+		       .setPassword(password).setEnable(enable).setCreateTime(System.currentTimeMillis());
 		long accountId = AccountDAO.getInstance().create(account);
 		assertNotSame(-1, accountId);
 		// Query

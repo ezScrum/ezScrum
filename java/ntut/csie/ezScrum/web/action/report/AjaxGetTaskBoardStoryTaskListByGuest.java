@@ -27,7 +27,7 @@ public class AjaxGetTaskBoardStoryTaskListByGuest extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) {
 
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		long sprintId = -1;
 		String sprintIdString = request.getParameter("sprintID");
 		if (sprintIdString != null && !sprintIdString.isEmpty()) {

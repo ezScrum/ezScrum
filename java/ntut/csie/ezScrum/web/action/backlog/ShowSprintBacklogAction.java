@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -30,9 +31,14 @@ public class ShowSprintBacklogAction extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Show Sprint Backlog in ShowSprintBacklogAction.");
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
-
-		long sprintId = Long.parseLong(request.getParameter("sprintID"));
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
+		
+		long serialSprintId = Long.parseLong(request.getParameter("sprintID"));
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		StringBuilder result = new StringBuilder(new SprintBacklogHelper(project, sprintId).getShowSprintBacklogText());
 		return result;
 	}

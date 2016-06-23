@@ -31,6 +31,7 @@ public abstract class BaseAuthApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response responseOfGet(@PathParam("resourceId") long resourceId,
 			@HeaderParam("user_id") long userId,
+			@HeaderParam("username") String username,
 			@HeaderParam("public_token") String publicToken,
 			@HeaderParam("disposable_token") String disposableToken,
 			@HeaderParam("adjusted_time") long adjuestedTime, @Context UriInfo uriInfo) {

@@ -21,8 +21,8 @@
 <script type="text/javascript">
 	function show() {
 		var sprintID = document.getElementById("ShowSprint").value;
-		var pid = getURLParameter("PID");
-		document.location.href = "<html:rewrite action="/showScheduleReport" />?sprintID="+sprintID+"&PID="+pid;
+		var pid = getURLParameter("projectName");
+		document.location.href = "<html:rewrite action="/showScheduleReport" />?sprintID="+sprintID+"&projectName=" + pid;
 	}
 </script>
 
@@ -60,8 +60,8 @@
 				<select id="ShowSprint" onchange="show()" class="selectField">
 					<logic:iterate id="element" name="SprintPlans">
 						<c:choose>
-						<c:when test="${element.ID == report.iteration}"><option value="${ element.ID }" selected>Sprint ${ element.ID }</option></c:when>
-							<c:otherwise><option value="${ element.ID }">Sprint ${ element.ID }</option></c:otherwise>
+						<c:when test="${element.serialId == report.iteration}"><option value="${ element.serialId }" selected>Sprint ${ element.serialId }</option></c:when>
+							<c:otherwise><option value="${ element.serialId }">Sprint ${ element.serialId }</option></c:otherwise>
 						</c:choose>						
 					</logic:iterate>
 				</select>
