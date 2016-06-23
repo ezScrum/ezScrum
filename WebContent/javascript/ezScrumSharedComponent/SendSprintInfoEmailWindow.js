@@ -14,7 +14,7 @@ var PartnerStore_ForSprintInfo = new Ext.data.Store({
 
 var PartnerTriggerField_SprintInfo = new Ext.form.TriggerField({
     fieldLabel : 'Receivers (ezScrum members)',
-    name : 'Receivers (ezScrum members)',
+    name : 'Partner',
     editable   : false,
     allowBlank: false
 });
@@ -159,12 +159,24 @@ ezScrum.SprintInfoForm = Ext.extend(Ext.form.FormPanel, {
 		var obj = this;
 		var form = this.getForm();
 		Ext.Ajax.request({
-			url:this.sendUrl,
+			url:obj.sendUrl,
 			params:form.getValues(),
 			success:function(response){
-				obj.onSuccess(response);
+				console.log("success");
+				console.log(form.getValues());
+				/*var success = false;
+				var record = undefined;
+
+				ConfirmWidget.loadData(response);
+				if (ConfirmWidget.confirmAction()) {
+					var rs = response.status;
+					success = rs.success;
+					if (rs.success) {
+						record = rs.records[0];
+					}
+				}*/
 			},
-			failure:function(response){}
+			failure:function(response){console.log("fail");}
 		});
 	},
 	loadDataModel: function() {

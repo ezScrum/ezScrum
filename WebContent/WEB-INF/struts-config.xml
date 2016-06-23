@@ -124,6 +124,7 @@
     		<action path="/showAddExistedTask2"		type="ntut.csie.ezScrum.web.action.backlog.ShowAddExistedTaskAction" />
     		<action path="/deleteExistedTask" 		type="ntut.csie.ezScrum.web.action.backlog.DeleteExistedTaskAction" />
     		<action path="/generatePreviewContent" 		type="ntut.csie.ezScrum.web.action.backlog.GeneratePreviewContentAction" />
+    		<action path="/SendSprintMail" 			type="ntut.csie.ezScrum.web.action.backlog.SendSprintMailAction" />
     		<action path="/showSprintInformation"	type="ntut.csie.ezScrum.web.action.backlog.ShowSprintInformationAction">
 	            <forward name="success" path="sprintInformation.show"/>
 	            <forward name="error" path="/Error.jsp" />
