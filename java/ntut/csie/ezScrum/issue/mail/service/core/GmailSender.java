@@ -6,10 +6,17 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
+import ntut.csie.ezScrum.web.action.rbac.GetAccountListAction;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 public class GmailSender {
 	private final String host_ = "smtp.gmail.com";
@@ -18,7 +25,7 @@ public class GmailSender {
 	private String password_;
 	private Properties props_ = new Properties();
 	private Session session_;
-	
+
 	public GmailSender(String username, String password) {
 		username_ = username;
 		password_ = password;
@@ -29,19 +36,44 @@ public class GmailSender {
 		props_.put("mail.smtp.auth", "true");
 		props_.put("mail.smtp.port", port_);
 		props_.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-		
+
 		session_ = Session.getInstance(props_, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username_, password_);
 			}
 		});
 	}
-	public String send(String address, String ccAddresses, String subject, String text, byte[] data) {
-		Message message = new MimeMessage(session_);
-		MimeMultipart multipart = new MimeMultipart();
-		MimeBodyPart messageBody = new MimeBodyPart();
+
+	public String send(String address, String subject, String sprintGoal, String storyInfo, String schedule) {
+		
 		try {
+			Message message = new MimeMessage(session_);
+			MimeMultipart multipart = new MimeMultipart();
+			MimeBodyPart messageBody = new MimeBodyPart();
 			message.setFrom(new InternetAddress(username_));
+			String[] recivers = address.split(";");
+			for(int reciverNum = 0; reciverNum < recivers.length; reciverNum++){
+				String recive = recivers[reciverNum];
+				AccountObject reciver = AccountDAO.getInstance().get(recive);
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(reciver.getEmail()));
+				message.setSubject(subject);
+				String content = "                             " + "<font size=+4><b>"+subject+"</b></font><br><br>";
+				content = content + "<font size=+3><b>Sprint Goal</b></font><br>";
+				content = content + "<font size=4><li>"+sprintGoal+"</li></font><br>";
+				content = content + "<font size=+3><b>Sprint Backlog(Estimates in Parenthesis)</b></font><br>";
+				content = content + "<font size=4>"+storyInfo+"</font><br><br>";
+				content = content + "<font size=+3><b>Schedule</b></font><br>";
+				content = content + "<font size=4>" + schedule+ "</font>";
+
+				messageBody.setContent(content, "text/html; charset=utf-8");
+				multipart.addBodyPart(messageBody);
+				message.setContent(multipart);
+				
+				Transport transport = session_.getTransport("smtp");
+				transport.connect(host_, port_, username_, password_);
+				Transport.send(message);
+			}
+			
 //			
 //			String[] SplittedStr = address.split(";");
 //			
@@ -72,5 +104,5 @@ public class GmailSender {
 			}
 		}
 	}
-	
+
 }

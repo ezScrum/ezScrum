@@ -8,8 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
-import com.sun.jndi.cosnaming.IiopUrl.Address;
-
+import ntut.csie.ezScrum.issue.mail.service.core.GmailSender;
 import ntut.csie.ezScrum.issue.mail.service.core.GmailSender;
 import ntut.csie.ezScrum.issue.mail.service.core.MailConfiguration;
 import ntut.csie.ezScrum.web.action.PermissionAction;
@@ -20,12 +19,14 @@ public class SendSprintMailAction extends PermissionAction{
 	@Override
 	public boolean isValidAction() {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("here");
+		return super.getScrumRole().getAccessSprintBacklog();
 	}
 
 	@Override
 	public boolean isXML() {
 		// TODO Auto-generated method stub
+		System.out.println("here isXML");
 		return false;
 	}
 
@@ -39,11 +40,11 @@ public class SendSprintMailAction extends PermissionAction{
 		String sprintGoal = request.getParameter("sprintGoal");
 		String schedule = request.getParameter("schedule");
 		String storyInfo = request.getParameter("storyInfo");
-		
-		GmailSender gmailSender = new GmailSender(senderAddress, password);
-//		gmailSender.send(address, ccAddresses, subject, text, data);
-		
-		
-		return null;
+		String recivers = request.getParameter("Partner");
+		GmailSender sender = new GmailSender(senderAddress, password);
+		String sendResult = sender.send(recivers, subject, sprintGoal, storyInfo, schedule);
+		StringBuilder result = new StringBuilder();
+		result.append(sendResult);
+		return result;
 	}
 }
