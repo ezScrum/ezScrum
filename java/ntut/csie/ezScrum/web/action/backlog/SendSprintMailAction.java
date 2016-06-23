@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sun.jndi.cosnaming.IiopUrl.Address;
 
+import ntut.csie.ezScrum.issue.mail.service.core.GmailSender;
 import ntut.csie.ezScrum.issue.mail.service.core.MailConfiguration;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 
@@ -38,6 +39,11 @@ public class SendSprintMailAction extends PermissionAction{
 		String sprintGoal = request.getParameter("sprintGoal");
 		String schedule = request.getParameter("schedule");
 		String storyInfo = request.getParameter("storyInfo");
+		
+		GmailSender gmailSender = new GmailSender(senderAddress, password);
+//		gmailSender.send(address, ccAddresses, subject, text, data);
+		
+		
 		return null;
 	}
 }
