@@ -36,8 +36,8 @@ Test Account Management - Add Account
 
 Test Account Management - Add Duplicate Account
     [Setup]    Test Account Management - Add Duplicate Account Setup
-    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
-    Wait Until Page Contains    Success.
+    Comment    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Comment    Wait Until Page Contains    Success.
     Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
     Wait Until Page Contains    is already existed
     # click already exist dialog button
@@ -57,9 +57,9 @@ Test Account Management - Edit Account
 
 Test Account Management - Delete Account
     [Setup]    Test Account Management - Delete Account Setup
-    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
-    Wait Until Page Contains    Success.
-    Xpath Should Match X Times    //td/div[text()="${tsAccountId}"]    1
+    Comment    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Comment    Wait Until Page Contains    Success.
+    Comment    Xpath Should Match X Times    //td/div[text()="${tsAccountId}"]    1
     # delete account
     Delete Account    ${tsAccountId}
     Xpath Should Match X Times    //td/div[text()="${tsAccountId}"]    0
@@ -135,10 +135,12 @@ Test Account Management - Do Not Delete Account of Admin
     # 驗證點選admin帳號時Delete Account Button是disable
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${admin}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${admin}")]
-    Xpath Should Match X Times    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]    1
+    Comment    Element Should Be Disabled    xpath=//table[@id="AccountManagement_deleteAccountBtn"]    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]
+    Xpath Should Match X Times    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]     1
     # 驗證點選User帳號時Delete Account Button是enable
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
+    Comment    Element should be enabled    xpath=//table[@id="AccountManagement_deleteAccountBtn"]    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE}"]
     Xpath Should Match X Times    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE}"]    1
     [Teardown]    Do Not Delete Account of Admin Teardown
 
@@ -284,11 +286,13 @@ Test Account Management - User Change Password And Edit Information
     [Teardown]    Test Account Management - User Modify Personal Information Teardown
 
 Test Account Management - Admin's email shouldn't be null
+    [Setup]    Test Account Manaement - Admin's email shouldn't be null Setup
     # admin login
-    Input Text    userId    admin
-    Input Password    password    admin
-    Submit Form    logonForm
+    Comment    Input Text    userId    admin
+    Comment    Input Password    password    admin
+    Comment    Submit Form    logonForm
     Title Should Be    ezScrum, SSLab NTUT
     Click element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1
+    [Teardown]    Test Account Manaement - Admin's email shouldn't be null Teardown

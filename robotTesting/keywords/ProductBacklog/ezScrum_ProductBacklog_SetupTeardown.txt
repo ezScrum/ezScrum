@@ -199,15 +199,6 @@ Test Duplicate Tag Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
-Test Mark And UnMark Story Tag Setup
-    Create Tag With Arguments    markAndUnMarkTag
-    Create Story With Arguments    newStory    5    3    1    ${EMPTY}    Note: newStory
-    ...    HowToDemo: newStory
-
-Test Mark And UnMark Story Tag Teardown
-    Delete Tag With Arguments    markAndUnMarkTag
-    Delete Story With Arguments    newStory
-
 Test Delete Tag Setup
     [Arguments]    ${tagCount}
     #setup
@@ -263,11 +254,13 @@ Test Product Backlog Filter Teardown
 
 Test Product Backlog Done Filter Teardown
     # 刪除測試資料
-    Delete Story With Arguments    newStoryNormal
-    Delete Story With Arguments    newStoryBacklogged
-    Delete Story With Arguments    newStoryDetailed
-    Delete Story With Arguments    newStoryDone
-    Clean All Sprint
+    Comment    Delete Story With Arguments    newStoryNormal
+    Comment    Delete Story With Arguments    newStoryBacklogged
+    Comment    Delete Story With Arguments    newStoryDetailed
+    Comment    Delete Story With Arguments    newStoryDone
+    Comment    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Product Backlog Search Setup
     #setup
@@ -327,5 +320,25 @@ Test Product Backlog Search Teardown
     Comment    Clean All Story
     Comment    Clean All Sprint
     Comment    Clean Release
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Mark And UnMark Story Tag Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Mark_And_UnMark_Story_Tag.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Product Backlog
+    Comment    Create Tag With Arguments    markAndUnMarkTag
+    Comment    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
+    ...    Note: newStory    HowToDemo: newStory
+
+Test Mark And UnMark Story Tag Teardown
+    Comment    Delete Tag With Arguments    markAndUnMarkTag
+    Comment    Delete Story With Arguments    newStory
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
