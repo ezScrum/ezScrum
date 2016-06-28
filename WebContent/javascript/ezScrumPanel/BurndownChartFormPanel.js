@@ -106,6 +106,7 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 			url : obj.url + '?SprintID=' + obj.sprintID + '&Type=task',
 			success: function(response) {
 				obj.TaskStore.loadData(Ext.decode(response.responseText));
+				console.log(response);
 			},
 			failure: function() {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
