@@ -9,7 +9,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import ntut.csie.ezScrum.issue.mail.service.core.GmailSender;
-import ntut.csie.ezScrum.issue.mail.service.core.GmailSender;
 import ntut.csie.ezScrum.issue.mail.service.core.MailConfiguration;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 
@@ -18,14 +17,12 @@ public class SendSprintMailAction extends PermissionAction{
 
 	@Override
 	public boolean isValidAction() {
-		// TODO Auto-generated method stub
 		System.out.println("here");
 		return super.getScrumRole().getAccessSprintBacklog();
 	}
 
 	@Override
 	public boolean isXML() {
-		// TODO Auto-generated method stub
 		System.out.println("here isXML");
 		return false;
 	}

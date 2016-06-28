@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.docx4j.model.datastorage.XPathEnhancerParser.main_return;
-
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;

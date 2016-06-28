@@ -42,24 +42,7 @@ public class GeneratePreviewContentAction extends PermissionAction{
 		StringBuilder result = new StringBuilder();
 		SprintInfoContent sprintInfoContent = new SprintInfoContent();
 		result = sprintInfoContent.getResult(sprint, project);
-//		String subject = "ezScrum: Sprint "+serialSprintId+" Sprint Info";
-//		String sprintGoal = sprint.getGoal();
-//		String storyInfo ="";
-//		String schedule= "";
-//		ArrayList<StoryObject> stories = sprint.getStories();
-//		for (StoryObject story : stories) {
-//			storyInfo =storyInfo+"	"+story.getName()+"("+story.getEstimate()+")\n";
-//		}
-//		storyInfo = storyInfo + "Estimated velocity : "+sprint.getTotalStoryPoints()+" story points";
-//		schedule += "	 Sprint period :" + sprint.getStartDateString() + " to "+sprint.getDemoDateString()+"\n";
-//		schedule += "	 Daily Scrum : "	+ sprint.getDailyInfo()+"\n";
-//		schedule += "	 Sprint demo : "+sprint.getDemoDateString()+" "+sprint.getDemoPlace();
-//		result.append("<SprintInfo>");
-//		result.append("<subject>").append(subject).append("</subject>");
-//		result.append("<sprintGoal>").append(sprintGoal).append("</sprintGoal>");
-//		result.append("<storyInfo>").append(storyInfo).append("</storyInfo>");
-//		result.append("<schedule>").append(schedule).append("</schedule>");
-//		result.append("</SprintInfo>");
+
 		return result;
 	}
 	

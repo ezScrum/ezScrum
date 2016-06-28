@@ -20,21 +20,21 @@ public class GmailSender {
 	private final int port = 465;
 	private String senderEmailAddress;
 	private String senderEmailPassword;
-	private Properties props_ = new Properties();
-	private Session session_;
+	private Properties properties = new Properties();
+	private Session session;
 
 	public GmailSender(String senderAddress, String password) {
 		senderEmailAddress = senderAddress;
 		senderEmailPassword = password;
 		System.setProperty("mail.mime.charset", "utf-8");
-		props_.put("mail.smtp.host", host);
-		props_.put("mail.smtp.socketFactory.port", port);
-		props_.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		props_.put("mail.smtp.auth", "true");
-		props_.put("mail.smtp.port", port);
-		props_.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+		properties.put("mail.smtp.host", host);
+		properties.put("mail.smtp.socketFactory.port", port);
+		properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.port", port);
+		properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-		session_ = Session.getInstance(props_, new javax.mail.Authenticator() {
+		session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(senderEmailAddress, senderEmailPassword);
 			}
@@ -44,7 +44,7 @@ public class GmailSender {
 	public String send(String address, String subject, String sprintGoal, String storyInfo, String schedule) {
 		
 		try {
-			Message message = new MimeMessage(session_);
+			Message message = new MimeMessage(session);
 			MimeMultipart multipart = new MimeMultipart();
 			MimeBodyPart messageBody = new MimeBodyPart();
 			message.setFrom(new InternetAddress(senderEmailAddress));
@@ -60,7 +60,7 @@ public class GmailSender {
 				multipart.addBodyPart(messageBody);
 				message.setContent(multipart);
 				
-				Transport transport = session_.getTransport("smtp");
+				Transport transport = session.getTransport("smtp");
 				transport.connect(host, port, senderEmailAddress, senderEmailPassword);
 				Transport.send(message);
 			}
