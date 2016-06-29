@@ -130,5 +130,6 @@ Test Sprint Backlog - Send Sprint Info Setup
     Login Page    ${LOGIN_URL}
 
 Test Sprint Backlog - Send Sprint Info Teardown
-    Test Sprint Backlog - PostCondition
-    Exit ezScrum System
+    Data Base Tear Down
+    Close Browser
+    Close All Browsers
