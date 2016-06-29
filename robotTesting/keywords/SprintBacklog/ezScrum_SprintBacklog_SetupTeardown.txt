@@ -123,3 +123,12 @@ Test Sprint Backlog - Show Task History Setup
 Test Sprint Backlog - Show Task History Teardown
     Test Sprint Backlog - PostCondition
     Exit ezScrum System
+
+Test Sprint Backlog - Send Sprint Info Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Send_Sprint_Info.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+
+Test Sprint Backlog - Send Sprint Info Teardown
+    Test Sprint Backlog - PostCondition
+    Exit ezScrum System
