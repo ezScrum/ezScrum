@@ -18,7 +18,7 @@ import ntut.csie.ezScrum.web.helper.UnplanItemHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 
-public class ShowEditUnplanItemAction extends Action {
+public class ShowEditUnplannedItemAction extends Action {
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
