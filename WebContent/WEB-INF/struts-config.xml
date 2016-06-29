@@ -266,7 +266,7 @@
     		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.unplan.AjaxGetUnplanItemPermissionAction" />
     		<action path="/addNewUnplanItem"		type="ntut.csie.ezScrum.web.action.unplan.AddNewUnplanItemAction" />
     		<action path="/GetUnplanItems"		type="ntut.csie.ezScrum.web.action.unplan.ShowUnplanItemAction" />
-    		<action path="/showEditUnplanItem"	type="ntut.csie.ezScrum.web.action.unplan.ShowEditUnplanItemAction" />
+    		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.unplan.ShowEditUnplannedItemAction" />
     		<action path="/editUnplanItem" 		type="ntut.csie.ezScrum.web.action.unplan.EditUnplanItemAction" />
     		<action path="/removeUnplanItem"		type="ntut.csie.ezScrum.web.action.unplan.RemoveUnplanItemAction" />
     	<!-- ntut.csie.ezScrum.web.action.plan -->

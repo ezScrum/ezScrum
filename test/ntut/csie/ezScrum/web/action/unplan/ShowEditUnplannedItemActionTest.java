@@ -11,14 +11,14 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplanItem;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import servletunit.struts.MockStrutsTestCase;
 
-public class ShowEditUnplanItemActionTest extends MockStrutsTestCase {
+public class ShowEditUnplannedItemActionTest extends MockStrutsTestCase {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private CreateUnplanItem mCUI;
 	private Configuration mConfig;
-	private String mActionPath = "/showEditUnplanItem";
+	private String mActionPath = "/showEditUnplannedItem";
 
-	public ShowEditUnplanItemActionTest(String testMethod) {
+	public ShowEditUnplannedItemActionTest(String testMethod) {
 		super(testMethod);
 	}
 
