@@ -19,7 +19,7 @@ public class ShowSelectableTaskAction extends PermissionAction{
 	
 	@Override
 	public boolean isValidAction() {
-		return (super.getScrumRole().getAccessSprintBacklog());
+		return super.getScrumRole().getAccessSprintBacklog();
 	}
 
 	@Override
@@ -31,9 +31,6 @@ public class ShowSelectableTaskAction extends PermissionAction{
 	@Override
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("");
-		System.out.println("********Tasks******************");
-		System.out.println("");
 		// get session info
 		ProjectObject project = SessionManager.getProject(request);
 		

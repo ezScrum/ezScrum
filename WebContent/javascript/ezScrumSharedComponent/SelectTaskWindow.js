@@ -96,10 +96,7 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				storyID: obj.storyID
 			},
 			success: function(response) {
-				console.log("here is success");
-				console.log(response);
 				ConfirmWidget.loadData(response);
-				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					SelectedTaskStore.loadData(response.responseXML);
 					SelectedTaskStore.proxy.data = response;
@@ -240,7 +237,6 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
     	window.open(obj.url + "?selects=" + selects);
     	// get selection items
     	
-    	console.log(selects);
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
 		loadmask.show();
 //		Ext.Ajax.request({
