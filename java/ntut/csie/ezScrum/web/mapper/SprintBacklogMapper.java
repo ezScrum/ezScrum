@@ -295,6 +295,7 @@ public class SprintBacklogMapper {
 			task.setName(name).setNotes(notes).setActual(actual)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
 					.setUpdateTime(specificDate.getTime())
+					.setPartnersId(task.getPartnersId())
 					.save(specificDate.getTime());
 		}
 	}

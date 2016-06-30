@@ -279,6 +279,6 @@ Test TaskBoard - Task Done with partner
     Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
     Compare Field Content    //input[@name="Partners"]    Acount02
     Compare Field Content    //input[@name="Estimate"]    5
-    Compare Field Content    //input[@name="Remains"]    5
+    Compare Field Content    //input[@name="Remains"]    0
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown

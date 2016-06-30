@@ -45,13 +45,13 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 
 		String defaultHandlerUsername = session.getAccount().getUsername();
 		try {
-			long issueId = Long.parseLong(request.getParameter("issueID"));
+			long serialNumber = Long.parseLong(request.getParameter("issueID"));
 			String issueType = request.getParameter("issueType");
 			if (issueType.equalsIgnoreCase("Story")) {
-				StoryObject story = productBacklogHelper.getStory(issueId);
+				StoryObject story = productBacklogHelper.getStory(project.getId(), serialNumber);
 				result.append(getStoryJsonString(story));			
 			} else if (issueType.equalsIgnoreCase("Task")) {
-				TaskObject task = sprintBacklogHelper.getTask(issueId);
+				TaskObject task = sprintBacklogHelper.getTask(project.getId(), serialNumber);
 				result.append(getTaskJsonString(task, defaultHandlerUsername));
 			}
 		} catch (Exception e) {
