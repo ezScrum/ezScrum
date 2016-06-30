@@ -259,3 +259,26 @@ Test TaskBoard - Attach File on Task
     ${fileName2} =    Get Text    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
     Should Be Equal    Task02AttachFile.txt    ${fileName2}
     [Teardown]    Test TaskBoard_AttachFile - Teardown on Task
+
+Test TaskBoard - Task Done with partner
+    [Setup]    Test TaskBoard - Task Done with Partner Setup
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
+    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Compare Field Content    //input[@name="Name"]    Task02
+    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Compare Field Content    //input[@name="Partners"]    Acount02
+    Compare Field Content    //input[@name="Estimate"]    5
+    Compare Field Content    //input[@name="Remains"]    5
+    Click Element    xpath=//button[text()="Cancel"]
+    Drag And Drop    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #2"]/../../../../../../../..    target=1_closed
+    Click Element    xpath=//button[text()="Done"]
+    Wait Until Page Contains    Success.
+    Click Element    xpath=//div[@id="1_closed"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Compare Field Content    //input[@name="Name"]    Task02
+    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Compare Field Content    //input[@name="Partners"]    Acount02
+    Compare Field Content    //input[@name="Estimate"]    5
+    Compare Field Content    //input[@name="Remains"]    5
+    Click Element    xpath=//button[text()="Cancel"]
+    [Teardown]    Test TaskBoard - Task Done with Partner Teardown
