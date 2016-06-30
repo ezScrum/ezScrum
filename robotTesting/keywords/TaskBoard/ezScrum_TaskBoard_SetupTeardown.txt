@@ -4,13 +4,15 @@ Resource          ../common_resource.txt
 Resource          ../Project/ezScrum_Project.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Story.txt
 Resource          ../SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource          ../ezScrum_Login.txt
+Resource          ../../ServerConfig.txt
 
 *** Keywords ***
 Test TaskBoard - Setup
     Comment    Open Browser    ${LOGIN_URL}    ${BROWSER}
 
 Test TaskBoard - Teardown
-    Close Browser
+    Comment    Close Browser
 
 Test TaskBoard - Precondition
     _LoginEzScrum
@@ -179,3 +181,16 @@ _LoginEzScrum
 _LogoutEzScrum
     Click Image    images/logout.gif
     Title Should Be    ezScrum Logon!
+
+Test TaskBoard - Task Done with Partner Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Done_with_Partner.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    Acount01    Acount01
+    Select Project    Project01
+    Select Node Product    TaskBoard
+
+Test TaskBoard - Task Done with Partner Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
