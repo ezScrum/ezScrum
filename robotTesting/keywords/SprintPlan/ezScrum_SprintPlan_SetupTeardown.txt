@@ -5,36 +5,49 @@ Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Test SprintPlan Setup
-    Login Page    ${LOGIN_URL}
-    # 確認專案是否存在
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Clean All Sprint
-
-Test SprintPlan Teardown
-    Clean All Sprint
-    Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test Create Sprint Setup
-    Clean All Sprint
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Create_Sprint.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
 
 Test Create Sprint Teardown
-    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Delete Sprint Setup
-    Select Node Product    Sprint Plan
-    Create Sprint    sprint1 sprint goal    2    4    100    100
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Delete_Sprint.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
 
 Test Delete Sprint Teardown
-    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Sprint Goal With NewLine Setup
-    Clean All Sprint
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Sprint_Goal_With_NewLine.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
 
 Test Sprint Goal With NewLine Teardown
-    Clean All Sprint
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Sprint Session Setup
     # 開啟第二個新分頁並登入到第二個專案
@@ -59,3 +72,34 @@ Test Sprint Session Teardown
     Clean All Sprint
     Select Window    ${PROJECT_NAME}_B
     Clean All Sprint
+
+Test Check End Date and Demo Date Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Check_End_Date_and_Demo_Date.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+
+Test Check End Date and Demo Date Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test Check Recommended Start Date Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Check_Recommended_Start_Date.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+
+Test Check Recommended Start Date Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
+Test SprintPlan Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

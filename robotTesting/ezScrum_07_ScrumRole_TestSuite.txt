@@ -165,7 +165,7 @@ Test Scrum Role - Stakeholder
     [Documentation]    Stakeholder: 僅能操作 ReleasePlan / Unplan / Report
     ...    ?? 有包含 Plugin Configuration?
     [Setup]    Test ScrumRole Setup for Stakeholder
-    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    _InputLoginForm    ${tsAccountID}    ${tsAccountID}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     Select Project    ${PROJECT_NAME}DisplayName
     # assert
@@ -220,7 +220,7 @@ Test Scrum Role - Stakeholder Default
 Test Scrum Role - Scrum Team
     [Documentation]    除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
     [Setup]    Test ScrumRole Setup for ScrumTeam
-    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    _InputLoginForm    ${tsAccountID}    ${tsAccountID}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     Select Project    ${PROJECT_NAME}DisplayName
     # assert
@@ -245,7 +245,7 @@ Test Scrum Role - Scrum Team
 Test Scrum Role - Scrum Master
     [Documentation]    除了 ProductBacklog / ReleasePlan / EditProject 以外,其餘皆可操作
     [Setup]    Test ScrumRole Setup for ScrumMaster
-    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    _InputLoginForm    ${tsAccountID}    ${tsAccountID}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     Select Project    ${PROJECT_NAME}DisplayName
     # assert
@@ -270,7 +270,7 @@ Test Scrum Role - Scrum Master
 Test Scrum Role - Product Owner
     [Documentation]    除了 TaskBoard 以外,其餘皆可操作
     [Setup]    Test ScrumRole Setup for ProductOwner
-    Login Page With Account    ${LOGIN_URL}    ${tsAccountID}    ${tsAccountID}
+    _InputLoginForm    ${tsAccountID}    ${tsAccountID}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     Select Project    ${PROJECT_NAME}DisplayName
     # assert

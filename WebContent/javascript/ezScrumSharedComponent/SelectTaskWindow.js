@@ -75,11 +75,11 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	frame		: false,
 	stripeRows	: true,
 	sprintID	: '-1',
-	storyID	: '-1',
+	storyID		: '-1',
 	url			: 'showSelectableTask.do',
 	store		: SelectedTaskStore,
 	colModel	: SelectedTasksColumnModel(),
-	plugins		: [ SelectedTasks_Filter  /* ExistedStory_Expander */],
+	plugins		: [ SelectedTasks_Filter ],
 	sm			: SelectedTasks_CheckBoxModel,
 	viewConfig	: {
         forceFit: true
@@ -97,7 +97,6 @@ ezScrum.SelectedTasksGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
-				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					SelectedTaskStore.loadData(response.responseXML);
 					SelectedTaskStore.proxy.data = response;
@@ -238,7 +237,6 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
     	window.open(obj.url + "?selects=" + selects);
     	// get selection items
     	
-    	console.log(selects);
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "Select Tasks..."});
 		loadmask.show();
 //		Ext.Ajax.request({

@@ -11,27 +11,40 @@ Resource          ../Project/ezScrum_Project.txt
 
 *** Keywords ***
 Test ScrumRole Setup
-    Login Page    ${LOGIN_URL}
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    Wait Until Page Contains Element    createProjectBtn
+    Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     # 假設 Project 已存在
     #    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Check_Permission.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
     SwitchToPage    Management
     SwitchToItemLink    False    Scrum Role Management
 
 Test ScrumRole Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test ScrumRole Setup with Account
     [Documentation]    以Admin身分登入並建立一個user後登出
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    No_Permission.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
     Exit ezScrum System
 
 Test ScrumRole Teardown with Account
@@ -41,20 +54,28 @@ Test ScrumRole Teardown with Account
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     SwitchToPage    Management
     SwitchToItemLink    False    Account Management
-    Delete Account
+    Comment    Delete Account
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
     ...    2.指派此 user 在專案的 Role 為 Guest
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
-    ${role}=    Set Variable    ${tsAssignRole_Items[4]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Guest.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    ${role}=    Set Variable    ${tsAssignRole_Items[4]}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     Exit ezScrum System
 
 Test ScrumRole Teardown for Guest
@@ -66,7 +87,8 @@ Test ScrumRole Teardown for Guest
     SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
     Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
+    Comment    Delete Account
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest Default
@@ -75,20 +97,27 @@ Test ScrumRole Setup for Guest Default
     # 將 Report 權限移除
     Set List Value    ${tsPermission_Guest}    7    0
     LOG    ${tsPermission_Guest}
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Guest_Default.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
     ${role}=    Set Variable    ${tsAssignRole_Items[4]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     # 修改 Permission 設定
-    SwitchToItemLink    False    Scrum Role Management
-    Select ProjectList    ${PROJECT_NAME}
-    Select ScrumRoleList    ${tsAssignRole_Items[4]}
-    Set PermissionCheckList    ${tsAssignRole_Items[4]}
-    Save Permission
+    Comment    SwitchToItemLink    False    Scrum Role Management
+    Comment    Select ProjectList    ${PROJECT_NAME}
+    Comment    Select ScrumRoleList    ${tsAssignRole_Items[4]}
+    Comment    Set PermissionCheckList    ${tsAssignRole_Items[4]}
+    Comment    Save Permission
     # exit
     Exit ezScrum System
 
@@ -101,32 +130,39 @@ Test ScrumRole Teardown for Guest Default
     SwitchToItemLink    False    Scrum Role Management
     SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?
-    Delete Account
+    Comment    Delete Account
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
     ...    2.指派此 user 在專案的 Role 為 Stakeholder
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
-    ${role}=    Set Variable    ${tsAssignRole_Items[3]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Comment    ${role}=    Set Variable    ${tsAssignRole_Items[3]}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Stakeholder.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Comment    _InputLoginForm    ${userName}    ${userPassword}
+    Comment    Exit ezScrum System
 
 Test ScrumRole Teardown for Stakeholder
     [Documentation]    以Admin身分登入並刪除所建立的user
     Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    # 可直接刪除帳號 ?
-    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    # 可直接刪除帳號 ?
+    Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
+    Comment    Delete Account
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder Default
@@ -136,12 +172,17 @@ Test ScrumRole Setup for Stakeholder Default
     Set List Value    ${tsPermission_Stakeholder}    1    0
     Set List Value    ${tsPermission_Stakeholder}    6    0
     LOG    ${tsPermission_Stakeholder}
-    Login Page    ${LOGIN_URL}
-    # 新增帳號
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 新增帳號
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Stakeholder_Default.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName    # 假設 Project 已存在
     SwitchToPage    Management
     SwitchToItemLink    False    Account Management
-    Add Account
+    Comment    Add Account
     ${role}=    Set Variable    ${tsAssignRole_Items[3]}
     Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
     # 修改 Permission 設定
@@ -155,87 +196,102 @@ Test ScrumRole Setup for Stakeholder Default
 
 Test ScrumRole Teardown for Stakeholder Default
     [Documentation]    以Admin身分登入並刪除所建立的user
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    # 可直接刪除帳號 ?
-    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    # 可直接刪除帳號 ?
+    Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
+    Comment    Delete Account
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test ScrumRole Setup for ScrumTeam
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
     ...    2.指派此 user 在專案的 Role 為 Scrum Team
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
-    ${role}=    Set Variable    ${tsAssignRole_Items[2]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Comment    ${role}=    Set Variable    ${tsAssignRole_Items[2]}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Comment    Exit ezScrum System
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Scrum_Team.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
 
 Test ScrumRole Teardown for ScrumTeam
     [Documentation]    以Admin身分登入並刪除所建立的user
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    # 可直接刪除帳號 ?
-    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    # 可直接刪除帳號 ?
+    Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
+    Comment    Delete Account
+    Comment    Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test ScrumRole Setup for ScrumMaster
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
     ...    2.指派此 user 在專案的 Role 為 Scrum Master
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
-    ${role}=    Set Variable    ${tsAssignRole_Items[1]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Comment    ${role}=    Set Variable    ${tsAssignRole_Items[1]}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Comment    Exit ezScrum System
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Scrum_Master.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
 
 Test ScrumRole Teardown for ScrumMaster
     [Documentation]    以Admin身分登入並刪除所建立的user
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    # 可直接刪除帳號 ?
-    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    # 可直接刪除帳號 ?
+    Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
+    Comment    Delete Account
+    Comment    Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Test ScrumRole Setup for ProductOwner
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
     ...    2.指派此 user 在專案的 Role 為 Product Owner
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    Add Account
-    ${role}=    Set Variable    ${tsAssignRole_Items[0]}
-    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    Add Account
+    Comment    ${role}=    Set Variable    ${tsAssignRole_Items[0]}
+    Comment    Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
+    Comment    Exit ezScrum System
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumRole    Product_Owner.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
 
 Test ScrumRole Teardown for ProductOwner
     [Documentation]    以Admin身分登入並刪除所建立的user
-    Login Page    ${LOGIN_URL}
-    # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
-    SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
-    # 可直接刪除帳號 ?
-    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
-    Delete Account
-    Exit ezScrum System
+    Comment    Login Page    ${LOGIN_URL}
+    Comment    # 假設 Project 已存在
+    Comment    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Comment    SwitchToPage    Management
+    Comment    SwitchToItemLink    False    Account Management
+    Comment    # 可直接刪除帳號 ?
+    Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
+    Comment    Delete Account
+    Comment    Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

@@ -142,9 +142,9 @@ _logout
 Change Account Password
     [Arguments]    ${accountId}    ${newPassword}
     Set Selenium Speed    ${SELENIUM_SPEED}
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
-    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
-    # click "Change Password" Button
+    Mouse Down    xpath=//div[text()="TestAccountID"]/../../../..
+    Mouse Up    xpath=//div[text()="TestAccountID"]/../../../..
+    # click "Change Password" Button    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
     Click Element    xpath=//button[text()="Change Password"]
     # update Account Info
     Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    ${newPassword}    # Password

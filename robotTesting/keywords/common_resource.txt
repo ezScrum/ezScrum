@@ -71,6 +71,7 @@ Enter ezScrum System
 
 Exit ezScrum System
     Click Image    images/logout.gif
+    Wait Until Page Contains    ezScrum Logon!
     Title Should Be    ezScrum Logon!
     Close Browser
     Close All Browsers

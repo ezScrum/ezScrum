@@ -35,7 +35,7 @@ Test Sprint Plan - Sprint Goal With NewLine
     [Teardown]    Test Sprint Goal With NewLine Teardown
 
 Test Sprint Plan - Check End Date and Demo Date
-    [Setup]
+    [Setup]    Test Check End Date and Demo Date Setup
     #Select Sprint Plan
     Select Node Product    Sprint Plan
     #Click New Sprint
@@ -131,9 +131,10 @@ Test Sprint Plan - Check End Date and Demo Date
     Compare Field Content    //input[@name="DemoDate"]    2016/03/04
     Clear Element Text    //input[@name="Interval"]
     Click Element    //button[text()="Cancel"]
-    [Teardown]
+    [Teardown]    Test Check End Date and Demo Date Teardown
 
 Test Sprint Plan - Check Recommended Start Date
+    [Setup]    Test Check Recommended Start Date Setup
     #Select Sprint Plan
     Select Node Product    Sprint Plan
     #Create New Sprint
@@ -149,3 +150,4 @@ Test Sprint Plan - Check Recommended Start Date
     ${date}=    Convert Date    ${date}    result_format=%Y/%m/%d
     Should Be Equal    ${StartDate}    ${date}
     Click Element    //button[text()="Cancel"]
+    [Teardown]    Test Check Recommended Start Date Teardown
