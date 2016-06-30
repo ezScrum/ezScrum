@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.action.report;
 
 import java.io.File;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -9,10 +10,12 @@ import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
+import ntut.csie.jcis.account.core.internal.Account;
 import servletunit.struts.MockStrutsTestCase;
 
 public class ShowCheckOutIssueTest extends MockStrutsTestCase {
@@ -116,7 +119,47 @@ public class ShowCheckOutIssueTest extends MockStrutsTestCase {
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseTest.toString(), actualResponseText);
 	}
+	// Test the CheckOut of task with partner
+	public void testShowCheckOutIssue_TaskWithPartner() throws Exception {
+			AccountObject account1 = new AccountObject("account1"); // partner
+			account1.save();
+			
+			// ================ set initial data =======================
+			ProjectObject project = mCP.getAllProjects().get(0);
+			long taskId = mATTS.getTasksId().get(0);
+			TaskObject task = TaskObject.get(taskId);
+			
+			task.addPartner(account1.getId());
+			// ================ set request info ========================
+			String projectName = project.getName();
+			// SessionManager會對URL的參數作分析 ,未帶入此參數無法存入session
+			request.setHeader("Referer", "?projectName=" + projectName);
+			// 設定Session資訊
+			request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+			request.getSession().setAttribute("Project", project);
 
+			addRequestParameter("issueID", String.valueOf(taskId));
+			addRequestParameter("issueType", "Task");
+
+			// ================ 執行 action ==============================
+			actionPerform();
+
+			// ================ assert =============================
+			verifyNoActionErrors();
+			verifyNoActionMessages();
+
+			StringBuilder expectedResponseTest = new StringBuilder();
+			expectedResponseTest.append("{\"Task\":{")
+								.append("\"Id\":\"").append(task.getId()).append("\",")
+								.append("\"Name\":\"").append(task.getName()).append("\",")
+								.append("\"Partners\":\"").append(task.getPartnersUsername()).append("\",")
+								.append("\"Notes\":\"").append(task.getNotes()).append("\",")
+								.append("\"Handler\":\"").append("admin").append("\",")
+								.append("\"IssueType\":\"").append("Task").append("\"")
+								.append("},\"success\":true,\"Total\":1}");
+			String actualResponseText = response.getWriterBuffer().toString();
+			assertEquals(expectedResponseTest.toString(), actualResponseText);
+		}
 	// 測試Issue為Story的CheckOut
 	public void testShowCheckOutIssue_Story() throws Exception {
 		// ================ set initial data =======================
