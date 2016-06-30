@@ -124,7 +124,7 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.CreateProjectForm.superclass.initComponent.apply(this, arguments);
 
-		this.addEvents('CreateSuccess', 'CreateFailure', 'InitDatabase', 'CreateDatabase');
+		this.addEvents('CreateSuccess', 'CreateFailure');
 	},
 	
 	onRender : function() {
@@ -163,16 +163,6 @@ ezScrum.CreateProjectForm = Ext.extend(Ext.form.FormPanel, {
 			this.fireEvent('CreateSuccess', this, createResultStore.getAt(0).data['ID']);
 		else if (createResultStore.getAt(0).data['Result'] == "Failure")
 			this.fireEvent('CreateFailure', this, response);
-		else if (createResultStore.getAt(0).data['Result'] == "InitDatabase") {
-			response.ip = createResultStore.getAt(0).data['IP'];
-			response.dbName = createResultStore.getAt(0).data['DBName'];
-			this.fireEvent('InitDatabase', this.getForm(), response);
-		}
-        else if(createResultStore.getAt(0).data['Result'] == "CreateDatabase") {
-            response.ip = createResultStore.getAt(0).data['IP'];
-            response.dbName = createResultStore.getAt(0).data['DBName'];
-            this.fireEvent('CreateDatabase', this.getForm(), response);
-        }
         else if(createResultStore.getAt(0).data['Result'] == "Connect_Error") {
         	this.fireEvent('CreateFailure', this, response);
         }
@@ -210,7 +200,7 @@ ezScrum.window.CreateProjectWindow = Ext.extend(ezScrum.layout.Window, {
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ezScrum.window.CreateProjectWindow.superclass.initComponent.apply(this, arguments);
 
-		this.addEvents('CreateSuccess', 'CreateFailure', 'InitDatabase');
+		this.addEvents('CreateSuccess', 'CreateFailure');
 
 		this.items.get(0).on('CreateSuccess', function(obj, response) {
 			this.fireEvent('CreateSuccess', this, obj, response);
@@ -218,12 +208,6 @@ ezScrum.window.CreateProjectWindow = Ext.extend(ezScrum.layout.Window, {
 		this.items.get(0).on('CreateFailure', function(obj, response) {
 			this.fireEvent('CreateFailure', this, obj, response);
 		}, this);
-		this.items.get(0).on('InitDatabase', function(obj, response) {
-			this.fireEvent('InitDatabase', this, obj, response);
-		}, this),
-        this.items.get(0).on('CreateDatabase',function(obj,response) {
-            this.fireEvent('CreateDatabase', this, obj,response) 
-        },this);
 	}, 
 	showWidget : function(sprint) {
 		this.items.get(0).reset();

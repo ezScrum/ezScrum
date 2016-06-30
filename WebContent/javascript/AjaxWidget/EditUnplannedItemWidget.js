@@ -96,7 +96,7 @@ ezScrum.EditUnplannedItemForm = Ext.extend(Ext.form.FormPanel, {
 	initComponent:function() {
 		var config = {
 			// Ajax edit Unplanned Item url 
-			url : 'editUnplannedItem.do',
+			url : 'editUnplanItem.do',
 			// Ajax load Unplanned Item url
 			loadUrl : 'showEditUnplannedItem.do',
 			

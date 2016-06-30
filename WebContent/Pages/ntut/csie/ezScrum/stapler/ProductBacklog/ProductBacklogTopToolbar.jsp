@@ -9,11 +9,11 @@
 <body>
 <%@page import="ntut.csie.ezScrum.web.support.SessionManager"%>
 <%@page import="ntut.csie.ezScrum.web.dataObject.ProjectObject"%>
-<%@ page import="ntut.csie.ezScrum.stapler.ProductBacklog" %>
+<%@page import="ntut.csie.ezScrum.stapler.ProductBacklog" %>
 <%
-String projectID = request.getParameter("PID");
+String projectID = request.getParameter("projectName");
 
-ProjectObject project = SessionManager.getProjectObject(request);
+ProjectObject project = SessionManager.getProject(request);
 if( project != null ){
 	projectID = project.getName();
 }

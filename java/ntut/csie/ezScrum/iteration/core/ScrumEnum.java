@@ -53,9 +53,9 @@ public interface ScrumEnum {
 	final public static String STATUS="Status";
 	final public static String REMAINS = "Remains";
 	
-	//issue's category
+	// issue's category
 	final public static String GOOD_ISSUE_TYPE = "Good";
-	final public static String UNPLANNEDITEM_ISSUE_TYPE = "UnplannedItem";
+	final public static String UNPLANITEM_ISSUE_TYPE = "UnplanItem";
 	final public static String IMPROVEMENTS_ISSUE_TYPE = "Improvement";
 	final public static String STORY_ISSUE_TYPE = "Story";
 	final public static String TASK_ISSUE_TYPE = "Task";
@@ -71,7 +71,7 @@ public interface ScrumEnum {
 	final public static String PROJECT_VIEW_STATE = "50";
 	final public static String PROJECT_ACCESS_MIN = "10";
 	
-	//ScrumRole
+	// ScrumRole
 	final public static String SYSTEM = "system";
 	final public static String SCRUMROLE_ADMIN = "admin";
 	final public static String SCRUMROLE_ADMINISTRATOR = "administrator";
@@ -87,13 +87,13 @@ public interface ScrumEnum {
 	final public static String ACCESS_SPRINTPLAN = "AccessSprintPlan";
 	final public static String ACCESS_SPRINTBACKLOG = "AccessSprintBacklog";
 	final public static String ACCESS_TASKBOARD = "AccessTaskboard";
-	final public static String ACCESS_UNPLANNED = "AccessUnplanned";
+	final public static String ACCESS_UNPLAN = "AccessUnplan";
 	final public static String ACCESS_RETROSPECTIVE = "AccessRetrospective";
 	final public static String ACCESS_REPORT = "AccessReport";
 	final public static String ACCESS_EDITPROJECT = "AccessEditProject";
-	//Scrum Role file	
+	// Scrum Role file	
 	final public static String SCRUMROLE_FILE = "ScrumRole.xml";
-	//Scrum file file tag
+	// Scrum file file tag
 	final public static String SCRUMROLE_FILE_TAG_PERMISSION = "Permission";
 	
 	// product backlog filter type

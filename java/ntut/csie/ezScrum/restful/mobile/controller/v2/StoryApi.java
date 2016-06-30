@@ -5,13 +5,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import ntut.csie.ezScrum.pic.core.ScrumRole;
+import org.codehaus.jettison.json.JSONObject;
+
 import ntut.csie.ezScrum.restful.mobile.service.ProductBacklogWebService;
 import ntut.csie.ezScrum.restful.mobile.service.StoryWebService;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.jcis.account.core.LogonException;
-
-import org.codehaus.jettison.json.JSONObject;
 
 @Path("/stories")
 public class StoryApi extends BaseAuthApi {

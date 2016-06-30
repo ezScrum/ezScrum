@@ -36,7 +36,7 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		SprintPlanHelper SPhelper = new SprintPlanHelper(project);
 		StringBuilder result = new StringBuilder(setSprintToJSon(SPhelper));
 		return result;
@@ -53,8 +53,8 @@ public class NotYetEndSprintForMoveStory extends PermissionAction {
 			// 將資訊設定成 JSon 輸出格式 sprint已經開始的無法被移動
 			for (int i = 0; i < sprints.size(); i++) {
 				// 尚未開始的sprint
-				if (stringToDate(sprints.get(i).getDueDateString()).compareTo(today) >= 0) {
-					sprintTree.append("{ID:\'" + String.valueOf(sprints.get(i).getId()) + "\'");
+				if (stringToDate(sprints.get(i).getEndDateString()).compareTo(today) >= 0) {
+					sprintTree.append("{ID:\'" + String.valueOf(sprints.get(i).getSerialId()) + "\'");
 					sprintTree.append(", Goal:\'" + sprints.get(i).getGoal()
 							+ "\'" + "},");
 				}

@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONArray;
+
+import com.google.gson.Gson;
+
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -17,10 +22,6 @@ import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.SprintBacklogTreeStructure;
 import ntut.csie.ezScrum.web.support.TranslateSpecialChar;
 import ntut.csie.ezScrum.web.support.Translation;
-
-import org.codehaus.jettison.json.JSONArray;
-
-import com.google.gson.Gson;
 
 public class SprintBacklogHelper {
 	private ProjectObject mProject;
@@ -58,13 +59,13 @@ public class SprintBacklogHelper {
 	/**
 	 * Add exist story to sprint
 	 * 
-	 * @param storiesId
+	 * @param serialStoriesId
 	 */
-	public void addExistingStory(ArrayList<Long> storiesId) {
+	public void addExistingStory(ArrayList<Long> serialStoriesId) {
 		long sprintId = mSprintBacklogMapper.getSprintId();
 		if (sprintId > 0) {
-			// 將 Story 加入 Sprint 當中
-			mSprintBacklogLogic.addStoriesToSprint(storiesId, sprintId);
+			// Add story to sprint
+			mSprintBacklogLogic.addStoriesToSprint(serialStoriesId, sprintId);
 		}
 	}
 
@@ -96,23 +97,31 @@ public class SprintBacklogHelper {
 			throw new RuntimeException("Story#" + storyId + " is not existed.");
 		}
 
-		ArrayList<Long> tasksId = new ArrayList<Long>();
-		for (String taskId : selectedTaskIds) {
-			tasksId.add(Long.parseLong(taskId));
+		ArrayList<Long> serialTasksId = new ArrayList<Long>();
+		for (String serialTaskId : selectedTaskIds) {
+			serialTasksId.add(Long.parseLong(serialTaskId));
 		}
-		mSprintBacklogMapper.addExistingTasksToStory(tasksId, storyId);
+		mSprintBacklogMapper.addExistingTasksToStory(serialTasksId, storyId);
 	}
 
 	public TaskObject getTask(long taskId) {
 		return mSprintBacklogMapper.getTask(taskId);
 	}
+	
+	public TaskObject getTask(long projectId, long serialTaskId) {
+		return mSprintBacklogMapper.getTask(projectId, serialTaskId);
+	}
 
 	public ArrayList<TaskObject> getTasksByStoryId(long storyId) {
 		return mSprintBacklogMapper.getTasksByStoryId(storyId);
 	}
+	
+	public ArrayList<TaskObject> getTaskBySprintId(long sprintId){
+		return mSprintBacklogMapper.getTasksInSprint();
+	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
-		return mSprintBacklogMapper.getTasksWithNoParent(projectId);
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
+		return mSprintBacklogMapper.getDroppedTasks(projectId);
 	}
 
 	public void updateTask(TaskInfo taskInfo, String handlerUsername,
@@ -134,7 +143,7 @@ public class SprintBacklogHelper {
 		taskInfo.handlerId = handlerId;
 		taskInfo.partnersId = partnersId;
 
-		mSprintBacklogMapper.updateTask(taskInfo.taskId, taskInfo);
+		mSprintBacklogMapper.updateTask(taskInfo.id, taskInfo);
 	}
 
 	public void deleteTask(long taskId) {
@@ -197,7 +206,7 @@ public class SprintBacklogHelper {
 			// 取得工作天數
 			int availableDays = mSprintBacklogLogic.getSprintAvailableDays(sprintId);
 
-			if (mSprintBacklogMapper.getSprintId() > 0) {
+			if (sprintId > 0) {
 				ArrayList<StoryObject> stories = getStoriesSortedByImpInSprint();
 				// 取得 Sprint 日期的 Column
 				if (mSprintBacklogLogic.getCurrentDateColumns() == null)
@@ -247,9 +256,9 @@ public class SprintBacklogHelper {
 			releaseId = releasePlanHelper.getReleaseIdBySprintId(currentSprintId);
 
 			sprintGoal = mSprintBacklogMapper.getSprintGoal();
-
+			
 			result = Translation.translateSprintBacklogToJson(stories,
-					currentSprintId, totalStoryPoints, limitedPoint,
+					sprint.getSerialId(), totalStoryPoints, limitedPoint,
 					totalTaskPoints, releaseId, sprintGoal);
 		} else {
 			stories = new ArrayList<StoryObject>();
@@ -286,36 +295,69 @@ public class SprintBacklogHelper {
 		}
 		return result;
 	}
-
+	/**
+	 * path: showSelectableTask.do class ShowSelectableTaskAction
+	 */
+	public StringBuffer getTasksInSprintResponseText(ArrayList<TaskObject> tasks){
+		StringBuffer sb = new StringBuffer();
+		sb.append("<SelectingTasks>");
+		
+		for(TaskObject task : tasks){
+			sb.append("<Task>");
+			sb.append("<Id>" + task.getSerialId() + "</Id>");
+			sb.append("<Link></Link>");
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())+ "</Name>");
+			//System.out.println(task.getStoryId());
+			sb.append("<StoryId>" + task.getStoryId() + "</StoryId>");
+			sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
+			sb.append("<Status>" + task.getStatusString() + "</Status>");
+			sb.append("</Task>");
+		}
+		sb.append("</SelectingTasks>");
+		return sb;
+	}
+	
 	/**
 	 * path: AjaxShowStoryfromSprint.do class: AjaxShowStoryFromSprintAction
 	 */
 	public StringBuilder getStoriesInSprintResponseText(
 			ArrayList<StoryObject> stories) {
 		StringBuilder sb = new StringBuilder();
-		TranslateSpecialChar tsc = new TranslateSpecialChar();
 		sb.append("<ExistingStories>");
 
 		for (StoryObject story : stories) {
 			long sprintId = story.getSprintId();
 			sb.append("<Story>");
-			sb.append("<Id>" + story.getId() + "</Id>");
+			sb.append("<Id>" + story.getSerialId() + "</Id>");
 			sb.append("<Link></Link>");
-			sb.append("<Name>" + tsc.TranslateXMLChar(story.getName())
+			sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(story.getName())
 					+ "</Name>");
 			sb.append("<Value>" + story.getValue() + "</Value>");
 			sb.append("<Importance>" + story.getImportance() + "</Importance>");
 			sb.append("<Estimate>" + story.getEstimate() + "</Estimate>");
 			sb.append("<Status>" + story.getStatusString() + "</Status>");
-			sb.append("<Notes>" + tsc.TranslateXMLChar(story.getNotes())
+			sb.append("<Notes>" + TranslateSpecialChar.TranslateXMLChar(story.getNotes())
 					+ "</Notes>");
 			sb.append("<HowToDemo>"
-					+ tsc.TranslateXMLChar(story.getHowToDemo())
+					+ TranslateSpecialChar.TranslateXMLChar(story.getHowToDemo())
 					+ "</HowToDemo>");
-			sb.append("<Release></Release>");
-			sb.append("<Sprint>" + sprintId + "</Sprint>");
+			ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(
+					mProject);
+			long releaseId = releasePlanHelper.getReleaseIdBySprintId(sprintId);
+			ReleaseObject release = ReleaseObject.get(releaseId);
+			long serialReleaseId = -1;
+			if (release != null) {
+				serialReleaseId = release.getSerialId();
+			}
+			sb.append("<Release>" + serialReleaseId + "</Release>");
+			SprintObject sprint = SprintObject.get(sprintId);
+			long serialSprintId = -1;
+			if (sprint != null) {
+				serialSprintId = sprint.getSerialId();
+			}
+			sb.append("<Sprint>" + serialSprintId + "</Sprint>");
 			sb.append("<Tag>"
-					+ tsc.TranslateXMLChar(Translation.Join(story.getTags(),
+					+ TranslateSpecialChar.TranslateXMLChar(Translation.Join(story.getTags(),
 							",")) + "</Tag>");
 			sb.append("</Story>");
 		}

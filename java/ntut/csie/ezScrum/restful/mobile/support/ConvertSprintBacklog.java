@@ -35,7 +35,7 @@ public class ConvertSprintBacklog {
 		sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getGoal());
 		sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
 		sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
-		sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
+		sprintJson.put(SprintPlanUtil.TAG_END_DATE, sprint.getEndDateString());
 		sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
 		sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getTeamSize());
 		sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());
@@ -62,7 +62,7 @@ public class ConvertSprintBacklog {
 			sprintJson.put(SprintPlanUtil.TAG_SPRINT_GOAL, sprint.getGoal());
 			sprintJson.put(SprintPlanUtil.TAG_START_DATE, sprint.getStartDateString());
 			sprintJson.put(SprintPlanUtil.TAG_DEMO_DATE, sprint.getDemoDateString());
-			sprintJson.put(SprintPlanUtil.TAG_DUE_DATE, sprint.getDueDateString());
+			sprintJson.put(SprintPlanUtil.TAG_END_DATE, sprint.getEndDateString());
 			sprintJson.put(SprintPlanUtil.TAG_INTERVAL, sprint.getInterval());
 			sprintJson.put(SprintPlanUtil.TAG_MEMBERS, sprint.getTeamSize());
 			sprintJson.put(SprintPlanUtil.TAG_HOURS_CAN_COMMIT, sprint.getAvailableHours());

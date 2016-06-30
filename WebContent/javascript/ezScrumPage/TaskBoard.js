@@ -76,7 +76,6 @@ ezScrum.TaskBoardPage = Ext.extend( Ext.Panel, {
     	this.TaskBoard_BurndownChartForm_ID.loadDataModel();   	
     },
     reloadTaskBoardCard: function(sprintID, userID) {
-    	console.log("reload task board");
     	if(this.plugins != ''){
     		// reload TaskBoardCardForm 
     		this.plugins[0].fireEvent('reloadData', sprintID, userID);

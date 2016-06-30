@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
@@ -34,7 +33,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		ini.exe(); // 初始化 SQL
 
 		mCP = new CreateProject(1);
-		mCP.exeCreate(); // 新增一測試專案
+		mCP.exeCreateForDb(); // 新增一測試專案
 		
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
@@ -53,11 +52,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 
 	protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe(); // 初始化 SQL
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
 
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -67,7 +62,6 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 
 		// ============= release ==============
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCS = null;
 		mConfig = null;
@@ -83,7 +77,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.ScrumTeam);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.ScrumTeam);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();
@@ -97,7 +91,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		request.getSession().setAttribute("ScrumRoles", scrumRoles);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 		
@@ -130,7 +124,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		       .setPassword("TEST_ACCOUNT_PASSWORD")
 		       .save();
 		// Add Project Role
-		account.createProjectRole(project.getId(), RoleEnum.Guest);
+		account.joinProjectWithScrumRole(project.getId(), RoleEnum.Guest);
 		// Get Roles
 		HashMap<String, ProjectRole> roles = account.getProjectRoleMap();
 		HashMap<String, ScrumRole> scrumRoles = new HashMap<String, ScrumRole>();
@@ -144,7 +138,7 @@ public class AjaxGetRetrospectivePermissionActionTest extends MockStrutsTestCase
 		request.getSession().setAttribute("ScrumRoles", scrumRoles);
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform(); // 執行 action
 		

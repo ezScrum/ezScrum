@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
@@ -25,10 +26,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 
 	@Override
 	public long create(SprintObject sprint) {
-		long currentTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(sprint.getProjectId());
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(sprint.getProjectId());
 
 		long sprintSerialId = serialNumber.getSprintId() + 1;
 		valueSet.addTableName(SprintEnum.TABLE_NAME);
@@ -39,19 +38,13 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
-		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
+		valueSet.addInsertValue(SprintEnum.END_DATE, sprint.getEndDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
 		valueSet.addInsertValue(SprintEnum.PROJECT_ID, sprint.getProjectId());
-		// if no create time
-		if (sprint.getCreateTime() > 0) {
-			valueSet.addInsertValue(SprintEnum.CREATE_TIME, sprint.getCreateTime());
-			valueSet.addInsertValue(SprintEnum.UPDATE_TIME, sprint.getCreateTime());
-		} else {
-			valueSet.addInsertValue(SprintEnum.CREATE_TIME, currentTime);
-			valueSet.addInsertValue(SprintEnum.UPDATE_TIME, currentTime);
-		}
+		valueSet.addInsertValue(SprintEnum.CREATE_TIME, sprint.getCreateTime());
+		valueSet.addInsertValue(SprintEnum.UPDATE_TIME, sprint.getCreateTime());
 
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
@@ -83,6 +76,28 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		}
 		return sprint;
 	}
+	
+	public SprintObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SprintEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SprintEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(SprintEnum.SERIAL_ID, serialId);
+
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+
+		SprintObject sprint = null;
+		try {
+			if (result.next()) {
+				sprint = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return sprint;
+	}
 
 	@Override
 	public boolean update(SprintObject sprint) {
@@ -94,7 +109,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		valueSet.addInsertValue(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableHours());
 		valueSet.addInsertValue(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor());
 		valueSet.addInsertValue(SprintEnum.START_DATE, sprint.getStartDateString());
-		valueSet.addInsertValue(SprintEnum.DUE_DATE, sprint.getDueDateString());
+		valueSet.addInsertValue(SprintEnum.END_DATE, sprint.getEndDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_DATE, sprint.getDemoDateString());
 		valueSet.addInsertValue(SprintEnum.DEMO_PLACE, sprint.getDemoPlace());
 		valueSet.addInsertValue(SprintEnum.DAILY_INFO, sprint.getDailyInfo());
@@ -151,7 +166,8 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 	
 	public long getNextSprintId() {
 		// Get next sprint id for action GetOneSprintPlanAction (when project has no sprint)
-		String query = "show table status from ezscrum where Name = 'sprint'";
+		Configuration config = new Configuration();
+		String query = "show table status from " + config.getDBName() + " where Name = 'sprint'";
 		ResultSet result = mControl.executeQuery(query);
 		long nextSprintId = 0;
 		try {
@@ -176,7 +192,7 @@ public class SprintDAO extends AbstractDAO<SprintObject, SprintObject> {
 		        .setAvailableHours(result.getInt(SprintEnum.AVAILABLE_HOURS))
 		        .setFocusFactor(result.getInt(SprintEnum.FOCUS_FACTOR))
 		        .setStartDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.START_DATE)))
-		        .setDueDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DUE_DATE)))
+		        .setEndDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.END_DATE)))
 		        .setDemoDate(new SimpleDateFormat(DateUtil._8DIGIT_DATE_1).format(result.getDate(SprintEnum.DEMO_DATE)))
 		        .setDemoPlace(result.getString(SprintEnum.DEMO_PLACE))
 		        .setDailyInfo(result.getString(SprintEnum.DAILY_INFO))

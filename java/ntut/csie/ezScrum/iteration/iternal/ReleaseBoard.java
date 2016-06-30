@@ -1,24 +1,14 @@
 package ntut.csie.ezScrum.iteration.iternal;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.core.util.ChartUtil;
 import ntut.csie.jcis.core.util.DateUtil;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class ReleaseBoard {
-	private final String STORY_CHART_FILE = "StoryBurnDown.png";
-	private final String NAME = "ReleaseBoard";
-
 	private final long OneDay = ScrumEnum.DAY_MILLISECOND;
 	private ReleaseObject mRelease;
 	private LinkedHashMap<Date, Double> mStoryIdealMap;
@@ -37,8 +27,8 @@ public class ReleaseBoard {
 	private void init() {
 		if (mRelease != null) {
 			Date startDate = DateUtil.dayFilter(mRelease.getStartDateString());
-			Date dueDate = DateUtil.dayFilter(mRelease.getDueDateString());
-			int totalDays = (int) ((dueDate.getTime() - startDate.getTime()) / OneDay);
+			Date endDate = DateUtil.dayFilter(mRelease.getEndDateString());
+			int totalDays = (int) ((endDate.getTime() - startDate.getTime()) / OneDay);
 
 			// ============產生繪製story用的資料=======================
 			// 產生理想的線
@@ -59,7 +49,7 @@ public class ReleaseBoard {
 			int increase_days = (int) (totalDays / interval_count);
 			// 每一天的理想與真實點數
 			while (indexDate.getTimeInMillis() < m_currentDate.getTime()) {
-				if (indexDate.getTimeInMillis() > dueDate
+				if (indexDate.getTimeInMillis() > endDate
 						.getTime())
 					break;
 
@@ -76,7 +66,7 @@ public class ReleaseBoard {
 			}
 
 			// 針對 release 的最後一天作特別處理顯示當天的點數
-			indexDate.setTime(dueDate);
+			indexDate.setTime(endDate);
 			Date key = indexDate.getTime();
 			mStoryIdealMap.put(key, 0.0);
 			mStoryRealMap.put(key, mRelease.getDoneStoryAmount());
@@ -105,54 +95,5 @@ public class ReleaseBoard {
 
 	public double getUndoneStoryCount() {
 		return (getStoryCount() - mRelease.getDoneStoryByDate(new Date()));
-	}
-
-	public String getStoryChartLink() {
-		ProjectObject project = ProjectObject.get(mRelease.getProjectId());
-		IProject iProject = new ProjectMapper().getProjectByID(project.getName());
-		// workspace/project/_metadata/TaskBoard/ChartLink
-		String chartPath = iProject.getFolder(IProject.METADATA).getFullPath()
-				+ File.separator + this.NAME + File.separator + "Plan"
-				+ mRelease.getId() + File.separator + STORY_CHART_FILE;
-
-		// 繪圖
-		drawGraph(ScrumEnum.STORY_ISSUE_TYPE, chartPath);
-
-		String link = "./Workspace/" + project.getName() + "/"
-				+ IProject.METADATA + "/" + NAME + "/Plan" + mRelease.getId()
-				+ "/" + STORY_CHART_FILE;
-
-		return link;
-	}
-
-	private synchronized void drawGraph(String type, String chartPath) {
-		// 設定圖表內容
-		Date startDate = DateUtil.dayFilter(mRelease.getStartDateString());
-		Date dueDate = DateUtil.dayFilter(mRelease.getDueDateString());
-		ChartUtil chartUtil = new ChartUtil(
-				"Stories Burndown Chart in Release Plan #"
-						+ mRelease.getId(),
-						startDate, new Date(dueDate.getTime() + 24 * 3600 * 1000));
-
-		chartUtil.setChartType(ChartUtil.LINECHART);
-
-		// TODO:要新增的data set
-		chartUtil.addDataSet("current", mStoryRealMap);
-		chartUtil.addDataSet("ideal", mStoryIdealMap);
-		chartUtil.setInterval(1);
-		chartUtil.setValueAxisLabel("Stories");
-		// 依照輸入的順序來呈現顏色
-		Color[] colors = { Color.RED, Color.GRAY };
-		chartUtil.setColor(colors);
-
-		float[] dashes = { 8f };
-		BasicStroke[] strokes = {
-				new BasicStroke(1.5f),
-				new BasicStroke(1.5f, BasicStroke.CAP_ROUND,
-						BasicStroke.JOIN_ROUND, 16f, dashes, 0.f) };
-		chartUtil.setStrokes(strokes);
-
-		// 產生圖表
-		chartUtil.createChart(chartPath);
 	}
 }

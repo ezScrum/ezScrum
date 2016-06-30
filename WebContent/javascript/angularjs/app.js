@@ -56,14 +56,14 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	$scope.tagList = [{name: "Tag1"}, {name: "Tag2"}, {name: "Tag3"}, {name: "Tag4"}];
 	
 	var init = function() {
-		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/storylist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
+		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('projectName') + '/product-backlog/storylist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
 		    success(function(data, status, headers, config) {
 		    	$scope.storyList = data;
 		    }).
 		    error(function(data, status, headers, config) {
 		    });
 		
-		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/taglist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
+		$http({method: 'GET', url: '/ezScrum/web-service/' + getQueryStringByName('projectName') + '/product-backlog/taglist?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')}).
 		    success(function(data, status, headers, config) {
 		    	var tagList = [];
 		    	for(var i=0; i<data.length; i++) {
@@ -85,7 +85,7 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 			howToDemo: tmpStory.howToDemo,
 			id: tmpStory.id
 		}
-		$http.put('/ezScrum/web-service/' + getQueryStringByName('PID') + '/story/update?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
+		$http.put('/ezScrum/web-service/' + getQueryStringByName('projectName') + '/story/update?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
 			success(function(data, status, headers, config) {
 		    	init();
 		    });
@@ -100,14 +100,14 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 			importance: tmpStory.importance,
 			howToDemo: tmpStory.howToDemo
 		}
-		$http.post('/ezScrum/web-service/' + getQueryStringByName('PID') + '/story/create?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
+		$http.post('/ezScrum/web-service/' + getQueryStringByName('projectName') + '/story/create?userName=' + getCookie('username') + '&password=' + getCookie('userpwd'), data).
 			success(function(data, status, headers, config) {
 		    	init();
 		    });
 	}
 	
 	var deleteStory = function(story) {
-		$http.delete('/ezScrum/web-service/' + getQueryStringByName('PID') + '/product-backlog/storylist/' + story.id + '?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')).
+		$http.delete('/ezScrum/web-service/' + getQueryStringByName('projectName') + '/product-backlog/storylist/' + story.id + '?userName=' + getCookie('username') + '&password=' + getCookie('userpwd')).
 			success(function(data, status, headers, config) {
 		    	init();
 		    });
@@ -182,7 +182,7 @@ ezScrum.controller('ProductBacklogController', function($scope, $http) {
 	}
 	
 	$scope.goBack = function() {
-		location.assign('/ezScrum/viewProject.do?PID=' + getQueryStringByName('PID'));
+		location.assign('/ezScrum/viewProject.do?projectName=' + getQueryStringByName('projectName'));
 	}
 	
 	$scope.escTriggered = function() {

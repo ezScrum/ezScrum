@@ -9,19 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
-import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 
 public class ReleaseDAOTest {
 	private MySQLControl mControl = null;
@@ -41,7 +40,7 @@ public class ReleaseDAOTest {
 		ini.exe();
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connect();
@@ -57,10 +56,6 @@ public class ReleaseDAOTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -78,12 +73,12 @@ public class ReleaseDAOTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String releaseStartDate = "2015/05/28";
-		String releaseDueDate = "2015/06/11";
+		String releaseEndDate = "2015/06/11";
 
 		// Create Release
 		ReleaseObject release = new ReleaseObject(sProjectId);
 		release.setName(name).setDescription(description)
-				.setStartDate(releaseStartDate).setDueDate(releaseDueDate);
+				.setStartDate(releaseStartDate).setEndDate(releaseEndDate);
 
 		// Test create method
 		long releaseId = ReleaseDAO.getInstance().create(release);
@@ -107,7 +102,7 @@ public class ReleaseDAOTest {
 		assertEquals(name, releaseFromDB.getName());
 		assertEquals(description, releaseFromDB.getDescription());
 		assertEquals(releaseStartDate, releaseFromDB.getStartDateString());
-		assertEquals(releaseDueDate, releaseFromDB.getDueDateString());
+		assertEquals(releaseEndDate, releaseFromDB.getEndDateString());
 	}
 
 	@Test
@@ -120,7 +115,7 @@ public class ReleaseDAOTest {
 		assertEquals("TEST_RELEASE_NAME", release.getName());
 		assertEquals("TEST_RELEASE_DESCRIPTION", release.getDescription());
 		assertEquals("2015/05/28", release.getStartDateString());
-		assertEquals("2015/06/11", release.getDueDateString());
+		assertEquals("2015/06/11", release.getEndDateString());
 	}
 
 	@Test
@@ -129,14 +124,14 @@ public class ReleaseDAOTest {
 		String name = "TEST_RELEASE_NAME_UPDATE";
 		String description = "TEST_RELEASE_DESCRIPTION_UPDATE";
 		String releaseStartDate = "2015/06/11";
-		String releaseDueDate = "2015/06/24";
+		String releaseEndDate = "2015/06/24";
 		
 		// Get release
 		ReleaseObject release = ReleaseDAO.getInstance().get(mReleaseId);
 		release.setName(name)
 		       .setDescription(description)
 		       .setStartDate(releaseStartDate)
-		       .setDueDate(releaseDueDate);
+		       .setEndDate(releaseEndDate);
 		
 		// Test update method
 		boolean isUpdateSuccess = ReleaseDAO.getInstance().update(release);
@@ -147,7 +142,7 @@ public class ReleaseDAOTest {
 		assertEquals(name, releaseFromDB.getName());
 		assertEquals(description, releaseFromDB.getDescription());
 		assertEquals(releaseStartDate, releaseFromDB.getStartDateString());
-		assertEquals(releaseDueDate, releaseFromDB.getDueDateString());
+		assertEquals(releaseEndDate, releaseFromDB.getEndDateString());
 	}
 
 	@Test
@@ -179,7 +174,7 @@ public class ReleaseDAOTest {
 		String name = "TEST_RELEASE_NAME_";
 		String description = "TEST_RELEASE_DESCRIPTION_";
 		String releaseStartDateStrings[] = {"2015/03/01", "2015/05/10", "2015/07/01"};
-		String releaseDueDateStrings[] = {"2015/05/01", "2015/06/01", "2015/08/01"};
+		String releaseEndDateStrings[] = {"2015/05/01", "2015/06/01", "2015/08/01"};
 		
 		// Create 3 Releases
 		for (int i = 0; i < 3; i++) {
@@ -187,7 +182,7 @@ public class ReleaseDAOTest {
 			release.setName(name + i)
 			       .setDescription(description + i)
 			       .setStartDate(releaseStartDateStrings[i])
-			       .setDueDate(releaseDueDateStrings[i])
+			       .setEndDate(releaseEndDateStrings[i])
 			       .save();
 			assertTrue(release.getId() > 0);
 		}
@@ -203,7 +198,7 @@ public class ReleaseDAOTest {
 			assertEquals(name + i, releases.get(i + 1).getName());
 			assertEquals(description + i, releases.get(i + 1).getDescription());
 			assertEquals(releaseStartDateStrings[i], releases.get(i + 1).getStartDateString());
-			assertEquals(releaseDueDateStrings[i], releases.get(i + 1).getDueDateString());
+			assertEquals(releaseEndDateStrings[i], releases.get(i + 1).getEndDateString());
 		}
 	}
 	
@@ -212,12 +207,12 @@ public class ReleaseDAOTest {
 		String name = "TEST_RELEASE_NAME";
 		String description = "TEST_RELEASE_DESCRIPTION";
 		String releaseStartDate = "2015/05/28";
-		String releaseDueDate = "2015/06/11";
+		String releaseEndDate = "2015/06/11";
 
 		// Create Release
 		ReleaseObject release = new ReleaseObject(sProjectId);
 		release.setName(name).setDescription(description)
-				.setStartDate(releaseStartDate).setDueDate(releaseDueDate);
+				.setStartDate(releaseStartDate).setEndDate(releaseEndDate);
 
 		// Call DAO
 		long releaseId = ReleaseDAO.getInstance().create(release);

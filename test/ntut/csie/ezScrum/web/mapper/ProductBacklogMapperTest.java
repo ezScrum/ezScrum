@@ -11,17 +11,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.AddSprintToRelease;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
@@ -31,11 +35,6 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 //import ntut.csie.jcis.resource.core.IProject;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ProductBacklogMapperTest {
 	private CreateProject mCP;
@@ -47,7 +46,6 @@ public class ProductBacklogMapperTest {
 	private int mStoryCount = 2;
 	private ProductBacklogMapper mProductBacklogMapper = null;
 	private Configuration mConfig = null;
-	
 	private final String mFILE_NAME = "Initial.sql";
 	private final String mFILE_TYPE = "sql/plain";
 	
@@ -63,7 +61,7 @@ public class ProductBacklogMapperTest {
 		
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		// 新增 Story
 		mCPB = new CreateProductBacklog(mStoryCount, mCP);
@@ -92,10 +90,6 @@ public class ProductBacklogMapperTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -105,7 +99,6 @@ public class ProductBacklogMapperTest {
     	mCP = null;
     	mCPB = null;
     	mProductBacklogMapper = null;
-    	projectManager = null;
     	mConfig = null;
 	}
 	
@@ -185,6 +178,7 @@ public class ProductBacklogMapperTest {
 		
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.id = story.getId();
+		storyInfo.serialId = story.getSerialId();
 		storyInfo.name = "NEW_STORY_1";
 		storyInfo.notes = "NEW_NOTE_1";
 		storyInfo.howToDemo = "NEW_DEMO_1";
@@ -521,7 +515,7 @@ public class ProductBacklogMapperTest {
         attachFileInfo.issueType = issutType;
         attachFileInfo.name = mFILE_NAME;
         attachFileInfo.contentType = mFILE_TYPE;
-        attachFileInfo.projectName = mCP.getProjectList().get(0).getName();
+        attachFileInfo.projectName = mCP.getAllProjects().get(0).getName();
         mapper.addAttachFile(attachFileInfo);
 	}
 }

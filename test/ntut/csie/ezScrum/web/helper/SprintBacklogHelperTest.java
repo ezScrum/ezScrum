@@ -6,25 +6,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
-import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.StoryObject;
-import ntut.csie.ezScrum.web.dataObject.TaskObject;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
 public class SprintBacklogHelperTest {
 	private SprintBacklogHelper mSprintBacklogHelper;
@@ -56,7 +55,7 @@ public class SprintBacklogHelperTest {
 		String CREATE_PRODUCTBACKLOG_TYPE = "EST";
 
 		mCP = new CreateProject(PROJECT_COUNT);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mCS = new CreateSprint(SPRINT_COUNT, mCP);
 		mCS.exe();
@@ -77,10 +76,6 @@ public class SprintBacklogHelperTest {
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
@@ -125,7 +120,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
@@ -154,7 +149,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
@@ -185,7 +180,7 @@ public class SprintBacklogHelperTest {
 		assertEquals(0, task.getPartnersId().size());
 		// create task info
 		TaskInfo taskInfo = new TaskInfo();
-		taskInfo.taskId = task.getId();
+		taskInfo.id = task.getId();
 		taskInfo.name = "newTask";
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
@@ -330,7 +325,7 @@ public class SprintBacklogHelperTest {
 			JSONObject storyInfoText = sprintBacklogInfoText
 					.getJSONObject(storyIndex);
 			assertEquals(storyIndex + 1, storyInfoText.getLong("ID"));
-			assertEquals("Story", storyInfoText.getString("Type"));
+			assertEquals("Story", storyInfoText.getString("IssueType"));
 			assertEquals("", storyInfoText.getString("Tag"));
 			assertEquals("TEST_STORY_" + (storyIndex + 1),
 					storyInfoText.getString("Name"));
@@ -356,7 +351,7 @@ public class SprintBacklogHelperTest {
 				JSONObject taskInfoText = tasksInfoText
 						.getJSONObject(taskIndex);
 				assertEquals(storyCount * storyIndex + taskIndex + 1, taskInfoText.getLong("ID"));
-				assertEquals("Task", taskInfoText.getString("Type"));
+				assertEquals("Task", taskInfoText.getString("IssueType"));
 				assertEquals("TEST_TASK_" + (taskIndex + 1),
 						taskInfoText.getString("Name"));
 				assertEquals("", taskInfoText.getString("Handler"));
@@ -437,14 +432,41 @@ public class SprintBacklogHelperTest {
 
 		String expectStoryString = "<Story><Id>%s</Id><Link></Link><Name>TEST_STORY_%s</Name><Value>50</Value>"
 				+ "<Importance>100</Importance><Estimate>5</Estimate><Status>new</Status><Notes>TEST_STORY_NOTE_%s</Notes>"
-				+ "<HowToDemo>TEST_STORY_DEMO_%s</HowToDemo><Release></Release><Sprint>1</Sprint><Tag></Tag></Story>";
+				+ "<HowToDemo>TEST_STORY_DEMO_%s</HowToDemo><Release>%s</Release><Sprint>1</Sprint><Tag></Tag></Story>";
 		
 		assertEquals(true, actualResponse.contains("<ExistingStories>"));
 		for (int i = 1; i <= stories.size(); i++) {
 			String index = String.valueOf(i);
 			assertEquals(true, actualResponse.contains(String.format(expectStoryString,
-					index, index, index, index)));
+					index, index, index, index, -1)));
 		}
 		assertEquals(true, actualResponse.contains("</ExistingStories>"));
+	}
+	
+	@Test
+	public void testGetTasksInSprintResponseText() {
+		ArrayList<TaskObject> tasks = mATTS.getTasks();
+		String actualResponse = mSprintBacklogHelper.getTasksInSprintResponseText(
+				tasks).toString();
+
+		String expectTaskString = "<Task><Id>%s</Id><Link></Link><Name>TEST_TASK_%s</Name><StoryId>%s</StoryId>"
+				+ "<Estimate>8</Estimate><Status>new</Status></Task>";
+		
+		assertEquals(true, actualResponse.contains("<SelectingTasks>"));
+		for (int i = 1; i <= tasks.size(); i++) {
+			String TaskId = String.valueOf(i);
+			int num = i/3;
+			num++;
+			int temp = i%3;
+			if(temp==0) {
+				temp = 3;
+				num--;
+			}
+			String TaskName = String.valueOf(temp);
+			String StoryId = String.valueOf(num);
+			assertEquals(true, actualResponse.contains(String.format(expectTaskString,
+					TaskId, TaskName, StoryId)));
+		}
+		assertEquals(true, actualResponse.contains("</SelectingTasks>"));
 	}
 }

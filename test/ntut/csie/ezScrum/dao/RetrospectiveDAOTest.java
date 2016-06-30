@@ -9,20 +9,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
-import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
-import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
-import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
+import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
+import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.RetrospectiveObject;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 
 public class RetrospectiveDAOTest {
 	private MySQLControl mControl = null;
@@ -42,7 +41,7 @@ public class RetrospectiveDAOTest {
 		ini.exe();
 
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		mControl = new MySQLControl(mConfig);
 		mControl.connect();
@@ -58,10 +57,6 @@ public class RetrospectiveDAOTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		mConfig.setTestMode(false);
 		mConfig.save();
@@ -178,21 +173,66 @@ public class RetrospectiveDAOTest {
 	}
 	
 	@Test
-	public void testGetRetrospectivesBySprintId() {
+	public void testGetGoodsBySprintId() {
 		long sprintId = 2;
-		ArrayList<RetrospectiveObject> retrospectives = RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(sprintId);
-		assertEquals(0, retrospectives.size());
+		ArrayList<RetrospectiveObject> goods = RetrospectiveDAO.getInstance().getGoodsBySprintId(sprintId);
+		assertEquals(0, goods.size());
 		RetrospectiveObject retrospective1 = new RetrospectiveObject(mProject.getId());
-		retrospective1.setSprintId(sprintId).save();
+		retrospective1.setType(RetrospectiveObject.TYPE_GOOD).setSprintId(sprintId).save();
 		RetrospectiveObject retrospective2 = new RetrospectiveObject(mProject.getId());
-		retrospective2.setSprintId(sprintId).save();
+		retrospective2.setType(RetrospectiveObject.TYPE_IMPROVEMENT).setSprintId(sprintId).save();
 		RetrospectiveObject retrospective3 = new RetrospectiveObject(mProject.getId());
-		retrospective3.setSprintId(sprintId).save();
-		retrospectives = RetrospectiveDAO.getInstance().getRetrospectivesBySprintId(sprintId);
-		assertEquals(3, retrospectives.size());
-		assertEquals(retrospectives.get(0).getId(), retrospective1.getId());
-		assertEquals(retrospectives.get(1).getId(), retrospective2.getId());
-		assertEquals(retrospectives.get(2).getId(), retrospective3.getId());
+		retrospective3.setType(RetrospectiveObject.TYPE_GOOD).setSprintId(sprintId).save();
+		goods = RetrospectiveDAO.getInstance().getGoodsBySprintId(sprintId);
+		assertEquals(2, goods.size());
+		assertEquals(goods.get(0).getId(), retrospective1.getId());
+		assertEquals(goods.get(1).getId(), retrospective3.getId());
+	}
+	
+	public void testGetImprovementsBySprintId() {
+		long sprintId = 2;
+		ArrayList<RetrospectiveObject> improvements = RetrospectiveDAO.getInstance().getImprovementsBySprintId(sprintId);
+		assertEquals(0, improvements.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(mProject.getId());
+		retrospective1.setType(RetrospectiveObject.TYPE_IMPROVEMENT).setSprintId(sprintId).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(mProject.getId());
+		retrospective2.setType(RetrospectiveObject.TYPE_GOOD).setSprintId(sprintId).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(mProject.getId());
+		retrospective3.setType(RetrospectiveObject.TYPE_IMPROVEMENT).setSprintId(sprintId).save();
+		improvements = RetrospectiveDAO.getInstance().getGoodsBySprintId(sprintId);
+		assertEquals(2, improvements.size());
+		assertEquals(improvements.get(0).getId(), retrospective1.getId());
+		assertEquals(improvements.get(1).getId(), retrospective3.getId());
+	}
+	
+	public void testGetGoodsByProjectId() {
+		ArrayList<RetrospectiveObject> goods = RetrospectiveDAO.getInstance().getGoodsByProjectId(mProject.getId());
+		assertEquals(0, goods.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(mProject.getId());
+		retrospective1.setType(RetrospectiveObject.TYPE_GOOD).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(mProject.getId());
+		retrospective2.setType(RetrospectiveObject.TYPE_IMPROVEMENT).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(mProject.getId());
+		retrospective3.setType(RetrospectiveObject.TYPE_GOOD).save();
+		goods = RetrospectiveDAO.getInstance().getGoodsByProjectId(mProject.getId());
+		assertEquals(2, goods.size());
+		assertEquals(goods.get(0).getId(), retrospective1.getId());
+		assertEquals(goods.get(1).getId(), retrospective3.getId());
+	}
+	
+	public void testGetImprovementsByProjectId() {
+		ArrayList<RetrospectiveObject> goods = RetrospectiveDAO.getInstance().getImprovementsByProjectId(mProject.getId());
+		assertEquals(0, goods.size());
+		RetrospectiveObject retrospective1 = new RetrospectiveObject(mProject.getId());
+		retrospective1.setType(RetrospectiveObject.TYPE_GOOD).save();
+		RetrospectiveObject retrospective2 = new RetrospectiveObject(mProject.getId());
+		retrospective2.setType(RetrospectiveObject.TYPE_IMPROVEMENT).save();
+		RetrospectiveObject retrospective3 = new RetrospectiveObject(mProject.getId());
+		retrospective3.setType(RetrospectiveObject.TYPE_GOOD).save();
+		goods = RetrospectiveDAO.getInstance().getImprovementsByProjectId(mProject.getId());
+		assertEquals(2, goods.size());
+		assertEquals(goods.get(0).getId(), retrospective1.getId());
+		assertEquals(goods.get(1).getId(), retrospective3.getId());
 	}
 	
 	private long createRetrospective() {

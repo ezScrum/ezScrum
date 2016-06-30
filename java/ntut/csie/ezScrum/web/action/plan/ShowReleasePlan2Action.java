@@ -37,7 +37,7 @@ public class ShowReleasePlan2Action extends PermissionAction {
 		log.info("Show ReleasePlan.");
 		
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
     	
 		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);

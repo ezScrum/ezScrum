@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -33,13 +35,34 @@ public class AjaxMoveStorySprint extends PermissionAction {
 		*	從Request中取得要變更的資訊
 		-------------------------------------------------------------*/
 		//Project
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
-		long storyId = Long.parseLong(request.getParameter("issueID"));
-		String targetSprintId = request.getParameter("moveID");	//	Sprint ID
+		long serialStoryId = Long.parseLong(request.getParameter("issueID"));
+		String targetSerialSprintIdString = request.getParameter("moveID");	//	Sprint ID
 		// String type = request.getParameter("type");		//	取得要移動Release或者是Sprint
 		ProductBacklogHelper helper = new ProductBacklogHelper(project);
-		helper.moveStory(storyId, Long.parseLong(targetSprintId));
+		
+		// Get Story
+		StoryObject story = StoryObject.get(project.getId(), serialStoryId);
+		long storyId = -1;
+		if (story != null) {
+			storyId = story.getId();
+		}
+		
+		long targetSerialSprintId = -1;
+		try {
+			targetSerialSprintId = Long.parseLong(targetSerialSprintIdString);
+		} catch (Exception e) {
+			targetSerialSprintId = -1;
+		}
+		
+		// Get Sprint
+		SprintObject sprint = SprintObject.get(project.getId(), targetSerialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
+		helper.moveStory(storyId, sprintId);
 		return new StringBuilder("");
 	}
 }

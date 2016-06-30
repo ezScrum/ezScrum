@@ -8,14 +8,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ChangeIssueStatus;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataInfo.StoryInfo;
 import ntut.csie.ezScrum.web.dataInfo.TaskInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -25,13 +31,6 @@ import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TranslationTest {
 	private CreateProject mCP;
@@ -56,7 +55,7 @@ public class TranslationTest {
 
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 
 		// 新增 Sprint
 		mCS = new CreateSprint(1, mCP);
@@ -72,9 +71,6 @@ public class TranslationTest {
 
 		mProject = mCP.getAllProjects().get(0);
 
-		// 為了不讓 SQL 跑太快而沒有正確更新值進去
-		Thread.sleep(500);
-
 		// ============= release ==============
 		ini = null;
 	}
@@ -84,10 +80,6 @@ public class TranslationTest {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		// 刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 
 		// 讓 config 回到 Production 模式
 		mConfig.setTestMode(false);
@@ -112,17 +104,17 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "0";
 			storyInfo.estimate = 0;
 			storyInfo.value = 0;
 			storyInfo.importance = 0;
 			storyInfo.howToDemo = "0";
-			storyInfo.sprintId = 0;
+			storyInfo.sprintId = StoryObject.NO_PARENT;
 			storyInfo.notes = "0";
-			storyInfo.status = 0;
+			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = "0";
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			
 			// Expected Response Text
 			StringBuilder expectedText = new StringBuilder();
@@ -139,7 +131,7 @@ public class TranslationTest {
 			expectedText.append("<Notes>0</Notes>");
 			expectedText.append("<HowToDemo>0</HowToDemo>");
 			expectedText.append("<Release></Release>");
-			expectedText.append("<Sprint>0</Sprint>");
+			expectedText.append("<Sprint>None</Sprint>");
 			expectedText.append("<Tag></Tag>");
 			expectedText.append("<Attach>false</Attach>");
 			expectedText.append("</Story>");
@@ -164,7 +156,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME";
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -172,9 +164,9 @@ public class TranslationTest {
 			storyInfo.howToDemo = "TEST_STORY_HOWTODEMO";
 			storyInfo.sprintId = 1;
 			storyInfo.notes = "TEST_STORY_NOTES";
-			storyInfo.status = 1;
+			storyInfo.status = StoryObject.STATUS_DONE;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			
 			// Expected Response Text
 			StringBuilder expectedText = new StringBuilder();
@@ -216,7 +208,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME";
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -226,7 +218,7 @@ public class TranslationTest {
 			storyInfo.notes = "TEST_STORY_NOTES";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 
 			String actualText = Translation.translateStoryToJson(story);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -256,17 +248,17 @@ public class TranslationTest {
 		// initial data
 		for (int i = 0; i < 10; i++) {
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = mCPB.getStories().get(i).getId();
+			StoryObject story = mCPB.getStories().get(i);
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "0";
 			storyInfo.estimate = 0;
 			storyInfo.value = 0;
 			storyInfo.importance = 0;
 			storyInfo.howToDemo = "0";
-			storyInfo.sprintId = 0;
+			storyInfo.sprintId = StoryObject.NO_PARENT;
 			storyInfo.notes = "TEST_NOTES";
-			productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			productBacklogHelper.updateStory(storyInfo);
 
-			StoryObject story = mCPB.getStories().get(i);
 			story.reload();
 			assertEquals(0, story.getEstimate());
 			assertEquals(0, story.getImportance());
@@ -331,17 +323,17 @@ public class TranslationTest {
 
 		// 將 4 - 5 改成 detail (目前判斷是 value / estimation / importance 這三者皆要有值才算是)
 		StoryInfo storyInfo = new StoryInfo();
-		storyInfo.id = stories.get(4).getId();
+		storyInfo.serialId = stories.get(4).getSerialId();
 		storyInfo.name = "";
 		storyInfo.estimate = 1;
 		storyInfo.value = 1;
 		storyInfo.importance = 1;
 		storyInfo.howToDemo = "";
-		storyInfo.sprintId = 0;
-		productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+		storyInfo.sprintId = StoryObject.NO_PARENT;
+		productBacklogHelper.updateStory(storyInfo);
 
-		storyInfo.id = stories.get(5).getId();
-		productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+		storyInfo.serialId = stories.get(5).getSerialId();
+		productBacklogHelper.updateStory(storyInfo);
 		
 		for (int i = 0; i < 10; i++) {
 			StoryObject story = stories.get(i);
@@ -388,7 +380,7 @@ public class TranslationTest {
 		String TEST_STORY_HOWTODEMO = "TEST_STORY_HOWTODEMO";
 		String TEST_STORY_NOTES = "TEST_STORY_NOTES";
 		int TEST_STORY_VALUE = 8;
-		int TEST_STORY_SPRINTID = -1;
+		int TEST_STORY_SPRINTID = StoryObject.NO_PARENT;
 		int TEST_STORY_STATUS = StoryObject.STATUS_UNCHECK;
 		// Tag data
 		String tagName = "TEST_TAG_NAME";
@@ -405,7 +397,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = TEST_STORY_NAME + i;
 			storyInfo.estimate = TEST_STORY_ESTIMATE;
 			storyInfo.value = TEST_STORY_VALUE;
@@ -415,7 +407,7 @@ public class TranslationTest {
 			storyInfo.notes = TEST_STORY_NOTES;
 			storyInfo.status = TEST_STORY_STATUS;
 			storyInfo.tags = tag.getName();
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 			stories.add(story);
 		}
 
@@ -455,7 +447,7 @@ public class TranslationTest {
 			// Task Data
 			TaskObject task = mCT.getTaskList().get(i);
 			TaskInfo taskInfo = new TaskInfo();
-			taskInfo.taskId = task.getId();
+			taskInfo.id = task.getId();
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
@@ -464,7 +456,7 @@ public class TranslationTest {
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;
 			sprintBacklogHelper.updateTask(taskInfo, "", "");
-			task = sprintBacklogHelper.getTask(taskInfo.taskId);
+			task = sprintBacklogHelper.getTask(taskInfo.id);
 			
 			String actualText = Translation.translateTaskToJson(task);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -487,7 +479,7 @@ public class TranslationTest {
 			// Story Data
 			StoryObject story = mCPB.getStories().get(i);
 			StoryInfo storyInfo = new StoryInfo();
-			storyInfo.id = story.getId();
+			storyInfo.serialId = story.getSerialId();
 			storyInfo.name = "TEST_STORY_1_NAME" + i;
 			storyInfo.estimate = 10;
 			storyInfo.value = 8;
@@ -496,7 +488,7 @@ public class TranslationTest {
 			storyInfo.sprintId = 1;
 			storyInfo.notes = "TEST_STORY_NOTES";
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
-			story = productBacklogHelper.updateStory(storyInfo.id, storyInfo);
+			story = productBacklogHelper.updateStory(storyInfo);
 
 			String actualText = Translation.translateTaskboardStoryToJson(story);
 			assertTrue(actualText.contains("\"success\":true"));
@@ -504,7 +496,6 @@ public class TranslationTest {
 			assertTrue(actualText.contains("\"Name\":\"" + storyInfo.name + "\""));
 			assertTrue(actualText.contains("\"Estimate\":" + storyInfo.estimate));
 		}
-		
 	}
 
 	@Test
@@ -521,7 +512,7 @@ public class TranslationTest {
 			// Task Data
 			TaskObject task = mCT.getTaskList().get(i);
 			TaskInfo taskInfo = new TaskInfo();
-			taskInfo.taskId = task.getId();
+			taskInfo.id = task.getId();
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
@@ -530,7 +521,7 @@ public class TranslationTest {
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;
 			sprintBacklogHelper.updateTask(taskInfo, TEST_ACCOUNT_NAME, "");
-			task = sprintBacklogHelper.getTask(taskInfo.taskId);
+			task = sprintBacklogHelper.getTask(taskInfo.id);
 			
 			String actualText = Translation.translateTaskboardTaskToJson(task);
 			assertTrue(actualText.contains("\"success\":true"));

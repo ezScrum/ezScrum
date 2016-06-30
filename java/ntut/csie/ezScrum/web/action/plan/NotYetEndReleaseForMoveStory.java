@@ -40,7 +40,7 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 	public StringBuilder getResponse(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get session info
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		ReleasePlanHelper RPhelper = new ReleasePlanHelper(project);
 		StringBuilder result = new StringBuilder(setReleaseToJSon(RPhelper));
 		return result;
@@ -57,9 +57,9 @@ public class NotYetEndReleaseForMoveStory extends PermissionAction {
 			// 將資訊設定成 JSon 輸出格式 sprint已經開始的無法被移動
 			for (ReleaseObject release : releases) {
 				// 尚未開始的sprint
-				if (stringToDate(release.getDueDateString()).compareTo(
+				if (stringToDate(release.getEndDateString()).compareTo(
 						today) >= 0) {
-					sprintTree.append("{ID:\'" + release.getId() + "\'");
+					sprintTree.append("{ID:\'" + release.getSerialId() + "\'");
 					sprintTree.append(", Goal:\'" + release.getName()
 							+ "\'" + "},");
 				}

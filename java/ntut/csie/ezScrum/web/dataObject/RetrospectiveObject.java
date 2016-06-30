@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import ntut.csie.ezScrum.dao.RetrospectiveDAO;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -9,10 +10,10 @@ import org.codehaus.jettison.json.JSONObject;
 public class RetrospectiveObject implements IBaseObject {
 	public final static String TYPE_GOOD = "Good";
 	public final static String TYPE_IMPROVEMENT = "Improvement";
-	public final static String STATUS_NEW = "new";
-	public final static String STATUS_CLOSED = "closed";
-	public final static String STATUS_RESOLVED = "resolved";
-	public final static String STATUS_ASSIGNED = "assigned";
+	public final static String STATUS_NEW = StatusEnum.STATUS_NEW_STRING;
+	public final static String STATUS_CLOSED = StatusEnum.STATUS_CLOSED_STRING;
+	public final static String STATUS_RESOLVED = StatusEnum.STATUS_RESOLVED_STRING;
+	public final static String STATUS_ASSIGNED = StatusEnum.STATUS_ASSIGNED_STRING;
 	private final static int DEFAULT_VALUE = -1;
 
 	private long mId = DEFAULT_VALUE;
@@ -40,6 +41,10 @@ public class RetrospectiveObject implements IBaseObject {
 	
 	public static RetrospectiveObject get(long retrospectiveId) {
 		return RetrospectiveDAO.getInstance().get(retrospectiveId);
+	}
+	
+	public static RetrospectiveObject get(long projectId, long serialId) {
+		return RetrospectiveDAO.getInstance().get(projectId, serialId);
 	}
 
 	public RetrospectiveObject setName(String name) {
@@ -151,6 +156,7 @@ public class RetrospectiveObject implements IBaseObject {
 	}
 
 	private void doCreate() {
+		mCreateTime = System.currentTimeMillis();
 		mId = RetrospectiveDAO.getInstance().create(this);
 		reload();
 	}
@@ -174,7 +180,8 @@ public class RetrospectiveObject implements IBaseObject {
 		setUpdateTime(retrospective.getUpdateTime());
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		RetrospectiveObject retrospective = RetrospectiveDAO.getInstance().get(mId);
 		return retrospective != null;
 	}

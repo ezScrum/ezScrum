@@ -1,0 +1,151 @@
+*** Settings ***
+Documentation     test ezScrumn sprint plan page
+Suite Setup       Test SprintPlan Setup
+Suite Teardown    Test SprintPlan Teardown
+Force Tags        SprintPlan
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_SetupTeardown.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/common_resource.txt
+Resource          ServerConfig.txt
+Resource          Global Define.txt
+Library           keywords/lib/Selenium2Improved.py
+Library           BuiltIn
+Library           DateTime
+
+*** Test Cases ***
+Test Sprint Plan - Create Sprint
+    [Setup]    Test Create Sprint Setup
+    Select Node Product    Sprint Plan
+    Create Sprint    sprint1 sprint goal    2    4    100    100
+    [Teardown]    Test Create Sprint Teardown
+
+Test Sprint Plan - Delete Sprint
+    [Setup]    Test Delete Sprint Setup
+    Select Node Product    Sprint Plan
+    Delete Sprint
+    [Teardown]    Test Delete Sprint Teardown
+
+Test Sprint Plan - Sprint Goal With NewLine
+    [Documentation]    修正在Sprint Goal 輸入換行符號時，無法進入Sprint Backlog.
+    [Setup]    Test Sprint Goal With NewLine Setup
+    Select Node Product    Sprint Plan
+    Verify Sprint Goal With NewLine
+    [Teardown]    Test Sprint Goal With NewLine Teardown
+
+Test Sprint Plan - Check End Date and Demo Date
+    [Setup]
+    #Select Sprint Plan
+    Select Node Product    Sprint Plan
+    #Click New Sprint
+    Page Should Contain    New Sprint
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/12/26
+    Focus AND Input Text    //input[@name="Interval"]    2
+    #Compare End date
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2017/01/08
+    #Copare Demo date
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2017/01/06
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/12/21
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/01/03
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/01/01
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/02/23
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2015/03/08
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2015/03/06
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/06
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/02/28
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/02/26
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/23
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/02/29
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/02/29
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/24
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/01
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/01
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/25
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/02
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/02
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/26
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/03
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/03
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/27
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/04
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/28
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/05
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    Clear Element Text    //input[@name="Interval"]
+    Click Element    //button[text()="Cancel"]
+    [Teardown]
+
+Test Sprint Plan - Check Recommended Start Date
+    #Select Sprint Plan
+    Select Node Product    Sprint Plan
+    #Create New Sprint
+    Create Sprint    sprint1 sprint goal    2    4    100    100
+    #Create New Sprint
+    Create Sprint Without StartDate    sprint2 sprint goal    3    4    100    100
+    #Delete All Sprint
+    Clean All Sprint
+    #Check Date Is Today
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    ${StartDate}=    Get Value    xpath=//input[@name="StartDate"]
+    ${date}=    Get Current Date
+    ${date}=    Convert Date    ${date}    result_format=%Y/%m/%d
+    Should Be Equal    ${StartDate}    ${date}
+    Click Element    //button[text()="Cancel"]

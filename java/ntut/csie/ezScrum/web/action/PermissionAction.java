@@ -39,7 +39,7 @@ public abstract class PermissionAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 		IUserSession userSession = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 		AccountObject account = userSession.getAccount();

@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateTag;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import servletunit.struts.MockStrutsTestCase;
 
@@ -36,7 +35,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		
 		// 新增 Project
 		mCP = new CreateProject(mProjectCount);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		
 		mCT = new CreateTag(2, mCP);
 		mCT.exe();
@@ -60,17 +59,12 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 		
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
-		
 		mConfig.setTestMode(false);
 		mConfig.save();
 
 		super.tearDown();
 		
 		ini = null;
-		projectManager = null;
 		mCP = null;
 		mCT = null;
 		mCPB = null;
@@ -82,7 +76,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		ArrayList<Long> storyIDList = mCPB.getStoryIds();
 		ArrayList<TagObject> tags = mCT.getTagList();
 		
-		request.setHeader("Referer", "?PID=" + mCP.getProjectList().get(0).getName());
+		request.setHeader("Referer", "?projectName=" + mCP.getAllProjects().get(0).getName());
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIDList.get(0)));
 		long expectedStoryId = mCPB.getStoryIds().get(0);
@@ -119,7 +113,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 							.append("\"Notes\":\"").append(expectedStoryNote).append("\",")
 							.append("\"HowToDemo\":\"").append(expectedStoryHoewToDemo).append("\",")
 							.append("\"Link\":\"\",")
-							.append("\"Release\":\"\",")
+							.append("\"Release\":\"None\",")
 							.append("\"Sprint\":\"None\",")
 							.append("\"FilterType\":\"DETAIL\",")
 							.append("\"Attach\":false,")

@@ -4,10 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.docx4j.model.datastorage.XPathEnhancerParser.main_return;
+
 import ntut.csie.ezScrum.issue.sql.service.core.IQueryValueSet;
 import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.SerialNumberObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssuePartnerRelationEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
@@ -27,7 +31,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	public long create(TaskObject task) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		long currentTime = System.currentTimeMillis();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 				task.getProjectId());
 
 		long taskId = serialNumber.getTaskId() + 1;
@@ -64,9 +68,27 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.ID, id);
 		String query = valueSet.getSelectQuery();
-
 		ResultSet result = mControl.executeQuery(query);
-
+		TaskObject task = null;
+		try {
+			if (result.next()) {
+				task = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return task;
+	}
+	
+	public TaskObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(TaskEnum.TABLE_NAME);
+		valueSet.addEqualCondition(TaskEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(TaskEnum.SERIAL_ID, serialId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
 		TaskObject task = null;
 		try {
 			if (result.next()) {
@@ -134,7 +156,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 	 * @param projectId
 	 * @return All tasks which no parent in this project
 	 */
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(TaskEnum.TABLE_NAME);
 		valueSet.addEqualCondition(TaskEnum.STORY_ID, TaskObject.NO_PARENT);
@@ -233,6 +255,29 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 			return true;
 		}
 		return false;
+	}
+
+	public ArrayList<HistoryObject> getRemainsHistoriesBeforeSpecificTime(long taskId, long lastSecondOfTheDate) {
+		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(HistoryEnum.TABLE_NAME);
+		valueSet.addLessOrEqualCondition(HistoryEnum.CREATE_TIME, lastSecondOfTheDate);
+		valueSet.addEqualCondition(HistoryEnum.HISTORY_TYPE, HistoryObject.TYPE_REMAIMS);
+		valueSet.addEqualCondition(HistoryEnum.ISSUE_ID, taskId);
+		valueSet.addEqualCondition(HistoryEnum.ISSUE_TYPE, IssueTypeEnum.TYPE_TASK);
+		valueSet.setOrderBy(HistoryEnum.CREATE_TIME, MySQLQuerySet.DESC_ORDER);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		try {
+			while (result.next()) {
+				remainsHistories.add(HistoryDAO.convert(result));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return remainsHistories;
 	}
 
 	public static TaskObject convert(ResultSet result) throws SQLException {

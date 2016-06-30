@@ -9,7 +9,7 @@ public class ScrumRoleEnum {
     public static final String ACCESS_SPRINT_BACKLOG = "access_sprintBacklog";
     public static final String ACCESS_RELEASE_PLAN = "access_releasePlan";
     public static final String ACCESS_RETROSPECTIVE = "access_retrospective";
-    public static final String ACCESS_UNPLANNED = "access_unplanned";
+    public static final String ACCESS_UNPLAN = "access_unplan";
     public static final String ACCESS_REPORT = "access_report";
     public static final String ACCESS_EDIT_PROJECT = "access_editProject";
     public static final String PROJECT_ID = "project_id";

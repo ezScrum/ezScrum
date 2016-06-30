@@ -2,15 +2,15 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
 public class HistoryObject implements IBaseObject {
 	public final static int TYPE_CREATE = 1;
@@ -32,9 +32,10 @@ public class HistoryObject implements IBaseObject {
 	public final static int TYPE_REMOVE = 18; // Remove Child (for story
 	                                          // history)
 	public final static int TYPE_NOTE = 19;
-	public final static int TYPE_HOWTODEMO = 20;
-	public final static int TYPE_PARTNERS = 21;
-	public final static int TYPE_SPRINTID = 22;
+	public final static int TYPE_HOW_TO_DEMO = 20;
+	public final static int TYPE_ADD_PARTNER = 21;
+	public final static int TYPE_REMOVE_PARTNER = 22;
+	public final static int TYPE_SPRINT_ID = 23;
 
 	private long mId;
 	private long mIssueId;
@@ -139,17 +140,23 @@ public class HistoryObject implements IBaseObject {
 				return getHandlerDesc();
 			case TYPE_SPECIFIC_TIME:
 				return getNormalDesc();
-			case TYPE_NOTE:
-				return getQuoteDesc();
-			case TYPE_ADD:
-				return getAddChildDesc();
-			case TYPE_APPEND:
-				return getAppendParentDesc();
 			case TYPE_DROP:
 				return getDropChildDesc();
+			case TYPE_APPEND:
+				return getAppendParentDesc();
+			case TYPE_ADD:
+				return getAddChildDesc();
 			case TYPE_REMOVE:
 				return getRemoveParentDesc();
-			case TYPE_SPRINTID:
+			case TYPE_NOTE:
+				return getQuoteDesc();
+			case TYPE_HOW_TO_DEMO:
+				return getQuoteDesc();
+			case TYPE_ADD_PARTNER:
+				return getPartnerDesc();
+			case TYPE_REMOVE_PARTNER:
+				return getPartnerDesc();
+			case TYPE_SPRINT_ID:
 				return getSprintDesc();
 		}
 		return "";
@@ -177,10 +184,15 @@ public class HistoryObject implements IBaseObject {
 				return "Handler";
 			case TYPE_SPECIFIC_TIME:
 				return "Specific Time";
+			case TYPE_HOW_TO_DEMO:
+				return "How To Demo";
 			case TYPE_NOTE:
 				return "Note";
-			case TYPE_HOWTODEMO:
-				return "How To Demo";
+			case TYPE_ADD_PARTNER:
+				return "Add Partner";
+			case TYPE_REMOVE_PARTNER:
+				return "Remove Partner";
+			
 		}
 		return "";
 	}
@@ -228,37 +240,40 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	private String getStatusDesc() {
-		HashMap<String, String> map = new HashMap<String, String>();
-		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
-		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			map.put(String.valueOf(StoryObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(StoryObject.STATUS_DONE), "Done");
-		} else {
-			map.put(String.valueOf(TaskObject.STATUS_UNCHECK), "Not Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_CHECK), "Check Out");
-			map.put(String.valueOf(TaskObject.STATUS_DONE), "Done");
+		String oldStatusString = getStatusString(Integer.parseInt(mOldValue));
+		String newStatusString = getStatusString(Integer.parseInt(mNewValue));
+		return oldStatusString + " => " + newStatusString;
+	}
+	
+	private String getStatusString(int status) {
+		final String NOT_CHECK_OUT = "Not Check Out";
+		final String CHECK_OUT = "Check Out";
+		final String DONE = "Done";
+		String statusString = "";
+		if (status == StatusEnum.NEW) {
+			statusString = NOT_CHECK_OUT;
+		} else if (status == StatusEnum.ASSIGNED) {
+			statusString = CHECK_OUT;
+		} else if (status == StatusEnum.CLOSED) {
+			statusString = DONE;
 		}
-
-		return map.get(mOldValue) + " => " + map.get(mNewValue);
+		return statusString;
 	}
 
 	private String getCreateDesc() {
 		String desc = "";
 		switch (mIssueType) {
 			case IssueTypeEnum.TYPE_STORY:
-				desc = "Create Story #" + mIssueId;
+				StoryObject story = StoryObject.get(mIssueId);
+				desc = "Create Story #" + story.getSerialId();
 				break;
 			case IssueTypeEnum.TYPE_TASK:
-				desc = "Create Task #" + mIssueId;
+				TaskObject task = TaskObject.get(mIssueId);
+				desc = "Create Task #" + task.getSerialId();
 				break;
-			case IssueTypeEnum.TYPE_UNPLANNED:
-				desc = "Create Unplanned #" + mIssueId;
-				break;
-			case IssueTypeEnum.TYPE_RETROSPECTIVE:
-				desc = "Create Retrospective #" + mIssueId;
+			case IssueTypeEnum.TYPE_UNPLAN:
+				UnplanObject unplan = UnplanObject.get(mIssueId);
+				desc = "Create Unplan #" + unplan.getSerialId();
 				break;
 		}
 		return desc;
@@ -266,38 +281,63 @@ public class HistoryObject implements IBaseObject {
 
 	private String getAppendParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			return "Append to Story #" + mNewValue;
+			long storyId = Long.parseLong(mNewValue);
+			StoryObject story = StoryObject.get(storyId);
+			return "Append to Story #" + story.getSerialId();
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Append to Sprint #" + mNewValue;
+			long sprintId = Long.parseLong(mNewValue);
+			SprintObject sprint = SprintObject.get(sprintId);
+			return "Append to Sprint #" + sprint.getSerialId();
 		}
 		return "";
 	}
 
 	private String getRemoveParentDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_TASK) {
-			return "Remove from Story #" + mNewValue;
+			long storyId = Long.parseLong(mNewValue);
+			StoryObject story = StoryObject.get(storyId);
+			return "Remove from Story #" + story.getSerialId();
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Remove from Sprint #" + mNewValue;
+			long sprintId = Long.parseLong(mNewValue);
+			SprintObject sprint = SprintObject.get(sprintId);
+			return "Remove from Sprint #" + sprint.getSerialId();
 		}
 		return "";
 	}
 
 	private String getAddChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Add Task #" + mNewValue;
+			long taskId = Long.parseLong(mNewValue);
+			TaskObject task = TaskObject.get(taskId);
+			return "Add Task #" + task.getSerialId();
 		}
 		return "";
 	}
 
 	private String getDropChildDesc() {
 		if (mIssueType == IssueTypeEnum.TYPE_STORY) {
-			return "Drop Task #" + mNewValue;
+			long taskId = Long.parseLong(mNewValue);
+			TaskObject task = TaskObject.get(taskId);
+			return "Drop Task #" + task.getSerialId();
 		}
 		return "";
 	}
 
 	private String getSprintDesc() {
-		return String.format("Sprint #%s => Sprint #%s", mOldValue, mNewValue);
+		long oldSprintId = Long.parseLong(mOldValue);
+		SprintObject oldSprint = SprintObject.get(oldSprintId);
+		long newSprintId = Long.parseLong(mNewValue);
+		SprintObject newSprint = SprintObject.get(newSprintId);
+		return String.format("Sprint #%s => Sprint #%s", oldSprint.getSerialId(), newSprint.getSerialId());
+	}
+	
+	private String getPartnerDesc() {
+		if (mNewValue != null && !mNewValue.equals("") && !mNewValue.equals("0") && !mNewValue.equals("-1")) {
+			String partnerUsername = AccountDAO.getInstance()
+			        .get(Long.parseLong(mNewValue)).getUsername();
+			return partnerUsername;
+		}
+		return "";
 	}
 
 	public long getCreateTime() {
@@ -305,17 +345,19 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	public String getFormattedModifiedTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 		return sdf.format(new Date(mCreateTime));
 	}
 
-	private boolean exists() {
+	@Override
+	public boolean exists() {
 		HistoryObject history = HistoryDAO.getInstance().get(mId);
 		return history != null;
 	}
 
 	private void doCreate() {
 		mId = HistoryDAO.getInstance().create(this);
+		reload();
 	}
 
 	@Override
@@ -326,11 +368,34 @@ public class HistoryObject implements IBaseObject {
 	}
 
 	@Override
-	public void reload() {}
+	public void reload() {
+		if (exists()) {
+			HistoryObject history = HistoryDAO.getInstance().get(mId);
+			resetData(history);
+		}
+	}
+	
+	private void resetData(HistoryObject history) {
+		mId = history.getId();
+		mIssueId = history.getIssueId();
+		mIssueType = history.getIssueType();
+		mHistoryType = history.getHistoryType();
+		mOldValue = history.getOldValue();
+		mNewValue = history.getNewValue();
+		setCreateTime(history.getCreateTime());
+	}
 
 	@Override
 	public boolean delete() {
 		return false;
+	}
+	
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return "JSON Exception";
+		}
 	}
 
 	@Override

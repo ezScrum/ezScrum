@@ -29,7 +29,7 @@ public class ConvertProject {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String createTime = dateFormat.format(project.getCreateTime());
 
-		// TODO: 此 ID 為 PID，因前端還未修改所以先不動 (待改!!!)
+		// TODO: 此 ID 為?projectName，因前端還未修改所以先不動 (待改!!!)
 		projectJson.put(CommonUtil.TAG_ID, project.getName());
 		projectJson.put(CommonUtil.TAG_NAME, project.getDisplayName());
 		projectJson.put(ProjectUtil.TAG_COMMENT, project.getComment());

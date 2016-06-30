@@ -118,6 +118,8 @@
     		<action path="/GetSprintsComboInfo"	 			type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoAction" />
     		
     			<!-- Sprint Backlog Action -->
+    		<action path="/showPrintableTasks"      type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableTasksAction"/>
+    		<action path="/showSelectableTask"      type="ntut.csie.ezScrum.web.action.plan.ShowSelectableTaskAction"/>
     		<action path="/showExistedStory"		type="ntut.csie.ezScrum.web.action.plan.ShowExistedStoryAction" />
     		<action path="/addExistedStory" 		type="ntut.csie.ezScrum.web.action.backlog.AddExistedStoryAction" />
     		<action path="/showPrintableStory"	 	type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableStoryAction" />
@@ -256,18 +258,17 @@
     		
     		<!-- sprint plan -->    		    		    		
     		<action path="/GetSprintsComboInfoAll"	type="ntut.csie.ezScrum.web.action.plan.GetSprintPlanComboInfoWithAllAction" />
-			<action path="/editSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.EditSprintPlanAction" />
 			<action path="/showEditSprintInfo"							type="ntut.csie.ezScrum.web.action.plan.ShowEditSprintInfoAction" />	
     		<action path="/AjaxGetSprintPlanList"	type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanListAction" />
     		<action path="/AjaxGetSPPermission"		type="ntut.csie.ezScrum.web.action.plan.AjaxGetSprintPlanPermissionAction" />
     		
-    		<!-- unplanned plan -->
-    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.unplanned.AjaxGetUnplannedItemPermissionAction" />
-    		<action path="/addNewUnplannedItem"		type="ntut.csie.ezScrum.web.action.unplanned.AddNewUnplannedItemAction" />
-    		<action path="/GetUnplannedItems"		type="ntut.csie.ezScrum.web.action.unplanned.ShowUnplannedItemAction" />
-    		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.unplanned.ShowEditUnplannedItemAction" />
-    		<action path="/editUnplannedItem" 		type="ntut.csie.ezScrum.web.action.unplanned.EditUnplannedItemAction" />
-    		<action path="/removeUnplannedItem"		type="ntut.csie.ezScrum.web.action.unplanned.RemoveUnplannedItemAction" />
+    		<!-- unplan plan -->
+    		<action path="/AjaxGetUIPermission"		type="ntut.csie.ezScrum.web.action.unplan.AjaxGetUnplanItemPermissionAction" />
+    		<action path="/addNewUnplanItem"		type="ntut.csie.ezScrum.web.action.unplan.AddNewUnplanItemAction" />
+    		<action path="/GetUnplanItems"		type="ntut.csie.ezScrum.web.action.unplan.ShowUnplanItemAction" />
+    		<action path="/showEditUnplannedItem"	type="ntut.csie.ezScrum.web.action.unplan.ShowEditUnplannedItemAction" />
+    		<action path="/editUnplanItem" 		type="ntut.csie.ezScrum.web.action.unplan.EditUnplanItemAction" />
+    		<action path="/removeUnplanItem"		type="ntut.csie.ezScrum.web.action.unplan.RemoveUnplanItemAction" />
     	<!-- ntut.csie.ezScrum.web.action.plan -->
 		
 		
@@ -307,8 +308,8 @@
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	<action path="/getAddNewRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetAddNewRetrospectiveInfoAction" />
     	<action path="/AjaxGetRETPermission"		type="ntut.csie.ezScrum.web.action.retrospective.AjaxGetRetrospectivePermissionAction" />
-    	<action path="/getPastRetrospectiveInfo"	type="ntut.csie.ezScrum.web.action.retrospective.GetPastRetrospectiveInfoAction" />
-    	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.retrospective.GetAddSprintTaskInfoAction" />
+    	<action path="/getPastSprintInfo"	type="ntut.csie.ezScrum.web.action.report.GetPastSprintsInfoAction" />
+    	<action path="/getAddSprintTaskInfo"		type="ntut.csie.ezScrum.web.action.backlog.GetAddSprintTaskInfoAction" />
     	<!-- ntut.csie.ezScrum.web.action.retrospective -->
     	
     	
@@ -347,8 +348,6 @@
 		<!-- Issue Detail Information page -->
         <action path="/showIssueInformation" forward="project.IssueInformation" />
 
-		<action path="/initialDatabase" type="ntut.csie.ezScrum.web.action.InitDatabaseAction" />
-		<action path="/createDatabase" type="ntut.csie.ezScrum.web.action.CreateDatabaseAction" />
         <!--    *********************
                 *		other		*
                 *********************

@@ -30,18 +30,18 @@ public class SprintPlanUI {
 		private String DailyScrum = "";
 		private String DemoDate = "";
 		private String DemoPlace = "";
-		private String DueDate = "";
+		private String EndDate = "";
 
 		public SprintPlanItem() {
 
 		}
 
 		public SprintPlanItem(SprintObject sprint) {
-			this.Id = String.valueOf(sprint.getId());
+			this.Id = String.valueOf(sprint.getSerialId());
 			this.Goal = sprint.getGoal();
 			this.StartDate = sprint.getStartDateString();
 			this.Interval = String.valueOf(sprint.getInterval());
-			this.DueDate = sprint.getDueDateString();
+			this.EndDate = sprint.getEndDateString();
 			this.Members = String.valueOf(sprint.getTeamSize());
 			this.AvaliableDays = sprint.getAvailableHours() + " hours";
 			this.FocusFactor = String.valueOf(sprint.getFocusFactor());

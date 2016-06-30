@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -23,15 +24,20 @@ public class AjaxGetSprintBacklogDateInfoAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) {
 		log.info("Get Sprint Backlog Date.");
 
-		ProjectObject project = SessionManager.getProjectObject(request);
-		String sprintIdString = request.getParameter("sprintID");
+		ProjectObject project = SessionManager.getProject(request);
+		String serialSprintIdString = request.getParameter("sprintID");
 		
-		long sprintId = -1;
+		long serialSprintId = -1;
 
-		if (sprintIdString != null && sprintIdString.length() > 0) {
-			sprintId = Long.parseLong(request.getParameter("sprintID"));
+		if (serialSprintIdString != null && serialSprintIdString.length() > 0) {
+			serialSprintId = Long.parseLong(request.getParameter("sprintID"));
 		}
-
+		
+		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
+		long sprintId = -1;
+		if (sprint != null) {
+			sprintId = sprint.getId();
+		}
 		String result = (new SprintBacklogHelper(project, sprintId)).getAjaxGetSprintBacklogDateInfo();
 		response.setContentType("text/html; charset=utf-8");
 		try {

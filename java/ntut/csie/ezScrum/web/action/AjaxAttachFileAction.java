@@ -10,6 +10,14 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
 import ntut.csie.ezScrum.web.dataInfo.AttachFileInfo;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
@@ -19,15 +27,6 @@ import ntut.csie.ezScrum.web.form.UploadForm;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
-import ntut.csie.jcis.core.util.FileUtil;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 
 public class AjaxAttachFileAction extends Action {
 	private static Log log = LogFactory.getLog(AjaxAttachFileAction.class);
@@ -37,7 +36,7 @@ public class AjaxAttachFileAction extends Action {
 		log.info(" Attach File. ");
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		StringBuilder result = new StringBuilder("");
 		if (project == null) {
@@ -46,13 +45,17 @@ public class AjaxAttachFileAction extends Action {
 			long fileMaxSize_int = project.getAttachFileSize();
 			fileMaxSize_int = fileMaxSize_int * 1048576; // (1MB = 1024 KB = 1048576 bytes)
 			
-			long issueId = Long.parseLong(request.getParameter("issueID"));
+			long serialIssueId = Long.parseLong(request.getParameter("issueID"));
 			String issueTypeStr = request.getParameter("issueType");
-			
+			long issueId = -1;
 			int issueType = 0;
 			if (issueTypeStr.equals("Story")) {
+				StoryObject story = StoryObject.get(project.getId(), serialIssueId);
+				issueId = story.getId();
 				issueType = IssueTypeEnum.TYPE_STORY;
 			} else if (issueTypeStr.equals("Task")) {
+				TaskObject task = TaskObject.get(project.getId(), serialIssueId);
+				issueId = task.getId();
 				issueType = IssueTypeEnum.TYPE_TASK;
 			}
 			
@@ -80,7 +83,6 @@ public class AjaxAttachFileAction extends Action {
 		            
 					try {
 						pbHelper.addAttachFile(attachFileInfo, file);
-						FileUtil.delete(file.getAbsolutePath());
 					} catch (IOException e) {
 						System.out.println(e);
 					}

@@ -25,17 +25,19 @@ public class ShowScheduleReportAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession()
 				.getAttribute("UserSession");
 
-		String iter = request.getParameter("sprintID");
+		String serialSprintIdString = request.getParameter("sprintID");
 		ScheduleReport report = null;
-		if (iter == null) {
+		if (serialSprintIdString == null) {
 			report = new ScheduleReport(project, session);
 		} else {
+			long serialSprintId = Long.parseLong(serialSprintIdString);
+			SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
 			report = new ScheduleReport(project, session,
-					Integer.parseInt(iter));
+					sprint.getId());
 		}
 
 		try {
@@ -62,7 +64,7 @@ public class ShowScheduleReportAction extends Action {
 		AccountObject account = session.getAccount();
 		ScrumRole scrumRole = new ScrumRoleLogic().getScrumRole(project,
 				account);
-		if (scrumRole.getReadReport()) {
+		if (scrumRole.getAccessReport()) {
 			return mapping.findForward("success");
 		} else {
 			String message = "System failure!";// "目前無法產生任何圖表"

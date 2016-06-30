@@ -148,7 +148,7 @@ Test Product Backlog Done Filter Teardown
     Delete Story With Arguments    newStoryNormal
     Delete Story With Arguments    newStoryBacklogged
     Delete Story With Arguments    newStoryDetailed
-    Delete Closed With StoryName    newStoryDone
+    Delete Story With Arguments    newStoryDone
     Clean All Sprint
 
 Test Product Backlog Search Setup

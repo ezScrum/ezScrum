@@ -166,7 +166,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var title = 'Attach File';
 		if(success) {
 			Ext.example.msg(title, 'Success.');
-			
 			// update Task Card Info
 			var issueId = record.data['Id'];
 			var issueType = record.issueType;
@@ -315,7 +314,7 @@ var RE_OpenIssueWindow = new ezScrum.window.ReOpenIssueWindow({
 			 * Story Re-Open 需調整 Sprint Desc. and Burndown Chart的資訊
 			 *  Task Re-Open 目前的機制是不要復原 Remain Hour, 所以 move card 就好
 			 */
-			if(this.issueCard.issueType == 'story') {
+			if(this.issueCard.issueType == 'Story') {
 				var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
 				Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
 				Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
@@ -421,7 +420,7 @@ function deleteTaskAttachFile(file_Id, issue_Id) {
 				success : function(response) {
 					Ext.example.msg('Delete File', 'Success.');
 					
-					var records = jsonStoryReader.read(response);
+					var records = jsonTaskReader.read(response);
 					
 					if(records.success && records.totalRecords > 0) {
 						var record = records.records[0];

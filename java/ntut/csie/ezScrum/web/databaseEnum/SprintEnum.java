@@ -10,7 +10,7 @@ public class SprintEnum {
 	public static final String AVAILABLE_HOURS = "available_hours";
 	public static final String FOCUS_FACTOR = "focus_factor";
 	public static final String START_DATE = "start_date";
-	public static final String DUE_DATE = "due_date";
+	public static final String END_DATE = "end_date";
 	public static final String DEMO_DATE = "demo_date";
 	public static final String DEMO_PLACE = "demo_place";
 	public static final String DAILY_INFO = "daily_info";

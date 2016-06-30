@@ -38,6 +38,7 @@ var ExistedStory_Filter = new Ext.ux.grid.GridFilters({
 
 var ExistedStoryColumnModel = function() {
     var columns = [
+
 		ExistedStory_Expander, ExistedStory_CheckBoxModel,
 		{dataIndex: 'Id', header: 'Id', width: 50, filterable: true/*, renderer: makeIssueDetailUrl*/},
 		{dataIndex: 'Tag', header: 'Tag', width: 50},
@@ -59,6 +60,7 @@ var ExistedStoryColumnModel = function() {
 };
 
 var ExistedStoryStore = new Ext.data.Store({
+	
 	fields: [
 		{name: 'Id', type: 'int'},
 		{name: 'Link'},
@@ -91,6 +93,7 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	viewConfig	: {
         forceFit: true
     },
+   
     loadDataModel: function() {
     	var obj = this;
     	var loadmask = new Ext.LoadMask(obj.getEl(), {msg: "loading info..."});
@@ -103,6 +106,7 @@ ezScrum.AddExistedStoryGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			},
 			success: function(response) {
 				ConfirmWidget.loadData(response);
+				console.log(response);
     			if (ConfirmWidget.confirmAction()) {
 					ExistedStoryStore.loadData(response.responseXML);
 					ExistedStoryStore.proxy.data = response;

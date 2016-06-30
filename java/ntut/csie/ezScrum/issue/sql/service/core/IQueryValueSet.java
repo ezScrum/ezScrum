@@ -22,6 +22,7 @@ public interface IQueryValueSet {
 	public void addEqualCondition(String name, String value);//欄位與數值
 	public void addEqualCondition(String name, long value);//欄位與數值
 	public void addLessCondition(String name, String value);//欄位與數值
+	public void addLessOrEqualCondition(String name, long value);//欄位與數值
 	public void addBigCondition(String name, String value);//欄位與數值
 	public void addFieldEqualCondition(String name1, String name2);//欄位與欄位
 	public void addLikeCondition(String name, String value);//欄位與字串

@@ -39,7 +39,7 @@ public class ShowAllSprintForSprintPlanAction extends PermissionAction {
 		log.info("Show all sprint for SprintPlan.");
 		
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		
 		// get parameter info
 		String lastsprint = request.getParameter("lastsprint");

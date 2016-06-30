@@ -33,32 +33,30 @@ public class SaveSprintPlanAction extends PermissionAction {
 
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 
 		// get parameter info
 		String isCreate = request.getParameter("isCreate");
 
-		TranslateSpecialChar translateSpecialChar = new TranslateSpecialChar();
-
 		// get parameter info
-		String sprintId = request.getParameter("Id");
-		String sprintGoal = translateSpecialChar.TranslateXMLChar(request
+		String serialSprintId = request.getParameter("Id");
+		String sprintGoal = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("Goal"));
 		String startDate = request.getParameter("StartDate");
 		String interval = request.getParameter("Interval");
 		String membersAmount = request.getParameter("Members");
 		String hoursCanCommit = request.getParameter("AvaliableDays");
 		String focusFactor = request.getParameter("FocusFactor");
-		String dailyInfo = translateSpecialChar.TranslateXMLChar(request
+		String dailyInfo = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("DailyScrum"));
 		String demoDate = request.getParameter("DemoDate");
-		String demoPlace = translateSpecialChar.TranslateXMLChar(request
+		String demoPlace = TranslateSpecialChar.TranslateXMLChar(request
 				.getParameter("DemoPlace"));
-		String dueDate = request.getParameter("DueDate");
+		String endDate = request.getParameter("EndDate");
 
 		// set sprint info
 		SprintInfo sprintInfo = new SprintInfo();
-		sprintInfo.id = Long.parseLong(sprintId);
+		sprintInfo.serialId = Long.parseLong(serialSprintId);
 		sprintInfo.sprintGoal = sprintGoal;
 		sprintInfo.startDate = startDate;
 		sprintInfo.interval = Integer.parseInt(interval);
@@ -68,7 +66,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 		sprintInfo.dailyInfo = dailyInfo;
 		sprintInfo.demoDate = demoDate;
 		sprintInfo.demoPlace = demoPlace;
-		sprintInfo.dueDate = dueDate;
+		sprintInfo.endDate = endDate;
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 
@@ -77,7 +75,7 @@ public class SaveSprintPlanAction extends PermissionAction {
 			sprintPlanHelper.createSprint(sprintInfo);
 		} else {
 			// edit sprint
-			sprintPlanHelper.updateSprint(sprintInfo.id, sprintInfo);
+			sprintPlanHelper.updateSprint(sprintInfo);
 		}
 
 		return new StringBuilder("true");

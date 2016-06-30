@@ -1,18 +1,10 @@
 package ntut.csie.ezScrum.web.action;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.helper.ProjectHelper;
-import ntut.csie.ezScrum.web.support.SessionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,17 +13,22 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.helper.ProjectHelper;
+import ntut.csie.ezScrum.web.support.SessionManager;
+
 public class GetProjectMembersAction extends Action {
 	private static Log log = LogFactory.getLog(GetProjectMembersAction.class);
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 	        HttpServletRequest request, HttpServletResponse response) throws IOException {
 		log.info("Get Project Members in GetProjectMembersAction.java");
-		ProjectObject project = (ProjectObject) SessionManager.getProjectObject(request);
+		ProjectObject project = (ProjectObject) SessionManager.getProject(request);
 		
 		List<AccountObject> accounts = null;
 		try {
-			accounts = new ProjectHelper().getProjectMemberList(project);
+			accounts = new ProjectHelper().getProjectMembers(project);
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			response.setStatus(403);

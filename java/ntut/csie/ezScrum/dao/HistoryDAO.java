@@ -54,6 +54,8 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
 		}
 		return history;
 	}
@@ -103,7 +105,7 @@ public class HistoryDAO extends AbstractDAO<HistoryObject, HistoryObject> {
 		return mControl.execute(query);
 	}
 
-	private HistoryObject convert(ResultSet result) throws SQLException {
+	public static HistoryObject convert(ResultSet result) throws SQLException {
 		HistoryObject history = new HistoryObject();
 		history.setId(result.getLong(HistoryEnum.ID))
 				.setIssueId(result.getLong(HistoryEnum.ISSUE_ID))

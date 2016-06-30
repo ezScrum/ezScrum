@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.internal.UserSession;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
 import ntut.csie.ezScrum.test.TestTool;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddUserToRole;
@@ -15,7 +15,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
@@ -44,7 +43,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 
 		//	新增一測試專案
 		mCP = new CreateProject(1);
-		mCP.exeCreate();
+		mCP.exeCreateForDb();
 		mProject = mCP.getAllProjects().get(0);
 
 		super.setUp();
@@ -61,10 +60,6 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	刪除資料庫
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-
-		//	刪除外部檔案
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
 		
 		// 讓 config 回到  Production 模式
 		mConfig.setTestMode(false);
@@ -86,7 +81,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		String sprintId = "1";
 		String projectName = mProject.getName();
 		
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", sprintId);
 
 		// ================ set session info ========================
@@ -113,7 +108,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -144,13 +139,12 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		ArrayList<StoryObject> actualIIssueList = (ArrayList<StoryObject>) request.getAttribute("Stories");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
-		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = createSprint.mToday;
+		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, startDate);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		assertEquals(expectedSprintID, actualSprintID);		//	verify sprint ID
-		assertEquals("0.0", actualStoryPoint);				//	verify story points
+		assertEquals("0", actualStoryPoint);				//	verify story points
 		assertNotNull(actualSprintPlan);					//	verify sprint plan object
 		assertEquals(createSprint.TEST_SPRINT_GOAL + expectedSprintID, actualSprintPlan.getGoal());	//	verify sprint goal
 		assertEquals("[]", actualActors);					//	verify 參與此專案的人(因為尚未加入團隊成員因此為空的)
@@ -158,7 +152,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	verify story information
 		assertNotNull(actualIIssueList);
 		assertEquals(0, actualIIssueList.size());
-		assertEquals("0.0", actualStoryPoint);				//	verify story points
+		assertEquals("0", actualStoryPoint);				//	verify story points
 	}
 
 	/**
@@ -185,7 +179,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -217,9 +211,8 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		ArrayList<String> actualActors = (ArrayList<String>) request.getAttribute("Actors");
 
 		TestTool testTool = new TestTool();
-		Date today = createSprint.mToday;
-		Date startDate = testTool.getSprintStartDate(String.valueOf(CreateSprint.SPRINT_INTERVAL), today);
-		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, today);
+		Date startDate = createSprint.mToday;
+		Date endDate = testTool.getSprintEndDate(CreateSprint.SPRINT_INTERVAL, startDate);
 		String expectedSprintPeriod = testTool.transformDate(startDate) + " to " + testTool.transformDate(endDate);
 
 		/**
@@ -231,7 +224,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		//	verify story information
 		assertNotNull(actualStories);
 		assertEquals("TEST_STORY_1", actualStories.get(0).getName());
-		assertEquals("5.0", actualStoryPoint);
+		assertEquals("5", actualStoryPoint);
 
 		//	verify sprint plan information
 		assertNotNull(actualSprintPlan);
@@ -269,7 +262,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================
@@ -312,7 +305,7 @@ public class ShowSprintInformationActionTest extends MockStrutsTestCase {
 		// ================ set request info ========================
 		String expectedSprintID = "1";
 		String projectName = mProject.getName();
-		request.setHeader("Referer", "?PID=" + projectName);
+		request.setHeader("Referer", "?projectName=" + projectName);
 		addRequestParameter("sprintID", expectedSprintID);
 
 		// ================ set session info ========================

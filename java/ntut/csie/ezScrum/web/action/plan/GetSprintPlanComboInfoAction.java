@@ -8,19 +8,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.web.action.PermissionAction;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.dataObject.SprintObject;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.ezScrum.web.support.SessionManager;
-import ntut.csie.jcis.core.util.DateUtil;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import com.google.gson.Gson;
+
+import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
+import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.support.SessionManager;
+import ntut.csie.jcis.core.util.DateUtil;
 
 public class GetSprintPlanComboInfoAction extends PermissionAction {
 	private static Log log = LogFactory
@@ -45,21 +45,21 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 
 		// get project from session or DB
 		ProjectObject project = (ProjectObject) SessionManager
-				.getProjectObject(request);
+				.getProject(request);
 
 		// get parameter
-		String currentSprintId = request.getParameter("SprintID");
+		String currentSerialSprintId = request.getParameter("SprintID");
 
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		ArrayList<SprintObject> sprints = sprintPlanHelper.getSprints();
 
 		SprintObject currentSprint = null;
 
-		if (currentSprintId == null) {
+		if (currentSerialSprintId == null) {
 			currentSprint = sprintPlanHelper.getCurrentSprint();
 		} else {
 			currentSprint = sprintPlanHelper.getSprint(Long
-					.parseLong(currentSprintId));
+					.parseLong(currentSerialSprintId));
 		}
 
 		SprintPlanUI sprintPlanUI = new SprintPlanUI(sprints, currentSprint);
@@ -93,9 +93,9 @@ public class GetSprintPlanComboInfoAction extends PermissionAction {
 		public SprintPlanItem(SprintObject sprint) {
 			Date endDate;
 			if (sprint != null) {
-				endDate = DateUtil.dayFilter(sprint.getDueDateString());
-				this.Id = String.valueOf(sprint.getId());
-				this.Info = "Sprint #" + String.valueOf(sprint.getId());
+				endDate = DateUtil.dayFilter(sprint.getEndDateString());
+				this.Id = String.valueOf(sprint.getSerialId());
+				this.Info = "Sprint #" + String.valueOf(sprint.getSerialId());
 				if (isOverSprint(endDate)) {
 					this.Edit = "false";
 				} else {

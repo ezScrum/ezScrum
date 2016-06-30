@@ -7,10 +7,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
-import ntut.csie.ezScrum.refactoring.manager.ProjectManager;
+import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
-import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
@@ -34,7 +33,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
 		ini.exe();											// 初始化 SQL
 		
     	mCP = new CreateProject(1);
-    	mCP.exeCreate();										// 新增一測試專案
+    	mCP.exeCreateForDb();										// 新增一測試專案
     	
     	mCR = new CreateRelease(1, mCP);
     	mCR.exe();										// 新增一筆Release Plan
@@ -52,10 +51,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
 
     protected void tearDown() throws IOException, Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
-		ini.exe();											// 初始化 SQL
-		
-		ProjectManager projectManager = new ProjectManager();
-		projectManager.deleteAllProject();
+		ini.exe();
     	
     	mConfig.setTestMode(false);
 		mConfig.save();
@@ -100,7 +96,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
     	
     	actionPerform();		// 執行 action
     	
@@ -116,7 +112,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	assertEquals(mCR.getReleaseCount() + 1, releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
     	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getEndDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -157,7 +153,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
     	
     	actionPerform();		// 執行 action
     	
@@ -172,7 +168,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	assertEquals(mCR.getReleaseCount(), releasePlan.getId());
     	assertEquals(releaseName, releasePlan.getName());
     	assertEquals(format.format(StartDate), releasePlan.getStartDateString());
-    	assertEquals(format.format(EndDate), releasePlan.getDueDateString());
+    	assertEquals(format.format(EndDate), releasePlan.getEndDateString());
     	assertEquals(releaseDesc, releasePlan.getDescription());
     	assertEquals(0, releasePlan.getSprints().size());
     	
@@ -214,7 +210,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
 //    	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
 //    	request.getSession().setAttribute("Project", project);
 //    	// ================ set session info ========================
-//		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+//		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 //
 //		actionPerform();		// 執行 action
 //    	
@@ -265,7 +261,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 
 		actionPerform();		// 執行 action
     	
@@ -316,7 +312,7 @@ public class SaveReleasePlanActionTest extends MockStrutsTestCase {
     	request.getSession().setAttribute("UserSession", mConfig.getUserSession());    	
     	request.getSession().setAttribute("Project", project);
     	// ================ set session info ========================
-		request.setHeader("Referer", "?PID=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
+		request.setHeader("Referer", "?projectName=" + project.getName());	// SessionManager 會對URL的參數作分析 ,未帶入此參數無法存入session
 		
     	actionPerform();		// 執行 action
     	

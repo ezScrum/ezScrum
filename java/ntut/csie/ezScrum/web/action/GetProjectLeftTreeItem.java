@@ -59,7 +59,7 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 		// members page
 		ProjectConfig.appendChild(new ChildrenSiidUI(this.Project_Configuration_Members_ID, this.Project_Configuration_Members_Text));
 		
-		if ( super.getScrumRole().getEditProject() || super.getScrumRole().isAdmin() ) {
+		if ( super.getScrumRole().getAccessEditProject() || super.getScrumRole().isAdmin() ) {
 			// project config page
 			ProjectConfig.appendChild(new ChildrenSiidUI(this.Project_Configuration_ModifyConfig_ID, this.Project_Configuration_ModifyConfig_Text));
 		}
@@ -83,8 +83,8 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 	private final String Project_Management_TaskBoard_Text = "TaskBoard";
 	private final String Project_Management_Retrospective_ID = "RetrospectiveUrl";
 	private final String Project_Management_Retrospective_Text = "Retrospective";
-	private final String Project_Management_Unplanned_ID = "UnplannedUrl";
-	private final String Project_Management_Unplanned_Text = "Unplanned";
+	private final String Project_Management_Unplan_ID = "UnplannedUrl";
+	private final String Project_Management_Unplan_Text = "Unplanned";
 	private final String Project_Management_ScrumReport_ID = "ScrumReportUrl";
 	private final String Project_Management_ScrumReport_Text = "Scrum Report";
 	private void appendProjectManagement(List<ParentSideUI> list) {
@@ -120,13 +120,13 @@ public class GetProjectLeftTreeItem extends PermissionAction {
 			ProjectManagement.appendChild(new ChildrenSiidUI(this.Project_Management_Retrospective_ID, this.Project_Management_Retrospective_Text));
 		}
 		
-		// unplanned page
-		if ( super.getScrumRole().getAccessUnplannedItem() || super.getScrumRole().isAdmin()) {
-			ProjectManagement.appendChild(new ChildrenSiidUI(this.Project_Management_Unplanned_ID, this.Project_Management_Unplanned_Text));
+		// unplan page
+		if ( super.getScrumRole().getAccessUnplanItem() || super.getScrumRole().isAdmin()) {
+			ProjectManagement.appendChild(new ChildrenSiidUI(this.Project_Management_Unplan_ID, this.Project_Management_Unplan_Text));
 		}
 		
 		// scrum report page
-		if ( super.getScrumRole().getReadReport() || super.getScrumRole().isAdmin()) {
+		if ( super.getScrumRole().getAccessReport() || super.getScrumRole().isAdmin()) {
 			ProjectManagement.appendChild(new ChildrenSiidUI(this.Project_Management_ScrumReport_ID, this.Project_Management_ScrumReport_Text));
 		}
 

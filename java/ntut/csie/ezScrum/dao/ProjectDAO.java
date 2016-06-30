@@ -25,8 +25,6 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 
 	@Override
 	public long create(ProjectObject project) {
-		long createTime = System.currentTimeMillis();
-
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(ProjectEnum.TABLE_NAME);
 		valueSet.addInsertValue(ProjectEnum.NAME, project.getName());
@@ -34,8 +32,8 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		valueSet.addInsertValue(ProjectEnum.COMMENT, project.getComment());
 		valueSet.addInsertValue(ProjectEnum.PRODUCT_OWNER, project.getManager());
 		valueSet.addInsertValue(ProjectEnum.ATTATCH_MAX_SIZE, project.getAttachFileSize());
-		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, createTime);
-		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, createTime);
+		valueSet.addInsertValue(ProjectEnum.CREATE_TIME, project.getCreateTime());
+		valueSet.addInsertValue(ProjectEnum.UPDATE_TIME, project.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 
@@ -56,13 +54,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		valueSet.addInsertValue(ScrumRoleEnum.ROLE, String.valueOf(role.ordinal()));
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getReadReport() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getAccessReport() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_UNPLAN, scrumRole.getAccessUnplanItem() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getAccessEditProject() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.CREATE_TIME, String.valueOf(System.currentTimeMillis()));
 		valueSet.addInsertValue(ScrumRoleEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getInsertQuery();
@@ -97,13 +95,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		valueSet.addEqualCondition(ScrumRoleEnum.ROLE, String.valueOf(role.ordinal()));
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getReadReport() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getAccessReport() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_UNPLAN, scrumRole.getAccessUnplanItem() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard() ? "1" : "0");
-		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject() ? "1" : "0");
+		valueSet.addInsertValue(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getAccessEditProject() ? "1" : "0");
 		valueSet.addInsertValue(ScrumRoleEnum.UPDATE_TIME, String.valueOf(System.currentTimeMillis()));
 		String query = valueSet.getUpdateQuery();
 		return mControl.executeUpdate(query);
@@ -115,13 +113,13 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		try {
 			scrumRole.setAccessProductBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
 			scrumRole.setAccessReleasePlan(result.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
-			scrumRole.setReadReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+			scrumRole.setAccessReport(result.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
 			scrumRole.setAccessRetrospective(result.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
 			scrumRole.setAccessSprintBacklog(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
 			scrumRole.setAccessSprintPlan(result.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
-			scrumRole.setAccessUnplannedItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+			scrumRole.setAccessUnplanItem(result.getBoolean(ScrumRoleEnum.ACCESS_UNPLAN));
 			scrumRole.setAccessTaskBoard(result.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
-			scrumRole.setEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+			scrumRole.setAccessEditProject(result.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

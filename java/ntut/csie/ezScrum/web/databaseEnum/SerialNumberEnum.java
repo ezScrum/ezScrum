@@ -8,6 +8,6 @@ public class SerialNumberEnum {
 	public static final String SPRINT = "sprint";
 	public static final String STORY = "story";
 	public static final String TASK = "task";
-	public static final String UNPLANNED = "unplanned";
+	public static final String UNPLAN = "unplan";
 	public static final String RETROSPECTIVE = "retrospective";
 }

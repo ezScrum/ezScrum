@@ -31,18 +31,18 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
-		        .setDueDate(sprintInfo.dueDate)
+		        .setEndDate(sprintInfo.endDate)
 		        .save();
 		return sprint.getId();
 	}
 	
 	/**
 	 * Get Sprint By SprintId
-	 * @param sprintId
+	 * @param serialId
 	 * @return SprintObject
 	 */
-	public SprintObject getSprint(long sprintId) {
-		return SprintObject.get(sprintId);
+	public SprintObject getSprint(long serialId) {
+		return SprintObject.get(mProject.getId(), serialId);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class SprintPlanMapper {
 	 * @param sprintInfo
 	 */
 	public void updateSprint(SprintInfo sprintInfo) {
-		SprintObject sprint = SprintObject.get(sprintInfo.id);
+		SprintObject sprint = SprintObject.get(mProject.getId(), sprintInfo.serialId);
 		sprint.setInterval(sprintInfo.interval)
 		        .setTeamSize(sprintInfo.teamSize)
 		        .setAvailableHours(sprintInfo.hoursCanCommit)
@@ -79,16 +79,16 @@ public class SprintPlanMapper {
 		        .setDemoDate(sprintInfo.demoDate)
 		        .setDemoPlace(sprintInfo.demoPlace)
 		        .setDailyInfo(sprintInfo.dailyInfo)
-		        .setDueDate(sprintInfo.dueDate)
+		        .setEndDate(sprintInfo.endDate)
 		        .save();
 	}
 
 	/**
 	 * Delete Sprint By SprintId
-	 * @param sprintId
+	 * @param serialSprintId
 	 */
-	public void deleteSprint(long sprintId) {
-		SprintObject sprint = SprintObject.get(sprintId);
+	public void deleteSprint(long serialSprintId) {
+		SprintObject sprint = SprintObject.get(mProject.getId(), serialSprintId);
 		if (sprint != null) {
 			sprint.delete();
 		}

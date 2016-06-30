@@ -33,8 +33,8 @@ public class SerialNumberDAO extends
 		valueSet.addInsertValue(SerialNumberEnum.STORY,
 				serialNumber.getStoryId());
 		valueSet.addInsertValue(SerialNumberEnum.TASK, serialNumber.getTaskId());
-		valueSet.addInsertValue(SerialNumberEnum.UNPLANNED,
-				serialNumber.getUnplannedId());
+		valueSet.addInsertValue(SerialNumberEnum.UNPLAN,
+				serialNumber.getUnplanId());
 		valueSet.addInsertValue(SerialNumberEnum.RETROSPECTIVE,
 				serialNumber.getRetrospectiveId());
 		String query = valueSet.getInsertQuery();
@@ -43,7 +43,28 @@ public class SerialNumberDAO extends
 	}
 
 	@Override
-	public SerialNumberObject get(long projectId) {
+	public SerialNumberObject get(long id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SerialNumberEnum.ID, id);
+		String query = valueSet.getSelectQuery();
+
+		ResultSet result = mControl.executeQuery(query);
+
+		SerialNumberObject serialNumber = null;
+		try {
+			if (result.next()) {
+				serialNumber = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return serialNumber;
+	}
+	
+	public SerialNumberObject getByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, projectId);
@@ -56,7 +77,6 @@ public class SerialNumberDAO extends
 			if (result.next()) {
 				serialNumber = convert(result);
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -76,8 +96,8 @@ public class SerialNumberDAO extends
 		valueSet.addInsertValue(SerialNumberEnum.STORY,
 				serialNumber.getStoryId());
 		valueSet.addInsertValue(SerialNumberEnum.TASK, serialNumber.getTaskId());
-		valueSet.addInsertValue(SerialNumberEnum.UNPLANNED,
-				serialNumber.getUnplannedId());
+		valueSet.addInsertValue(SerialNumberEnum.UNPLAN,
+				serialNumber.getUnplanId());
 		valueSet.addInsertValue(SerialNumberEnum.RETROSPECTIVE,
 				serialNumber.getRetrospectiveId());
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID,
@@ -88,7 +108,15 @@ public class SerialNumberDAO extends
 	}
 
 	@Override
-	public boolean delete(long projectId) {
+	public boolean delete(long id) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
+		valueSet.addEqualCondition(SerialNumberEnum.ID, id);
+		String query = valueSet.getDeleteQuery();
+		return mControl.executeUpdate(query);
+	}
+	
+	public boolean deleteByProjectId(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(SerialNumberEnum.TABLE_NAME);
 		valueSet.addEqualCondition(SerialNumberEnum.PROJECT_ID, projectId);
@@ -97,17 +125,13 @@ public class SerialNumberDAO extends
 	}
 
 	private SerialNumberObject convert(ResultSet result) throws SQLException {
-		SerialNumberObject serialNumber = new SerialNumberObject();
-		serialNumber
-				.setId(result.getLong(SerialNumberEnum.ID))
-				.setProjectId(result.getLong(SerialNumberEnum.PROJECT_ID))
-				.setReleaseId(result.getLong(SerialNumberEnum.RELEASE))
-				.setSprintId(result.getLong(SerialNumberEnum.SPRINT))
-				.setStoryId(result.getLong(SerialNumberEnum.STORY))
-				.setTaskId(result.getLong(SerialNumberEnum.TASK))
-				.setUnplannedId(result.getLong(SerialNumberEnum.UNPLANNED))
-				.setRetrospectiveId(
-						result.getLong(SerialNumberEnum.RETROSPECTIVE));
+		SerialNumberObject serialNumber = new SerialNumberObject(result.getLong(SerialNumberEnum.ID), result.getLong(SerialNumberEnum.PROJECT_ID));
+		serialNumber.setReleaseId(result.getLong(SerialNumberEnum.RELEASE))
+				    .setSprintId(result.getLong(SerialNumberEnum.SPRINT))
+				    .setStoryId(result.getLong(SerialNumberEnum.STORY))
+				    .setTaskId(result.getLong(SerialNumberEnum.TASK))
+				    .setUnplanId(result.getLong(SerialNumberEnum.UNPLAN))
+				    .setRetrospectiveId(result.getLong(SerialNumberEnum.RETROSPECTIVE));
 		return serialNumber;
 	}
 }

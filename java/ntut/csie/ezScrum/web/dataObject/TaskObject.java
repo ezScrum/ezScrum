@@ -5,22 +5,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import ntut.csie.ezScrum.dao.AccountDAO;
-import ntut.csie.ezScrum.dao.AttachFileDAO;
-import ntut.csie.ezScrum.dao.HistoryDAO;
-import ntut.csie.ezScrum.dao.TaskDAO;
-import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.dao.AttachFileDAO;
+import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+
 public class TaskObject implements IBaseObject {
-	public final static int STATUS_UNCHECK = 1;
-	public final static int STATUS_CHECK = 2;
-	public final static int STATUS_DONE = 3;
+	public final static int STATUS_UNCHECK = StatusEnum.NEW;
+	public final static int STATUS_CHECK = StatusEnum.ASSIGNED;
+	public final static int STATUS_DONE = StatusEnum.CLOSED;
 	public final static int NO_PARENT = -1;
 	private final static int DEFAULT_VALUE = -1;
 	private long mId = DEFAULT_VALUE;
@@ -28,6 +29,7 @@ public class TaskObject implements IBaseObject {
 	private long mProjectId = DEFAULT_VALUE;
 	private long mStoryId = DEFAULT_VALUE;
 	private long mHandlerId = DEFAULT_VALUE;
+	private ArrayList<Long> mPartnersId = new ArrayList<>();
 	private String mName = "";
 	private String mNotes = "";
 	private int mEstimate = 0;
@@ -39,6 +41,10 @@ public class TaskObject implements IBaseObject {
 
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
+	}
+	
+	public static TaskObject get(long projectId, long serialId) {
+		return TaskDAO.getInstance().get(projectId, serialId);
 	}
 
 	public TaskObject(long projectId) {
@@ -52,7 +58,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setName(String name) {
-		mName = handleSpecialChar(name);
+		mName = name;
 		return this;
 	}
 
@@ -77,7 +83,7 @@ public class TaskObject implements IBaseObject {
 	}
 
 	public TaskObject setNotes(String notes) {
-		mNotes = handleSpecialChar(notes);
+		mNotes = notes;
 		return this;
 	}
 
@@ -101,26 +107,14 @@ public class TaskObject implements IBaseObject {
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
 	public TaskObject setPartnersId(ArrayList<Long> newPartnersId) {
-		List<Long> oldPartnersId = getPartnersId();
-		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
-				.intersection(oldPartnersId, newPartnersId);
-		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
-				.subtract(oldPartnersId, intersectionPartnersId);
-		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
-				newPartnersId, intersectionPartnersId);
-		for (long partnerId : shouldRemovePartnersId) {
-			TaskDAO.getInstance().removePartner(mId, partnerId);
-		}
-		for (long partnerId : shouldAddPartnersId) {
-			TaskDAO.getInstance().addPartner(mId, partnerId);
-		}
+		mPartnersId = newPartnersId;
 		return this;
 	}
 
 	public void addPartner(long partnerId) {
-		if (!TaskDAO.getInstance().partnerExists(mId, partnerId)) {
+		AccountObject partner = AccountObject.get(partnerId);
+		if (partner != null && !TaskDAO.getInstance().partnerExists(mId, partnerId)) {
 			TaskDAO.getInstance().addPartner(mId, partnerId);
 		}
 	}
@@ -143,6 +137,15 @@ public class TaskObject implements IBaseObject {
 
 	public long getHandlerId() {
 		return mHandlerId;
+	}
+	
+	public String getHandlerUsername() {
+		AccountObject handler = getHandler();
+		String handlerUsername = "";
+		if (handler != null) {
+			handlerUsername = handler.getUsername();
+		}
+		return handlerUsername;
 	}
 
 	public AccountObject getHandler() {
@@ -242,29 +245,13 @@ public class TaskObject implements IBaseObject {
 
 	public double getRemains(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
-		double remains = mRemains;
-		ArrayList<HistoryObject> histories = getHistories();
-		ArrayList<HistoryObject> remainsHistories = new ArrayList<HistoryObject>();
-		for (HistoryObject history : histories) {
-			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
-				remainsHistories.add(history);
-			}
-		}
-		if (remainsHistories.size() > 0) {
-			String firstRemainsOldValue = remainsHistories.get(0).getOldValue();
-			remains = Double.parseDouble(firstRemainsOldValue); // Because
-																// create task
-																// no remains
-																// history, get
-																// first remains
-																// history old
-																// value
-		}
-		for (HistoryObject remainsHistory : remainsHistories) {
-			if (remainsHistory.getCreateTime() <= lastSecondOfTheDate) {
-				String remainsInHistory = remainsHistory.getNewValue();
-				remains = Double.parseDouble(remainsInHistory);
-			}
+		int remains = mEstimate; // origin remains equal to estimate
+		// Get remain histories before specific time
+		ArrayList<HistoryObject> remainsHistories = TaskDAO.getInstance().getRemainsHistoriesBeforeSpecificTime(mId, lastSecondOfTheDate);
+		if (!remainsHistories.isEmpty()) {
+			String remainsNewValueString = remainsHistories.get(0).getNewValue();
+			double remainsNewValueDouble = Double.parseDouble(remainsNewValueString);
+			remains = (int) remainsNewValueDouble;
 		}
 		return remains;
 	}
@@ -391,7 +378,6 @@ public class TaskObject implements IBaseObject {
 	 */
 	public void save(long specificTime) {
 		if (exists()) {
-			mUpdateTime = specificTime;
 			doUpdate(specificTime);
 		} else {
 			doCreate();
@@ -418,7 +404,7 @@ public class TaskObject implements IBaseObject {
 		return success;
 	}
 
-	private boolean exists() {
+	public boolean exists() {
 		TaskObject task = TaskDAO.getInstance().get(mId);
 		return task != null;
 	}
@@ -434,6 +420,7 @@ public class TaskObject implements IBaseObject {
 		setRemains(task.getRemains());
 		setActual(task.getActual());
 		setHandlerId(task.getHandlerId());
+		setPartnersId(task.getPartnersId());
 		setStatus(task.getStatus());
 		setCreateTime(task.getCreateTime());
 		setUpdateTime(task.getUpdateTime());
@@ -442,13 +429,15 @@ public class TaskObject implements IBaseObject {
 	private void doCreate() {
 		// default remains hour should equal to estimate
 		mRemains = mEstimate;
-
 		mId = TaskDAO.getInstance().create(this);
+		for (long partnerId : mPartnersId) {
+			addPartner(partnerId);
+		}
 		// 為了拿到 update time 來新增 history, 所以需要 reload 一次從 DB 拿回時間
 		reload();
-		HistoryDAO.getInstance().create(
-				new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
-						HistoryObject.TYPE_CREATE, "", "", mCreateTime));
+		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
+				HistoryObject.TYPE_CREATE, "", "", mCreateTime);
+		history.save();
 		// add task relation history
 		if (mStoryId > 0) {
 			addHistoryOfAddRelation(mStoryId, mId);
@@ -458,90 +447,118 @@ public class TaskObject implements IBaseObject {
 	private void doUpdate() {
 		mUpdateTime = System.currentTimeMillis();
 		TaskObject oldTask = TaskObject.get(mId);
-
 		TaskDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldTask.getName())) {
-			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName);
+			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName, mUpdateTime);
 		}
 		if (!mNotes.equals(oldTask.getNotes())) {
-			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes);
+			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes, mUpdateTime);
 		}
 		if (mStatus != oldTask.getStatus()) {
-			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus);
+			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus, mUpdateTime);
 		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
-					mEstimate);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldTask.getActual()) {
-			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual);
+			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual, mUpdateTime);
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-					mRemains);
+					mRemains, mUpdateTime);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId); // for task
-				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId); // for
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, mUpdateTime); // for task
+				addHistoryOfStoryDropTask(oldTask.getStoryId(), mId, mUpdateTime); // for
 																		// story
 			}
 			// task append to story
 			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-				addHistoryOfAddRelation(mStoryId, mId);
+				addHistoryOfAddRelation(mStoryId, mId, mUpdateTime);
 			}
 		}
 		if (mHandlerId != oldTask.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
-					mHandlerId);
+					mHandlerId, mUpdateTime);
 		}
+		
+		setPartnersAndHistory(mUpdateTime);
 	}
 
 	// for specific time update
 	private void doUpdate(long specificTime) {
+		mUpdateTime = specificTime;
 		TaskObject oldTask = TaskObject.get(mId);
 		TaskDAO.getInstance().update(this);
+		
 		if (!mName.equals(oldTask.getName())) {
 			addHistory(HistoryObject.TYPE_NAME, oldTask.getName(), mName,
-					specificTime);
+					mUpdateTime);
 		}
 		if (!mNotes.equals(oldTask.getNotes())) {
 			addHistory(HistoryObject.TYPE_NOTE, oldTask.getNotes(), mNotes,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mEstimate != oldTask.getEstimate()) {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
-					mEstimate, specificTime);
+					mEstimate, mUpdateTime);
 		}
 		if (mActual != oldTask.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
-					mRemains, specificTime);
+					mRemains, mUpdateTime);
 		}
 		if (mStatus != oldTask.getStatus()) {
 			addHistory(HistoryObject.TYPE_STATUS, oldTask.getStatus(), mStatus,
-					specificTime);
+					mUpdateTime);
 		}
 		if (mStoryId != oldTask.getStoryId()) {
 			// task drop from story
 			if (mStoryId <= 0 && oldTask.getStoryId() > 0) {
-				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, specificTime); // for
+				addHistoryOfTaskRemoveFromStory(oldTask.getStoryId(), mId, mUpdateTime); // for
 																				// task
 				addHistoryOfStoryRemoveTask(oldTask.getStoryId(), mId,
-						specificTime); // for story
+						mUpdateTime); // for story
 			}
 			// task append to story
 			else if (mStoryId > 0 && oldTask.getStoryId() <= 0) {
-				addHistoryOfAddRelation(mStoryId, mId, specificTime);
+				addHistoryOfAddRelation(mStoryId, mId, mUpdateTime);
 			}
 		}
 		if (mHandlerId != oldTask.getHandlerId()) {
 			addHistory(HistoryObject.TYPE_HANDLER, oldTask.getHandlerId(),
-					mHandlerId, specificTime);
+					mHandlerId, mUpdateTime);
+		}
+		
+		setPartnersAndHistory(mUpdateTime);
+	}
+	
+	private void setPartnersAndHistory(long specificTime) {
+		List<Long> oldPartnersId = getPartnersId();
+		@SuppressWarnings("unchecked")
+		List<Long> intersectionPartnersId = (List<Long>) CollectionUtils
+				.intersection(oldPartnersId, mPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldRemovePartnersId = (List<Long>) CollectionUtils
+				.subtract(oldPartnersId, intersectionPartnersId);
+		@SuppressWarnings("unchecked")
+		List<Long> shouldAddPartnersId = (List<Long>) CollectionUtils.subtract(
+				mPartnersId, intersectionPartnersId);
+		for (long partnerId : shouldRemovePartnersId) {
+			removePartner(partnerId);
+			TaskDAO.getInstance().removePartner(mId, partnerId);
+			addHistory(HistoryObject.TYPE_REMOVE_PARTNER, "", String.valueOf(partnerId), specificTime);
+		}
+		for (long partnerId : shouldAddPartnersId) {
+			addPartner(partnerId);
+			addHistory(HistoryObject.TYPE_ADD_PARTNER, "", String.valueOf(partnerId), specificTime);
 		}
 	}
 
@@ -550,7 +567,7 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mStoryId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
 				String.valueOf(mId), System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 
 	// addHistoryOfAddRelation for specific time
@@ -560,11 +577,7 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mStoryId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_ADD, "",
 				String.valueOf(mId), specificTime);
-		HistoryDAO.getInstance().create(history);
-	}
-
-	private void addHistoryOfTaskRemoveFromStory(long storyId, long taskId) {
-		addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(storyId));
+		history.save();
 	}
 
 	// addHistoryOfTaskDropFromStory for specific time
@@ -574,11 +587,11 @@ public class TaskObject implements IBaseObject {
 				specificTime);
 	}
 
-	private void addHistoryOfStoryDropTask(long storyId, long taskId) {
+	private void addHistoryOfStoryDropTask(long storyId, long taskId, long specificTime) {
 		HistoryObject history = new HistoryObject(storyId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_DROP, "",
-				String.valueOf(mId), System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+				String.valueOf(mId), specificTime);
+		history.save();
 	}
 
 	// addHistoryOfStoryRemoveTask for specific time
@@ -587,11 +600,7 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(storyId,
 				IssueTypeEnum.TYPE_STORY, HistoryObject.TYPE_REMOVE, "",
 				String.valueOf(mId), specificTime);
-		HistoryDAO.getInstance().create(history);
-	}
-
-	private void addHistory(int type, long oldValue, long newValue) {
-		addHistory(type, String.valueOf(oldValue), String.valueOf(newValue));
+		history.save();
 	}
 
 	// add history for specific time
@@ -604,7 +613,7 @@ public class TaskObject implements IBaseObject {
 	private void addHistory(int type, String oldValue, String newValue) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, System.currentTimeMillis());
-		HistoryDAO.getInstance().create(history);
+		history.save();
 	}
 
 	// add history for specific time
@@ -612,13 +621,6 @@ public class TaskObject implements IBaseObject {
 			long specificTime) {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
-		HistoryDAO.getInstance().create(history);
-	}
-	
-	private String handleSpecialChar(String str) {
-		if (str.contains("\n")) {
-			str = str.replaceAll("\n", "<br/>");
-		}
-		return str;
+		history.save();
 	}
 }

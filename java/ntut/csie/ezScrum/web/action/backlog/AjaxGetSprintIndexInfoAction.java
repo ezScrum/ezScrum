@@ -26,7 +26,7 @@ public class AjaxGetSprintIndexInfoAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 		String result = "";
 		String sprintIdString = request.getParameter("sprintID");
 		long sprintId = -1;

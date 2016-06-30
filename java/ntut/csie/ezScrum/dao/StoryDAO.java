@@ -23,8 +23,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 	@Override
 	public long create(StoryObject story) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
-		long currentTime = System.currentTimeMillis();
-		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().get(
+		SerialNumberObject serialNumber = SerialNumberDAO.getInstance().getByProjectId(
 		        story.getProjectId());
 
 		long storyId = serialNumber.getStoryId() + 1;
@@ -39,8 +38,8 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		valueSet.addInsertValue(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
 		valueSet.addInsertValue(StoryEnum.PROJECT_ID, story.getProjectId());
 		valueSet.addInsertValue(StoryEnum.SPRINT_ID, story.getSprintId());
-		valueSet.addInsertValue(StoryEnum.CREATE_TIME, currentTime);
-		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, currentTime);
+		valueSet.addInsertValue(StoryEnum.CREATE_TIME, story.getCreateTime());
+		valueSet.addInsertValue(StoryEnum.UPDATE_TIME, story.getCreateTime());
 		String query = valueSet.getInsertQuery();
 		long id = mControl.executeInsert(query);
 		serialNumber.setStoryId(storyId);
@@ -53,6 +52,26 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.ID, id);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		StoryObject story = null;
+		try {
+			if (result.next()) {
+				story = convert(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return story;
+	}
+	
+	public StoryObject get(long projectId, long serialId) {
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(StoryEnum.TABLE_NAME);
+		valueSet.addEqualCondition(StoryEnum.PROJECT_ID, projectId);
+		valueSet.addEqualCondition(StoryEnum.SERIAL_ID, serialId);
 		String query = valueSet.getSelectQuery();
 		ResultSet result = mControl.executeQuery(query);
 		StoryObject story = null;
@@ -114,7 +133,7 @@ public class StoryDAO extends AbstractDAO<StoryObject, StoryObject> {
 		return stories;
 	}
 
-	public ArrayList<StoryObject> getStoriesWithNoParent(long projectId) {
+	public ArrayList<StoryObject> getDroppedStories(long projectId) {
 		IQueryValueSet valueSet = new MySQLQuerySet();
 		valueSet.addTableName(StoryEnum.TABLE_NAME);
 		valueSet.addEqualCondition(StoryEnum.SPRINT_ID, StoryObject.NO_PARENT);

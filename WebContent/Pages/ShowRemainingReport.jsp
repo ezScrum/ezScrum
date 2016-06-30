@@ -28,16 +28,16 @@
 
 
 function show() {
-	var sprint = document.getElementById("ShowSprint");	
+	var sprint = document.getElementById("ShowSprint");
 	var type = document.getElementById("ShowReportType");
-	var pid = getURLParameter("PID");
-	replaceURL( "<html:rewrite action="/showRemainingReport" />?sprintID="+sprint.value+"&type="+type.value+"&PID="+pid );
+	var pid = getURLParameter("projectName");
+	replaceURL( "<html:rewrite action="/showRemainingReport" />?sprintID="+sprint.value+"&type="+type.value+"&projectName=" + pid);
 }
 
 function show2() {
 	var type = document.getElementById("ShowReportType");
-	var pid = getURLParameter("PID");
-	var url = "<html:rewrite action="/showRemainingReport" />?type="+type.value+"&PID="+pid;
+	var pid = getURLParameter("projectName");
+	var url = "<html:rewrite action="/showRemainingReport" />?type="+type.value+"&projectName="+pid;
 	
 	var date = document.getElementById("setDate");
 	if (date.value != null && date.value != "") {
@@ -52,8 +52,8 @@ function show2() {
 function showByDate() {
 	var type = document.getElementById("ShowReportType");
 	var date = document.getElementById("setDate");
-	var pid = getURLParameter("PID");
-	replaceURL( "<html:rewrite action="/showRemainingReport" />?type="+type.value+"&Date="+date.value+"&PID="+pid );
+	var pid = getURLParameter("projectName");
+	replaceURL( "<html:rewrite action="/showRemainingReport" />?type="+type.value+"&Date="+date.value+"&projectName=" + pid);
 }
 
 function refreshImage(imageSrc)
@@ -103,8 +103,8 @@ function clearDate() {
 				<select id="ShowSprint" onchange="show()" class="selectField">
 					<logic:iterate id="element" name="SprintPlans">
 						<c:choose>
-						<c:when test="${element.ID == iteration}"><option value="${ element.ID }" selected>Sprint ${ element.ID }</option></c:when>
-							<c:otherwise><option value="${ element.ID }">Sprint ${ element.ID }</option></c:otherwise>
+						<c:when test="${element.serialId == iteration}"><option value="${ element.serialId }" selected>Sprint ${ element.serialId }</option></c:when>
+							<c:otherwise><option value="${ element.serialId }">Sprint ${ element.serialId }</option></c:otherwise>
 						</c:choose>						
 					</logic:iterate>
 				</select>

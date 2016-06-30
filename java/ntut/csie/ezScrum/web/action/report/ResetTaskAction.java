@@ -34,7 +34,7 @@ public class ResetTaskAction extends PermissionAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		log.info("Reset Task in ResetTaskAction.");
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProjectObject(request);
+		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(

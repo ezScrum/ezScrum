@@ -2,13 +2,13 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ntut.csie.ezScrum.dao.ProjectDAO;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class CreateTag {
 	private static Log mlog = LogFactory.getLog(CreateTag.class);
@@ -29,7 +29,7 @@ public class CreateTag {
 
 	// create tag in project
 	public void exe() {
-		for (int projectIndex = 0; projectIndex < mCP.getProjectList()
+		for (int projectIndex = 0; projectIndex < mCP.getAllProjects()
 				.size(); projectIndex++) {
 			mProject = mCP.getAllProjects().get(projectIndex); // TEST_PROJECT_X
 			mProductBacklogMapper = new ProductBacklogMapper(mProject);
@@ -40,7 +40,7 @@ public class CreateTag {
 				mTags.add(tag);
 			}
 			System.out.println("Project "
-					+ mCP.getProjectList().get(projectIndex).getName()
+					+ mCP.getAllProjects().get(projectIndex).getName()
 					+ " create " + mTagCount + " Tags success.");
 		}
 	}
@@ -49,7 +49,7 @@ public class CreateTag {
 	public void attachTagToStory(CreateProductBacklog cpb) {
 		mCPB = cpb;
 		long storyId;
-		for (int projectIndex = 0; projectIndex < mCP.getProjectList()
+		for (int projectIndex = 0; projectIndex < mCP.getAllProjects()
 				.size(); projectIndex++) {
 			mProject = mCP.getAllProjects().get(projectIndex); // TEST_PROJECT_X
 			// m_backlog = new ProductBacklog(m_project, m_userSession);
@@ -61,7 +61,7 @@ public class CreateTag {
 					// String.valueOf(tagIndex+1));
 					mProductBacklogMapper.addTagToStory(storyId, tagIndex + 1);
 					mlog.info("Project "
-							+ mCP.getProjectList().get(projectIndex)
+							+ mCP.getAllProjects().get(projectIndex)
 									.getName() + " TEST_STORY_"
 							+ String.valueOf(storyId) + " attach "
 							+ " TEST_TAG_" + String.valueOf(tagIndex + 1)

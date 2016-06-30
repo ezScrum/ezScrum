@@ -67,8 +67,8 @@ public class SprintBacklogMapper {
 	/**
 	 * 取得被 Drop 掉的 Story
 	 */
-	public ArrayList<StoryObject> getStoriesWithNoParent() {
-		return mProject.getStoriesWithNoParent();
+	public ArrayList<StoryObject> getDroppedStories() {
+		return mProject.getDroppedStories();
 	}
 
 	// for ezScrum 1.8
@@ -87,6 +87,10 @@ public class SprintBacklogMapper {
 	
 	public TaskObject getTask(long taskId) {
 		return TaskObject.get(taskId);
+	}
+	
+	public TaskObject getTask(long projectId, long serialTaskId) {
+		return TaskObject.get(projectId, serialTaskId);
 	}
 	
 	/**
@@ -144,9 +148,9 @@ public class SprintBacklogMapper {
 	}
 
 	// for ezScrum 1.8
-	public void addExistingTasksToStory(ArrayList<Long> taskIds, long storyId) {
-		for (long taskId : taskIds) {
-			TaskObject task = TaskObject.get(taskId);
+	public void addExistingTasksToStory(ArrayList<Long> serialTaskIds, long storyId) {
+		for (long taskId : serialTaskIds) {
+			TaskObject task = TaskObject.get(mProject.getId(), taskId);
 			if (task != null) {
 				task.setStoryId(storyId);
 				task.save();
@@ -156,8 +160,8 @@ public class SprintBacklogMapper {
 		}
 	}
 
-	public ArrayList<TaskObject> getTasksWithNoParent(long projectId) {
-		return ProjectObject.get(projectId).getTasksWithNoParent();
+	public ArrayList<TaskObject> getDroppedTasks(long projectId) {
+		return ProjectObject.get(projectId).getDroppedTasks();
 	}
 
 	// for ezScrum 1.8
@@ -206,7 +210,7 @@ public class SprintBacklogMapper {
 		if (mSprint == null) {
 			return null;
 		}
-		return DateUtil.dayFilter(mSprint.getDueDateString());
+		return DateUtil.dayFilter(mSprint.getEndDateString());
 	}
 
 	public String getSprintGoal() {
@@ -216,8 +220,8 @@ public class SprintBacklogMapper {
 		return mSprint.getGoal();
 	}
 	
-	public void updateStoryRelation(long storyId, long sprintId, int estimate, int importance, Date date) {
-		StoryObject story = StoryObject.get(storyId);
+	public void updateStoryRelation(long serialStoryId, long sprintId, int estimate, int importance, Date date) {
+		StoryObject story = StoryObject.get(mProject.getId(), serialStoryId);
 		story.setSprintId(sprintId)
 		     .setEstimate(estimate)
 		     .setImportance(importance)
@@ -260,15 +264,15 @@ public class SprintBacklogMapper {
 	 * @param id
 	 * @param name
 	 * @param handlerId
-	 * @param partners
+	 * @param partnersId
 	 * @param notes
 	 * @param specificDate
 	 */
 	public void checkOutTask(long id, String name, long handlerId,
-			ArrayList<Long> partners, String notes, Date specificDate) {
+			ArrayList<Long> partnersId, String notes, Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setHandlerId(handlerId).setPartnersId(partners)
+			task.setName(name).setHandlerId(handlerId).setPartnersId(partnersId)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
 					.save(specificDate.getTime());
 		}
@@ -291,6 +295,7 @@ public class SprintBacklogMapper {
 			task.setName(name).setNotes(notes).setActual(actual)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
 					.setUpdateTime(specificDate.getTime())
+					.setPartnersId(task.getPartnersId())
 					.save(specificDate.getTime());
 		}
 	}
