@@ -216,6 +216,6 @@ Test Sprint Backlog - Printable Task Setup
     Login Page    ${LOGIN_URL}
 
 Test Sprint Backlog - Printable Task Teardown
-    Comment    Data Base Tear Down
-    Comment    Close Browser
-    Comment    Close All Browsers
+    Data Base Tear Down
+    Close Browser
+    Close All Browsers
