@@ -136,7 +136,7 @@ Test Account Management - Do Not Delete Account of Admin
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${admin}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${admin}")]
     Comment    Element Should Be Disabled    xpath=//table[@id="AccountManagement_deleteAccountBtn"]    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]
-    Xpath Should Match X Times    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]     1
+    Xpath Should Match X Times    //table[@id="AccountManagement_deleteAccountBtn" and @class="x-btn${SPACE * 3}x-btn-text-icon${SPACE * 2}x-item-disabled"]    1
     # 驗證點選User帳號時Delete Account Button是enable
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${tcAccountID}1")]
