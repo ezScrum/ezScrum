@@ -19,7 +19,7 @@ Library           Collections
 *** Test Cases ***
 Test Release Plan - Add Release
     [Documentation]    \# 待重構 (assert 應該在 Test Case 內而非 keyword)
-    [Setup]
+    [Setup]    Test Release Plan - Add Release Setup
     NewReleasePlan    @{tsReleasePlan}
     # assert
     [Teardown]    Test Release Plan - Add Release Teardown
