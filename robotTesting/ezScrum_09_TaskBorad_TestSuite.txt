@@ -28,13 +28,15 @@ Test TaskBoard - Sprint Information
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Sprint Information Setup
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     # Verify sprint information
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
-    Compare Field Content    xpath=//div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release #0
+    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
+    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
+    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
+    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
+    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
+    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release #-1
     # Verify taskcard information
     # story information
     ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
@@ -58,6 +60,8 @@ Test TaskBoard - Task Checked Out
     [Setup]    Test TaskBoard - Task Checked Out Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -79,6 +83,8 @@ Test TaskBoard - Task Done
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
     Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}

@@ -47,8 +47,30 @@ Test TaskBoard - Postcondition
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     _LogoutEzScrum
 
+Test TaskBoard - New Precondition
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Precondition.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
+
+Test TaskBoard - New Postcondition
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
+
 Test TaskBoard - Sprint Information Setup
-    Test TaskBoard - Precondition
+    Test TaskBoard - New Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
     Set Test Variable    ${tcTaskEstimate}    3
@@ -59,10 +81,10 @@ Test TaskBoard - Sprint Information Setup
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Sprint Information Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task Checked Out Setup
-    Test TaskBoard - Precondition
+    Test TaskBoard - New Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Checked Out
     Set Test Variable    ${tcTaskEstimate}    3
@@ -73,10 +95,10 @@ Test TaskBoard - Task Checked Out Setup
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Task Checked Out Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task Done Setup
-    Test TaskBoard - Precondition
+    Test TaskBoard - New Precondition
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Done
     Set Test Variable    ${tcTaskEstimate}    3
@@ -87,7 +109,7 @@ Test TaskBoard - Task Done Setup
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Task Done Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task ReOpen Setup
     Test TaskBoard - Precondition
