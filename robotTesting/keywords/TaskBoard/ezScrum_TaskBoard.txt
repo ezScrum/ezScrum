@@ -9,7 +9,7 @@ Task Checked Out With Arguments
     Wait Until Page Contains Element    xpath=//div[@id="${_StoryID}_assigned"]/div
     Assign Id To Element    xpath=//div[@id="${_StoryID}_assigned"]/div    checkedOutStageID
     Drag And Drop    xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=checkedOutStageID
-    Wait Until Page Contains    Check Out Task
+    Comment    Wait Until Page Contains    Check Out Task
     Comment    ${_XpathCheckOutTask}=    Find Current Window Element    Check Out Task    Check Out
     Comment    Element Enable And Submit    ${_XpathCheckOutTask}
     Click Element    xpath=//button[text()="Check Out"]
@@ -29,33 +29,37 @@ Task Done With Arguments
 Task ReOpen With Arguments
     [Arguments]    ${_StoryID}    ${_TaskID}
     Drag And Drop    xpath=//div[@id="${_StoryID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_assigned
-    Wait Until Page Contains    Re Opened Issue
-    ${_XpathReOpenTask}=    Find Current Window Element    Re Opened Issue    Re Open
-    Element Enable And Submit    ${_XpathReOpenTask}
+    Comment    Wait Until Page Contains    Re Opened Issue
+    Comment    ${_XpathReOpenTask}=    Find Current Window Element    Re Opened Issue    Re Open
+    Comment    Element Enable And Submit    ${_XpathReOpenTask}
+    Click Element    xpath=//button[text()="Re Open"]
     Wait Until Page Contains    Success.
 
 Task ReChecked Out With Arguments
     [Arguments]    ${_StoryID}    ${_TaskID}
     Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_new
-    Wait Until Page Contains    Reset Checked Out Task
-    ${_XpathResetCheckOutTask}=    Find Current Window Element    Reset Checked Out Task    Reset Check Out
-    Element Enable And Submit    ${_XpathResetCheckOutTask}
+    Comment    Wait Until Page Contains    Reset Checked Out Task
+    Comment    ${_XpathResetCheckOutTask}=    Find Current Window Element    Reset Checked Out Task    Reset Check Out
+    Comment    Element Enable And Submit    ${_XpathResetCheckOutTask}
+    Click Element    xpath=//button[text()="Reset Check Out"]
     Wait Until Page Contains    Success.
 
 Story Done With Arguments
     [Arguments]    ${_StoryID}
     Drag And Drop    xpath=//*[@id="Story:${_StoryID}"]    target=${_StoryID}_closed
-    Wait Until Page Contains    Done Story
-    ${_XpathDoneStory}=    Find Current Window Element    Done Story #${_StoryID}    Done
-    Element Enable And Submit    ${_XpathDoneStory}
+    Comment    Wait Until Page Contains    Done Story
+    Comment    ${_XpathDoneStory}=    Find Current Window Element    Done Story #${_StoryID}    Done
+    Comment    Element Enable And Submit    ${_XpathDoneStory}
+    Click Element    xpath=//button[text()="Done"]
     Wait Until Page Contains    Success.
 
 Story ReOpen With Arguments
     [Arguments]    ${_StoryID}
     Drag And Drop    xpath=//div[@id="${_StoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${_StoryID}"]/../../../../../../../..    target=${_StoryID}_new
-    Wait Until Page Contains    Re Opened Issue
-    ${_XpathReOpenStory}=    Find Current Window Element    Re Opened Issue    Re Open
-    Element Enable And Submit    ${_XpathReOpenStory}
+    Comment    Wait Until Page Contains    Re Opened Issue
+    Comment    ${_XpathReOpenStory}=    Find Current Window Element    Re Opened Issue    Re Open
+    Comment    Element Enable And Submit    ${_XpathReOpenStory}
+    Click Element    xpath=//button[text()="Re Open"]
     Wait Until Page Contains    Success.
 
 Verify Story Information With Arguments In TaskBoard

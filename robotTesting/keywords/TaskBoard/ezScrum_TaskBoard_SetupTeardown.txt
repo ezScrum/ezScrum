@@ -81,16 +81,39 @@ Test TaskBoard - Sprint Information Setup
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Sprint Information Teardown
-    Test TaskBoard - New Postcondition
+    Comment    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task Checked Out Setup
-    Test TaskBoard - New Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test task Checked Out
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test task Checked Out
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Checked_Out.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Checked Out
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task Checked Out
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -98,13 +121,36 @@ Test TaskBoard - Task Checked Out Teardown
     Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task Done Setup
-    Test TaskBoard - New Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test task Done
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test task Done
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Done.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task Done
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task Done
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
@@ -112,84 +158,199 @@ Test TaskBoard - Task Done Teardown
     Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task ReOpen Setup
-    Test TaskBoard - Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test task ReOpen
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test task ReOpen
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_ReOpen.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task ReOpen
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task ReOpen
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Task ReOpen Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Task ReChecked Out Setup
-    Test TaskBoard - Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_ReChecked_Out.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Task ReChecked Out Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Story Done Setup
-    Test TaskBoard - Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test story Done
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test story Done
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story_Done.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
-    Set Test Variable    ${tcTaskName}    task 1 for test task ReChecked Out
+    Set Test Variable    ${tcTaskName}    task 1 for test story Done
     Set Test Variable    ${tcTaskEstimate}    3
-    Set Test Variable    ${tcTaskNotes}    notes for test task ReChecked Out
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Set Test Variable    ${tcTaskNotes}    notes for test story Done
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Story Done Teardown
-    Set Selenium Speed    ${SELENIUM_SPEED}
-    # Test TaskBoard - Postcondition
-    Select Node Product    Product Backlog
-    # Delete Story
-    Delete Closed Story With StoryID    ${tcStoryID}
-    # clean tag
-    Clean All Tag
-    # clean sprint
-    Clean All Sprint
+    Comment    Set Selenium Speed    ${SELENIUM_SPEED}
+    Comment    # Test TaskBoard - Postcondition
+    Comment    Select Node Product    Product Backlog
+    Comment    # Delete Story
+    Comment    Delete Closed Story With StoryID    ${tcStoryID}
+    Comment    # clean tag
+    Comment    Clean All Tag
+    Comment    # clean sprint
+    Comment    Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Logout ezScrum
+    Exit ezScrum System
 
 Test TaskBoard - Story ReOpen Setup
-    Test TaskBoard - Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test story ReOpen
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test story ReOpen
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story_ReOpen.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test story ReOpen
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test story ReOpen
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Story ReOpen Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
-    Test TaskBoard - Precondition
+    Comment    Test TaskBoard - New Precondition
+    Comment    # task information
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test Story Done But All the tasks of Story are not Done
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test Story Done But All the tasks of Story are not Done
+    Comment    # new task
+    Comment    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
+    Comment    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Comment    Set Test Variable    ${tcTaskID}
+    #New Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story_Done_But_All_the_tasks_of_Story_are_not_Done.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
     # task information
     Set Test Variable    ${tcTaskName}    task 1 for test Story Done But All the tasks of Story are not Done
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test Story Done But All the tasks of Story are not Done
-    # new task
-    Add Task With Arguments    ${tcStoryID}    ${tcTaskName}    ${tcTaskEstimate}    ${tcTaskNotes}
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
     Set Test Variable    ${tcTaskID}
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
-    Test TaskBoard - Postcondition
+    Test TaskBoard - New Postcondition
 
 _LoginEzScrum
     ${userName}=    Set Variable    admin

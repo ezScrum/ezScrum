@@ -63,17 +63,17 @@ CREATE TABLE IF NOT EXISTS `history` (
   `new_value` text,
   `create_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.history 的資料：2 rows
+-- 正在導出表  ezscrum_180.history 的資料：5 rows
 DELETE FROM `history`;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
 INSERT INTO `history` (`id`, `issue_id`, `issue_type`, `type`, `old_value`, `new_value`, `create_time`) VALUES
 	(1, 1, 3, 1, '', '', 1467684301124),
 	(2, 1, 3, 16, '', '2', 1467684301124),
-	(3, 1, 1, 1, '', '', 1467698832746),
-	(4, 1, 1, 16, '', '1', 1467698832788),
-	(5, 1, 3, 17, '', '1', 1467698832795);
+	(3, 1, 1, 1, '', '', 1467785475696),
+	(4, 1, 1, 16, '', '1', 1467785475751),
+	(5, 1, 3, 17, '', '1', 1467785475758);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 
 
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'TaskBoard AT', 2, 4, 100, 100, '2016-07-05 00:00:00', '2016-07-18 00:00:00', '2016-07-18 00:00:00', '', '', 1, 1467684252563, 1467684252563);
+	(1, 1, 'TaskBoard AT', 2, 4, 100, 100, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1467684252563, 1467684252563);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
@@ -353,13 +353,13 @@ CREATE TABLE IF NOT EXISTS `task` (
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.task 的資料：0 rows
+-- 正在導出表  ezscrum_180.task 的資料：1 rows
 DELETE FROM `task`;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
 INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 'task 1 for test task Checked Out', -1, 1, 3, 3, 0, 'notes for test task Checked Out', 1467698832746, 1467698832746);
+	(1, 1, 1, 1, 'task 1 for test task Checked Out', -1, 1, 3, 3, 0, 'notes for test task Checked Out', 1467785475696, 1467785475696);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 

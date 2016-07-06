@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'TaskBoard AT', 2, 4, 100, 100, '2016-07-05 00:00:00', '2016-07-18 00:00:00', '2016-07-18 00:00:00', '', '', 1, 1467684252563, 1467684252563);
+	(1, 1, 'TaskBoard AT', 2, 4, 100, 100, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1467684252563, 1467684252563);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 

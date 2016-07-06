@@ -43,13 +43,29 @@ Test TaskBoard - Sprint Information
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryName}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}    ${EMPTY}
-    ...    ${tcStoryNotes}    ${tcStoryHowToDemo}
+    # variables
+    Comment    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}
+    ...    ${EMPTY}    ${tcStoryNotes}    ${tcStoryHowToDemo}
+    Click Element    xpath=//a[@title="Edit the Story"]/img
+    ${TestEstimate}=    Get Value    //input[@name="Estimate"]
+    log    ${TestEstimate}
+    ${TestNotes}=    Get Value    //textarea[@name="Notes"]
+    log    ${TestNotes}
+    Compare Field Content    //textarea[@name="Name"]    ${tcStoryName}
+    Compare Field Content    //input[@name="Value"]    ${tcStoryValue}
+    Compare Field Content    //input[@name="Estimate"]    ${tcStoryEstimate}
+    Compare Field Content    //input[@name="Importance"]    ${tcStoryImportance}
+    Compare Field Content    //textarea[@name="Notes"]    ${tcStoryNotes}
+    Compare Field Content    //textarea[@name="HowToDemo"]    ${tcStoryHowToDemo}
     # task information
     ${_TempTaskName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
     Should Be Equal As Strings    ${_TempTaskName}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    ${tcTaskEstimate} hr    # x hr
+    # Variable
+    Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
+    Set Test Variable    ${tcTaskEstimate}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
     Verify Task Information With Arguments In TaskBoard    ${tcTaskID}    ${tcTaskName}    ${EMPTY}    ${EMPTY}    ${tcTaskEstimate}    ${tcTaskEstimate}
     ...    0    ${tcTaskNotes}
     [Teardown]    Test TaskBoard - Sprint Information Teardown
@@ -109,6 +125,8 @@ Test TaskBoard - Task ReOpen
     [Setup]    Test TaskBoard - Task ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
@@ -133,6 +151,8 @@ Test TaskBoard - Task ReChecked Out
     [Setup]    Test TaskBoard - Task ReChecked Out Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
@@ -156,6 +176,8 @@ Test TaskBoard - Story Done
     [Setup]    Test TaskBoard - Story Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}
@@ -165,7 +187,7 @@ Test TaskBoard - Story Done
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
     Select Node Product    Sprint Backlog
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="closed"]    1
+    Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="closed"]    1
     [Teardown]    Test TaskBoard - Story Done Teardown
 
 Test TaskBoard - Story ReOpen
@@ -184,7 +206,8 @@ Test TaskBoard - Story ReOpen
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
     Select Node Product    Sprint Backlog
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
+    #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
     [Teardown]    Test TaskBoard - Story ReOpen Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
@@ -194,12 +217,15 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_closed"]/div
-    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
-    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=doneStageID
+    Comment    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
+    Comment    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=doneStageID
+    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
     Wait Until Page Contains    warning!
-    Wait Until Page Contains    Please check all the tasks of Story ${tcStoryID} are done.
+    Wait Until Page Contains    Please check all the tasks of Story #${tcStoryID} are done.
     ${xpathOKButton}=    Find Current Window Element    warning!    OK
     Element Enable And Submit    ${xpathOKButton}
     # Verify taskcard information
@@ -208,7 +234,8 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
     Select Node Product    Sprint Backlog
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
+    #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
@@ -218,10 +245,12 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
     Wait Until Page Contains    warning!
-    Wait Until Page Contains    Please check all the tasks of Story ${tcStoryID} are done.
+    Wait Until Page Contains    Please check all the tasks of Story #${tcStoryID} are done.
     ${xpathOKButton}=    Find Current Window Element    warning!    OK
     Element Enable And Submit    ${xpathOKButton}
     # Verify taskcard information
@@ -230,7 +259,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
     Select Node Product    Sprint Backlog
-    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]    1
+    Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Attach File on Story

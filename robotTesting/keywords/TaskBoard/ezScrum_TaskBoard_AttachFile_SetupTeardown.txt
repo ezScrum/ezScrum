@@ -32,3 +32,4 @@ Test TaskBoard_AttachFile - Teardown on Task
     Wait Until Page Contains Element    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Click Button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
