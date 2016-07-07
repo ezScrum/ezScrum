@@ -213,6 +213,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     Comment    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
     Comment    Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=doneStageID
     Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
+    Sleep    5s
     Wait Until Page Contains    warning!
     Wait Until Page Contains    Please check all the tasks of Story #${tcStoryID} are done.
     ${xpathOKButton}=    Find Current Window Element    warning!    OK
