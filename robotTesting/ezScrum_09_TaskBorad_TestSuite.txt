@@ -44,19 +44,8 @@ Test TaskBoard - Sprint Information
     Should Be Equal As Strings    ${_TempStoryName}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
     # variables
-    Comment    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}
-    ...    ${EMPTY}    ${tcStoryNotes}    ${tcStoryHowToDemo}
-    Click Element    xpath=//a[@title="Edit the Story"]/img
-    ${TestEstimate}=    Get Value    //input[@name="Estimate"]
-    log    ${TestEstimate}
-    ${TestNotes}=    Get Value    //textarea[@name="Notes"]
-    log    ${TestNotes}
-    Compare Field Content    //textarea[@name="Name"]    ${tcStoryName}
-    Compare Field Content    //input[@name="Value"]    ${tcStoryValue}
-    Compare Field Content    //input[@name="Estimate"]    ${tcStoryEstimate}
-    Compare Field Content    //input[@name="Importance"]    ${tcStoryImportance}
-    Compare Field Content    //textarea[@name="Notes"]    ${tcStoryNotes}
-    Compare Field Content    //textarea[@name="HowToDemo"]    ${tcStoryHowToDemo}
+    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}    ${EMPTY}
+    ...    ${tcStoryNotes}    ${tcStoryHowToDemo}
     # task information
     ${_TempTaskName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
