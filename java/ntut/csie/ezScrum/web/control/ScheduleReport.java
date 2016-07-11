@@ -142,18 +142,18 @@ public class ScheduleReport {
 			long doneDate = 0;
 			for (TaskObject task : tasks) {
 				task.getActual();
-				long assignedDate = task.getCreateTime();
+				long assignedDate_new = task.getCreateTimeFromHistories();
 				long closedDate = task.getDoneTime();
 				if (closedDate == 0) {
 					doneDate = 0;
 					break;
 				}
 				if (openDate == 0 && doneDate == 0) {
-					openDate = assignedDate;
+					openDate = assignedDate_new;
 					doneDate = closedDate;
 				} else {
-					if (assignedDate < openDate)
-						openDate = assignedDate;
+					if (assignedDate_new < openDate)
+						openDate = assignedDate_new;
 					if (closedDate > doneDate)
 						doneDate = closedDate;
 				}
