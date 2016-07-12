@@ -23,24 +23,30 @@ _Logout
     Title Should Be    ezScrum Logon!
 
 Test Retrospective Suite Setup
-    Close All Browsers
-    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Comment    Close All Browsers
+    Comment    Open Browser    ${LOGIN_URL}    ${BROWSER}
 
 Test Retrospective Suite Teardown
-    Close Browser
-    Close All Browsers
+    Comment    Close Browser
+    Comment    Close All Browsers
 
 Test Retrospective Add Setup
-    _Login
-    # 確認專案是否存在
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    # 新增 Sprint
+    Comment    _Login
+    Comment    # 確認專案是否存在
+    Comment    Wait Until Page Contains Element    createProjectBtn
+    Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Retrospective    Add_Retrospective.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Plan
     #    SwitchToItemLink    True    Sprint Plan
-    ${_sprintID} =    New Sprint    @{tsSprintInfo}
+    ${_sprintGoal} =    Set Variable    test sprint Goal
+    ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
@@ -48,55 +54,95 @@ Test Retrospective Add Setup
     Select Node Product    Retrospective
 
 Test Retrospective Add Teardown
-    Clean All Retrospective
-    SwitchToItemLink    True    Sprint Plan
-    Clean All Sprint
-    _Logout
+    Comment    Clean All Retrospective
+    Comment    SwitchToItemLink    True    Sprint Plan
+    Comment    Clean All Sprint
+    Comment    _Logout
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Retrospective Edit Setup
-    _Login
-    # 確認專案是否存在
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    # 新增 Sprint
+    Comment    _Login
+    Comment    # 確認專案是否存在
+    Comment    Wait Until Page Contains Element    createProjectBtn
+    Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Comment    # 新增 Sprint
+    Comment    Select Node Product    Sprint Plan
+    Comment    ${_sprintID} =    New Sprint    @{tsSprintInfo}
+    Comment    Set List Value    ${tsSprintInfo}    0    ${_sprintID}
+    Comment    Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
+    Comment    # 切換到 Retrospective 頁面
+    Comment    Select Node Product    Retrospective
+    Comment    Add Retrospective    @{tsRetrospectiveList}
+    Comment    ${_newID} =    Get Retrospective ID    True    0
+    Comment    Set List Value    ${tsRetrospectiveList}    0    ${_newID}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Retrospective    Edit_Retrospective.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Plan
-    ${_sprintID} =    New Sprint    @{tsSprintInfo}
+    #    SwitchToItemLink    True    Sprint Plan
+    ${_sprintGoal} =    Set Variable    test sprint Goal
+    ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
+    #    SwitchToItemLink    True    Retrospective
     Select Node Product    Retrospective
-    Add Retrospective    @{tsRetrospectiveList}
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
 
 Test Retrospective Edit Teardown
-    Clean All Retrospective
-    SwitchToItemLink    True    Sprint Plan
-    Clean All Sprint
-    _Logout
+    Comment    Clean All Retrospective
+    Comment    SwitchToItemLink    True    Sprint Plan
+    Comment    Clean All Sprint
+    Comment    _Logout
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
 
 Test Retrospective Delete Setup
-    _Login
-    # 確認專案是否存在
-    Wait Until Page Contains Element    createProjectBtn
-    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
-    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
-    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    # 新增 Sprint
+    Comment    _Login
+    Comment    # 確認專案是否存在
+    Comment    Wait Until Page Contains Element    createProjectBtn
+    Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
+    Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
+    Comment    # 新增 Sprint
+    Comment    Select Node Product    Sprint Plan
+    Comment    ${_sprintID} =    New Sprint    @{tsSprintInfo}
+    Comment    Set List Value    ${tsSprintInfo}    0    ${_sprintID}
+    Comment    Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
+    Comment    # 切換到 Retrospective 頁面
+    Comment    Select Node Product    Retrospective
+    Comment    Add Retrospective    @{tsRetrospectiveList}
+    Comment    ${_newID} =    Get Retrospective ID    True    0
+    Comment    Set List Value    ${tsRetrospectiveList}    0    ${_newID}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Retrospective    Delete_Retrospective.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Plan
-    ${_sprintID} =    New Sprint    @{tsSprintInfo}
+    #    SwitchToItemLink    True    Sprint Plan
+    ${_sprintGoal} =    Set Variable    test sprint Goal
+    ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
     Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
+    #    SwitchToItemLink    True    Retrospective
     Select Node Product    Retrospective
-    Add Retrospective    @{tsRetrospectiveList}
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
 
 Test Retrospective Delete Teardown
-    Clean All Retrospective
-    SwitchToItemLink    True    Sprint Plan
-    Clean All Sprint
-    _Logout
+    Comment    Clean All Retrospective
+    Comment    SwitchToItemLink    True    Sprint Plan
+    Comment    Clean All Sprint
+    Comment    _Logout
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

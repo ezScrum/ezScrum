@@ -185,6 +185,8 @@ Test TaskBoard - Story ReOpen
     [Setup]    Test TaskBoard - Story ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}

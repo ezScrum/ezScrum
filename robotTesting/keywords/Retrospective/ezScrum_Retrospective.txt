@@ -166,3 +166,11 @@ Clean All Retrospective
     \    ${_id}    Get Text    xpath=//div[@id='Retrospective_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${_columnIndex}']
     \    Select Retrospective Item    ${_id}
     \    Delete Retrospective
+
+Sprint Info
+    ${_sprintGoal} =    Set Variable    ${sprintInfo[1]}
+    ${_sprintInterval} =    Set Variable    ${sprintInfo[2]}
+    ${_sprintMembers} =    Set Variable    ${sprintInfo[3]}
+    ${_sprintAvaliableDays} =    Set Variable    ${sprintInfo[4]}
+    ${_sprintFocusFactor} =    Set Variable    ${sprintInfo[5]}
+    ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div

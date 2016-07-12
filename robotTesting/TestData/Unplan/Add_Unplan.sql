@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'Sprint01', 2, 5, 100, 70, '2016-02-01 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', 'Lab1321', '09:45@Lab1321', 1, 1457491588729, 1457491588729);
+	(1, 1, 'Sprint01', 2, 5, 100, 70,  NOW(),  NOW() + INTERVAL 13 DAY,  NOW() + INTERVAL 13 DAY, 'Lab1321', '09:45@Lab1321', 1, 1457491588729, 1457491588729);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
