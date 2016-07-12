@@ -817,6 +817,66 @@ public class TaskObjectTest {
 		// check task status after close task
 		assertEquals(specificDate.getTime(), task.getCreateTimeFromHistories());
 	}
+
+	@Test
+	public void testGetCreateTimeFromHistories_WithTwoDoneHistoriesInSameDay() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getCreateTimeFromHistories());
+		// create a close task history
+		Date specificDate1 = DateUtil.dayFillter("2015/02/04-13:15:01", DateUtil._16DIGIT_DATE_TIME);
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setCreateTime(specificDate1.getTime());
+		history1.save();
+		// create a close task history
+		Date specificDate2 = DateUtil.dayFillter("2015/02/04-13:15:02", DateUtil._16DIGIT_DATE_TIME);
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setCreateTime(specificDate2.getTime());
+		history2.save();
+		// check task status after close task
+		assertEquals(specificDate2.getTime(), task.getCreateTimeFromHistories());
+	}
+
+	@Test
+	public void testGetCreateTimeFromHistories_WithTwoDoneHistoriesInDifferentDay() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getCreateTimeFromHistories());
+		// create a close task history
+		Date specificDate1 = DateUtil.dayFillter("2015/02/04-13:15:01", DateUtil._16DIGIT_DATE_TIME);
+		HistoryObject history1 = new HistoryObject();
+		history1.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setCreateTime(specificDate1.getTime());
+		history1.save();
+		// create a close task history
+		Date specificDate2 = DateUtil.dayFillter("2015/02/06-09:05:01", DateUtil._16DIGIT_DATE_TIME);
+		HistoryObject history2 = new HistoryObject();
+		history2.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setCreateTime(specificDate2.getTime());
+		history2.save();
+		// check task status after close task
+		assertEquals(specificDate2.getTime(), task.getCreateTimeFromHistories());
+	}
 	
 	@Test
 	public void testGetDoneTime() {
