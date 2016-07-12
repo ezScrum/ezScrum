@@ -262,8 +262,8 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'Sprint01', 2, 5, 100, 70, '2016-02-01 00:00:00', '2016-02-15 00:00:00', '2016-02-15 00:00:00', 'Lab1321', '09:45@Lab1321', 1, 1457510865689, 1457510865689),
-	(2, 2, 'Sprint02', 2, 5, 100, 70, '2016-02-16 00:00:00', '2016-02-29 00:00:00', '2016-02-29 00:00:00', 'Lab1321', '09:45@Lab1321', 1, 1457510910981, 1457510910981);
+	(1, 1, 'Sprint01', 2, 5, 100, 70, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, 'Lab1321', '09:45@Lab1321', 1, 1457510865689, 1457510865689),
+	(2, 2, 'Sprint02', 2, 5, 100, 70, NOW() + INTERVAL 14 DAY, NOW() + INTERVAL 27 DAY, NOW() + INTERVAL 27 DAY, 'Lab1321', '09:45@Lab1321', 1, 1457510910981, 1457510910981);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
 DELETE FROM `unplan`;
 /*!40000 ALTER TABLE `unplan` DISABLE KEYS */;
 INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, `actual`, `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'Test Unplanned', 2, 99, 99, 'This is Unplanned Notes', 1, 1, 2, 1457511030198, 1457511030198);
+	(1, 1, 'Test Unplanned', 2, 99, 99, 'This is Unplanned Notes', 1, 1, 1,  NOW(),  NOW());
 /*!40000 ALTER TABLE `unplan` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
