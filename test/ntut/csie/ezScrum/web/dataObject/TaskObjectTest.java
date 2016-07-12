@@ -798,6 +798,27 @@ public class TaskObjectTest {
 	}
 
 	@Test
+	public void testGetCreateTimeFromHistories() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
+		task.save();
+		// check task status before test
+		assertEquals(0, task.getCreateTimeFromHistories());
+		// create a close task history
+		Date specificDate = DateUtil.dayFillter("2015/02/04-13:15:01", DateUtil._16DIGIT_DATE_TIME);
+		HistoryObject history = new HistoryObject();
+		history.setIssueId(task.getId()).setIssueType(IssueTypeEnum.TYPE_TASK)
+				.setHistoryType(HistoryObject.TYPE_STATUS)
+				.setOldValue(String.valueOf(task.getStatus()))
+				.setNewValue(String.valueOf(TaskObject.STATUS_CHECK))
+				.setCreateTime(specificDate.getTime());
+		history.save();
+		// check task status after close task
+		assertEquals(specificDate.getTime(), task.getCreateTimeFromHistories());
+	}
+	
+	@Test
 	public void testGetDoneTime() {
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);
