@@ -4,8 +4,8 @@ Resource          ../common_resource.txt
 
 *** Keywords ***
 Test Scrum Report - Schedule Report Setup
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumReport    ${Sql_name}
-    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumReport    TestScheduleReport.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
     Login Page    ${LOGIN_URL}
 
 Test Scrum Report - Schedule Report Teardown

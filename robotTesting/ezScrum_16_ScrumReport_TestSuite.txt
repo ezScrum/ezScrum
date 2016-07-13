@@ -19,7 +19,8 @@ Library           Collections
 
 *** Test Cases ***
 Test Scrum Report - Schedule Report
-    [Setup]    Test Scrum Report - Schedule Report Setup    TestScheduleReport.sql
+    [Setup]    Test Scrum Report - Schedule Report Setup
     Click Element    xpath=//div[text()="Project01"]
     Select Node Product    Scrum Report
+    Click Element    xpath=//span[text()="Schedule Report"]
     [Teardown]    Test Scrum Report - Schedule Report Teardown
