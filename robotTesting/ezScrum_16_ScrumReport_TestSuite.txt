@@ -26,5 +26,5 @@ Test Scrum Report - Schedule Report
     Select Frame    xpath=//iframe[@id="scheduleReport"]
     Click Element    xpath=//select[@id='ShowSprint']
     Click Element    xpath=//select[@id='ShowSprint']/option[1]
-    Sleep    3s
+    Wait Until Page Does Not Contain    System failure!
     [Teardown]    Test Scrum Report - Schedule Report Teardown
