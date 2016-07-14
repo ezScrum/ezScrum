@@ -1,0 +1,14 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../common_resource.txt
+
+*** Keywords ***
+Test Scrum Report - Schedule Report Setup
+    ${SQLFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ScrumReport    TestScheduleReport.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${SQLFilePath}
+    Login Page    ${LOGIN_URL}
+
+Test Scrum Report - Schedule Report Teardown
+    Data Base Tear Down
+    Close Browser
+    Close All Browsers

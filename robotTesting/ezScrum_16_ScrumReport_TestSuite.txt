@@ -1,0 +1,30 @@
+*** Settings ***
+Suite Setup
+Force Tags        ScrumReport
+Resource          keywords/ScrumReport/ezScrum_ScrumReport_SetupTeardown.txt
+Resource          keywords/common_resource.txt
+Resource          keywords/ezScrum_Login.txt
+Resource          keywords/Project/ezScrum_Project.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
+Resource          keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
+Resource          keywords/SprintPlan/ezScrum_SprintPlan_Sprint.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Story.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Task.txt
+Resource          keywords/SprintBacklog/ezScrum_SprintBacklog_Sprint.txt
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           keywords/lib/Selenium2Improved.py
+Library           BuiltIn
+Library           Collections
+
+*** Test Cases ***
+Test Scrum Report - Schedule Report
+    [Setup]    Test Scrum Report - Schedule Report Setup
+    Click Element    xpath=//div[text()="Project01"]
+    Select Node Product    Scrum Report
+    Click Element    xpath=//span[text()="Schedule Report"]
+    Select Frame    xpath=//iframe[@id="scheduleReport"]
+    Click Element    xpath=//select[@id='ShowSprint']
+    Click Element    xpath=//select[@id='ShowSprint']/option[1]
+    Wait Until Page Does Not Contain    System failure!
+    [Teardown]    Test Scrum Report - Schedule Report Teardown
