@@ -23,4 +23,8 @@ Test Scrum Report - Schedule Report
     Click Element    xpath=//div[text()="Project01"]
     Select Node Product    Scrum Report
     Click Element    xpath=//span[text()="Schedule Report"]
+    Select Frame    xpath=//iframe[@id="scheduleReport"]
+    Click Element    xpath=//select[@id='ShowSprint']
+    Click Element    xpath=//select[@id='ShowSprint']/option[1]
+    Sleep    3s
     [Teardown]    Test Scrum Report - Schedule Report Teardown

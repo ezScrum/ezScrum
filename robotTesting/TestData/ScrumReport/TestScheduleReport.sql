@@ -295,7 +295,8 @@ DELETE FROM `sprint`;
 INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
 	(1, 1, 'Sprint01', 2, 4, 100, 100, '2016-06-29 16:23:42', '2016-07-12 16:23:42', '2016-07-12 16:23:42', '', '', 1, 1466136159721, 1466136159721);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
-
+INSERT INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
+	(2, 2, 'Sprint02', 2, 4, 100, 100, '2016-06-30 16:23:42', '2016-07-13 16:23:42', '2016-07-13 16:23:42', '', '', 1, 1466136159721, 1466136159721);
 
 -- 導出  表 ezscrum_180.story 結構
 DROP TABLE IF EXISTS `story`;
