@@ -798,6 +798,25 @@ public class TaskObjectTest {
 	}
 
 	@Test
+	public void testGetCreateTimeFromHistories() {
+		// create a task
+		TaskObject task = new TaskObject(mProjectId);
+		task.setName("TEST_NAME").setEstimate(10).setActual(0);
+		task.save();
+		long createTime = 0;
+		ArrayList<HistoryObject> histories = task.getHistories();
+		for (HistoryObject history : histories) {
+			long historyTime = history.getCreateTime();
+			if (history.getHistoryType() == HistoryObject.TYPE_CREATE) {
+				if (createTime < historyTime) {
+					createTime = historyTime;
+				}
+			}
+		}
+		assertEquals(createTime, task.getCreateTimeFromHistories());
+	}
+	
+	@Test
 	public void testGetDoneTime() {
 		// create a task
 		TaskObject task = new TaskObject(mProjectId);

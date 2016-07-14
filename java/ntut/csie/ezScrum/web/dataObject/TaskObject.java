@@ -267,6 +267,20 @@ public class TaskObject implements IBaseObject {
 	public long getCreateTime() {
 		return mCreateTime;
 	}
+	
+	public long getCreateTimeFromHistories () {
+		long createTime = 0;
+		ArrayList<HistoryObject> histories = getHistories();
+		for (HistoryObject history : histories) {
+			long historyTime = history.getCreateTime();
+			if (history.getHistoryType() == HistoryObject.TYPE_CREATE) {
+				if (createTime < historyTime) {
+					createTime = historyTime;
+				}
+			}
+		}
+		return createTime;
+	}
 
 	public long getUpdateTime() {
 		return mUpdateTime;
