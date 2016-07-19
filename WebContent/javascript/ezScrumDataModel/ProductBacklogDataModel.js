@@ -71,7 +71,7 @@ var ProductBacklogCreateColModel = function() {
 		header: 'Name',
 		width: 300,
 		renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-			if (record.data['Attach'] == 'true') return "<image src = \"./images/paperclip.png\" />" + value;
+			if (record.data['Attach']) return "<image src = \"./images/paperclip.png\" />" + value;
 			return value
 		}
 	}, {
