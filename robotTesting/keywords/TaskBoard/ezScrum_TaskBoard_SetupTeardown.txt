@@ -357,6 +357,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
+    Wait Until Page Contains    Sprint Backlog
     Select Node Product    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
