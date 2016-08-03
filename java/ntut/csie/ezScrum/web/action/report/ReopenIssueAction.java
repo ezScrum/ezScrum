@@ -39,7 +39,7 @@ public class ReopenIssueAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
-		long issueId = Long.parseLong(request.getParameter("Id"));
+		long serialNumber = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
@@ -50,13 +50,13 @@ public class ReopenIssueAction extends PermissionAction {
 		StringBuilder result = new StringBuilder("");
 
 		if (issueType.equals("Story")) {
-			sprintBacklogHelper.reopenStory(issueId, name, notes, changeDate);
+			sprintBacklogHelper.reopenStory(serialNumber, name, notes, changeDate);
 			// return re open 的 issue的相關資訊
-			StoryObject story = sprintBacklogHelper.getStory(issueId);
+			StoryObject story = sprintBacklogHelper.getStory(serialNumber);
 			result.append(Translation.translateTaskboardStoryToJson(story));
 		} else if (issueType.equals("Task")) {
-			sprintBacklogHelper.reopenTask(issueId, name, notes, changeDate);
-			TaskObject task = sprintBacklogHelper.getTask(issueId);
+			sprintBacklogHelper.reopenTask(serialNumber, name, notes, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(project.getId(), serialNumber);
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
 
