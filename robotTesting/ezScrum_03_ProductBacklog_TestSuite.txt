@@ -221,7 +221,7 @@ Test ProductBacklog - Duplicate Tag
     ...    test Tag C'R'D
     [Tags]    tag
     [Setup]    Test Duplicate Tag Setup
-    Create Tag With Arguments     ${tsTagX}
+    Create Tag With Arguments    ${tsTagX}
     ${tag}=    Set Variable    ${tsTagX}
     # add already existed Tag
     Click Element    xpath=//button[text()="Manage Tag"]
@@ -254,7 +254,7 @@ Test ProductBacklog - Delete Tag
     # get existed Tag count
     ${tagCount} =    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-Name"]
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}    # stable issue
-    # delete & check    \    \    testTagName_3
+    # delete & check    testTagName_3
     : FOR    ${index}    IN RANGE    0    ${tagCount}
     \    Mouse Down    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
     \    Mouse Up    xpath=(//div[@class="x-grid3-cell-inner x-grid3-col-Name"])[${tagCount} - ${index}]
@@ -287,3 +287,15 @@ Test ProductBacklog - Filter - Default
     [Setup]    Test Product Backlog Filter Setup
     Test Product Backlog Filter Default
     [Teardown]    Test Product Backlog Filter Teardown
+
+Test ProductBacklog - Attach File
+    [Setup]    Test Attach File Setup
+    Click Element    xpath=//tr/td[@class="x-grid3-col x-grid3-cell x-grid3-td-3 "]/div[text()="oriStory"]
+    Click Element    xpath=//button[text()="Attach File"]
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
+    Choose File    //input[@name="file"]    ${attachFilePath}
+    ${xpathAttachFile}=    Find Current Window Element    Attach File    Submit
+    Click Element    xpath=${xpathAttachFile}
+    Wait Until Page Contains    Attach File Success.
+    Wait Until Element Is Visible    //tbody/tr/td[@class="x-grid3-col x-grid3-cell x-grid3-td-3 "]/div[@class="x-grid3-cell-inner x-grid3-col-3"]/img
+    [Teardown]    Test Attach File Teardown
