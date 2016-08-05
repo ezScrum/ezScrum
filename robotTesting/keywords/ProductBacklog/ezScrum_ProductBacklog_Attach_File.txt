@@ -1,0 +1,6 @@
+*** Settings ***
+Resource          ../ezScrum_Login.txt
+Library           ../lib/Selenium2Improved.py
+Library           ../lib/DatabaseHandler.py
+
+*** Keywords ***
