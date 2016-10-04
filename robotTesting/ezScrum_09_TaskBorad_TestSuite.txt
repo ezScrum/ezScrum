@@ -309,3 +309,25 @@ Test TaskBoard - Task Done with partner
     Compare Field Content    //input[@name="Remains"]    0
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
+
+Test TaskBoard - Check Task Checked Out
+    [Setup]    Test TaskBoard - Task Checked Out Setup
+    Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    # Verify taskcard information
+    ${_TaskHandler}=    Set Variable    admin
+    ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    ${_TempTaskHandler}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//span[@class="TaskCard_Handler"]
+    Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
+    Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
+    Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
+    Select Node Product    Sprint Backlog
+    Select Node Product    TaskBoard
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
+    Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
+    [Teardown]    Test TaskBoard - Task Checked Out Teardown
