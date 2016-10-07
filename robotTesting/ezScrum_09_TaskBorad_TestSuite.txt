@@ -309,3 +309,9 @@ Test TaskBoard - Task Done with partner
     Compare Field Content    //input[@name="Remains"]    0
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
+
+Tset TaskBoard - ReleaseID Check
+    [Setup]    Test TaskBoard - Initial Release ID Check Setup
+    Select Node Product    TaskBoard
+    Compare Field Content    //input[@name="ReleaseID"]    None
+    [Teardown]    Test TaskBoard - Initial Release ID Check Teardown

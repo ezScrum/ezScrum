@@ -55,3 +55,6 @@
 [0707/103608:WARNING:crash_report_exception_handler.cc(60)] ProcessSnapshotWin::InitializeException failed
 [0707/103608:ERROR:exception_snapshot_win.cc(57)] thread ID 4944 not found in process
 [0707/103608:WARNING:crash_report_exception_handler.cc(60)] ProcessSnapshotWin::InitializeException failed
+[1007/121150:ERROR:process_reader_win.cc(114)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights.  (0xc0000022)
+[1007/121150:ERROR:exception_snapshot_win.cc(87)] thread ID 6304 not found in process
+[1007/121150:WARNING:crash_report_exception_handler.cc(56)] ProcessSnapshotWin::Initialize failed

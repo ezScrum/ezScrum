@@ -403,3 +403,14 @@ Test TaskBoard - Task Done with Partner Setup
 Test TaskBoard - Task Done with Partner Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
+Test TaskBoard - Initial Release ID Check Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Initial_ReleaseID_Check.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    helloWorld
+
+Test TaskBoard - Initial Release ID Check Teardown
+    Test TaskBoard - New Postcondition
