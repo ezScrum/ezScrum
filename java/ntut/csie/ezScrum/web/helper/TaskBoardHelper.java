@@ -146,7 +146,10 @@ public class TaskBoardHelper {
 			SprintGoal = goal;
 			CurrentStoryPoint = sp;
 			CurrentTaskPoint = tp;
-			ReleaseID = "Release #" + releaseId;
+			if(releaseId > 0)
+				ReleaseID = "Release #" + releaseId;
+			else
+				ReleaseID = "Release None";
 			isCurrentSprint = current;
 		}
 	}
