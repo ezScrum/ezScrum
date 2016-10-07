@@ -302,8 +302,7 @@ Test ProductBacklog - Attach File
 
 Test ProductBacklog - Invailid Change Line
     [Setup]    Test ProductBacklog With Change Line Setup
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="oriStory")]
-    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="oriStory")]
+    Wait Until Page Contains    oriStory
     # 比對 +號 content
     ${storyID}=    Get Story ID
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
