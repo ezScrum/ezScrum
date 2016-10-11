@@ -31,8 +31,8 @@ public class TaskBoardHelperTest {
 	private static final int TASK_COUNT = 3;
 	private static final int TASK_ESTIMATE = 8;
 	private static final String CREATE_PRODUCTBACKLOG_TYPE = "EST";
-	private TaskBoardHelper mTaskBoardHelper = null; 
-	
+	private TaskBoardHelper mTaskBoardHelper = null;
+
 	@Before
 	public void setUp() throws Exception {
 		// initialize Configuration
@@ -61,7 +61,7 @@ public class TaskBoardHelperTest {
 		long sprintId = mCS.getSprintsId().get(0);
 		mTaskBoardHelper = new TaskBoardHelper(mCP.getAllProjects().get(0), sprintId);
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		InitialSQL ini = new InitialSQL(mConfig);
@@ -77,10 +77,10 @@ public class TaskBoardHelperTest {
 		mASTS = null;
 		mATTS = null;
 	}
-	
+
 	/**
 	 * Get all stories and tasks, no filter
-	 * 
+	 *
 	 * @throws JSONException
 	 */
 	@Test
@@ -92,7 +92,7 @@ public class TaskBoardHelperTest {
 		assertEquals(3, stories.length());
 		for (int i = 0; i < stories.length(); i++) {
 			String storyIndex = String.valueOf(i + 1);
-			
+
 			JSONObject story = stories.getJSONObject(i);
 			assertEquals(storyIndex, story.getString("Id"));
 			assertEquals("TEST_STORY_" + storyIndex, story.getString("Name"));
@@ -121,10 +121,10 @@ public class TaskBoardHelperTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Use username to filter stories and tasks
-	 * 
+	 *
 	 * @throws JSONException
 	 */
 	@Test
@@ -136,7 +136,7 @@ public class TaskBoardHelperTest {
 		assertEquals(3, stories.length());
 		for (int i = 0; i < stories.length(); i++) {
 			String storyIndex = String.valueOf(i + 1);
-			
+
 			JSONObject story = stories.getJSONObject(i);
 			assertEquals(storyIndex, story.getString("Id"));
 			assertEquals("TEST_STORY_" + storyIndex, story.getString("Name"));
@@ -164,15 +164,15 @@ public class TaskBoardHelperTest {
 				assertEquals(0, task.getJSONArray("AttachFileList").length());
 			}
 		}
-		
+
 		// set task #1 handler to admin(1)
 		mATTS.getTasks().get(0).setHandlerId(1).save();
-		
+
 		response = mTaskBoardHelper.getTaskBoardStoryTaskListText("admin").toString();
 		json = new JSONObject(response);
 		stories = json.getJSONArray("Stories");
 		assertEquals(1, stories.length());
-		
+
 		JSONObject story = stories.getJSONObject(0);
 		String storyIndex  = "1";
 		assertEquals(storyIndex, story.getString("Id"));
@@ -184,8 +184,8 @@ public class TaskBoardHelperTest {
 		assertEquals("100", story.getString("Importance"));
 		assertEquals("1", story.getString("Sprint"));
 		assertEquals(0, story.getJSONArray("AttachFileList").length());
-		
-		
+
+
 		assertEquals(1, story.getJSONArray("Tasks").length());
 		JSONObject task = story.getJSONArray("Tasks").getJSONObject(0);
 		String taskIndex = "1";
@@ -200,7 +200,7 @@ public class TaskBoardHelperTest {
 		assertEquals("new", task.getString("Status"));
 		assertEquals(0, task.getJSONArray("AttachFileList").length());
 	}
-	
+
 	@Test
 	public void testGetSprintInfoForTaskBoardText() throws JSONException {
 		String response = mTaskBoardHelper.getSprintInfoForTaskBoardText().toString();
@@ -208,19 +208,19 @@ public class TaskBoardHelperTest {
 		assertEquals(15, json.getInt("CurrentStoryPoint"));
 		assertEquals(72, json.getInt("CurrentTaskPoint"));
 		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
-		assertEquals("Release #-1", json.getString("ReleaseID"));
-		
+		assertEquals("Release None", json.getString("ReleaseID"));
+
 		// close a story and tasks belong this story
 		mASTS.getStories().get(0).setStatus(StoryObject.STATUS_DONE).save();
 		mATTS.getTasks().get(0).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
 		mATTS.getTasks().get(1).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
 		mATTS.getTasks().get(2).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
-		
+
 		response = mTaskBoardHelper.getSprintInfoForTaskBoardText().toString();
 		json = new JSONObject(response);
 		assertEquals(10, json.getInt("CurrentStoryPoint"));
 		assertEquals(48, json.getInt("CurrentTaskPoint"));
 		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
-		assertEquals("Release #-1", json.getString("ReleaseID"));
+		assertEquals("Release None", json.getString("ReleaseID"));
 	}
 }
