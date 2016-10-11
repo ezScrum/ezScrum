@@ -151,3 +151,13 @@ Test Sprint Plan - Check Recommended Start Date
     Should Be Equal    ${StartDate}    ${date}
     Click Element    //button[text()="Cancel"]
     [Teardown]    Test Check Recommended Start Date Teardown
+
+Test Sprint Plan - Interval Check
+    [Setup]    Test Interval Check Setup
+    Select Sprint Plan
+    Create Sprint With Typing Zero In Interval    test sprint    1    100    100
+    #Check Submit Button Is Not Visible
+    Element Should Be Disabled    xpath=//button[text()="Submit"]
+    #Click Cancel
+    Click Element    xpath=//button[text()="Cancel"]
+    [Teardown]    Test Interval Check Teardown
