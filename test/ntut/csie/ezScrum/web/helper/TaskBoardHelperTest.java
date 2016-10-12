@@ -15,6 +15,9 @@ import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.ReleaseObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 
@@ -24,6 +27,8 @@ public class TaskBoardHelperTest {
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
+	private ProjectObject mProject = null;
+	private SprintObject mSprint = null; 
 	private static final int PROJECT_COUNT = 1;
 	private static final int SPRINT_COUNT = 1;
 	private static final int STORY_COUNT = 3;
@@ -59,6 +64,9 @@ public class TaskBoardHelperTest {
 		mATTS.exe();
 
 		long sprintId = mCS.getSprintsId().get(0);
+		
+		mProject = mCP.getAllProjects().get(0);
+		mSprint = mCS.getSprints().get(0);
 		mTaskBoardHelper = new TaskBoardHelper(mCP.getAllProjects().get(0), sprintId);
 	}
 
@@ -222,5 +230,34 @@ public class TaskBoardHelperTest {
 		assertEquals(48, json.getInt("CurrentTaskPoint"));
 		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
 		assertEquals("Release None", json.getString("ReleaseID"));
+	}
+	
+	@Test
+	public void testGetSprintHaveReleaseForTaskBoardText() throws JSONException {		
+		ReleaseObject release = new ReleaseObject(mProject.getId());
+		release.setName("TEST_RELEASE_NAME").setDescription("TEST_RELEASE_DESCRIPTION")
+		.setStartDate(mSprint.getStartDateString()).setEndDate(mSprint.getEndDateString())
+		.save();
+		
+		String response = mTaskBoardHelper.getSprintInfoForTaskBoardText().toString();
+		
+		JSONObject json = new JSONObject(response);
+		assertEquals(15, json.getInt("CurrentStoryPoint"));
+		assertEquals(72, json.getInt("CurrentTaskPoint"));
+		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
+		assertEquals("Release #1", json.getString("ReleaseID"));
+
+		// close a story and tasks belong this story
+		mASTS.getStories().get(0).setStatus(StoryObject.STATUS_DONE).save();
+		mATTS.getTasks().get(0).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
+		mATTS.getTasks().get(1).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
+		mATTS.getTasks().get(2).setStatus(TaskObject.STATUS_DONE).setRemains(0).save();
+
+		response = mTaskBoardHelper.getSprintInfoForTaskBoardText().toString();
+		json = new JSONObject(response);
+		assertEquals(10, json.getInt("CurrentStoryPoint"));
+		assertEquals(48, json.getInt("CurrentTaskPoint"));
+		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
+		assertEquals("Release #1", json.getString("ReleaseID"));
 	}
 }
