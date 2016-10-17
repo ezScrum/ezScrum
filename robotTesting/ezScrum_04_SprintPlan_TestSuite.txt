@@ -156,8 +156,9 @@ Test Sprint Plan - Interval Check
     [Setup]    Test Interval Check Setup
     Select Sprint Plan
     Create Sprint With Typing Zero In Interval    test sprint    1    100    100
-    #Check Submit Button Is Not Visible
-    Element Should Be Disabled    xpath=//button[text()="Submit"]
-    #Click Cancel
-    Click Element    xpath=//button[text()="Cancel"]
+    #It does nothing if Submit Button is disabled
+    Click Element    xpath=//button[text()="Submit"]
+    #Change Interval to one
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    xpath=//button[text()="Submit"]
     [Teardown]    Test Interval Check Teardown
