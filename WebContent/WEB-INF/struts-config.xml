@@ -103,6 +103,7 @@
 			
 			<!-- Sprint Plan -->
     			<!-- Sprint CRUD -->
+    		<action path="/checkSprintDate"				type="ntut.csie.ezScrum.web.action.plan.CheckSprintDateAction" />
 			<action path="/saveSprintPlan" name="iterationPlanForm"		type="ntut.csie.ezScrum.web.action.plan.SaveSprintPlanAction" />
     		<action path="/GetSprintPlan"				type="ntut.csie.ezScrum.web.action.plan.GetOneSprintPlanAction" />
 			<action path="/removeSprintPlan"			type="ntut.csie.ezScrum.web.action.plan.RemoveSprintPlanAction" />

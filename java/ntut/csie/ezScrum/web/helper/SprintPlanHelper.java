@@ -131,4 +131,24 @@ public class SprintPlanHelper {
 	public void moveSprint(int oldId, int newId) {
 		mSprintPlanMapper.moveSprint(oldId, newId);
 	}
+	
+	public StringBuilder checkSprintDateOverlapping(long sprintId, String startDateString,
+			String endDateString, String action){
+		ArrayList<SprintObject> sprints = mSprintPlanMapper.getSprints();
+		Date startDate = DateUtil.dayFilter(startDateString);
+		Date endDate = DateUtil.dayFilter(endDateString);
+		String result = "legal";
+		for(SprintObject sprint : sprints){
+			if (action.equals("edit") && (sprintId == sprint.getId())) {// 不與自己比較
+				continue;
+			}
+			// check 日期的頭尾是否有在各個 sprint 日期範圍內
+						if (sprint.contains(startDate) || sprint.contains(endDate)) {
+							result = "illegal";
+							break;
+						}
+		}
+		
+		return new StringBuilder(result);
+	}
 }
