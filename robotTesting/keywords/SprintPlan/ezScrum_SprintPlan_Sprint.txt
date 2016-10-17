@@ -111,3 +111,17 @@ Create Sprint Without StartDate
     Wait Until Page Contains    Success.
     Comment    Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintID}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
+
+Create Sprint With Same Date
+    [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
+    Click Image    xpath=//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
+    Focus AND Input Text    //input[@name="Interval"]    ${sprintInterval}
+    Focus AND Input Text    //input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${sprintID}=    Get Value    xpath=//span[text()="Add New Sprint"]/../../../../..//input[@name="Id"]
+    ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
+    Element Enable And Submit    ${xpathAddNewSprint}
