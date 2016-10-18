@@ -15,7 +15,7 @@ import ntut.csie.ezScrum.web.support.SessionManager;
 public class CheckSprintDateAction extends PermissionAction {
 	@Override
 	public boolean isValidAction() {
-		return super.getScrumRole().getAccessReleasePlan();
+		return super.getScrumRole().getAccessSprintPlan();
 	}
 
 	@Override
@@ -35,10 +35,7 @@ public class CheckSprintDateAction extends PermissionAction {
 		String serialSprintIdString = request.getParameter("Id");
 		String startDate = request.getParameter("StartDate");
 		String endDate = request.getParameter("EndDate");
-		String action = request.getParameter("action");
-		if (action == null || action.isEmpty()) {
-			return null;
-		} 		
+				
 		long serialSprintId = -1;
 		if (serialSprintIdString != null && !serialSprintIdString.isEmpty()) {
 			serialSprintId = Long.parseLong(serialSprintIdString);
@@ -51,6 +48,6 @@ public class CheckSprintDateAction extends PermissionAction {
 			sprintId = sprint.getId();
 		}
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		return sprintPlanHelper.checkSprintDateOverlapping(sprintId, startDate, endDate, action);
+		return sprintPlanHelper.checkSprintDateOverlapping(sprintId, startDate, endDate);
 	}
 }

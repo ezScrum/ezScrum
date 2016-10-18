@@ -262,6 +262,15 @@ public class SprintObject implements IBaseObject {
 		}
 		return false;
 	}
+	
+	public boolean dateCheck(Date startDate, Date endDate) {
+		if ((startDate.compareTo(mStartDate) < 0) && (endDate.compareTo(mStartDate) < 0)) {
+			return false;
+		}else if ((startDate.compareTo(mStartDate) > 0) && (endDate.compareTo(mStartDate) > 0)) {
+			return false;
+		}
+		return true;
+	}
 
 	public boolean containsStory(StoryObject story) {
 		boolean isContainsStory = false;

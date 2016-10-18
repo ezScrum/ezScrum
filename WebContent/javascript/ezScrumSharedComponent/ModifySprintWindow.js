@@ -219,22 +219,12 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         var obj = this;
         var form = this.getForm();
         
-
-        this.checkDate();
-        
         // set isCreate attribute
         this.getForm().setValues({
         	isCreate: obj.isCreate
         });
         
-        
-        /*Ext.Ajax.request({
-			url     : obj.url,
-			params  : form.getValues(),
-			success : function(response) { obj.onSubmitSuccess(response); },
-			failure : function(response) { // notify logon form, not finish yet  }
-        });*/
-			
+        this.checkDate();			
     },
     /*-----------------------------------------------------------
      *  上傳成功時候的處理方式   
@@ -267,20 +257,14 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     		url: 'checkSprintDate.do',
     		params: form.getValues(),
     		success: function(response){
-    			console.log("0");
     			ConfirmWidget.loadData(response);
-    			console.log("1");
 				if (ConfirmWidget.confirmAction()) {
-					console.log("2");
 					if (response.responseText == 'legal') {
-						console.log("3.1");
-						obj.saveReleasePlan();
+						obj.saveSprintPlan();
 					} else {// illegal
-						console.log("3.2");
 						Ext.MessageBox.alert('Invalid Date!!', 'Sorry, the Start Date or End Date is overlap with the other sprint.');
 					}
 				}
-				console.log("4");
     		},
     		failure: function(response) {
 				Ext.MessageBox.alert('Failure');
