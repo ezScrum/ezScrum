@@ -264,9 +264,9 @@ public class SprintObject implements IBaseObject {
 	}
 	
 	public boolean dateCheck(Date startDate, Date endDate) {
-		if ((startDate.compareTo(mStartDate) < 0) && (endDate.compareTo(mStartDate) < 0)) {
+		if ((endDate.compareTo(mStartDate) < 0)) {
 			return false;
-		}else if ((startDate.compareTo(mStartDate) > 0) && (endDate.compareTo(mStartDate) > 0)) {
+		}else if ((startDate.compareTo(mEndDate) > 0)) {
 			return false;
 		}
 		return true;

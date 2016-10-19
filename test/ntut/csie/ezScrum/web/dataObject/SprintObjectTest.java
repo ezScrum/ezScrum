@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -156,7 +157,7 @@ public class SprintObjectTest {
 		assertEquals(sprintDemoDate, sprint.getDemoDateString());
 		assertEquals(sprintEndDate, sprint.getEndDateString());
 	}
-
+	
 	@Test
 	public void testDelete() {
 		SprintObject sprint = SprintObject.get(mSprintId);
@@ -239,6 +240,25 @@ public class SprintObjectTest {
 		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/30")));
 		assertTrue(sprint.contains(DateUtil.dayFilter("2015/08/31")));
 		assertFalse(sprint.contains(DateUtil.dayFilter("2015/09/01")));
+	}
+	
+	@Test
+	public void TestDateCheck(){
+		SprintObject sprint = new SprintObject(mProjectId);
+		sprint.setStartDate("2015/08/24");
+		sprint.setEndDate("2015/08/30");
+		sprint.save();
+		
+		assertFalse(sprint.dateCheck(DateUtil.dayFilter("2015/08/15"), DateUtil.dayFilter("2015/08/21")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/24"), DateUtil.dayFilter("2015/08/30")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/25"), DateUtil.dayFilter("2015/08/31")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/26"), DateUtil.dayFilter("2015/09/01")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/27"), DateUtil.dayFilter("2015/09/02")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/28"), DateUtil.dayFilter("2015/09/03")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/29"), DateUtil.dayFilter("2015/09/04")));
+		assertTrue(sprint.dateCheck(DateUtil.dayFilter("2015/08/30"), DateUtil.dayFilter("2015/09/05")));
+		assertFalse(sprint.dateCheck(DateUtil.dayFilter("2015/08/31"), DateUtil.dayFilter("2015/09/06")));
+		assertFalse(sprint.dateCheck(DateUtil.dayFilter("2015/09/01"), DateUtil.dayFilter("2015/09/07")));
 	}
 	
 	@Test
