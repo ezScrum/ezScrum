@@ -2,6 +2,7 @@
 Library           ../lib/Selenium2Improved.py
 Resource          ../../Global Define.txt
 Resource          ../Project/ezScrum_Project.txt
+Resource          ../../ServerConfig.txt
 
 *** Keywords ***
 Test SprintPlan Setup
@@ -103,3 +104,15 @@ Test Check Recommended Start Date Teardown
 
 Test SprintPlan Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Interval Check Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    New_Sprint_Submit_Check.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    testProject
+
+Test Interval Check Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

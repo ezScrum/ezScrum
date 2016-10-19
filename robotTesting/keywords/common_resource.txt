@@ -145,3 +145,21 @@ Clean Database and Exit ezScrum
 
 Data Base Tear Down
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Select Sprint Plan
+    Wait Until Page Contains     Sprint Plan
+    Click Element    xpath=//span[text()="Sprint Plan"]
+
+Create Sprint With Typing Zero In Interval
+    [Arguments]    ${sprintGoal}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    #Create New Sprint
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
+    Click Image    xpath=//input[@name="StartDate"]/../img
+    Click Element    xpath=//button[text()="Today"]
+    Focus AND Input Text    //input[@name="Interval"]    0
+    Focus AND Input Text    //input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${sprintDemoDate}=    Get Value    xpath=//input[@name="StartDate"]
+    Focus AND Input Text    //input[@name="DemoDate"]    ${sprintDemoDate}

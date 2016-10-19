@@ -58,7 +58,9 @@ var SprintDetailItems = [
     	xtype	   : 'numberfield',
     	allowBlank : false,
     	anchor     : '50%',
-    	allowNegative: false
+    	allowNegative: false,
+    	allowDecimals: false,
+    	regex: /^(?!0*(\.0+)?$)(\d+|\d*\.\d+)$/
     },{
     	//End day
     	fieldLabel : 'End Date',
