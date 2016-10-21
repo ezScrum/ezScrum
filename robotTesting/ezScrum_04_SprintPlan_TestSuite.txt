@@ -157,9 +157,8 @@ Test Sprint Plan - Can Not Create Second Sprint With Same Date
     Select Node Product    Sprint Plan
     Create Sprint    Test    2    4    100    100
     Create Sprint With Same Date    Test2    2    3    50    50
-    Wait Until Page Contains    Sorry, the Start Date or End Date is overlap with the other Sprint Plan.
-    ${PopOutText}=    Get Text    xpath=//span[text()="Sorry, the Start Date or End Date is overlap with the other Sprint Plan."]
-    Should Be Equal    Sorry, the Start Date or End Date is overlap with the other Sprint Plan.    ${PopOutText}
+    ${PopOutText}=    Get Text    xpath=//span[text()="Sorry, the Start Date or End Date is overlap with the other sprint."]
+    Should Be Equal    Sorry, the Start Date or End Date is overlap with the other sprint.    ${PopOutText}
     Click Element    xpath=//button[text()="OK"]
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test Can Not Create Second Sprint With Same Date Teardown

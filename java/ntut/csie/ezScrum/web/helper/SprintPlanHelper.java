@@ -138,15 +138,19 @@ public class SprintPlanHelper {
 		Date startDate = DateUtil.dayFilter(startDateString);
 		Date endDate = DateUtil.dayFilter(endDateString);
 		String result = "legal";
-		for(SprintObject sprint : sprints){
-			if (sprintId == sprint.getId()) {// 不與自己比較
-				continue;
+		if (startDate.compareTo(endDate) < 0) {			
+			for(SprintObject sprint : sprints){
+				if (sprintId == sprint.getId()) {// 不與自己比較
+					continue;
+				}
+				// check 日期的頭尾是否有在各個 sprint 日期範圍內
+				if (sprint.dateCheck(startDate, endDate)) {
+					result = "illegal";
+					break;
+				}
 			}
-			// check 日期的頭尾是否有在各個 sprint 日期範圍內
-			if (sprint.dateCheck(startDate, endDate)) {
-				result = "illegal";
-				break;
-			}
+		}else {
+			result = "illegal";
 		}
 		
 		return new StringBuilder(result);
