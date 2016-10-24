@@ -65,7 +65,7 @@
 					<tr>
 						<td></td>
 						<td class="ReportFrame" align="center" width="5%">${story.serialId}&nbsp;</td>
-						<td class="ReportFrame" align="left" width="40%">${story.notes}&nbsp;</td>
+						<td class="ReportFrame" align="left" width="40%">${story.name}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="10%">${story.importance}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="10%">${story.estimate}&nbsp;</td>
 						<td class="ReportFrame" align="center" width="35%">
@@ -94,7 +94,7 @@
 									<tr>
 										<td width="5%"></td>
 										<td class="ReportFrame" width="5%" align="center">${task.serialId }&nbsp;</td>
-										<td class="ReportFrame" width="40%" align="left">${task.notes }&nbsp;</td>
+										<td class="ReportFrame" width="40%" align="left">${task.name }&nbsp;</td>
 										<td class="ReportFrame" width="5%" align="center">${task.estimate }&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">${task.handlerUsername}&nbsp;</td>
 										<td class="ReportFrame" width="10%" align="center">
