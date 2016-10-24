@@ -86,3 +86,11 @@ Test Release Plan - Edit Sprint
     Edit Sprint In Release Plan    sprint1 sprint goal updated    2    5    200    200    sprint1 sprint goal
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal updated"]    1
     [Teardown]    Test Release Plan - Edit Sprint Teardown
+
+Test Release Plan - Show Printable Release
+    [Setup]    Test Release Plan - Show Printable Release Setup
+    Select Node Product    Release Plan
+    Click Element    xpath=//div[text()="Release One"]
+    Click Element    xpath=//button[text()="Show Printable Release"]
+    #Clean DB
+    [Teardown]    Test Release Plan - Show Printable Release Teardown

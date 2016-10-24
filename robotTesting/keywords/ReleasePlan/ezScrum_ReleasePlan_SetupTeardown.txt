@@ -264,3 +264,14 @@ Test Release Plan - Session - Contain Sprints Teardown
     Clean Release
     Close Window
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Release Plan - Show Printable Release Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ReleasePlan    Show_Printable_Release.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    Test Project
+
+Test Release Plan - Show Printable Release Teardown
+    Exit ezScrum System
