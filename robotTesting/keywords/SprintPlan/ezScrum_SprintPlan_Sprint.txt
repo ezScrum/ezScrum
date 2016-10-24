@@ -125,3 +125,20 @@ Create Sprint With Same Date
     ${sprintID}=    Get Value    xpath=//span[text()="Add New Sprint"]/../../../../..//input[@name="Id"]
     ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
     Element Enable And Submit    ${xpathAddNewSprint}
+
+Create Sprint With Same Range With Date
+    [Arguments]    ${sprintGoal}    ${sprintStartDate}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
+    Focus AND Input Text    //span[text()="Add New Sprint"]/../../../../..//input[@name="StartDate"]    ${sprintStartDate}
+    Focus AND Input Text    //input[@name="Interval"]    ${sprintInterval}
+    Focus AND Input Text    //input[@name="Members"]    ${sprintMembers}
+    Focus AND Input Text    //input[@name="AvaliableDays"]    ${sprintAvaliableDays}
+    Focus AND Input Text    //input[@name="FocusFactor"]    ${sprintFocusFactor}
+    ${sprintID}=    Get Value    xpath=//input[@name="Id"]
+    ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
+    Element Enable And Submit    ${xpathAddNewSprint}
+    ${PopOutText}=    Get Text    xpath=//span[text()="Sorry, the Start Date or End Date is overlap with the other sprint."]
+    Should Be Equal    Sorry, the Start Date or End Date is overlap with the other sprint.    ${PopOutText}
+    Click Element    xpath=//button[text()="OK"]
+    Click Element    xpath=//button[text()="Cancel"]
