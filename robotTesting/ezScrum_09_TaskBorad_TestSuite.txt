@@ -310,8 +310,6 @@ Test TaskBoard - Task Done with partner
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
 
-Tset TaskBoard - ReleaseID Check
-    [Setup]    Test TaskBoard - Initial Release ID Check Setup
-    Select Node Product    TaskBoard
-    Compare Field Content    //input[@name="ReleaseID"]    None
-    [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
+Test Taskboard - Task board not showing correctly
+    [Setup]    Test Taskboard - Taskboard not Showing Correctly Setup
+    Close Browser

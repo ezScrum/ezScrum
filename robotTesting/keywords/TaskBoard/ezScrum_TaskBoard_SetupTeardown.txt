@@ -404,13 +404,14 @@ Test TaskBoard - Task Done with Partner Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
 
-Test TaskBoard - Initial Release ID Check Setup
+Test Taskboard - Taskboard not Showing Correctly Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Initial_ReleaseID_Check.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Taskboard_Not_Showing_Correctly.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
-    _InputLoginForm    ${userName}    ${userPassword}
-    Select Project    helloWorld
-
-Test TaskBoard - Initial Release ID Check Teardown
-    Test TaskBoard - New Postcondition
+    _InputLoginForm    admin    admin
+    Select Project    localtestProjectDisplayName
+    Select Node Product    TaskBoard
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    sleep    4s
+    Close Browser
