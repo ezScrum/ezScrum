@@ -407,11 +407,25 @@ Test TaskBoard - Task Done with Partner Teardown
 Test Taskboard - Taskboard not Showing Correctly Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Taskboard_Not_Showing_Correctly.sql
-    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    admin    admin
     Select Project    localtestProjectDisplayName
-    Select Node Product    TaskBoard
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
     ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
+    Set Test Variable    ${tcTaskEstimate}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
+    Select Node Product    TaskBoard
     sleep    4s
     Close Browser
