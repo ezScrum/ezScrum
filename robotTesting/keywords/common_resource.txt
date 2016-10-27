@@ -147,7 +147,7 @@ Data Base Tear Down
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Select Sprint Plan
-    Wait Until Page Contains     Sprint Plan
+    Wait Until Page Contains    Sprint Plan
     Click Element    xpath=//span[text()="Sprint Plan"]
 
 Create Sprint With Typing Zero In Interval
@@ -163,3 +163,8 @@ Create Sprint With Typing Zero In Interval
     Focus AND Input Text    //input[@name="FocusFactor"]    ${sprintFocusFactor}
     ${sprintDemoDate}=    Get Value    xpath=//input[@name="StartDate"]
     Focus AND Input Text    //input[@name="DemoDate"]    ${sprintDemoDate}
+
+Assert Local Text Is Same
+    [Arguments]    ${Local}    ${string}
+    ${text}=    Get Text    ${Local}
+    Should Be Equal As Strings    ${text}    ${string}

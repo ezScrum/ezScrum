@@ -274,4 +274,5 @@ Test Release Plan - Show Printable Release Setup
     Select Project    Test Project
 
 Test Release Plan - Show Printable Release Teardown
+    Select Window    ezScrum, SSLab NTUT
     Exit ezScrum System

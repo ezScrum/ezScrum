@@ -92,5 +92,46 @@ Test Release Plan - Show Printable Release
     Select Node Product    Release Plan
     Click Element    xpath=//div[text()="Release One"]
     Click Element    xpath=//button[text()="Show Printable Release"]
-    #Clean DB
+    Select Window    Release Plan #1
+    #Release One
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[1]/td[1]    Release Plan #1：Release One
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[2]/td[1]    Start Date：
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[2]/td[2]    2016/10/24
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[3]/td[1]    End Date：
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[3]/td[2]    2016/11/13
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[4]/td[1]    Description：
+    Assert Local Text Is Same    //td[1]/table[1]/tbody/tr[4]/td[2]    Description for Release One${SPACE}
+    #Sprint One
+    Assert Local Text Is Same    //table[2]/tbody/tr[2]/td[2]    Sprint #1: Sprint One${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[3]/td[2]    Start Date: 2016/10/24${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[2]     ${SPACE}End Date: 2016/10/30${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[3]    Total Story Points: 33
+    #Story Two
+    Printable Release Check Story Bar    5
+    Printable Release Check Story Value    6    2${SPACE}    Story Two${SPACE}    82${SPACE}    22${SPACE}    Notes for Story Two${SPACE}${SPACE}
+    #Story Two - Task Two
+    Printable Release Check Task Bar    7
+    Printable Release Check Task Value    7    2    2${SPACE}    Task Two${SPACE}    22${SPACE}    admin${SPACE}
+    ...    TestUser${SPACE}${SPACE}     Notes for Task Two${SPACE}${SPACE}
+    #Story One
+    Printable Release Check Story Value    8    1${SPACE}    Story One${SPACE}    81${SPACE}    11${SPACE}    Notes for Story One${SPACE}${SPACE}
+    #Story One - Task One
+    Printable Release Check Task Bar    9
+    Printable Release Check Task Value With Partner Is None    9    2    1${SPACE}    Task One${SPACE}    11${SPACE}    TestUser${SPACE}
+    ...    Notes for Task One${SPACE}${SPACE}
+    #Sprint Two
+    Assert Local Text Is Same    //table[2]/tbody/tr[11]/td[2]    Sprint #2: Sprint Two${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[12]/td[2]    Start Date: 2016/10/31${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[2]     ${SPACE}End Date: 2016/11/13${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[3]    Total Story Points: 33
+    #Syory Three
+    Printable Release Check Story Bar    14
+    Printable Release Check Story Value    15    3${SPACE}    Story Three${SPACE}     83${SPACE}    33${SPACE}    Notes for Story Three${SPACE}${SPACE}
+    #Story Three - Task Three
+    Printable Release Check Task Bar    16
+    Printable Release Check Task Value With Partner Is None    16    2${SPACE}     3${SPACE}     Task Three${SPACE}     33${SPACE}     TestUser${SPACE}
+    ...    Notes for Task Three${SPACE}${SPACE}
+    #Story Three - Task Four
+    Printable Release Check Task Value    16    3    4${SPACE}     Task Four${SPACE}     44${SPACE}     admin${SPACE}
+    ...    TestUser${SPACE}${SPACE}     Notes for Task Four${SPACE}${SPACE}
     [Teardown]    Test Release Plan - Show Printable Release Teardown
