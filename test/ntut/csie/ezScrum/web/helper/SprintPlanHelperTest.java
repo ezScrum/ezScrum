@@ -218,4 +218,27 @@ public class SprintPlanHelperTest {
 		// assert
 		assertNull(sprintNow);
 	}
+	
+	@Test
+	public void testCheckSprintDateOverlapping(){
+		// Get last Sprint
+		SprintObject lastSprint = SprintObject.get(mCS.getSprintsId().get(2));
+		StringBuilder checkSprintDate = mSprintPlanHelper.checkSprintDateOverlapping(lastSprint.getId(), lastSprint.getStartDateString(), lastSprint.getEndDateString());
+		assertEquals("legal", checkSprintDate.toString());
+		
+		//Create a sprint which have same startDate and EndDate with lastSprint.
+		SprintObject newSprint = new SprintObject(lastSprint.getProjectId());
+		newSprint.setTeamSize(1)
+		.setAvailableHours(lastSprint.getAvailableHours())
+		.setFocusFactor(lastSprint.getFocusFactor())
+		.setGoal("Check have same date.")
+		.setStartDate(lastSprint.getStartDateString())
+		.setEndDate(lastSprint.getEndDateString())
+		.setDemoDate(lastSprint.getDemoDateString())
+		.save();
+		mCS.getSprintsId().add(newSprint.getId());
+		mCS.getSprints().add(newSprint);
+		checkSprintDate = mSprintPlanHelper.checkSprintDateOverlapping(newSprint.getId(), newSprint.getStartDateString(), newSprint.getEndDateString());
+		assertEquals("illegal", checkSprintDate.toString());
+	}
 }

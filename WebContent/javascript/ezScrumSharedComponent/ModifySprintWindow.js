@@ -226,12 +226,7 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
         	isCreate: obj.isCreate
         });
         
-        Ext.Ajax.request({
-			url     : obj.url,
-			params  : form.getValues(),
-			success : function(response) { obj.onSubmitSuccess(response); },
-			failure : function(response) { /* notify logon form, not finish yet */ }
-        });
+        this.checkDate();			
     },
     /*-----------------------------------------------------------
      *  上傳成功時候的處理方式   
@@ -256,6 +251,37 @@ ezScrum.SprintDetailForm = Ext.extend(Ext.FormPanel, {
     },
     resetAllField   : function() {
     	this.getForm().reset();
+    },
+    checkDate: function(){
+    	var form = this.getForm();
+    	var obj = this;
+    	Ext.Ajax.request({
+    		url: 'checkSprintDate.do',
+    		params: form.getValues(),
+    		success: function(response){
+    			ConfirmWidget.loadData(response);
+				if (ConfirmWidget.confirmAction()) {
+					if (response.responseText == 'legal') {
+						obj.saveSprintPlan();
+					} else {// illegal
+						Ext.MessageBox.alert('Invalid Date!!', 'Sorry, the Start Date or End Date is overlap with the other sprint.');
+					}
+				}
+    		},
+    		failure: function(response) {
+				Ext.MessageBox.alert('Failure');
+			}
+    	});
+    },
+    saveSprintPlan: function(){
+    	var form = this.getForm();
+		var obj = this;
+		Ext.Ajax.request({
+			url     : obj.url,
+			params  : form.getValues(),
+			success : function(response) { obj.onSubmitSuccess(response); },
+			failure : function(response) { /* notify logon form, not finish yet*/  }
+        });
     },
     LoadTheRecord	: function(sprintID) {
     	var obj = this;

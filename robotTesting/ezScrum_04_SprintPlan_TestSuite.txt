@@ -162,3 +162,26 @@ Test Sprint Plan - Interval Check
     Focus AND Input Text    //input[@name="Interval"]    1
     Click Element    xpath=//button[text()="Submit"]
     [Teardown]    Test Interval Check Teardown
+
+Test Sprint Plan - Can Not Create Second Sprint With Same Date
+    [Setup]    Test Can Not Create Second Sprint With Same Date Setup
+    Select Node Product    Sprint Plan
+    Create Sprint    Test    2    4    100    100
+    Create Sprint With Same Date    Test2    2    3    50    50
+    ${PopOutText}=    Get Text    xpath=//span[text()="Sorry, the Start Date or End Date is overlap with the other sprint."]
+    Should Be Equal    Sorry, the Start Date or End Date is overlap with the other sprint.    ${PopOutText}
+    Click Element    xpath=//button[text()="OK"]
+    Click Element    xpath=//button[text()="Cancel"]
+    [Teardown]    Test Can Not Create Second Sprint With Same Date Teardown
+
+Test Sprint Plan - Can Not Create Sprints With Same Range
+    [Setup]    Test Can Not Create Second Sprint With Same Date Setup
+    Select Node Product    Sprint Plan
+    Create Sprint With Date    Test1    2016/09/15    1    4    80    80
+    Create Sprint With Date    Test2    2016/09/24    1    4    80    80
+    Create Sprint With Date    Test3    2016/09/01    1    4    80    80
+    Create Sprint With Same Range With Date    Test4    2016/09/16    1    4    80    80
+    Create Sprint With Same Range With Date    Test4    2016/09/14    1    4    80    80
+    Create Sprint With Same Range With Date    Test4    2016/09/13    2    4    80    80
+    Create Sprint With Date    Test4    2016/09/08    1    4    80    80
+    [Teardown]    Test Can Not Create Second Sprint With Same Date Teardown

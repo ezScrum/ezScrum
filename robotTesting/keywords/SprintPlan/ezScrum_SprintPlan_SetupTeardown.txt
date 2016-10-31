@@ -116,3 +116,15 @@ Test Interval Check Setup
 Test Interval Check Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
+
+Test Can Not Create Second Sprint With Same Date Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintPlan    Can Not Create Second Sprint With Same Date.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    Test Project
+
+Test Can Not Create Second Sprint With Same Date Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
