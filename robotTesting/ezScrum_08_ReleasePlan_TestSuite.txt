@@ -72,8 +72,7 @@ Test Release Plan - Contain Sprints
 Test Release Plan - New Sprint
     [Documentation]    建立release後直接在該頁面建立sprint,檢查是否有被納入
     [Setup]    Test Release Plan - New Sprint Setup
-    ${sprintStartDate}=    Get Start Date    NOW
-    Create Sprint In Release Plan    sprint1 sprint goal    ${sprintStartDate}    2    4    100    100
+    Create Sprint In Release Plan    sprint1 sprint goal    2016/07/04    2    4    100    100
     Wait Until Page Contains    sprint1 sprint goal
     Xpath Should Match X Times    //div[@id="ReleasePlan_ReleaseTree"]//div[text()="sprint1 sprint goal"]    1
     [Teardown]    Test Release Plan - New Sprint Teardown
@@ -104,7 +103,7 @@ Test Release Plan - Show Printable Release
     #Sprint One
     Assert Local Text Is Same    //table[2]/tbody/tr[2]/td[2]    Sprint #1: Sprint One${SPACE}
     Assert Local Text Is Same    //table[2]/tbody/tr[3]/td[2]    Start Date: 2016/10/24${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[2]     ${SPACE}End Date: 2016/10/30${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[2]    ${SPACE}End Date: 2016/10/30${SPACE}
     Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[3]    Total Story Points: 33
     #Story Two
     Printable Release Check Story Bar    5
@@ -112,7 +111,7 @@ Test Release Plan - Show Printable Release
     #Story Two - Task Two
     Printable Release Check Task Bar    7
     Printable Release Check Task Value    7    2    2${SPACE}    Task Two${SPACE}    22${SPACE}    admin${SPACE}
-    ...    TestUser${SPACE}${SPACE}     Notes for Task Two${SPACE}${SPACE}
+    ...    TestUser${SPACE}${SPACE}    Notes for Task Two${SPACE}${SPACE}
     #Story One
     Printable Release Check Story Value    8    1${SPACE}    Story One${SPACE}    81${SPACE}    11${SPACE}    Notes for Story One${SPACE}${SPACE}
     #Story One - Task One
@@ -122,16 +121,16 @@ Test Release Plan - Show Printable Release
     #Sprint Two
     Assert Local Text Is Same    //table[2]/tbody/tr[11]/td[2]    Sprint #2: Sprint Two${SPACE}
     Assert Local Text Is Same    //table[2]/tbody/tr[12]/td[2]    Start Date: 2016/10/31${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[2]     ${SPACE}End Date: 2016/11/13${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[2]    ${SPACE}End Date: 2016/11/13${SPACE}
     Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[3]    Total Story Points: 33
     #Syory Three
     Printable Release Check Story Bar    14
-    Printable Release Check Story Value    15    3${SPACE}    Story Three${SPACE}     83${SPACE}    33${SPACE}    Notes for Story Three${SPACE}${SPACE}
+    Printable Release Check Story Value    15    3${SPACE}    Story Three${SPACE}    83${SPACE}    33${SPACE}    Notes for Story Three${SPACE}${SPACE}
     #Story Three - Task Three
     Printable Release Check Task Bar    16
-    Printable Release Check Task Value With Partner Is None    16    2${SPACE}     3${SPACE}     Task Three${SPACE}     33${SPACE}     TestUser${SPACE}
+    Printable Release Check Task Value With Partner Is None    16    2${SPACE}    3${SPACE}    Task Three${SPACE}    33${SPACE}    TestUser${SPACE}
     ...    Notes for Task Three${SPACE}${SPACE}
     #Story Three - Task Four
-    Printable Release Check Task Value    16    3    4${SPACE}     Task Four${SPACE}     44${SPACE}     admin${SPACE}
-    ...    TestUser${SPACE}${SPACE}     Notes for Task Four${SPACE}${SPACE}
+    Printable Release Check Task Value    16    3    4${SPACE}    Task Four${SPACE}    44${SPACE}    admin${SPACE}
+    ...    TestUser${SPACE}${SPACE}    Notes for Task Four${SPACE}${SPACE}
     [Teardown]    Test Release Plan - Show Printable Release Teardown
