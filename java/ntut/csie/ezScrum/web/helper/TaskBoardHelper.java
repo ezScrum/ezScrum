@@ -136,7 +136,7 @@ public class TaskBoardHelper {
 		private String SprintGoal = "";
 		private double CurrentStoryPoint = 0d;
 		private double CurrentTaskPoint = 0d;
-		private String ReleaseID = "Release None";
+		private String ReleaseID = "None";
 		private boolean isCurrentSprint = false;
 
 		public SprintInfoUI() {}
@@ -149,7 +149,7 @@ public class TaskBoardHelper {
 			if(releaseId > 0)
 				ReleaseID = "Release #" + releaseId;
 			else
-				ReleaseID = "Release None";
+				ReleaseID = "None";
 			isCurrentSprint = current;
 		}
 	}

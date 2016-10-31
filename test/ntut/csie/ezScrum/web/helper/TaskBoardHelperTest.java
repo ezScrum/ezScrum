@@ -216,7 +216,7 @@ public class TaskBoardHelperTest {
 		assertEquals(15, json.getInt("CurrentStoryPoint"));
 		assertEquals(72, json.getInt("CurrentTaskPoint"));
 		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
-		assertEquals("Release None", json.getString("ReleaseID"));
+		assertEquals("None", json.getString("ReleaseID"));
 
 		// close a story and tasks belong this story
 		mASTS.getStories().get(0).setStatus(StoryObject.STATUS_DONE).save();
@@ -229,7 +229,7 @@ public class TaskBoardHelperTest {
 		assertEquals(10, json.getInt("CurrentStoryPoint"));
 		assertEquals(48, json.getInt("CurrentTaskPoint"));
 		assertEquals("TEST_SPRINTGOAL_1", json.getString("SprintGoal"));
-		assertEquals("Release None", json.getString("ReleaseID"));
+		assertEquals("None", json.getString("ReleaseID"));
 	}
 	
 	@Test
