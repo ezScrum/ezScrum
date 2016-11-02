@@ -59,6 +59,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		} catch (NullPointerException e) {							// issue為null
 			result.append("fail...issue不存在");
 		}
+		System.out.println(result);
 		return result;
 	}
 }

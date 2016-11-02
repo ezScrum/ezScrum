@@ -67,6 +67,7 @@
 	cellpadding: 10px;
 	cellspacing: 1px;
 	border-collpase: collpase;
+	word-break : break-all;
 }
 
 .TaskCard_Table {
@@ -79,6 +80,7 @@
 	cellpadding: 10px;
 	cellspacing: 1px;
 	border-collpase: collpase;
+	word-break : break-all;
 }
 
 .TaskCard_Description {

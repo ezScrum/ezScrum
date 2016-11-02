@@ -299,3 +299,18 @@ Test ProductBacklog - Attach File
     Wait Until Page Contains    Attach File Success.
     Wait Until Element Is Visible    //tbody/tr/td[@class="x-grid3-col x-grid3-cell x-grid3-td-3 "]/div[@class="x-grid3-cell-inner x-grid3-col-3"]/img
     [Teardown]    Test Attach File Teardown
+
+Test ProductBacklog - Invailid Change Line
+    [Setup]    Test ProductBacklog With Change Line Setup
+    Wait Until Page Contains    oriStory
+    # 比對 +號 content
+    ${storyID}=    Get Story ID
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
+    Should Be Equal    ${testNameText}    Name:\noriStory
+    ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..
+    Should Be Equal    ${testNotesText}    Notes:\nNote: newStory\nChangeLine
+    ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
+    Should Be Equal    ${testHowToDemoText}    How To Demo:\nHowToDemo: newStory\nChangeLine
+    [Teardown]    Test Edit Story Teardown    ${storyID}

@@ -84,14 +84,14 @@ public class Translation {
 
 				jsonStory.put("Id", stories.get(i).getSerialId());
 				jsonStory.put("Type", "Story");
-				jsonStory.put("Name", TranslateSpecialChar.TranslateJSONChar((stories.get(i).getName())));
+				jsonStory.put("Name", (stories.get(i).getName()));
 				jsonStory.put("Value", stories.get(i).getValue());
 				jsonStory.put("Estimate", stories.get(i).getEstimate());
 				jsonStory.put("Importance", stories.get(i).getImportance());
 				jsonStory.put("Tag", TranslateSpecialChar.TranslateJSONChar(Join(stories.get(i).getTags(), ",")));
 				jsonStory.put("Status", stories.get(i).getStatusString());
-				jsonStory.put("Notes", TranslateSpecialChar.TranslateJSONChar(stories.get(i).getNotes()));
-				jsonStory.put("HowToDemo", TranslateSpecialChar.TranslateJSONChar(stories.get(i).getHowToDemo()));
+				jsonStory.put("Notes", stories.get(i).getNotes());
+				jsonStory.put("HowToDemo", stories.get(i).getHowToDemo());
 				jsonStory.put("Link", "");
 				jsonStory.put("Release", "");
 				if (stories.get(i).getSprintId() == StoryObject.NO_PARENT) {
