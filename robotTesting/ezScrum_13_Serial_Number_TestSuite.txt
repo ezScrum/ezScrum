@@ -18,11 +18,11 @@ Test Serial Number - Check ID In Sprint Plan
     Click Element    xpath=//div[text()="second"]
     Select Node Product    Sprint Plan
     Create Sprint    second sprint1    2    4    100    100
-    Create Sprint    second sprint2    2    4    100    100
+    Create Sprint Without StartDate    second sprint2    2    4    100    100
     Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    1    #4    #should be 1
     Compare Text In Specific Xpath    //div[text() ="second sprint2"]/../../td[1]/div    2    #5    #should be 2
     Delete Sprint
-    Create Sprint    second sprint3    2    4    100    100
+    Create Sprint Without StartDate    second sprint3    2    4    100    100
     Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    3    #6    #should be 3
     Select Node Product    Product Backlog
     Add A New Story With Story Name And Value    story1    10
