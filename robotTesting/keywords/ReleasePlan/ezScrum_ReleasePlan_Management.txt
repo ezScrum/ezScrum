@@ -205,15 +205,13 @@ Printable Release Check Story Bar
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[3]    Story Name
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[4]    Imp.
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[5]    Est.
-    Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[6]    Notes
 
 Printable Release Check Story Value
-    [Arguments]    ${line}    ${id}    ${name}    ${imp}    ${est}    ${note}
+    [Arguments]    ${line}    ${id}    ${name}    ${imp}    ${est}
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[2]    ${id}
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[3]    ${name}
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[4]    ${imp}
     Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[5]    ${est}
-    Assert Local Text Is Same    //table[2]/tbody/tr[${line}]/td[6]    ${note}
 
 Printable Release Check Task Bar
     [Arguments]    ${line}
