@@ -29,7 +29,7 @@
 			</tr>
 			<tr><td align="right" width="15%" class="ReportInfoButtom">
 				Description：</td>
-				<td align="left" class="ReportInfoButtom">${release.description}&nbsp;</td>
+				<td align="left" width="80%" class="ReportInfoButtom">${release.description}&nbsp;</td>
 				<td class="ReportInfoButtom" colspan="2"> &nbsp;</td>
 			</tr>
 		</table>
@@ -49,6 +49,11 @@
 				</tr>
 				<tr>
 					<td width="5%"></td>
+					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">Demo Date: ${element.demoDateString}&nbsp;</td>
+					<td class="ReportFrameWithoutBorder" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="5%"></td>
 					<td class="ReportFrameWithoutBorder" colspan="2" align="left" width="15%">&nbsp;End Date: ${element.endDateString}&nbsp;</td>
 					<td class="ReportFrameWithoutBorder" colspan="3" align="left">Total Story Points: ${totalStoryPoints[element.serialId]}</td>
 				</tr>
@@ -56,17 +61,17 @@
 				<tr>
 					<td></td>
 					<td class="ReportFrameTitle" align="center" width="10%">ID</td>
-					<td class="ReportFrameTitle" align="left" width="50%">Story Name</td>
-					<td class="ReportFrameTitle" align="center" width="10%">Imp.</td>
-					<td class="ReportFrameTitle" align="center" width="10%">Est.</td>
+					<td class="ReportFrameTitle" align="left" width="70%">Story Name</td>
+					<td class="ReportFrameTitle" align="center" width="8%">Imp.</td>
+					<td class="ReportFrameTitle" align="center" width="8%">Est.</td>
 				</tr>
 				<logic:iterate id="story" property="${element.serialId}" name="stories">
 					<tr>
 						<td></td>
-						<td class="ReportFrame" align="center" width="5%">${story.serialId}&nbsp;</td>
-						<td class="ReportFrame" align="left" width="40%">${story.name}&nbsp;</td>
-						<td class="ReportFrame" align="center" width="10%">${story.importance}&nbsp;</td>
-						<td class="ReportFrame" align="center" width="10%">${story.estimate}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="10%">${story.serialId}&nbsp;</td>
+						<td class="ReportFrame" align="left" width="70%">${story.name}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="8%">${story.importance}&nbsp;</td>
+						<td class="ReportFrame" align="center" width="8%">${story.estimate}&nbsp;</td>
 					</tr>								
 				</logic:iterate>
 			</logic:iterate>
