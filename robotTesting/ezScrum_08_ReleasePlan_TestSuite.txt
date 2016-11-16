@@ -103,19 +103,21 @@ Test Release Plan - Show Printable Release
     #Sprint One
     Assert Local Text Is Same    //table[2]/tbody/tr[2]/td[2]    Sprint #1: Sprint One${SPACE}
     Assert Local Text Is Same    //table[2]/tbody/tr[3]/td[2]    Start Date: 2016/10/24${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[2]    ${SPACE}End Date: 2016/10/30${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[3]    Total Story Points: 33
+    Assert Local Text Is Same    //table[2]/tbody/tr[4]/td[2]    Demo Date: 2016/10/28${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[5]/td[2]    ${SPACE}End Date: 2016/10/30${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[5]/td[3]    Total Story Points: 33
     #Story Two
-    Printable Release Check Story Bar    5
-    Printable Release Check Story Value    6    2${SPACE}    Story Two${SPACE}    82${SPACE}    22${SPACE}
+    Printable Release Check Story Bar    6
+    Printable Release Check Story Value    7    2${SPACE}    Story Two${SPACE}    82${SPACE}    22${SPACE}
     #Story One
-    Printable Release Check Story Value    7    1${SPACE}    Story One${SPACE}    81${SPACE}    11${SPACE}
+    Printable Release Check Story Value    8    1${SPACE}    Story One${SPACE}    81${SPACE}    11${SPACE}
     #Sprint Two
-    Assert Local Text Is Same    //table[2]/tbody/tr[9]/td[2]    Sprint #2: Sprint Two${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[10]/td[2]    Start Date: 2016/10/31${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[11]/td[2]    ${SPACE}End Date: 2016/11/13${SPACE}
-    Assert Local Text Is Same    //table[2]/tbody/tr[11]/td[3]    Total Story Points: 33
+    Assert Local Text Is Same    //table[2]/tbody/tr[10]/td[2]    Sprint #2: Sprint Two${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[11]/td[2]    Start Date: 2016/10/31${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[12]/td[2]    Demo Date: 2016/11/11${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[2]    ${SPACE}End Date: 2016/11/13${SPACE}
+    Assert Local Text Is Same    //table[2]/tbody/tr[13]/td[3]    Total Story Points: 33
     #Story Three
-    Printable Release Check Story Bar    12
-    Printable Release Check Story Value    13    3${SPACE}    Story Three${SPACE}    83${SPACE}    33${SPACE}
+    Printable Release Check Story Bar    14
+    Printable Release Check Story Value    15    3${SPACE}    Story Three${SPACE}    83${SPACE}    33${SPACE}
     [Teardown]    Test Release Plan - Show Printable Release Teardown
