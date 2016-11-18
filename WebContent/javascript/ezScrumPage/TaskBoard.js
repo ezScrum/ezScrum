@@ -19,8 +19,8 @@ ezScrum.TaskBoardPage = Ext.extend( Ext.Panel, {
 		
 		var config = {
 				items: [
-				        { ref: 'TaskBoard_SprintDescForm_ID', xtype: 'TaskBoard_SprintDescForm' },
-				        { ref: 'TaskBoard_BurndownChartForm_ID', xtype: 'BurndownChartForm' }
+				        { ref: 'TaskBoard_SprintDescForm_ID', xtype: 'TaskBoard_SprintDescForm' }
+//				        { ref: 'TaskBoard_BurndownChartForm_ID', xtype: 'BurndownChartForm' }
 		        ],
 		        plugins: boardPlugin
 		}
@@ -48,7 +48,7 @@ ezScrum.TaskBoardPage = Ext.extend( Ext.Panel, {
 			// Sprint Info
 			this.TaskBoard_SprintDescForm_ID.loadDataModel();
 			// Burndown Chart
-			this.TaskBoard_BurndownChartForm_ID.loadDataModel();
+//			this.TaskBoard_BurndownChartForm_ID.loadDataModel();
 			
 			// Card Panel, 如果TaskBoard_SprintDescForm_ID.getSprintID()!=undefined表示之前已經有瀏覽記錄，取出後送reload的event
 			if(this.plugins != ''){
