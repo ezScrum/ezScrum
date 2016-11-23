@@ -6,23 +6,70 @@ ezScrum.StoryTestBurndownChart = Ext.extend(Ext.Panel, {
 	style: 'background-color: white',
 	style: 'float: left; width: 50%',
     initComponent : function() {
+    	var chartElement = document.createElement('canvas');
+    	chartElement.id = 'bek';
+    	chartElement.cls = 'x-panel-body';
+    	document.body.appendChild(chartElement);
+    	
+    	var storyChart = {
+    			label: ["11/01","11/02","11/03","11/04","11/05","11/08","11/09","11/10","11/11","11/12","11/13"],
+    			dataSets:[{
+    				label: 'RealPoint',
+    				backgroundColor: "rgba(0, 0, 0, 0)",
+    				strokeColor: "rgba(151,187,205,1)",
+    				pointColor: "rgba(151,187,205,1)",
+    				pointStrokeColor: "#fff",
+    				data: [10,9,8,7,6,5,4,3,2,1,0]
+    	          },{
+    	        	label: 'IdealPoint',
+    	        	backgroundColor: "rgba(0, 0, 0, 0)",
+    	        	strokeColor: "rgba(255,255,205,0)",
+      				pointColor: "rgba(255,187,205,0)",
+      				pointStrokeColor: "#fff",
+      				data: [10,10,10,5,5,5,3,3,3,1,0]
+    	          }]
+    	}
+    	
 		var config = {
 			items: [{
 	            height: 200,
-				bodyCfg: {
-			        tag: 'div',
-			        id: 'bek',
-			        style: 'background-color: blue',
-			        cls: 'x-panel-body',  // Default class not applied if Custom element specified
-			        html: function(){
-			        	var ctx = document.getElementById('bek');
-			        	return ctx;
-			        }()
-			    }
+//				bodyCfg: {
+//			        tag: 'canvas',
+//			        id: 'bek',
+////			        cls: 'x-panel-body',  // Default class not applied if Custom element specified
+//			        html: function(){
+//			        	console.log("2");
+//					   	console.log(document.getElementById("bek"));
+//			        }()
+//			    },
+			    html: function(){
+		        	console.log("3");
+			    	console.log(document.getElementById("bek"));
+			    }()
+			},{
+				
 			}]
 		}
+    	
+    	console.log("4");
+    	console.log(document.getElementById("bek"));
+    	var myLine = new Chart(chartElement,{
+    		type: 'line',
+    		data: storyChart,
+    		options: {
+    	        scales: {
+    	            yAxes: [{
+    	                ticks: {
+
+    	                    beginAtZero:true
+    	                }
+    	            }]
+    	        }
+    	    }
+    	})
+
 		
-		Ext.apply(this, Ext.apply(this.initialConfig, config));
+    	Ext.apply(this, config);
 		ezScrum.StoryTestBurndownChart.superclass.initComponent.apply(this, arguments);
     }
 });
