@@ -3,19 +3,16 @@ Ext.ns('ezScrum');
 //StoryBurndowChart
 ezScrum.StoryTestBurndownChart = Ext.extend(Ext.Panel, {
 	title		: 'Story Test Burndown Chart',
+	id: 'bar',
 	style: 'background-color: white',
 	style: 'float: left; width: 50%',
     initComponent : function() {
-    	var chartElement = document.createElement('canvas');
-    	chartElement.id = 'bek';
-    	chartElement.cls = 'x-panel-body';
-    	document.body.appendChild(chartElement);
     	
     	var storyChart = {
     			label: ["11/01","11/02","11/03","11/04","11/05","11/08","11/09","11/10","11/11","11/12","11/13"],
     			dataSets:[{
     				label: 'RealPoint',
-    				backgroundColor: "rgba(0, 0, 0, 0)",
+    				backgroundColor: "rgba(255, 255, 255, 1)",
     				strokeColor: "rgba(151,187,205,1)",
     				pointColor: "rgba(151,187,205,1)",
     				pointStrokeColor: "#fff",
@@ -30,43 +27,43 @@ ezScrum.StoryTestBurndownChart = Ext.extend(Ext.Panel, {
     	          }]
     	}
     	
+    	
 		var config = {
-			items: [{
-	            height: 200,
-//				bodyCfg: {
-//			        tag: 'canvas',
-//			        id: 'bek',
-////			        cls: 'x-panel-body',  // Default class not applied if Custom element specified
-//			        html: function(){
-//			        	console.log("2");
-//					   	console.log(document.getElementById("bek"));
-//			        }()
-//			    },
-			    html: function(){
-		        	console.log("3");
-			    	console.log(document.getElementById("bek"));
-			    }()
-			},{
-				
-			}]
+    			items: [{
+    		        xtype: 'box',
+    		        autoEl:{
+    					tag: 'canvas'
+    					,height:150
+    				}
+    				,listeners:{
+    					render:{
+    						scope:this
+    						,fn:function(){
+    							console.log(this.items.items[0].el.dom);
+    							var canvas = this.items.items[0].el.dom;
+    							var ctx = canvas.getContext("2d");
+    							var myLine = new Chart(ctx,{
+    					    		type: 'line',
+    					    		data: storyChart,
+    					    		options: {
+    					    	        scales: {
+    					    	            yAxes: [{
+    					    	                ticks: {
+
+    					    	                    beginAtZero:true
+    					    	                }
+    					    	            }]
+    					    	        }
+    					    	    }
+    					    	})
+    						}
+    					}
+    		        }
+    			}]
 		}
     	
     	console.log("4");
     	console.log(document.getElementById("bek"));
-    	var myLine = new Chart(chartElement,{
-    		type: 'line',
-    		data: storyChart,
-    		options: {
-    	        scales: {
-    	            yAxes: [{
-    	                ticks: {
-
-    	                    beginAtZero:true
-    	                }
-    	            }]
-    	        }
-    	    }
-    	})
 
 		
     	Ext.apply(this, config);
@@ -104,6 +101,35 @@ Ext.reg('StoryTestBurndownChart', ezScrum.StoryTestBurndownChart);
 //});
 //Ext.reg('TaskTestBurndownChart', ezScrum.TaskTestBurndownChart);
 
+TestChartWithCanvasPanel = new Ext.Panel({
+	title:'Test',
+	frame:true,
+	items:{
+		xtype: 'box',
+		autoEL:{
+			tag:'canvas'
+		},
+		Listeners:{
+			render:{
+				scope:this,
+				fn:function(){
+					var canvas = TestChartWithCanvasPanel.items.items[0].el.dom;
+					 var ctx = canvas.getContext("2d");
+					 ctx.fillStyle = "red";
+					 
+					  ctx.beginPath();
+					  ctx.moveTo(30, 30);
+					  ctx.lineTo(150, 150);
+					  ctx.bezierCurveTo(60, 70, 60, 70, 70, 150);
+					  ctx.lineTo(30, 30);
+					  ctx.fill();
+				}
+			}
+		}
+	}
+});
+Ext.reg('TestChartWithCanvasPanel', TestChartWithCanvasPanel);
+
 ezScrum.BurndownChartTestForm = Ext.extend(Ext.Panel, {
 	frame		: true,
 	border		: false,
@@ -115,6 +141,7 @@ ezScrum.BurndownChartTestForm = Ext.extend(Ext.Panel, {
 	initComponent : function() {
 		var config = {
 			items: [{
+				ref: 'StoryChart',
 				xtype: 'StoryTestBurndownChart'
 		    },
 		    {
