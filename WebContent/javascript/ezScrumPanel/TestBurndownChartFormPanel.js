@@ -9,23 +9,29 @@ ezScrum.StoryTestBurndownChart = Ext.extend(Ext.Panel, {
     initComponent : function() {
     	
     	var storyChart = {
-    			label: ["11/01","11/02","11/03","11/04","11/05","11/08","11/09","11/10","11/11","11/12","11/13"],
-    			dataSets:[{
-    				label: 'RealPoint',
-    				backgroundColor: "rgba(255, 255, 255, 1)",
-    				strokeColor: "rgba(151,187,205,1)",
-    				pointColor: "rgba(151,187,205,1)",
-    				pointStrokeColor: "#fff",
-    				data: [10,9,8,7,6,5,4,3,2,1,0]
-    	          },{
-    	        	label: 'IdealPoint',
-    	        	backgroundColor: "rgba(0, 0, 0, 0)",
-    	        	strokeColor: "rgba(255,255,205,0)",
-      				pointColor: "rgba(255,187,205,0)",
-      				pointStrokeColor: "#fff",
-      				data: [10,10,10,5,5,5,3,3,3,1,0]
-    	          }]
-    	}
+    	        labels: ["11/01","11/02","11/03","11/04","11/05","11/08","11/09","11/10","11/11","11/12","11/13"],
+    	        datasets: [{
+    	            label: 'RealPoint',
+    		    fill: false,
+    		    lineTension: 0,
+    	            backgroundColor: "rgba(0, 0, 0, 0)",
+    	            borderColor: "rgba(255, 0, 0, 0.5)",
+    		    borderWidth: 3.5,
+    	            pointRadius: 0,
+    	            pointBackgroundColor: "#fff",
+    	            data: [10,9,8,7,6,5,4,3,2,1,0],
+    	        },{
+    	            label: 'IdealPoint',
+    		    fill: false,
+    		    lineTension: 0,
+    	            backgroundColor: "rgba(0, 0, 0, 0)",
+    	            borderColor: "rgba(180, 150, 130, 1)",
+    		    borderWidth: 4,
+    	            pointRadius: 3,
+    	            pointBackgroundColor: "rgba(180, 150, 130, 1)",
+    	            data: [10,10,10,5,5,5,3,3,3,1,0]
+    	        }]
+    	    }
     	
     	
 		var config = {
