@@ -12,7 +12,7 @@ var SummaryPage = new Ext.Panel({
 		'show' : function() {
 			this.Summary_ProjectDesc_Form_ID.loadDataModel();
 			this.Summary_TaskBoardDesc_Form_ID.loadDataModel();
-//			this.Summary_BurndownChart_Form_ID.loadDataModel();
+			this.Summary_BurndownChart_Form_ID.loadDataModel();
 		}
 	}
 });
