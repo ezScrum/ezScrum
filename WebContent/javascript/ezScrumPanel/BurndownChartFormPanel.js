@@ -33,19 +33,19 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 					fill : false,
 					lineTension : 0,
 					backgroundColor : "rgba(0, 0, 0, 0)",
-					borderColor : "rgba(180, 150, 130, 1)",
+					borderColor : "rgba(255, 0, 0, 1)",
 					borderWidth : 4,
-					pointRadius : 3,
-					pointBackgroundColor : "rgba(180, 150, 130, 1)",
+					pointRadius : 1.5,
+					pointBackgroundColor : "rgba(255, 0, 0, 1)",
 					data : realPoint,
 				}, {
 					label : 'IdealPoint',
 					fill : false,
 					lineTension : 0,
 					backgroundColor : "rgba(0, 0, 0, 0)",
-					borderColor : "rgba(255, 0, 0, 0.5)",
+					borderColor : "rgba(153, 187, 232, 1)",
 					borderWidth : 3.5,
-					pointRadius : 0,
+					pointRadius : 1.5,
 					pointBackgroundColor : "#fff",
 					data : idealPoint
 				} ]
@@ -134,17 +134,17 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 					fill : false,
 					lineTension : 0,
 					backgroundColor : "rgba(0, 0, 0, 0)",
-					borderColor : "rgba(180, 150, 130, 1)",
+					borderColor : "rgba(255, 0, 0, 1)",
 					borderWidth : 4,
 					pointRadius : 1.5,
-					pointBackgroundColor : "rgba(180, 150, 130, 1)",
+					pointBackgroundColor : "rgba(255, 0, 0, 1)",
 					data : realPoint,
 				}, {
 					label : 'IdealPoint',
 					fill : false,
 					lineTension : 0,
 					backgroundColor : "rgba(0, 0, 0, 0)",
-					borderColor : "rgba(255, 0, 0, 0.5)",
+					borderColor : "rgba(153, 187, 232, 1)",
 					borderWidth : 3.5,
 					pointRadius : 1.5,
 					pointBackgroundColor : "#fff",
@@ -161,8 +161,7 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 					scales : {
 						yAxes : [{
 							ticks : {
-								beginAtZero : true,
-								display: false
+								beginAtZero : true
 							}
 						}]
 					}
