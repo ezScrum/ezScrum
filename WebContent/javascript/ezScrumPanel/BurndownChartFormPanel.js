@@ -11,29 +11,72 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
     		fields: ['Date', 'IdealPoint', 'RealPoint']
     	});
     	
+    	var that = this;
+		
+		this.StoryStore.on('load', function(s, rs) {
+			var label = rs.map(function(obj) {
+				return obj.data.Date.substr(5)
+			})
+
+			var idealPoint = rs.map(function(obj) {
+				return obj.data.IdealPoint
+			})
+
+			var realPoint = rs.map(function(obj) {
+				return obj.data.RealPoint
+			})
+			
+			var storyChart = {
+				labels : label,
+				datasets : [ {
+					label : 'RealPoint',
+					fill : false,
+					lineTension : 0,
+					backgroundColor : "rgba(0, 0, 0, 0)",
+					borderColor : "rgba(180, 150, 130, 1)",
+					borderWidth : 4,
+					pointRadius : 3,
+					pointBackgroundColor : "rgba(180, 150, 130, 1)",
+					data : realPoint,
+				}, {
+					label : 'IdealPoint',
+					fill : false,
+					lineTension : 0,
+					backgroundColor : "rgba(0, 0, 0, 0)",
+					borderColor : "rgba(255, 0, 0, 0.5)",
+					borderWidth : 3.5,
+					pointRadius : 0,
+					pointBackgroundColor : "#fff",
+					data : idealPoint
+				} ]
+			}
+			
+			var canvas = that.items.items[0].el.dom;
+			var ctx = canvas.getContext("2d");
+			var myLine = new Chart(ctx, {
+				type : 'line',
+				data : storyChart,
+				options : {
+					scales : {
+						yAxes : [{
+							ticks : {
+								beginAtZero : true
+							}
+						}]
+					}
+				}
+			})
+		})
+		
 		var config = {
-			items: [{
-		        xtype: 'linechart',
-		        store: this.StoryStore,
-		        xField: 'Date',
-		        yField: 'IdealPoint',
-		        
-		        series: [{
-		            type: 'line',
-		            displayName: 'Ideal Point',
-		            yField: 'IdealPoint',
-		            style: {
-		                color: '#99bbe8'
-		            }
-		        }, {
-		            type:'line',
-		            displayName: 'Real Point',
-		            yField: 'RealPoint',
-		            style: {
-		                color: '#FF0000'
-		        	}
-		        }]
-			}]
+			items : [ {
+				xtype : 'box',
+				autoEl : {
+					tag : 'canvas',
+					height : 100,
+					style: "background-color: #ffffff"
+				}
+			} ]
 		}
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -69,29 +112,73 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
     		fields: ['Date', 'IdealPoint', 'RealPoint']
     	});
     	
+    	var that = this;
+		
+		this.TaskStore.on('load', function(s, rs) {
+			var label = rs.map(function(obj) {
+				return obj.data.Date.substr(5)
+			})
+
+			var idealPoint = rs.map(function(obj) {
+				return obj.data.IdealPoint
+			})
+
+			var realPoint = rs.map(function(obj) {
+				return obj.data.RealPoint
+			})
+			
+			var taskChart = {
+				labels : label,
+				datasets : [ {
+					label : 'RealPoint',
+					fill : false,
+					lineTension : 0,
+					backgroundColor : "rgba(0, 0, 0, 0)",
+					borderColor : "rgba(180, 150, 130, 1)",
+					borderWidth : 4,
+					pointRadius : 1.5,
+					pointBackgroundColor : "rgba(180, 150, 130, 1)",
+					data : realPoint,
+				}, {
+					label : 'IdealPoint',
+					fill : false,
+					lineTension : 0,
+					backgroundColor : "rgba(0, 0, 0, 0)",
+					borderColor : "rgba(255, 0, 0, 0.5)",
+					borderWidth : 3.5,
+					pointRadius : 1.5,
+					pointBackgroundColor : "#fff",
+					data : idealPoint
+				} ]
+			}
+			
+			var canvas = that.items.items[0].el.dom;
+			var ctx = canvas.getContext("2d");
+			var myLine = new Chart(ctx, {
+				type : 'line',
+				data : taskChart,
+				options : {
+					scales : {
+						yAxes : [{
+							ticks : {
+								beginAtZero : true,
+								display: false
+							}
+						}]
+					}
+				}
+			})
+		})
+		
 		var config = {
-			items: [{
-		        xtype: 'linechart',
-		        store: this.TaskStore,
-		        xField: 'Date',
-		        yField: 'IdealPoint',
-		        
-		        series: [{
-		            type: 'line',
-		            displayName: 'Ideal Point',
-		            yField: 'IdealPoint',
-		            style: {
-		                color: '#99bbe8'
-		            }
-		        }, {
-		            type:'line',
-		            displayName: 'Real Point',
-		            yField: 'RealPoint',
-		            style: {
-		                color: '#FF0000'
-		        	}
-		        }]
-			}]
+			items : [ {
+				xtype : 'box',
+				autoEl : {
+					tag : 'canvas',
+					height : 100,
+					style: "background-color: #ffffff"
+				}
+			} ]
 		}
 		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -106,7 +193,6 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 			url : obj.url + '?SprintID=' + obj.sprintID + '&Type=task',
 			success: function(response) {
 				obj.TaskStore.loadData(Ext.decode(response.responseText));
-				console.log(response);
 			},
 			failure: function() {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');

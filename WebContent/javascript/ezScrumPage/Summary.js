@@ -5,8 +5,8 @@ var SummaryPage = new Ext.Panel({
     items: [
 		{ ref: 'Summary_ProjectDesc_Form_ID', xtype: 'ProjectDescForm'},
 		{ ref: 'Summary_TaskBoardDesc_Form_ID', xtype:	'TaskBoardDescForm'},
-		{ ref: 'Summary_BurndownChart_Form_ID', xtype:	'BurndownChartTestForm'}
-//		{ ref: 'Summary_BurndownChart_Form_ID', xtype: 'BurndownChartForm'}
+//		{ ref: 'Summary_BurndownChart_Form_ID', xtype:	'BurndownChartTestForm'}
+		{ ref: 'Summary_BurndownChart_Form_ID', xtype: 'BurndownChartForm'}
     ],
 	listeners : {
 		'show' : function() {
