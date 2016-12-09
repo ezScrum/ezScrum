@@ -429,3 +429,15 @@ Test Taskboard - Taskboard not Showing Correctly Setup
     Select Node Product    TaskBoard
     sleep    4s
     Close Browser
+
+Test TaskBoard - Card Form Panel Check Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    TaskBoard_Card_Form_Panel_Check.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    TestProject
+
+Test TaskBoard - Card Form Panel Check Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

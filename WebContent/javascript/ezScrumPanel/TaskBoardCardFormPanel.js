@@ -55,8 +55,10 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     		},
     		async : false,
     		success : function(response) {
-    			TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
+    			setTimeout( function() {    				
+    				TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
     			obj.initialTaskBoard();
+    			}, 50)
     		},
     		failure: function() {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
@@ -93,8 +95,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			}
 			
 			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
-			this.TaskBoardCardPanel.doLayout();
-			statusPanel.resetCellHeight();
+				this.TaskBoardCardPanel.doLayout();
+				statusPanel.resetCellHeight();				
+			
 		}
 	},
 	/**
