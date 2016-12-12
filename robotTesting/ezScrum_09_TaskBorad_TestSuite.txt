@@ -290,12 +290,3 @@ Test TaskBoard - Task Done with partner
     Compare Field Content    //input[@name="Remains"]    0
     Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
-
-Test Taskboard - Task board not showing correctly
-    [Setup]    Test Taskboard - Taskboard not Showing Correctly Setup
-    Close Browser
-
-Test TaskBoard - Card Form Panel Check
-    [Setup]    Test TaskBoard - Card Form Panel Check Setup
-    Select Node Product    TaskBoard
-    [Teardown]    Test TaskBoard - Card Form Panel Check Teardown
