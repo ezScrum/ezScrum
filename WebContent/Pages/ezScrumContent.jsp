@@ -168,7 +168,6 @@
 <script type="text/javascript" src="javascript/ezScrumPanel/TaskBoardDescFormPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/SprintPlanPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/BurndownChartFormPanel.js"></script>
-<script type="text/javascript" src="javascript/ezScrumPanel/TestBurndownChartFormPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/ReleaseBurndownChartFormPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/MembersGridPanel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/RetrospectiveGridPanel.js"></script>
