@@ -64,10 +64,6 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 								beginAtZero : true
 							}
 						}]
-					},
-					hover : {
-						defaultFontSize : 15,
-						maintainAspectRatio : false
 					}
 				}
 			})
