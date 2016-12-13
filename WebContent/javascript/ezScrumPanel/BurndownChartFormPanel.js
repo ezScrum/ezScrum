@@ -57,12 +57,17 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 				type : 'line',
 				data : storyChart,
 				options : {
+					maintainAspectRatio : false,
 					scales : {
 						yAxes : [{
 							ticks : {
 								beginAtZero : true
 							}
 						}]
+					},
+					hover : {
+						defaultFontSize : 15,
+						maintainAspectRatio : false
 					}
 				}
 			})
@@ -73,7 +78,7 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 				xtype : 'box',
 				autoEl : {
 					tag : 'canvas',
-					height : 100,
+					height : '100%',
 					style: "background-color: #ffffff"
 				}
 			} ]
@@ -158,6 +163,7 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 				type : 'line',
 				data : taskChart,
 				options : {
+					maintainAspectRatio : false,
 					scales : {
 						yAxes : [{
 							ticks : {
@@ -174,7 +180,7 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 				xtype : 'box',
 				autoEl : {
 					tag : 'canvas',
-					height : 100,
+					height : '100%',
 					style: "background-color: #ffffff"
 				}
 			} ]
