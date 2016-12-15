@@ -65,6 +65,8 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 	},
 	initialTaskBoard: function() {
 		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
+		var allStatusPanel = [];
+
 		this.TaskBoardCardPanel.init_StatusPanel();
 		
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
@@ -94,8 +96,11 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			
 			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
 			this.TaskBoardCardPanel.doLayout();
-			statusPanel.resetCellHeight();
+			allStatusPanel.push(statusPanel)
+			statusPanel.resetCellHeight()
 		}
+
+		
 	},
 	/**
 	 * 傳入的參數第一個為要執行的Function，後面為他的參數， 如果使用者按下確認要繼續執行，那麼才會執行這個參數

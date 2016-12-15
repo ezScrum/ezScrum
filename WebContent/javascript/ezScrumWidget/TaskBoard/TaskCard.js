@@ -90,6 +90,14 @@ function createTaskCard(task, storyID) {
 		data			: task,
 		borderBorder	: false,
 		border			: false,
+	    getElHeight 	: function(){
+
+					    	var el= this;
+					    	var promise = new Promise(function(resolve,reject){								
+									resolve(el.el.getHeight())								
+							})
+							return promise;	
+	    },
         setHandlerPartners:function(handler, partners) {//set handler and partners
             var data = this.data;
             data.Handler = handler;
