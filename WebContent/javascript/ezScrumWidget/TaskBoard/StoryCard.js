@@ -85,13 +85,23 @@ function createStoryCard(story) {
 		bodyBorder	: false,
 		border		: false,
 	    getElHeight : function(){
-	    		
 					    	var el= this;
-					    	var promise = new Promise(function(resolve,reject){								
-									resolve(el.el.getHeight())								
-							})
+					    	var promise = new Promise(function(resolve,reject){						    	 	
+					    		el.on('afterlayout',function(){						
+										resolve(el.el.getHeight())					
+								})
+						    	
+					    	})
 					    		
-							return promise;	
+					    	return promise;	
+	    },
+	    getElHeightDeferred : function(){    		
+					    	var el= this;
+					    	var promise = new Promise(function(resolve,reject){	
+					    	 					resolve(el.el.getHeight())								
+								
+					    	})	    		
+					    	return promise;	
 	    },
 		items		: [{
 			bodyBorder	: false,

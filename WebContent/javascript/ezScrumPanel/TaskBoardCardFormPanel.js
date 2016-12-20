@@ -56,7 +56,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     		async : false,
     		success : function(response) {
     			TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
+    	
     			obj.initialTaskBoard();
+    			
     		},
     		failure: function() {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
@@ -94,13 +96,22 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 				statusPanel.get(story.id + '_' + task.Status).add(taskCard);
 			}
 			
-			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
 			this.TaskBoardCardPanel.doLayout();
 			allStatusPanel.push(statusPanel)
-			statusPanel.resetCellHeight()
+			statusPanel.resetCellHeight();
+			
+		}
+		this.on('afterlayout',function(){
+			for(var i=0;i<allStatusPanel.length;i++){
+				allStatusPanel[i].resetCellHeight()
+				this.TaskBoardCardPanel.doLayout();
+			}
+		})
+		if (localStorage.getItem("fistTimeAcces") === null){
+			localStorage.setItem("fistTimeAcces", 1);
+			location.reload();
 		}
 
-		
 	},
 	/**
 	 * 傳入的參數第一個為要執行的Function，後面為他的參數， 如果使用者按下確認要繼續執行，那麼才會執行這個參數

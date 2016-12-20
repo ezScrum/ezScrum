@@ -43,27 +43,41 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 	{
 		//取得底下每個Element的高度
 		var el = this;
-		var promise = new Promise(function(resolve,reject){
 
-			var allPromise = [];
-			
-			
-			for(var i=0;i<el.items.length;i++)
-			{
-				allPromise.push(el.get(i).getElHeight())
-			}
-			Promise.all(allPromise).then(function(data){
+		var promise = new Promise(function(resolve,reject){
+			el.on('afterlayout',function(){
+				var allPromise = [];
 				
-				var sum = data.reduce(function(a, b) {
-					  return a + b;
-					  }, 0);
-				resolve(sum)
 				
-			},
-			function(error){
-				console.log('error occured');
-			}
-			)
+				for(var i=0;i<el.items.length;i++)
+				{
+					allPromise.push(el.get(i).getElHeight())
+				}
+				Promise.all(allPromise).then(function(data){
+					
+					var sum = data.reduce(function(a, b) {
+						  return a + b;
+						  }, 0);
+					resolve(sum)
+					
+				},function(){
+					
+					var allDeferPromise = []
+					for(var i=0;i<el.items.length;i++)
+					{
+						allDeferPromise.push(el.get(i).getElHeightDeferred())
+					}
+					Promise.all(allDeferPromise).then(function(data){
+						
+						var sum = data.reduce(function(a, b) {
+							  return a + b;
+							  }, 0);
+						resolve(sum)
+						
+					})				
+					
+				})
+			})
 			
 		})  
 		return promise;
@@ -96,20 +110,22 @@ function createStoryStatusPanel(storyID) {
 		        h=0;
 		    }
 			var that = this
-			var allPromise = [];
-			for ( var i = 0; i < this.items.length; i++) {				
-				allPromise.push(this.get(i).getAllElementHeight());				
-			}
-			Promise.all(allPromise).then(function(dataArray){
-				var highEst = Math.max.apply(Math,dataArray)
-				
-				
-				for ( var i = 0; i < 3; i++) {
-					that.get(i).setHeight(highEst * 1.1);
+				var allPromise = [];
+				for ( var i = 0; i < this.items.length; i++) {				
+					allPromise.push(this.get(i).getAllElementHeight());				
 				}
-			},function(error){
-				console.log('eerrroorr');
-			})
+				Promise.all(allPromise).then(function(dataArray){
+					var highEst = Math.max.apply(Math,dataArray)
+					
+					
+					for ( var i = 0; i < 3; i++) {
+						that.get(i).setHeight(highEst * 1.1);
+					}
+				},function(er){
+					console.log(er)
+					
+			})	
+		
 			
 		}
 	});
