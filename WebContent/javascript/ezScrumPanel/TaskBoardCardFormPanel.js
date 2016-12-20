@@ -107,10 +107,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 				this.TaskBoardCardPanel.doLayout();
 			}
 		})
-		if (localStorage.getItem("fistTimeAcces") === null){
-			localStorage.setItem("fistTimeAcces", 1);
-			location.reload();
-		}
 
 	},
 	/**
