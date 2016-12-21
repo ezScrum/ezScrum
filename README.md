@@ -68,7 +68,15 @@ How to start
 7. OS: Ubuntu
 
 	- Change directory to ezScrum_Ubuntu : ``` cd ezScrum_Ubuntu/```
-	- Install dos2unix : ```sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix```
+	- Install dos2unix : 
+
+		```
+			sudo apt-get install tofrodos
+		```
+
+		```
+			sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+		```
 	- change ./setup.sh mod to execute : ``` chmod 755 ./setup.sh```
 	- Use dos2unix command only once in the first time.
 
