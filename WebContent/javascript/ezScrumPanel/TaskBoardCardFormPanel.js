@@ -55,6 +55,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     		},
     		async : false,
     		success : function(response) {
+    			
     			TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
     	
     			obj.initialTaskBoard();
@@ -68,10 +69,9 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 	initialTaskBoard: function() {
 		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
 		var allStatusPanel = [];
-
 		this.TaskBoardCardPanel.init_StatusPanel();
-		
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
+			
 			// Issue 的三種狀態 'new', 'assigned', 'closed';
 			var story = TaskBoard_StoriesStore.getAt(i);
 			
@@ -102,11 +102,16 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 			
 		}
 		this.on('afterlayout',function(){
+			
 			for(var i=0;i<allStatusPanel.length;i++){
 				allStatusPanel[i].resetCellHeight()
 				this.TaskBoardCardPanel.doLayout();
 			}
 		})
+		for(var i=0;i<allStatusPanel.length;i++){
+			allStatusPanel[i].resetCellHeight()
+			this.TaskBoardCardPanel.doLayout();
+		}
 
 	},
 	/**
