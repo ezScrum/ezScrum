@@ -121,6 +121,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		// 將所有參數轉為真正的Array
 		var args = Array.prototype.slice.call(arguments);
 		var fun = args.shift();
+
 	
 		// 跟最上面的 Sprint Info Form 取得資訊，判斷目前的˙Sprint 是否為過期的
 		var checkCurrent = Ext.getCmp('TaskBoardSprintDesc')
@@ -237,8 +238,9 @@ var CheckOutTaskWindow = new ezScrum.window.CheckOutWindow({
 		},
 		CheckOutSuccess: function(win, response, record) {
 			this.hide();
-			Ext.example.msg('Check Out Task', 'Success.');
 			
+			Ext.example.msg('Check Out Task', 'Success.');
+			console.log(this)
 			// update task data : name, handler, partners, note
 			this.taskCard.moveToTarget();
 			this.taskCard.updateData(record.data);

@@ -188,6 +188,7 @@ function createTaskCard(task, storyID) {
             // 只有從assigned的狀態才能轉移到closed
             else if(target.status == 'closed' && status =='assigned') {
             	Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue,this.taskId,this);
+
             }
             // 如果是移動到new的狀態，那麼就是re check out
             else if(target.status == 'new' && status =='assigned') {
@@ -208,6 +209,7 @@ function createTaskCard(task, storyID) {
             	  // 如果移動到Done的話，更新Remain Hours為0
             	  this.realObject.setRemainHours(0);
               }
+              
             this.target.add(taskCard);
         },
         updateName : function(name) {
