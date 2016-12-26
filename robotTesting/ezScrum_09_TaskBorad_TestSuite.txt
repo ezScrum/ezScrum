@@ -34,7 +34,7 @@ Test TaskBoard - Sprint Information
     Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
     Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
     Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    Release None
+    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    None
     # Verify taskcard information
     # story information
     ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
