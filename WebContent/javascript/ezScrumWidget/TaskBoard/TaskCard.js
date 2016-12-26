@@ -91,7 +91,6 @@ function createTaskCard(task, storyID) {
 		borderBorder	: false,
 		border			: false,
 	    getElHeight 	: function(){
-
 					    	var el= this;
 					    	var promise = new Promise(function(resolve,reject){				
 						    	el.on('afterlayout',function(){							    							
@@ -103,7 +102,7 @@ function createTaskCard(task, storyID) {
 	    getElHeightDeferred : function(){    		
 					    	var el= this;
 					    	var promise = new Promise(function(resolve,reject){	
-					    	 					resolve(el.el.getHeight())						
+					    	 					resolve(el.el.getHeight())					
 								
 					    	})
 					    		
@@ -209,8 +208,7 @@ function createTaskCard(task, storyID) {
             	  // 如果移動到Done的話，更新Remain Hours為0
             	  this.realObject.setRemainHours(0);
               }
-              
-            this.target.add(taskCard);
+              this.target.add(taskCard);
         },
         updateName : function(name) {
             this.realObject.updateName(name);

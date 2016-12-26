@@ -240,7 +240,6 @@ var CheckOutTaskWindow = new ezScrum.window.CheckOutWindow({
 			this.hide();
 			
 			Ext.example.msg('Check Out Task', 'Success.');
-			console.log(this)
 			// update task data : name, handler, partners, note
 			this.taskCard.moveToTarget();
 			this.taskCard.updateData(record.data);
