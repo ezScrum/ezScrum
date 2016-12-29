@@ -66,31 +66,44 @@ How to start
     - Double click ```ServiceStart.bat``` to start ezScrum service.
 
 7. OS: Ubuntu
-    - Change directory to ezScrum_Ubuntu
 
-    ```
-        cd ezScrum_Ubuntu/
-    ```
-    - Change script's mode for ```ezScrum```
-    
-    ```
-        chmod +x ezScrum
-    ```
-    - Change wrapper's mode for ``wrapper``
-    
-    ```
-        chmod +x wrapper
-    ```
-    - Add ezScrum to system service.
-    
-    ```
-        sudo ./install
-    ```
-    - Start ezScrum service
-    
-    ```
-        ./start
-    ```
+	- Change directory to ezScrum_Ubuntu : ``` cd ezScrum_Ubuntu/```
+	- Install dos2unix : 
+
+		```
+			sudo apt-get install tofrodos
+		```
+
+		```
+			sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+		```
+	- change ./setup.sh mod to execute : ``` chmod 755 ./setup.sh```
+	- Use dos2unix command only once in the first time.
+
+	##### Set up
+	
+	```
+	sudo dos2unix ./setup.sh
+	```
+	
+	```
+	sudo ./setup.sh
+	```
+	##### start
+
+	```    
+	sudo ./launch
+	```
+	##### Stop ezScrum service
+
+	```
+	sudo ./shutDown.sh
+	```
+	##### remove ezScrum
+
+	```
+	sudo ./remove.sh
+	```
 8. Open the browser and go to ``http://127.0.0.1:8080/ezScrum`` or ``http://<<IP_ADDRESS>>:8080/ezScrum``
 
 
