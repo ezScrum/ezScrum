@@ -14,7 +14,7 @@ ezScrum.IssueGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	},
 	plugins: [IssueGridPanelFilter, ProductBacklogExpander],
 	sm: new Ext.grid.RowSelectionModel({
-		singleSelect: true
+		singleSelect: false
 	}),
 	stripeRows: false,
 	frame: true,
