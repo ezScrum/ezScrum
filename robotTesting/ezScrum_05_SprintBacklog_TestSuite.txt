@@ -211,3 +211,13 @@ Test Sprint Backlog - Show Task History
     ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
     Show Task History With Arguments    ${taskID}    ${taskName}
     [Teardown]    Test Sprint Backlog - Show Task History Teardown
+
+Test Sprint Backlog - Send Sprint Info
+    [Setup]    Test Sprint Backlog - Send Sprint Info Setup
+    Click Element    xpath=//div[text()="first"]
+    Select Node Product    Sprint Backlog
+    Click Element    xpath=//span[text()="Story & Task List"]/../../../../../../../div[1]/div/table/tbody/tr/td/table/tbody/tr/td[2]/div/img
+    Wait Until Page Contains    Sprint #1
+    Click Element    xpath=//div[text()="Sprint #1"]
+    Click Element    xpath=//button[text()="Send Sprint Info"]
+    [Teardown]    Test Sprint Backlog - Send Sprint Info Teardown
