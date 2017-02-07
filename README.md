@@ -11,7 +11,7 @@ ezScrum is a process management tool for Scrum.
 
 Version
 ------------
-1.8.0 Alpha2
+1.8.0 Alpha3
 
 
 License
@@ -65,24 +65,34 @@ How to start
         cd ezScrum_Ubuntu/
     ```
     - Change script's mode for ```ezScrum```
-    
+
     ```
         chmod +x ezScrum
     ```
     - Change wrapper's mode for ``wrapper``
-    
+
     ```
         chmod +x wrapper
     ```
     - Add ezScrum to system service.
-    
+
     ```
-        sudo ./install
+        sudo ./ezScrum install
     ```
     - Start ezScrum service
-    
+
     ```
-        ./start
+        sudo bash launch
+    ```
+    - To stop and remove ezScrum service
+
+    1) Find your process running in port 8080. Get the PID of your running ezScrum service
+    ```
+        sudo -S lsof -i tcp:8080 -s tcp:listen
+    ```
+    2) Use the PID to remove ezScrum service
+    ```
+        sudo kill -9 PID
     ```
 8. Open the browser and go to ``http://127.0.0.1:8080/ezScrum`` or ``http://<<IP_ADDRESS>>:8080/ezScrum``
 
