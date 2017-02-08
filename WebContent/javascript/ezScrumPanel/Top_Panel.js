@@ -49,7 +49,8 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
     			url: 'GetTopTitleInfo.do',
     			success: function(response) {
     				var obj = Ext.util.JSON.decode(response.responseText);
-    				
+
+    				theProjectName = obj.ProjectName;
     				var projectName = obj.ProjectName;
     				var username = obj.Username;
     				var nickname = obj.Nickname;

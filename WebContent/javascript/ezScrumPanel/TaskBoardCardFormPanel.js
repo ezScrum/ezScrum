@@ -55,8 +55,11 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     		},
     		async : false,
     		success : function(response) {
+    			
     			TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
+    	
     			obj.initialTaskBoard();
+    			
     		},
     		failure: function() {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
@@ -65,9 +68,10 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 	},
 	initialTaskBoard: function() {
 		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
+		var allStatusPanel = [];
 		this.TaskBoardCardPanel.init_StatusPanel();
-		
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
+			
 			// Issue 的三種狀態 'new', 'assigned', 'closed';
 			var story = TaskBoard_StoriesStore.getAt(i);
 			
@@ -92,10 +96,23 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 				statusPanel.get(story.id + '_' + task.Status).add(taskCard);
 			}
 			
-			// 讓 Taskboard 重新進行 Layout 以便可以計算 Story 或 Task 的高度，再去重設其他沒有放 Story 或 Task 的 Panel
 			this.TaskBoardCardPanel.doLayout();
+			allStatusPanel.push(statusPanel)
 			statusPanel.resetCellHeight();
+			
 		}
+		this.on('afterlayout',function(){
+			
+			for(var i=0;i<allStatusPanel.length;i++){
+				allStatusPanel[i].resetCellHeight()
+				this.TaskBoardCardPanel.doLayout();
+			}
+		})
+		for(var i=0;i<allStatusPanel.length;i++){
+			allStatusPanel[i].resetCellHeight()
+			this.TaskBoardCardPanel.doLayout();
+		}
+
 	},
 	/**
 	 * 傳入的參數第一個為要執行的Function，後面為他的參數， 如果使用者按下確認要繼續執行，那麼才會執行這個參數
@@ -104,6 +121,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		// 將所有參數轉為真正的Array
 		var args = Array.prototype.slice.call(arguments);
 		var fun = args.shift();
+
 	
 		// 跟最上面的 Sprint Info Form 取得資訊，判斷目前的˙Sprint 是否為過期的
 		var checkCurrent = Ext.getCmp('TaskBoardSprintDesc')
@@ -220,8 +238,8 @@ var CheckOutTaskWindow = new ezScrum.window.CheckOutWindow({
 		},
 		CheckOutSuccess: function(win, response, record) {
 			this.hide();
-			Ext.example.msg('Check Out Task', 'Success.');
 			
+			Ext.example.msg('Check Out Task', 'Success.');
 			// update task data : name, handler, partners, note
 			this.taskCard.moveToTarget();
 			this.taskCard.updateData(record.data);
