@@ -147,11 +147,11 @@ ezScrum.window.SelectTaskWindow = Ext.extend(ezScrum.layout.Window, {
 			tbar: [{
 				id		: 'SelectedTasksBtn',
 				text	: 'Select Tasks',
-				icon	: 'images/add3.png',
+				icon	: 'images/print.png',
 				disabled: true,
 				handler	: this.doPrintingSelectedTask
 			}, {
-				id		: 'CancelBtn',
+				id		: 'CancelSelectBtn',
 				text	: 'Cancel',
 				icon	: 'images/cancel.png',
 				disabled: false,
