@@ -35,12 +35,11 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 		}
 	},
 	getParent : function() {
-		return this.findParentBy(function(container, component) {
+		return this.findParentBy(function(container, component){
 			return true;
 		});
 	},
-	getAllElementHeight:function()
-	{
+	getAllElementHeight:function(){
 		//取得底下每個Element的高度
 		var el = this;
 
@@ -48,65 +47,49 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 			el.on('afterlayout',function(){
 				var allPromise = [];
 				
-				
-				for(var i=0;i<el.items.length;i++)
-				{
+				for(var i=0;i<el.items.length;i++){
 					allPromise.push(el.get(i).getElHeight())
 				}
+				
 				Promise.all(allPromise).then(function(data){
 					
-					var sum = data.reduce(function(a, b) {
+					var sum = data.reduce(function(a, b){
 						  return a + b;
 						  }, 0);
 					resolve(sum)
-					
 				},function(){
-					
 					var allDeferPromise = []
-					for(var i=0;i<el.items.length;i++)
-					{
+					for(var i=0;i<el.items.length;i++){
 						allDeferPromise.push(el.get(i).getElHeightDeferred())
 					}
 					Promise.all(allDeferPromise).then(function(data){
-						
-						var sum = data.reduce(function(a, b) {
+						var sum = data.reduce(function(a, b){
 							  return a + b;
 							  }, 0);
 						resolve(sum)
-						
-					})				
-					
+					})
 				})
 			})
-			
 		})  
 		return promise;
-		
-			
 	},
-	getAllElementHeightUndeferred:function()
-	{
+	getAllElementHeightUndeferred:function(){
 		//取得底下每個Element的高度
 		var el = this;
 
 		var promise = new Promise(function(resolve,reject){
 					var allDeferPromise = []
-					for(var i=0;i<el.items.length;i++)
-					{
+					for(var i=0;i<el.items.length;i++){
 						allDeferPromise.push(el.get(i).getElHeightDeferred())
 					}
 					Promise.all(allDeferPromise).then(function(data){
-						
 						var sum = data.reduce(function(a, b) {
 							  return a + b;
 							  }, 0);
 						resolve(sum)
-						
 					})			
 		})  
 		return promise;
-		
-			
 	}
 });
 Ext.reg('ezScrumStatusColumn', ezScrum.StatusColumn);

@@ -102,10 +102,8 @@ function createTaskCard(task, storyID) {
 	    getElHeightDeferred : function(){    		
 					    	var el= this;
 					    	var promise = new Promise(function(resolve,reject){	
-					    	 					resolve(el.el.getHeight())					
-								
+					    	 		resolve(el.el.getHeight())		
 					    	})
-					    		
 					    	return promise;	
 	    },
         setHandlerPartners:function(handler, partners) {//set handler and partners
@@ -193,10 +191,9 @@ function createTaskCard(task, storyID) {
             else if(target.status == 'new' && status =='assigned') {
             	Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReCheckOutTask,this.taskId,this);
             }
-
         	this.target = target;
         },
-        moveToTarget : function() {
+        moveToTarget : function(){
         	  this.status = this.target.status;
         	  taskCard.draggable.status = this.target.status; // 抓到的值竟然與 this.status不同, 所以直接塞
         	  
@@ -217,7 +214,6 @@ function createTaskCard(task, storyID) {
             this.realObject.updateData(data);
         }
     };
-    
 	return taskCard;
 }
 
