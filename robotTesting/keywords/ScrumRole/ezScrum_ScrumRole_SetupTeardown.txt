@@ -181,7 +181,8 @@ Test ScrumRole Setup for Stakeholder Default
     _InputLoginForm    ${userName}    ${userPassword}
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName    # 假設 Project 已存在
     SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
+    wait until keyword succeeds    1min    5s    SwitchToItemLink    False    Account Management
+    Comment    SwitchToItemLink    False    Account Management
     Comment    Add Account
     ${role}=    Set Variable    ${tsAssignRole_Items[3]}
     Assign Role Add    ${tsAccountID}    ${PROJECT_NAME}    ${role}
