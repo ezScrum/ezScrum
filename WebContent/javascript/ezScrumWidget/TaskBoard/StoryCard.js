@@ -84,6 +84,22 @@ function createStoryCard(story) {
 		data		: story,
 		bodyBorder	: false,
 		border		: false,
+	    getElHeight : function(){
+					    var el= this;
+					    var promise = new Promise(function(resolve,reject){						    	 	
+					    	el.on('afterlayout',function(){						
+								resolve(el.el.getHeight())					
+							})
+					    })	
+					    return promise;	
+	    },
+	    getElHeightDeferred : function(){    		
+					    var el= this;
+					    var promise = new Promise(function(resolve,reject){	
+					    	resolve(el.el.getHeight())	
+					    })	    		
+					    return promise;	
+	    },
 		items		: [{
 			bodyBorder	: false,
 			border		: false,
@@ -100,6 +116,7 @@ function createStoryCard(story) {
 			var data = this.data;
 			data.set('AttachFileList', attachFileList);
         	this.items.get(0).update(createStoryContent(data));
+        	
 		},
 		updateData: function(recordData) { // 目前只需更新 name
 			var data = this.data;

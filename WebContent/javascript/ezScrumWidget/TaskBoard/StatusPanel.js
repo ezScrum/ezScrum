@@ -23,36 +23,78 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 					panel = this.realTarget;
 					panel.add(component);
 					panel.doLayout();
-					panel.getParent().resetCellHeight();
+					panel.getParent().resetCellHeightUndeferred();
 				},
 				insert : function(index, component) {
 					panel = this.realTarget;
 					panel.insert(index,component);
 					panel.doLayout();
-					panel.getParent().resetCellHeight();
+					panel.getParent().resetCellHeightUndeferred();
 				}
 			});
 		}
 	},
 	getParent : function() {
-		return this.findParentBy(function(container, component) {
+		return this.findParentBy(function(container, component){
 			return true;
 		});
 	},
-	getAllElementHeight:function()
-	{
+	getAllElementHeight:function(){
 		//取得底下每個Element的高度
-		var h=0;
-		for(var i=0;i<this.items.length;i++)
-		{
-			h+=this.get(i).getHeight();
-		}
-		return h;
+		var el = this;
+
+		var promise = new Promise(function(resolve,reject){
+			el.on('afterlayout',function(){
+				var allPromise = [];
+				
+				for(var i=0;i<el.items.length;i++){
+					allPromise.push(el.get(i).getElHeight())
+				}
+				
+				Promise.all(allPromise).then(function(data){
+					
+					var sum = data.reduce(function(a, b){
+						  return a + b;
+						  }, 0);
+					resolve(sum)
+				},function(){
+					var allDeferPromise = []
+					for(var i=0;i<el.items.length;i++){
+						allDeferPromise.push(el.get(i).getElHeightDeferred())
+					}
+					Promise.all(allDeferPromise).then(function(data){
+						var sum = data.reduce(function(a, b){
+							  return a + b;
+							  }, 0);
+						resolve(sum)
+					})
+				})
+			})
+		})  
+		return promise;
+	},
+	getAllElementHeightUndeferred:function(){
+		//取得底下每個Element的高度
+		var el = this;
+
+		var promise = new Promise(function(resolve,reject){
+					var allDeferPromise = []
+					for(var i=0;i<el.items.length;i++){
+						allDeferPromise.push(el.get(i).getElHeightDeferred())
+					}
+					Promise.all(allDeferPromise).then(function(data){
+						var sum = data.reduce(function(a, b) {
+							  return a + b;
+							  }, 0);
+						resolve(sum)
+					})			
+		})  
+		return promise;
 	}
 });
 Ext.reg('ezScrumStatusColumn', ezScrum.StatusColumn);
 
-function createStoryStatusPanel(storyID) {
+function createStoryStatusPanel(storyID){
 	var statusPanel = new Ext.Panel( {
 		defaultType : 'ezScrumStatusColumn',
 		layout : 'column',
@@ -70,18 +112,41 @@ function createStoryStatusPanel(storyID) {
 			dragID : storyID,
 			status : 'closed'
 		} ],
-		resetCellHeight : function(h) {
+		resetCellHeight : function(h){
 			if('undefined' == typeof(h)){
 		        h=0;
 		    }
-			for ( var i = 0; i < this.items.length; i++) {
-				var h2 = this.get(i).getAllElementHeight();
-				if (h2 > h)
-					h = h2;
-			}
-			for ( var i = 0; i < 3; i++) {
-				this.get(i).setHeight(h * 1.1);
-			}
+			var that = this
+				var allPromise = [];
+				for ( var i = 0; i < this.items.length; i++) {				
+					allPromise.push(this.get(i).getAllElementHeight());				
+				}
+				Promise.all(allPromise).then(function(dataArray){
+					var highEst = Math.max.apply(Math,dataArray)
+					for ( var i = 0; i < 3; i++) {
+						that.get(i).setHeight(highEst * 1.1);
+					}
+				},function(er){
+					console.log("Render fail, please reload the browser " + er);
+			})	
+		},
+		resetCellHeightUndeferred: function(h) {
+			if('undefined' == typeof(h)){
+		        h=0;
+		    }
+			var that = this
+				var allPromise = [];
+				for ( var i = 0; i < this.items.length; i++){				
+					allPromise.push(this.get(i).getAllElementHeightUndeferred());				
+				}
+				Promise.all(allPromise).then(function(dataArray){
+					var highEst = Math.max.apply(Math,dataArray)
+					for ( var i = 0; i < 3; i++) {
+						that.get(i).setHeight(highEst * 1.1);
+					}
+				},function(er){
+					console.log("Render fail, please reload the browser " + er);
+			})	
 		}
 	});
 	return statusPanel;

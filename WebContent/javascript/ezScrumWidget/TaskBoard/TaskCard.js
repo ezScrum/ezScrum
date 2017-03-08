@@ -90,6 +90,22 @@ function createTaskCard(task, storyID) {
 		data			: task,
 		borderBorder	: false,
 		border			: false,
+	    getElHeight 	: function(){
+					    	var el= this;
+					    	var promise = new Promise(function(resolve,reject){				
+						    	el.on('afterlayout',function(){							    							
+											resolve(el.el.getHeight())								
+								})
+							})
+					    	return promise;	
+	    },
+	    getElHeightDeferred : function(){    		
+					    	var el= this;
+					    	var promise = new Promise(function(resolve,reject){	
+					    	 		resolve(el.el.getHeight())		
+					    	})
+					    	return promise;	
+	    },
         setHandlerPartners:function(handler, partners) {//set handler and partners
             var data = this.data;
             data.Handler = handler;
@@ -169,15 +185,15 @@ function createTaskCard(task, storyID) {
             // 只有從assigned的狀態才能轉移到closed
             else if(target.status == 'closed' && status =='assigned') {
             	Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showDoneIssue,this.taskId,this);
+
             }
             // 如果是移動到new的狀態，那麼就是re check out
             else if(target.status == 'new' && status =='assigned') {
             	Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReCheckOutTask,this.taskId,this);
             }
-
         	this.target = target;
         },
-        moveToTarget : function() {
+        moveToTarget : function(){
         	  this.status = this.target.status;
         	  taskCard.draggable.status = this.target.status; // 抓到的值竟然與 this.status不同, 所以直接塞
         	  
@@ -189,7 +205,7 @@ function createTaskCard(task, storyID) {
             	  // 如果移動到Done的話，更新Remain Hours為0
             	  this.realObject.setRemainHours(0);
               }
-            this.target.add(taskCard);
+              this.target.add(taskCard);
         },
         updateName : function(name) {
             this.realObject.updateName(name);
@@ -198,7 +214,6 @@ function createTaskCard(task, storyID) {
             this.realObject.updateData(data);
         }
     };
-    
 	return taskCard;
 }
 
