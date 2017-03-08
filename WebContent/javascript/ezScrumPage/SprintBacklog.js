@@ -616,13 +616,17 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 				obj.setTitle(title);		// update Sprint Backlog Title
 				if(forSprintBacklogThisSprintStore.reader.jsonData.Total == 0 ){
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(true);
-					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(true);
-    				Ext.example.msg('Message','no topics to display !!');//設定title時順便跳出該sprintBacklog tree是否為空
+					Ext.example.msg('Message','no topics to display !!');//設定title時順便跳出該sprintBacklog tree是否為空
 				}else{
 					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableStoryBtn').setDisabled(false);
-					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(false);
 				}
-				
+				if(forSprintBacklogThisSprintStore.reader.jsonData.TotalTask == 0){
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(true);
+
+				}else{
+					Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('sprintAction').get('SprintBacklog_showPrintableTaskBtn').setDisabled(false);
+
+				}
 				MainLoadMaskHide();
 			},
 			failure: function() {
