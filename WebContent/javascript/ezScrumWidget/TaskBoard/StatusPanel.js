@@ -94,7 +94,7 @@ ezScrum.StatusColumn = Ext.extend(Ext.Panel, {
 });
 Ext.reg('ezScrumStatusColumn', ezScrum.StatusColumn);
 
-function createStoryStatusPanel(storyID) {
+function createStoryStatusPanel(storyID){
 	var statusPanel = new Ext.Panel( {
 		defaultType : 'ezScrumStatusColumn',
 		layout : 'column',
@@ -112,7 +112,7 @@ function createStoryStatusPanel(storyID) {
 			dragID : storyID,
 			status : 'closed'
 		} ],
-		resetCellHeight : function(h) {
+		resetCellHeight : function(h){
 			if('undefined' == typeof(h)){
 		        h=0;
 		    }
@@ -123,17 +123,12 @@ function createStoryStatusPanel(storyID) {
 				}
 				Promise.all(allPromise).then(function(dataArray){
 					var highEst = Math.max.apply(Math,dataArray)
-					
-					
 					for ( var i = 0; i < 3; i++) {
 						that.get(i).setHeight(highEst * 1.1);
 					}
 				},function(er){
-					console.log(er)
-					
+					console.log("Render fail, please reload the browser " + er);
 			})	
-		
-			
 		},
 		resetCellHeightUndeferred: function(h) {
 			if('undefined' == typeof(h)){
@@ -141,22 +136,17 @@ function createStoryStatusPanel(storyID) {
 		    }
 			var that = this
 				var allPromise = [];
-				for ( var i = 0; i < this.items.length; i++) {				
+				for ( var i = 0; i < this.items.length; i++){				
 					allPromise.push(this.get(i).getAllElementHeightUndeferred());				
 				}
 				Promise.all(allPromise).then(function(dataArray){
 					var highEst = Math.max.apply(Math,dataArray)
-					
-					
 					for ( var i = 0; i < 3; i++) {
 						that.get(i).setHeight(highEst * 1.1);
 					}
 				},function(er){
-					console.log(er)
-					
+					console.log("Render fail, please reload the browser " + er);
 			})	
-		
-			
 		}
 	});
 	return statusPanel;
