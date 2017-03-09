@@ -40,26 +40,26 @@ var importStoriesWidget = new ezScrum.ImportStoriesWidget({
 
 function LoadData_PB(ft) {
 	MainLoadMaskShow();
-
-	Ext.Ajax.request({
-		url: 'showProductBacklog2.do',
-		params: {
-			FilterType: ft
-		},
-		success: function(response) {
-			ProductBacklogStore.proxy.data = response;
-			ProductBacklogStore.proxy.reload = true;
-			ProductBacklogStore.proxy.getSorters(getSorters());
-			ProductBacklogStore.load({
-				params: {
-					start: 0,
-					limit: pageSize
-				}
-			});
-			initShowDetail();
-			MainLoadMaskHide();
-		}
-	});
+	var params = {
+        url: 'showProductBacklog2.do',
+        params: {
+            FilterType: ft
+        },
+        success: function (response) {
+            ProductBacklogStore.proxy.data = response;
+            ProductBacklogStore.proxy.reload = true;
+            ProductBacklogStore.proxy.getSorters(getSorters());
+            ProductBacklogStore.load({
+                params: {
+                    start: 0,
+                    limit: pageSize
+                }
+            });
+            initShowDetail();
+            MainLoadMaskHide();
+        },
+    }
+	Ext.Ajax.request(params);
 
 	// add grid panel tag filter
 	Ext.Ajax.request({
@@ -149,6 +149,9 @@ function setTagInfo(tagRs, record) {
 ezScrum.ProductBacklogGrid = Ext.extend(ezScrum.IssueGridPanel, {
 	id: 'productBacklogGridPanel',
 	store: ProductBacklogStore,
+    selModel: {
+        pruneRemoved: false
+    },
 	colModel: ProductBacklogCreateColModel(),
 	plugins: [IssueGridPanelFilter, ProductBacklogExpander],
 	updateRecord: function(record) {
@@ -184,7 +187,7 @@ ezScrum.ProductBacklogGrid = Ext.extend(ezScrum.IssueGridPanel, {
 			'selectionchange': {
 				buffer: 10,
 				fn: function() {
-					Ext.getCmp('productBacklogMasterPanel').selectionChange();
+					Ext.getCmp('productBacklogMasterPanel').selectionChange(this.getSelections().length);
 				}
 			}
 		});
@@ -252,7 +255,15 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 				handler: function() {
 					Ext.getCmp('productBacklogMasterPanel').showHistory()
 				}
-			}, {
+			},{
+                itemId: 'ProductBacklog_printBtn',
+                text: 'Print Selected',
+                disabled: true,
+                icon: 'images/print.png',
+                handler: function() {
+                    Ext.getCmp('productBacklogMasterPanel').printSelected()
+                }
+			},{
 				itemId: 'ProductBacklog_manageTagBtn',
 				text: 'Manage Tag',
 				icon: 'images/magic-wand.png',
@@ -383,6 +394,13 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 			productBacklogFilterMenu = Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_filterMenu');
 		}
 	},
+	printSelected : function () {
+		var ids= Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelections();
+		var idsParams = ids.map(function (id) {
+			return id.id
+        }).toString();
+        openURLWithCheckSession( "showPrintableStoriesInProductBacklog.do?projectname=" + theProjectName+"&selectedStoriesId="+idsParams );
+    },
 	// add story action
 	AddStoryAction: function() {
 		Story_Window.showTheWindow_Add(this);
@@ -543,12 +561,19 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 			});
 		}
 	},
-	selectionChange: function() {
-		Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').enable();
+	selectionChange: function(len) {
+		if(len > 1){
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').disable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
+		}else{
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').enable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').enable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').enable();
+        }
+        Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
 		Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').enable();
-		Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').enable();
 		productBacklogTagMenu.enable();
-		Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').enable();
 	},
 	loadDataModel: function() {
 		if (!this.isInit) {

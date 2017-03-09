@@ -82,6 +82,8 @@
     		<action path="/AjaxDeleteTag"			type="ntut.csie.ezScrum.web.action.backlog.AjaxDeleteTagAction" />
     		<action path="/AjaxAddStoryTag" 		type="ntut.csie.ezScrum.web.action.backlog.AjaxAddStoryTagAction" />
     		<action path="/AjaxRemoveStoryTag"		type="ntut.csie.ezScrum.web.action.backlog.AjaxRemoveStoryTagAction" />			
+			<action path="/showPrintableStoriesInProductBacklog"		type="ntut.csie.ezScrum.web.action.backlog.ShowPrintableStoriesInProductBacklogAction" />			
+			
 				<!-- not use  -->
 			<action path="/exportStories"			type="ntut.csie.ezScrum.web.action.backlog.ExportStoriesFromProductBacklogAction" />
 			<action path="/showProductBacklog"		type="ntut.csie.ezScrum.web.action.FowardAction" >

@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import servletunit.struts.MockStrutsTestCase;
@@ -102,7 +103,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	/**
 	 * two stories
 	 */
-	public void testAddExistedStory_2() {
+	public void testAddExistedStory_2_Without_Task() {
 		int storyCount = 2;
 		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
@@ -187,7 +188,101 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 						.append("\"AttachFileList\":[]},");
 			}
 			expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
-			expectedResponseText.append("]}");
+			expectedResponseText.append("],\"TotalTask\":0}");
+		}
+		actualResponseText = response.getWriterBuffer().toString();
+		assertEquals(expectedResponseText.toString(), actualResponseText);
+	}
+	
+	public void testAddExistedStory_With_Task() throws Exception{
+		int storyCount = 2;
+		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
+		CPB.exe();
+
+		long sprintId = mCS.getSprintsId().get(0);
+		String releaseID = "-1";
+		String[] selects = { "1", "2" };
+
+		// ================ set request info ========================
+		String projectName = mProject.getName();
+		request.setHeader("Referer", "?projectName=" + projectName);
+		addRequestParameter("selects", selects);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
+		addRequestParameter("releaseID", releaseID);
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
+
+		// ================ 執行 action ======================
+		actionPerform();
+
+		// ================ assert ========================
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+		// assert response text
+		String actualResponseText = response.getWriterBuffer().toString();
+		StringBuilder expectedResponseText = new StringBuilder();
+		expectedResponseText.append("");
+		assertEquals(expectedResponseText.toString(), actualResponseText);
+
+		// 驗證是否確實有被加入sprint中
+		String showSprintBacklog_ActionPath = "/showSprintBacklog2";
+		setRequestPathInfo(showSprintBacklog_ActionPath);
+
+		clearRequestParameters();
+		response.reset();
+		for(StoryObject story : CPB.getStories()){
+			CreateTask CT = new CreateTask(1, 1, story.getId(), mCP);
+			CT.exe();
+		}
+		// ================ set request info ========================
+		request.setHeader("Referer", "?projectName=" + projectName);
+		addRequestParameter("sprintID", String.valueOf(sprintId));
+
+		// ================ set session info ========================
+		request.getSession().setAttribute("UserSession",
+				mConfig.getUserSession());
+
+		// ================ 執行 action ======================
+		actionPerform();
+
+		// ================ assert ========================
+		verifyNoActionErrors();
+		verifyNoActionMessages();
+		// assert response text
+		String expectedStoryEstimation = "2";
+		String expectedSprintGoal = "TEST_SPRINTGOAL_1";
+		String expectedSprintHoursToCommit = "96";
+		for (int i = 0; i < mCS.getSprintCount() - 1; i++) {
+			expectedResponseText.append("{\"success\":true,\"Total\":2,")
+					.append("\"Sprint\":{").append("\"Id\":").append(sprintId)
+					.append(",").append("\"Name\":\"Sprint #").append(sprintId)
+					.append("\",").append("\"CurrentPoint\":").append(Integer.parseInt(expectedStoryEstimation) * 2).append(",")
+					.append("\"LimitedPoint\":").append(Integer.parseInt(expectedSprintHoursToCommit)).append(",")
+					.append("\"TaskPoint\":2,")
+					.append("\"ReleaseID\":\"Release #None\",")
+					.append("\"SprintGoal\":\"").append(expectedSprintGoal)
+					.append("\"},").append("\"Stories\":[");
+
+			for (StoryObject story : CPB.getStories()) {
+				expectedResponseText
+						.append("{\"Id\":").append(story.getId()).append(",")
+						.append("\"Link\":\"").append("\",")
+						.append("\"Name\":\"").append(story.getName()).append("\",")
+						.append("\"Value\":").append(story.getValue()).append(",")
+						.append("\"Importance\":").append(story.getImportance()).append(",")
+						.append("\"Estimate\":").append(story.getEstimate()).append(",")
+						.append("\"Status\":\"new\",")
+						.append("\"Notes\":\"").append(story.getNotes()).append("\",")
+						.append("\"Tag\":\"\",")
+						.append("\"HowToDemo\":\"").append(story.getHowToDemo()).append("\",")
+						.append("\"Release\":\"\",")
+						.append("\"Sprint\":").append(sprintId).append(",")
+						.append("\"Attach\":false,")
+						.append("\"AttachFileList\":[]},");
+			}
+			expectedResponseText.deleteCharAt(expectedResponseText.length() - 1);
+			expectedResponseText.append("],\"TotalTask\":2}");
 		}
 		actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
