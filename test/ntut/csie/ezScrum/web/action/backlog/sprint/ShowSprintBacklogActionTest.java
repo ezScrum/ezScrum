@@ -71,7 +71,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	/**
 	 * 沒有Sprint
 	 */
-	public void testShowSprintBacklog_1(){
+	public void testShowSprintBacklog_1_Without_Task(){
 		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		
 		// ================ set request info ========================
@@ -101,7 +101,8 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 							.append("\"TaskPoint\":0,")
 							.append("\"ReleaseID\":\"Release #None\",")
 							.append("\"SprintGoal\":\"").append(expectedSprintGoal).append("\"},")
-							.append("\"Stories\":[]}");
+							.append("\"Stories\":[],")
+							.append("\"TotalTask\":0}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
@@ -110,7 +111,7 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 	 * 存在兩個Sprint
 	 * @throws Exception 
 	 */
-	public void testShowSprintBacklog_2() throws Exception{
+	public void testShowSprintBacklog_2_With_Task() throws Exception{
 		ArrayList<Long> sprintsId = mCS.getSprintsId();
 		int storyCount = 1;
 		int storyEst = 5;
@@ -174,7 +175,8 @@ public class ShowSprintBacklogActionTest extends MockStrutsTestCase {
 							.append("\"Sprint\":").append(expectedSprintId).append(",")
 							.append("\"Attach\":false,")
 							.append("\"AttachFileList\":[]")
-							.append("}]}");
+							.append("}],")
+							.append("\"TotalTask\":1}");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}

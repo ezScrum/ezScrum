@@ -103,7 +103,7 @@ public class AddExistedStoryActionTest extends MockStrutsTestCase {
 	/**
 	 * two stories
 	 */
-	public void testAddExistedStory_2_No_Task() {
+	public void testAddExistedStory_2_Without_Task() {
 		int storyCount = 2;
 		CreateProductBacklog CPB = new CreateProductBacklog(storyCount, mCP);
 		CPB.exe();
