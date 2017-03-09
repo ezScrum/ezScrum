@@ -36,7 +36,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="lib/test/junit.jar"/>
 	<classpathentry kind="lib" path="lib/test/strutstest-2.1.4.jar"/>
-	<classpathentry kind="lib" path="lib/aspectj/aspectjrt.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/aspectjtools.jar"/>
 	<classpathentry kind="lib" path="lib/test/gae/jmock-2.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/gae/jmock-junit3-2.5.1.jar"/>
@@ -55,6 +54,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
