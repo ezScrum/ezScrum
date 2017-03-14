@@ -129,8 +129,8 @@ public class GetSprintInfoForTaskBoardActionTest extends MockStrutsTestCase {
 
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, -1);
 		// 將第1個story跟task全都拉到done
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, "");
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), "", 0, "");
+		sprintBacklogLogic.closeTask(mProject.getId(), ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, "");
+		sprintBacklogLogic.closeTask(mProject.getId(), ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), "", 0, "");
 		sprintBacklogLogic.closeStory(ASTS.getStories().get(0).getId(), "", "", "");
 
 		// ================ set request info ========================

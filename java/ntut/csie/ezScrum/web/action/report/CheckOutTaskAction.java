@@ -38,7 +38,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
-		long taskId = Long.parseLong(request.getParameter("Id"));
+		long taskSerialId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String handler = request.getParameter("Handler");
 		String partners = request.getParameter("Partners");
@@ -51,8 +51,8 @@ public class CheckOutTaskAction extends PermissionAction {
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
 				dateFormat.parse(changeDate);
-			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
-			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
+			sprintBacklogHelper.checkOutTask(project.getId(),taskSerialId, name, handler, partners, notes, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(taskSerialId);	// return checkout的issue的相關資訊
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		} catch (ParseException e) {								// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");

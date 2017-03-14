@@ -268,9 +268,9 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void checkOutTask(long id, String name, long handlerId,
+	public void checkOutTask(long projectId, long serialId, String name, long handlerId,
 			ArrayList<Long> partnersId, String notes, Date specificDate) {
-		TaskObject task = TaskObject.get(id);
+		TaskObject task = TaskObject.get(projectId, serialId);
 		if (task != null) {
 			task.setName(name).setHandlerId(handlerId).setPartnersId(partnersId)
 					.setNotes(notes).setStatus(TaskObject.STATUS_CHECK)
@@ -288,9 +288,9 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long projectId, long serialId, String name, String notes, int actual,
 			Date specificDate) {
-		TaskObject task = TaskObject.get(id);
+		TaskObject task = TaskObject.get(projectId, serialId);
 		if (task != null) {
 			task.setName(name).setNotes(notes).setActual(actual)
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)

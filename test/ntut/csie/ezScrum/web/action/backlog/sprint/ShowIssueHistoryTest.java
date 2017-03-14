@@ -465,7 +465,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		sprintBacklogHelper.checkOutTask(taskId, task.getName(), "admin", "",
 		        task.getNotes(), "");
 		// task Check Out -> Done
-		sprintBacklogHelper.closeTask(taskId, task.getName(), task.getNotes(),
+		sprintBacklogHelper.closeTask(mProject.getId(), taskId, task.getName(), task.getNotes(),
 		        task.getActual(), "");
 		// task Done -> Check Out
 		sprintBacklogHelper.reopenTask(taskId, task.getName(), task.getNotes(),

@@ -683,7 +683,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, actual, specificDate);
+		mSprintBacklogMapper.closeTask(mProjectId, task.getSerialId(), closeName, closeNote, actual, specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(closeName, closedTask.getName());
@@ -709,7 +709,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, actual, specificDate);
+		mSprintBacklogMapper.closeTask(mProjectId, task.getSerialId(), closeName, closeNote, actual, specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(closeName, closedTask.getName());

@@ -55,7 +55,7 @@ public class ReopenIssueAction extends PermissionAction {
 			StoryObject story = sprintBacklogHelper.getStory(serialNumber);
 			result.append(Translation.translateTaskboardStoryToJson(story));
 		} else if (issueType.equals("Task")) {
-			sprintBacklogHelper.reopenTask(serialNumber, name, notes, changeDate);
+			sprintBacklogHelper.reopenTask(project.getId(),serialNumber, name, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(project.getId(), serialNumber);
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}

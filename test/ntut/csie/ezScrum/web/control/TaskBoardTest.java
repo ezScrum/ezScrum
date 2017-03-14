@@ -154,6 +154,7 @@ public class TaskBoardTest {
 	
 	@Test
 	public void testGetTaskPoint(){
+		ProjectObject project = mCP.getAllProjects().get(0);
 		// 初始 Task Point String = 120 / 120
 		String actualTaskPointString = mTaskBoard.getTaskPoint();
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
@@ -164,7 +165,7 @@ public class TaskBoardTest {
 		// 一個Task Done
 		TaskObject task1 = mATTS.getTasks().get(0);
 		String DONE_TIME = "2015/02/02-12:00:00";
-		mSprintBacklogLogic.closeTask(task1.getId(), task1.getName(), task1.getNotes(), task1.getActual(), DONE_TIME);
+		mSprintBacklogLogic.closeTask(project.getId(),task1.getSerialId(), task1.getName(), task1.getNotes(), task1.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(sprint.getTaskRemainsPoints()) + " / " 
@@ -173,7 +174,7 @@ public class TaskBoardTest {
 		
 		// 兩個 Task Done
 		TaskObject task2 = mATTS.getTasks().get(1);
-		mSprintBacklogLogic.closeTask(task2.getId(), task2.getName(), task2.getNotes(), task2.getActual(), DONE_TIME);
+		mSprintBacklogLogic.closeTask(project.getId(),task1.getSerialId(), task2.getName(), task2.getNotes(), task2.getActual(), DONE_TIME);
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();
 		expectedTaskPointString = String.valueOf(sprint.getTaskRemainsPoints()) + " / "
@@ -182,7 +183,7 @@ public class TaskBoardTest {
 		
 		// 全部Task Done
 		for(TaskObject task : mATTS.getTasks()){
-			mSprintBacklogLogic.closeTask(task.getId(), task.getName(), task.getNotes(), task.getActual(), DONE_TIME);
+			mSprintBacklogLogic.closeTask(project.getId(),task1.getSerialId(), task.getName(), task.getNotes(), task.getActual(), DONE_TIME);
 		}
 		// assert
 		actualTaskPointString = mTaskBoard.getTaskPoint();

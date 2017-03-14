@@ -60,17 +60,17 @@ public class ChangeIssueStatus {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, -1);
 
 		for (TaskObject task : mTasks) {
-			long id = task.getId();
+			long serialId = task.getSerialId();
 			String name = task.getName();
 			String notes = task.getNotes();
 			int actual = task.getActual();
 			SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
 			if (mSetDoneDate != null) {
-				sprintBacklogLogic.closeTask(id, name, notes, actual, format.format(mSetDoneDate));
+				sprintBacklogLogic.closeTask(project.getCreateTime(), serialId, name, notes, actual, format.format(mSetDoneDate));
 			} else {
-				sprintBacklogLogic.closeTask(id, name, notes, actual, format.format(new Date()));
+				sprintBacklogLogic.closeTask(project.getCreateTime(), serialId, name, notes, actual, format.format(new Date()));
 			}
-			System.out.println("移動 Task " + id + " 到 Done 成功");
+			System.out.println("移動 Task " + serialId + " 到 Done 成功");
 		}
 	}
 	

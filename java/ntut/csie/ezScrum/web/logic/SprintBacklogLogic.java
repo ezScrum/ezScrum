@@ -66,16 +66,16 @@ public class SprintBacklogLogic {
 	 * @param notes
 	 * @param changeDate
 	 */
-	public void closeStory(long id, String name, String notes,
+	public void closeStory(long projectId, long serialId, String name, String notes,
 			String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeStory(id, name, notes, closeDate);
+		mSprintBacklogMapper.closeStory(serialId, name, notes, closeDate);
 	}
 	
-	public void reopenStory(long id, String name, String notes,
+	public void reopenStory(long projectId, long id, String name, String notes,
 			String changeDate) {
 		Date reopenDate = parseToDate(changeDate);
-		mSprintBacklogMapper.reopenStory(id, name, notes, reopenDate);
+		mSprintBacklogMapper.reopenStory(serialId, name, notes, reopenDate);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class SprintBacklogLogic {
 	 * @param notes
 	 * @param changeDate
 	 */
-	public void checkOutTask(long id, String name, String handlerUsername,
+	public void checkOutTask(long projectId, long serialId, String name, String handlerUsername,
 			String partners, String notes, String changeDate) {
 		Date closeDate = new Date();
 		if (changeDate != null && !changeDate.equals("")) {
@@ -111,24 +111,24 @@ public class SprintBacklogLogic {
 			}
 		}
 
-		mSprintBacklogMapper.checkOutTask(id, name, handlerId, partnersId,
+		mSprintBacklogMapper.checkOutTask(projectId, serialId, name, handlerId, partnersId,
 				notes, closeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long projectId, long serialId, String name, String notes, int actual,
 			String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeTask(id, name, notes, actual, closeDate);
+		mSprintBacklogMapper.closeTask(projectId, serialId, name, notes, actual, closeDate);
 	}
 
-	public void reopenTask(long id, String name, String notes, String changeDate) {
+	public void reopenTask(long projectId, long serialId, String name, String notes, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.reopenTask(id, name, notes, closeDate);
+		mSprintBacklogMapper.reopenTask(projectId, serialId, name, notes, closeDate);
 	}
 
-	public void resetTask(long id, String name, String notes, String changeDate) {
+	public void resetTask(long projectId, long serialId, String name, String notes, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.resetTask(id, name, notes, closeDate);
+		mSprintBacklogMapper.resetTask(serialId, name, notes, closeDate);
 	}
 
 	/**

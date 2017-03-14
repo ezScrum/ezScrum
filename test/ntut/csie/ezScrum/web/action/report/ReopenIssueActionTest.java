@@ -115,7 +115,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 																	// ,未帶入此參數無法存入session
 
 		// ================ 執行 action ==============================
-		sprintBacklogMapper.closeTask(task.getId(), "", task.getNotes(),
+		sprintBacklogMapper.closeTask(project.getId(), task.getSerialId(), "", task.getNotes(),
 				task.getActual(), Calendar.getInstance().getTime()); // 先設定Task為closed的狀態
 																		// 在測試
 		actionPerform();

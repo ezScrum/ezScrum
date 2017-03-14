@@ -146,53 +146,53 @@ public class SprintBacklogHelper {
 		mSprintBacklogMapper.updateTask(taskInfo.id, taskInfo);
 	}
 
-	public void deleteTask(long taskId) {
-		mSprintBacklogMapper.deleteTask(taskId);
+	public void deleteTask(long projectId, long taskId) {
+		mSprintBacklogMapper.deleteTask(projectId, taskId);
 	}
 
-	public void dropTask(long taskId) {
+	public void dropTask(long projectId, long taskId) {
 		TaskObject task = TaskObject.get(taskId);
 		// reset status, handler
-		resetTask(taskId, task.getName(), task.getNotes(), null);
+		resetTask(projectId, taskId, task.getName(), task.getNotes(), null);
 		// remove relation
 		mSprintBacklogMapper.dropTask(taskId);
 	}
 
-	public void closeStory(long id, String name, String notes, String changeDate) {
-		mSprintBacklogLogic.closeStory(id, name, notes, changeDate);
+	public void closeStory(long projectId, long serialId, String name, String notes, String changeDate) {
+		mSprintBacklogLogic.closeStory(projectId, serialId, name, notes, changeDate);
 	}
 
-	public void reopenStory(long id, String name, String notes,
+	public void reopenStory(long projectId, long serialId, String name, String notes,
 			String changeDate) {
-		mSprintBacklogLogic.reopenStory(id, name, notes, changeDate);
+		mSprintBacklogLogic.reopenStory(projectId, serialId, name, notes, changeDate);
 	}
 
 	/**
 	 * Task 從 Not Check Out -> Check Out path: CheckOutTask.do class:
 	 * CheckOutTaskAction Test class: CheckOutTaskActionTest
 	 */
-	public void checkOutTask(long taskId, String name, String handler,
+	public void checkOutTask(long projectId, long serialId, String name, String handler,
 			String partners, String notes, String changeDate) {
-		mSprintBacklogLogic.checkOutTask(taskId, name, handler, partners,
+		mSprintBacklogLogic.checkOutTask(projectId, serialId, name, handler, partners,
 				notes, changeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long projectId, long serialId, String name, String notes, int actual,
 			String changeDate) {
-		mSprintBacklogLogic.closeTask(id, name, notes, actual, changeDate);
+		mSprintBacklogLogic.closeTask(projectId, serialId, name, notes, actual, changeDate);
 	}
 
-	public void reopenTask(long taskId, String name, String notes,
+	public void reopenTask(long projectId,long serialId, String name, String notes,
 			String changeDate) {
-		mSprintBacklogLogic.reopenTask(taskId, name, notes, changeDate);
+		mSprintBacklogLogic.reopenTask(projectId, serialId, name, notes, changeDate);
 	}
 
 	/**
 	 * Task 從 Check Out -> Not Check Out path: ResetTask.do class:
 	 * ResetTaskAction Test class: ResetTaskActionTest
 	 */
-	public void resetTask(long id, String name, String notes, String changeDate) {
-		mSprintBacklogLogic.resetTask(id, name, notes, changeDate);
+	public void resetTask(long projectId, long serialId, String name, String notes, String changeDate) {
+		mSprintBacklogLogic.resetTask(projectId, serialId, name, notes, changeDate);
 	}
 
 	/**

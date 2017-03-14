@@ -174,9 +174,9 @@ public class SprintBacklogLogicTest {
 		TaskObject task3 = mATTS.getTasks().get(2);
 
 		// Done Issue
-		mSprintBacklogLogic.closeTask(task.getId(), DONE_NAME, DONE_NOTE,
+		mSprintBacklogLogic.closeTask(mProject.getId(),task.getSerialId(), DONE_NAME, DONE_NOTE,
 				task.getActual(), CHECKOUT_TIME);
-		mSprintBacklogLogic.closeTask(task2.getId(), DONE_NAME, DONE_NOTE,
+		mSprintBacklogLogic.closeTask(mProject.getId(),task2.getSerialId(), DONE_NAME, DONE_NOTE,
 				task2.getActual(), CHECKOUT_TIME);
 
 		task.reload();

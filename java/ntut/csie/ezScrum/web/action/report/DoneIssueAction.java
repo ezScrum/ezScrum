@@ -38,24 +38,37 @@ public class DoneIssueAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 
 		// get parameter info
-		long issueId = Long.parseLong(request.getParameter("Id"));
+		long serialId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 		int actual = Integer.parseInt(request.getParameter("Actualhour"));
 		String issueType = request.getParameter("IssueType");
-
+		System.out.println("Id");
+		System.out.println(serialId);
+		System.out.println("Name");
+		System.out.println(name);
+		System.out.println("IssueType");
+		System.out.println(issueType);
+		
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
 		StringBuilder result = new StringBuilder("");
 		
 		if (issueType.equals("Story")) {
-			sprintBacklogHelper.closeStory(issueId, name, notes, changeDate);
+			System.out.println("This is Story");
+			sprintBacklogHelper.closeStory(serialId, name, notes, changeDate);
 			// return done issue 相關相關資訊
-			StoryObject story = sprintBacklogHelper.getStory(issueId);
+			StoryObject story = sprintBacklogHelper.getStory(serialId);
 			result.append(Translation.translateTaskboardStoryToJson(story));
 		} else if (issueType.equals("Task")) {
-			sprintBacklogHelper.closeTask(issueId, name, notes, actual, changeDate);
-			TaskObject task = sprintBacklogHelper.getTask(issueId);
+			System.out.println("This is Task");
+			sprintBacklogHelper.closeTask(project.getId(),serialId, name, notes, actual, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(project.getId(), serialId);
+			System.out.println(task.getName());
+			System.out.println(task.getSerialId());
+
+			System.out.println(task.getHandlerUsername());
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
 

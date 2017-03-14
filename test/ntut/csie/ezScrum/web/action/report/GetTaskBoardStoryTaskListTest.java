@@ -315,7 +315,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ArrayList<TaskObject> tasks = ATTS.getTasks();
 		ArrayList<StoryObject> stories = ASTS.getStories();
 		sprintBacklogLogic.checkOutTask(tasks.get(0).getId(), tasks.get(0).getName(), CA.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
-		sprintBacklogLogic.closeTask(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), 0, "");
+		sprintBacklogLogic.closeTask(mProject.getId(), tasks.get(0).getSerialId(), tasks.get(0).getName(), tasks.get(0).getNotes(), 0, "");
 		sprintBacklogLogic.closeStory(stories.get(0).getId(), stories.get(0).getName(), stories.get(0).getNotes(), "");
 		// 將第三個 task check out，用 TEST_ACCOUNT_ID_1 checkout task
 		sprintBacklogLogic.checkOutTask(tasks.get(2).getId(), tasks.get(2).getName(), CA.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
