@@ -65,7 +65,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		if (task != null) {
 			result.append("{\"Task\":{")
-			        .append("\"Id\":\"").append(task.getSerialId()).append("\",")
+			        .append("\"Id\":\"").append(task.getId()).append("\",")
 			        .append("\"Name\":\"").append(TranslateSpecialChar.TranslateJSONChar(task.getName())).append("\",")
 			        .append("\"Partners\":\"").append(TranslateSpecialChar.TranslateXMLChar(task.getPartnersUsername())).append("\",")
 			        .append("\"Notes\":\"").append(TranslateSpecialChar.TranslateJSONChar(task.getNotes())).append("\",")
@@ -85,7 +85,7 @@ public class ShowCheckOutIssueAction extends PermissionAction {
 		StringBuilder result = new StringBuilder();
 		if (story != null) {
 			result.append("{\"Story\":{")
-			        .append("\"Id\":\"").append(story.getSerialId()).append("\",")
+			        .append("\"Id\":\"").append(story.getId()).append("\",")
 			        .append("\"Name\":\"").append(TranslateSpecialChar.TranslateJSONChar(story.getName())).append("\",")
 			        .append("\"Partners\":\"").append("\",")
 			        .append("\"Notes\":\"").append(TranslateSpecialChar.TranslateJSONChar(story.getNotes())).append("\",")

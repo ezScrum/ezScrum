@@ -176,7 +176,7 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     onEditFailure: function(response) {
         this.fireEvent('COFailure', this, response);
     },
-    onLoadSuccess: function(response) {
+    onLoadSuccess: function(response, taskId) {
     	ConfirmWidget.loadData(response);
     	if (ConfirmWidget.confirmAction()) {
 			TaskStore_ForCheckOutTask.loadData(Ext.decode(response.responseText));	// load task info
@@ -184,7 +184,7 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			if(record) {
 				this.getForm().setValues({
 					Id: record.data['Id'],
-					Name: record.data['Name'], 
+					Name: record.data['Name'],
 					Partners: record.data['Partners'],
 					Notes: record.data['Notes']
 				});
@@ -193,7 +193,7 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				this.HandlerCombo.reset();
 				
 				// append issueID to window title. "CheckOutTaskWindow" define in TaskBoardCardFormPanel.js
-				CheckOutTaskWindow.setTitle('Check Out Task #' + record.data['Id']);
+				CheckOutTaskWindow.setTitle('Check Out Task #' + taskId);
 			}
     	}
     },
@@ -209,7 +209,7 @@ ezScrum.CheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			url: obj.loadUrl,
 			params : {issueID : id, issueType : 'Task'},
 			success: function(response) { 
-				obj.onLoadSuccess(response);
+				obj.onLoadSuccess(response, id);
 			},
 			failure: function(response) { obj.onLoadFailure(response); }
 		});

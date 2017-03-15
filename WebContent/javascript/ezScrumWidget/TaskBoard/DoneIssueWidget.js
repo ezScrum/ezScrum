@@ -114,7 +114,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     onEditFailure: function(response) {
         this.fireEvent('DOFailure', this, response);
     },
-    onLoadSuccess: function(response) {
+    onLoadSuccess: function(response, taskId) {
     	ConfirmWidget.loadData(response);
     	if (ConfirmWidget.confirmAction()) {
     		// load issue info
@@ -138,7 +138,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				});
 				
 				// append issueID to window title. "DoneIssueWindow" define in TaskBoardCardFormPanel.js
-				DoneIssueWindow.setTitle('Done ' + record.json['IssueType'] + ' #' + record.data['Id']);
+				DoneIssueWindow.setTitle('Done ' + record.json['IssueType'] + ' #' + taskId);
 			}
     	}
     },
@@ -150,10 +150,10 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     },
     loadIssue: function(id, issueType) {
         var obj = this;
-        
+
     	Ext.Ajax.request({
 			url: this.loadUrl,
-			success: function(response) { obj.onLoadSuccess(response); },
+			success: function(response) { obj.onLoadSuccess(response,id); },
 			failure: function(response) { obj.onLoadFailure(response); },
 			params : {issueID : id, issueType : issueType}
 		});

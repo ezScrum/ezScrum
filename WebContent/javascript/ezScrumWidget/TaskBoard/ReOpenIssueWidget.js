@@ -110,7 +110,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 	onEditFailure : function(response) {
 		this.fireEvent('ReOFailure', this, response);
 	},
-	onLoadSuccess : function(response) {
+	onLoadSuccess : function(response, taskId) {
 		ConfirmWidget.loadData(response);
 		if (ConfirmWidget.confirmAction()) {
 			var record;
@@ -133,7 +133,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				});
 
 				// append issueID to window title. "RE_OpenIssueWindow" define in TaskBoardCardFormPanel.js
-				RE_OpenIssueWindow.setTitle('Re Opened ' + record.json['IssueType'] + ' #' + record.data['Id']);
+				RE_OpenIssueWindow.setTitle('Re Opened ' + record.json['IssueType'] + ' #' + taskId);
 			}
 		}
 	},
@@ -149,7 +149,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		Ext.Ajax.request( {
 			url : obj.loadUrl,
 			params : { issueID : id	, issueType: type},
-			success : function(response) { obj.onLoadSuccess(response);	},
+			success : function(response) { obj.onLoadSuccess(response, id);	},
 			failure : function(response) { obj.onLoadFailure(response);	}
 		});
 	}

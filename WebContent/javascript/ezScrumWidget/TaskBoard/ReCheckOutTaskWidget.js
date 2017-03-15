@@ -102,9 +102,9 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     onEditFailure: function(response) {
         this.fireEvent('RECOFailure', this, response);
     },
-    onLoadSuccess: function(response) {
+    onLoadSuccess: function(response, taskId) {
     	ConfirmWidget.loadData(response);
-    	if (ConfirmWidget.confirmAction()) {
+		if (ConfirmWidget.confirmAction()) {
 			TaskStore_ForReCheckOutTask.loadData(Ext.decode(response.responseText));	// load task info
 
 			var record = TaskStore_ForReCheckOutTask.getAt(0);
@@ -118,7 +118,7 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 				});
 				
 				// append issueID to window title. "RE_CheckOutTaskWindow" define in TaskBoardCardFormPanel.js
-				RE_CheckOutTaskWindow.setTitle('Reset Checked Out Task #' + record.data['Id']);
+				RE_CheckOutTaskWindow.setTitle('Reset Checked Out Task #' + taskId);
 				// this.fireEvent('LoadSuccess', this, response, record);
 			}
     	}
@@ -131,9 +131,9 @@ ezScrum.ReCheckOutForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     },
     loadTask: function(id) {
         var obj = this;
-    	Ext.Ajax.request({
+		Ext.Ajax.request({
 			url: obj.loadUrl,
-			success: function(response) { obj.onLoadSuccess(response); },
+			success: function(response) { obj.onLoadSuccess(response, id); },
 			failure: function(response) { obj.onLoadFailure(response); },
 			params : {issueID : id, issueType : 'Task'}
 		});
