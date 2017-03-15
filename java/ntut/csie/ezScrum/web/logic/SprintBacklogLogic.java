@@ -66,16 +66,16 @@ public class SprintBacklogLogic {
 	 * @param notes
 	 * @param changeDate
 	 */
-	public void closeStory(long projectId, long serialId, String name, String notes,
+	public void closeStory(long id, String name, String notes,
 			String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeStory(serialId, name, notes, closeDate);
+		mSprintBacklogMapper.closeStory(id, name, notes, closeDate);
 	}
 	
-	public void reopenStory(long projectId, long id, String name, String notes,
+	public void reopenStory(long id, String name, String notes,
 			String changeDate) {
 		Date reopenDate = parseToDate(changeDate);
-		mSprintBacklogMapper.reopenStory(serialId, name, notes, reopenDate);
+		mSprintBacklogMapper.reopenStory(id, name, notes, reopenDate);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class SprintBacklogLogic {
 
 	public void resetTask(long projectId, long serialId, String name, String notes, String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.resetTask(serialId, name, notes, closeDate);
+		mSprintBacklogMapper.resetTask(projectId, serialId, name, notes, closeDate);
 	}
 
 	/**

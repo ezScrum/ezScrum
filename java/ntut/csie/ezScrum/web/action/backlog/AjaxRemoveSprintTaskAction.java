@@ -48,11 +48,10 @@ public class AjaxRemoveSprintTaskAction extends PermissionAction {
 		
 		// Get Task
 		TaskObject task = TaskObject.get(project.getId(), serialTaskId);
-		long taskId = -1;
 		if (task != null) {
-			taskId = task.getId();
+			sprintBacklogHelper.dropTask(project.getId(), serialTaskId);
 		}
-		sprintBacklogHelper.dropTask(taskId);
+		
 		
 		StringBuilder result = new StringBuilder();
 		result.append("<DropTask><Result>true</Result><Task><Id>")

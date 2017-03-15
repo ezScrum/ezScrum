@@ -158,13 +158,13 @@ public class SprintBacklogHelper {
 		mSprintBacklogMapper.dropTask(taskId);
 	}
 
-	public void closeStory(long projectId, long serialId, String name, String notes, String changeDate) {
-		mSprintBacklogLogic.closeStory(projectId, serialId, name, notes, changeDate);
+	public void closeStory(long serialId, String name, String notes, String changeDate) {
+		mSprintBacklogLogic.closeStory(serialId, name, notes, changeDate);
 	}
 
-	public void reopenStory(long projectId, long serialId, String name, String notes,
+	public void reopenStory(long serialId, String name, String notes,
 			String changeDate) {
-		mSprintBacklogLogic.reopenStory(projectId, serialId, name, notes, changeDate);
+		mSprintBacklogLogic.reopenStory(serialId, name, notes, changeDate);
 	}
 
 	/**

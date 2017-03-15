@@ -80,7 +80,8 @@ public class TaskWebService extends ProjectWebService {
 	 * @return
 	 */
 	public void deleteTask(String taskId, String storyId) {
-		mSprintBacklogHelper.deleteTask(Long.parseLong(taskId));
+		
+		mSprintBacklogHelper.deleteTask(mProject.getId(), Long.parseLong(taskId));
 	}
 	
 	/**
@@ -89,7 +90,7 @@ public class TaskWebService extends ProjectWebService {
 	 * @param storyId
 	 */
 	public void dropTask(String taskId) {
-		mSprintBacklogHelper.dropTask(Long.parseLong(taskId));
+		mSprintBacklogHelper.dropTask(mProject.getId(), Long.parseLong(taskId));
 	}
 	
 	/**

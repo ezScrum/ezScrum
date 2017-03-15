@@ -39,15 +39,15 @@ public class ResetTaskAction extends PermissionAction {
 		// get parameter info
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project);
-		long issueId = Long.parseLong(request.getParameter("Id"));
+		long taskSerialId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
 		String bugNote = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
 
-		sprintBacklogHelper.resetTask(issueId, name, bugNote, changeDate);
+		sprintBacklogHelper.resetTask(project.getId(), taskSerialId, name, bugNote, changeDate);
 
 		// return reset task的相關資訊
-		TaskObject task = sprintBacklogHelper.getTask(issueId);
+		TaskObject task = sprintBacklogHelper.getTask(project.getId(),taskSerialId);
 		// IIssue issue = sprintBacklogHelper.getStory(issueID);
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateTaskboardTaskToJson(task));

@@ -50,6 +50,7 @@ public class SprintBacklogMapper {
 		StoryObject story = StoryObject.get(storyId);
 		return story;
 	}
+	
 
 	/**
 	 * 取得這個 Sprint 內 stories
@@ -140,8 +141,8 @@ public class SprintBacklogMapper {
 	}
 	
 	// for ezScrum 1.8
-	public void deleteTask(long id) {
-		TaskObject task = TaskObject.get(id);
+	public void deleteTask(long projectId, long serialid) {
+		TaskObject task = TaskObject.get(projectId, serialid);
 		if (task != null) {
 			task.delete();
 		}
@@ -308,8 +309,8 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void reopenTask(long id, String name, String notes, Date specificDate) {
-		TaskObject task = TaskObject.get(id);
+	public void reopenTask(long projectId, long serialId, String name, String notes, Date specificDate) {
+		TaskObject task = TaskObject.get(projectId, serialId);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_CHECK)
@@ -325,9 +326,9 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void resetTask(long id, String name, String notes, Date specificDate) {
+	public void resetTask(long projectId, long serialId, String name, String notes, Date specificDate) {
 		long noHandler = -1;
-		TaskObject task = TaskObject.get(id);
+		TaskObject task = TaskObject.get(projectId, serialId);
 		if (task != null) {
 			task.setName(name).setNotes(notes).setHandlerId(noHandler)
 					.setPartnersId(new ArrayList<Long>())

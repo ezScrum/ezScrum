@@ -38,11 +38,11 @@ public class AjaxDeleteSprintTaskAction extends PermissionAction {
 		// get parameter info
 		long sprintId = Long.parseLong(request.getParameter("sprintID"));
 		// delete task 單選的 task ID
-		long taskId = Long.parseLong(request.getParameter("issueID"));
+		long taskSerialId = Long.parseLong(request.getParameter("issueID"));
 		
 		SprintBacklogMapper backlog = new SprintBacklogLogic(project, sprintId).getSprintBacklogMapper();
-		backlog.deleteTask(taskId);
-		String result = "<DeleteTask><Result>true</Result><Task><Id>" + taskId + "</Id></Task></DeleteTask>";
+		backlog.deleteTask(project.getId(), taskSerialId);
+		String result = "<DeleteTask><Result>true</Result><Task><Id>" + taskSerialId + "</Id></Task></DeleteTask>";
 		return new StringBuilder(result);
 	}
 }
