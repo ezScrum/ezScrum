@@ -564,15 +564,25 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 	selectionChange: function(len) {
 		if(len > 1){
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').disable();
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
-            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
+		}else if(len === 0){
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
 		}else{
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').enable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').enable();
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').enable();
-            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').enable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').enable();
         }
-        Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
-		Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').enable();
+
+
 		productBacklogTagMenu.enable();
 	},
 	loadDataModel: function() {
