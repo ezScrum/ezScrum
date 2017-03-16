@@ -119,7 +119,7 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
     	if (ConfirmWidget.confirmAction()) {
     		// load issue info
     		var record;
-    		if (response.responseText.includes('Story')) {
+    		if (response.responseText.match(/[a-zA-Z]+/g)[0] === 'Story') {
     			IssueStore_ForDoneStory.loadData(Ext.decode(response.responseText));
     			record = IssueStore_ForDoneStory.getAt(0);
     		} else {

@@ -115,7 +115,7 @@ ezScrum.ReOpenForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		if (ConfirmWidget.confirmAction()) {
 			var record;
 			// load issue info
-    		if (response.responseText.includes('Story')) {
+    		if (response.responseText.match(/[a-zA-Z]+/g)[0] === 'Story') {
     			IssueStore_ForReOpenStory.loadData(Ext.decode(response.responseText));
     			record = IssueStore_ForReOpenStory.getAt(0);
     		} else {

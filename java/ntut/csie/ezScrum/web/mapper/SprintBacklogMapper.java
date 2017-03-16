@@ -313,6 +313,7 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(name).setNotes(notes)
 					.setStatus(TaskObject.STATUS_CHECK)
+					.setPartnersId(task.getPartnersId())
 					.save(specificDate.getTime());
 		}
 	}
