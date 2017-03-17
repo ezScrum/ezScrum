@@ -318,3 +318,9 @@ Tset TaskBoard - ReleaseID Check
     Select Node Product    TaskBoard
     Compare Field Content    //input[@name="ReleaseID"]    None
     [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
+
+Test TaskBoard - Check Task ID On The Window After Move To Done
+    [Setup]    Test TaskBoard - Check Task position Setup
+    ${ID}=    Set Variable    #TaskBoard ID
+    Move Task From Check Out To Done Check ID Before Click Done    ${ID}
+    [Teardown]    Test TaskBoard - Check Task position Teardown

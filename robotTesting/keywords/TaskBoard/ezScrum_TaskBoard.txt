@@ -90,7 +90,6 @@ Verify Task Information With Arguments In TaskBoard
     ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Task #${_TaskID}    Cancel
     Element Enable And Submit    ${_XpathEditStoryCancel}
 
-
 Move Task From Check Out To Done
     [Arguments]    ${Task_number}
     click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
@@ -103,26 +102,15 @@ Check if Done column has TaskCard
     Page Should Contain Element    xpath=//div[@id="639_closed"]//div[@id="Task:${TaskNumber}"]    message=#${TaskNumber} taskcard doesn't in the done column
 
 Move Task From Check Out To Done Check ID Before Click Done
-    [Arguments]    ${Task_number}
-    Wait until Page Contains Element    xpath=//h2[text()="[Task] \ #${Task_number}"]
-    ${initialName}=    Get Text    //h2[text()="[Task] \ #${Task_number}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
-    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
-    Comment    ${doneName}=    Set Variable    //input[@type="text"][@name="Name"]
-    ${doneName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
-    Should Be Equal    ${doneName}    ${initialName}
-    ${doneTaskID}=    Set Variable    //span[@class="x-window-header-text"]
-    Compare Text In Specific Xpath    ${doneTaskID}    Done Task #${Task_number}
-    Click Element    xpath=//tr//button[text()="Done"]
-
-Move Task From Check Out To Done Check Name Before Click Done
-    [Arguments]    ${Task_number}
-    ${initialName}=    Get Text    //h2[text()="[Task] \ #${Task_number}"]/../../../../../../..//td[@class="TaskCard_Description"]
-    Comment    click element    xpath=//h2[text()="[Task] \ #${Task_number}"]
-    Comment    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
-    ${doneName}=    Get Text    //input[@name="Name"]
-    Compare Text In Specific Xpath    ${doneName}    ${initialName}
-    Click Element    xpath=//tr//button[text()="Done"]
+    [Arguments]    ${Task_ID}
+    Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]//h2[text()="[Task] \ #${Task_ID}"]
+    ${initialTaskName}=    Get Text    //h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
+    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_ID}"]    xpath=//div[@id="639_closed"]
+    ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${windowTaskName}    ${initialTaskName}
+    ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${windowTital}    Done Task #${Task_ID}
+    Click Element    xpath=//button[text()="Done"]
 
 Check TaskCard Contents
     [Arguments]    ${TaskCardID}    ${TaskCardContent}    ${TaskCardHandler}    ${TaskCardHours}
