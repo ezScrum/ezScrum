@@ -55,7 +55,6 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     		},
     		async : false,
     		success : function(response) {
-    			
     			TaskBoard_StoriesStore.loadData(Ext.decode(response.responseText));
     	
     			obj.initialTaskBoard();
@@ -67,14 +66,13 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
     	});
 	},
 	initialTaskBoard: function() {
-		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式) 
+		// remove all items (for 選擇其它 sprint 時以 AJAX 的形式更新，取代切換頁面的形式)
 		var allStatusPanel = [];
 		this.TaskBoardCardPanel.init_StatusPanel();
 		for ( var i = 0; i < TaskBoard_StoriesStore.getCount(); i++) {
-			
+
 			// Issue 的三種狀態 'new', 'assigned', 'closed';
 			var story = TaskBoard_StoriesStore.getAt(i);
-			
 
 			// 建立 StatusPanel，GroupID 則是依照 StoryID，並且每個 Panel 再設置其所代表的 Status
 			// createStoryStatusPanel function 在  ezScrumWidget/TaskBoard/StatusPanel.js
@@ -103,13 +101,13 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		}
 		this.on('afterlayout',function(){
 			
-			for(var i=0;i<allStatusPanel.length;i++){
-				allStatusPanel[i].resetCellHeight()
+			for(var fistTimesIndexOfStatusPanel=0;fistTimesIndexOfStatusPanel<allStatusPanel.length;fistTimesIndexOfStatusPanel++){
+				allStatusPanel[fistTimesIndexOfStatusPanel].resetCellHeight();
 				this.TaskBoardCardPanel.doLayout();
 			}
 		})
-		for(var i=0;i<allStatusPanel.length;i++){
-			allStatusPanel[i].resetCellHeight()
+		for(var secondTimesIndexOfStatusPanel=0;secondTimesIndexOfStatusPanel<allStatusPanel.length;secondTimesIndexOfStatusPanel++){
+			allStatusPanel[secondTimesIndexOfStatusPanel].resetCellHeight();
 			this.TaskBoardCardPanel.doLayout();
 		}
 
@@ -158,7 +156,7 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		} else {
 			Ext.example.msg(title, 'Sorry, please try again.');
 		}
-		this.initialTaskBoard();
+		this.loadDataModel();
 	},
 	notify_EditTask: function(record) {
 		EditTaskWindow.hide();// share component
@@ -171,12 +169,11 @@ ezScrum.Taskboard_Content_Panel = Ext.extend(Ext.Panel, {
 		var taskPartners = record.data['Partners'];
 		var taskRemainHours = record.data['Remains'];
 		Ext.getCmp('Task:' + taskId).updateData_Edit(taskName, taskHandler, taskPartners, taskRemainHours);
-		
 		// update Sprint Desc. and Burndown Chart
 		var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
 		Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
 		Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
-		this.initialTaskBoard();
+		this.loadDataModel();
 	},
 	notify_AttachFile: function(success, record, msg) {
 		AttachFile_Window.hide();

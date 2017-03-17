@@ -116,18 +116,18 @@ function createStoryStatusPanel(storyID){
 			if('undefined' == typeof(h)){
 		        h=0;
 		    }
-			var that = this
-				var allPromise = [];
-				for ( var i = 0; i < this.items.length; i++) {				
-					allPromise.push(this.get(i).getAllElementHeight());				
+			var that = this;
+			var allPromise = [];
+			for ( var i = 0; i < this.items.length; i++) {
+				allPromise.push(this.get(i).getAllElementHeight());
+			}
+			Promise.all(allPromise).then(function(dataArray){
+				var highEst = Math.max.apply(Math,dataArray);
+				for ( var i = 0; i < 3; i++) {
+					that.get(i).setHeight(highEst * 1.1);
 				}
-				Promise.all(allPromise).then(function(dataArray){
-					var highEst = Math.max.apply(Math,dataArray)
-					for ( var i = 0; i < 3; i++) {
-						that.get(i).setHeight(highEst * 1.1);
-					}
-				},function(er){
-					console.log("Render fail, please reload the browser " + er);
+			},function(er){
+				console.log("Render fail, please reload the browser " + er);
 			})	
 		},
 		resetCellHeightUndeferred: function(h) {
