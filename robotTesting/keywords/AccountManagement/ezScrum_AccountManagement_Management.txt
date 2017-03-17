@@ -86,7 +86,7 @@ Delete Account
 
 Clean Accounts
     [Documentation]    Delete all accounts except Admin
-    Click Element    xpath=//td[text()="Management"]
+    Wait Until keyword succeeds    1min    5s    Click Element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Account_Management_Grid_Panel"]//td[1]/div[text()="admin"]
     ${AccountCount}=    Get Matching Xpath Count    //div[@class="x-grid3-cell-inner x-grid3-col-0" and text()!="admin"]

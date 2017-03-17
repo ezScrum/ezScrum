@@ -53,7 +53,7 @@ Test ScrumRole Teardown with Account
     # 假設 Project 已存在
     Wait Until Page Contains    ${PROJECT_NAME}DisplayName
     SwitchToPage    Management
-    SwitchToItemLink    False    Account Management
+    Wait until keyword succeeds    1min    5sec    SwitchToItemLink    False    Account Management
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
