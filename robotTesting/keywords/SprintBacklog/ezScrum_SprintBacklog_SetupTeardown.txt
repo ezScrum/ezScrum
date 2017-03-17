@@ -219,3 +219,60 @@ Test Sprint Backlog - Printable Task Teardown
     Data Base Tear Down
     Close Browser
     Close All Browsers
+
+Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    #Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Printable_Story_Disabled_Task_Disabled.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="TestProject"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+
+Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    #Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Printable_StoryEnable_and_TaskDisable.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="TestProject"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks DisableTeardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Enable Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    #Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Printable_StoryEnable_and_TaskEnable.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="TestProject"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks EnableTeardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser

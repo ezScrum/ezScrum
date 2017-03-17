@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from Selenium2Library import Selenium2Library
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 
 
 class Selenium2Improved(Selenium2Library):
@@ -21,3 +24,14 @@ class Selenium2Improved(Selenium2Library):
         """
         driver = self._current_browser()
         driver.execute_script("window.open('" + url + "', '_blank');")
+    
+    def press_shift_and_click_element(self, locator):
+        if locator.startswith("xpath="):
+            web_element = self._current_browser().find_element(By.XPATH, locator[len("xpath="):])
+            actions = ActionChains(self._current_browser())
+            actions.key_down(Keys.SHIFT).click(web_element).key_up(Keys.SHIFT).perform()
+    def press_control_and_click_element(self, locator):
+        if locator.startswith("xpath="):
+            web_element = self._current_browser().find_element(By.XPATH, locator[len("xpath="):])
+            actions = ActionChains(self._current_browser())
+            actions.key_down(Keys.CONTROL).click(web_element).key_up(Keys.CONTROL).perform()

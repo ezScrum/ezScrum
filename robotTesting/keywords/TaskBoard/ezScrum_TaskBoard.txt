@@ -89,3 +89,50 @@ Verify Task Information With Arguments In TaskBoard
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]    ${_TaskNotes}
     ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Task #${_TaskID}    Cancel
     Element Enable And Submit    ${_XpathEditStoryCancel}
+
+
+Move Task From Check Out To Done
+    [Arguments]    ${Task_number}
+    click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
+    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
+    Click Element    xpath=//tr//button[text()="Done"]
+
+Check if Done column has TaskCard
+    [Arguments]    ${TaskNumber}
+    Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]
+    Page Should Contain Element    xpath=//div[@id="639_closed"]//div[@id="Task:${TaskNumber}"]    message=#${TaskNumber} taskcard doesn't in the done column
+
+Move Task From Check Out To Done Check ID Before Click Done
+    [Arguments]    ${Task_number}
+    Wait until Page Contains Element    xpath=//h2[text()="[Task] \ #${Task_number}"]
+    ${initialName}=    Get Text    //h2[text()="[Task] \ #${Task_number}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
+    click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
+    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
+    Comment    ${doneName}=    Set Variable    //input[@type="text"][@name="Name"]
+    ${doneName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${doneName}    ${initialName}
+    ${doneTaskID}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${doneTaskID}    Done Task #${Task_number}
+    Click Element    xpath=//tr//button[text()="Done"]
+
+Move Task From Check Out To Done Check Name Before Click Done
+    [Arguments]    ${Task_number}
+    ${initialName}=    Get Text    //h2[text()="[Task] \ #${Task_number}"]/../../../../../../..//td[@class="TaskCard_Description"]
+    Comment    click element    xpath=//h2[text()="[Task] \ #${Task_number}"]
+    Comment    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
+    ${doneName}=    Get Text    //input[@name="Name"]
+    Compare Text In Specific Xpath    ${doneName}    ${initialName}
+    Click Element    xpath=//tr//button[text()="Done"]
+
+Check TaskCard Contents
+    [Arguments]    ${TaskCardID}    ${TaskCardContent}    ${TaskCardHandler}    ${TaskCardHours}
+    ${FetchTaskCardID}=    Get Text    //div[@id="Task:${TaskCardID}"]//table[@class="TaskCard_Header"]
+    ${FetchTaskCardID}=    Fetch From Right    ${FetchTaskCardID}    \#
+    Should Be Equal    ${FetchTaskCardID}    ${TaskCardID}
+    ${FetchTaskCardContent}=    Get Text    //div[@id="Task:${TaskCardID}"]//td[@class="TaskCard_Description"]
+    Should Be Equal    ${FetchTaskCardContent}    ${TaskCardContent}
+    ${FetchTaskCardHandler}=    Get Text    //div[@id="Task:${TaskCardID}"]//span[@class="TaskCard_Handler"]
+    Should Be Equal    ${FetchTaskCardHandler}    ${TaskCardHandler}
+    ${FetchTaskCardHours}=    Get Text    //div[@id="Task:${TaskCardID}"]//td[@class="TaskCard_Value"]
+    Should Be Equal    ${FetchTaskCardHours}    ${TaskCardHours}
+>
