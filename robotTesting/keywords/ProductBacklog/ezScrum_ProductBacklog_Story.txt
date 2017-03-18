@@ -290,3 +290,11 @@ Delete Closed With StoryName
     ${xpathDeleteStory}=    Find Current Window Element    Delete Story    Delete
     Click Element    xpath=${xpathDeleteStory}
     Wait Until Page Contains    Delete Story Success.
+
+Check If Button Enabled
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Edit Story"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Delete Story"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Show History"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Print Selected"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Manage Tag"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Tag"]

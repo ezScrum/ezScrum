@@ -229,3 +229,37 @@ Test Sprint Backlog - Printable Task
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[5]    5
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[3]/table/tbody/tr/td[5]    5
     [Teardown]    Test Sprint Backlog - Printable Task Teardown
+
+Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled
+    [Setup]    Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Setup
+    Wait Until Page Contains Element    //button[text()="Printable Stories"]
+    Element Class Should Be Disabled    //table[@id="SprintBacklog_showPrintableStoryBtn"]
+    Wait Until Page Contains Element    //button[text()="Printable Tasks"]
+    Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
+    [Teardown]    Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Teardown
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable
+    [Documentation]    (Button test)
+    ...    Printable Stories ->enable
+    ...    Printable Tasks ->disable
+    ...    when just exsit a story without tasks
+    [Setup]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable Setup
+    Wait Until Page Contains Element    //button[text()="Printable Stories"]
+    Element Class Should Be Enabled    //table[@id="SprintBacklog_showPrintableStoryBtn"]
+    #BUG!! To be fixed
+    Wait Until Page Contains Element    //button[text()="Printable Tasks"]
+    Comment    Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
+    Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
+    [Teardown]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks DisableTeardown
+
+Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Enable
+    [Documentation]    (Button test)
+    ...    Printable Stories ->enable
+    ...    Printable Tasks ->enable
+    ...    when exist a story with tasks
+    [Setup]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Enable Setup
+    Wait Until Page Contains Element    //button[text()="Printable Stories"]
+    Element Class Should Be Enabled    //table[@id="SprintBacklog_showPrintableStoryBtn"]
+    Wait Until Page Contains Element    //button[text()="Printable Tasks"]
+    Element Class Should Be Enabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
+    [Teardown]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks EnableTeardown

@@ -89,3 +89,38 @@ Verify Task Information With Arguments In TaskBoard
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]    ${_TaskNotes}
     ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Task #${_TaskID}    Cancel
     Element Enable And Submit    ${_XpathEditStoryCancel}
+
+Move Task From Check Out To Done
+    [Arguments]    ${Task_number}
+    click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
+    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
+    Click Element    xpath=//tr//button[text()="Done"]
+
+Check if Done column has TaskCard
+    [Arguments]    ${TaskNumber}
+    Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]
+    Page Should Contain Element    xpath=//div[@id="639_closed"]//div[@id="Task:${TaskNumber}"]    message=#${TaskNumber} taskcard doesn't in the done column
+
+Move Task From Check Out To Done Check ID Before Click Done
+    [Arguments]    ${Task_ID}
+    Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]//h2[text()="[Task] \ #${Task_ID}"]
+    ${initialTaskName}=    Get Text    //h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
+    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_ID}"]    xpath=//div[@id="639_closed"]
+    ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${windowTaskName}    ${initialTaskName}
+    ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${windowTital}    Done Task #${Task_ID}
+    Click Element    xpath=//button[text()="Done"]
+
+Check TaskCard Contents
+    [Arguments]    ${TaskCardID}    ${TaskCardContent}    ${TaskCardHandler}    ${TaskCardHours}
+    ${FetchTaskCardID}=    Get Text    //div[@id="Task:${TaskCardID}"]//table[@class="TaskCard_Header"]
+    ${FetchTaskCardID}=    Fetch From Right    ${FetchTaskCardID}    \#
+    Should Be Equal    ${FetchTaskCardID}    ${TaskCardID}
+    ${FetchTaskCardContent}=    Get Text    //div[@id="Task:${TaskCardID}"]//td[@class="TaskCard_Description"]
+    Should Be Equal    ${FetchTaskCardContent}    ${TaskCardContent}
+    ${FetchTaskCardHandler}=    Get Text    //div[@id="Task:${TaskCardID}"]//span[@class="TaskCard_Handler"]
+    Should Be Equal    ${FetchTaskCardHandler}    ${TaskCardHandler}
+    ${FetchTaskCardHours}=    Get Text    //div[@id="Task:${TaskCardID}"]//td[@class="TaskCard_Value"]
+    Should Be Equal    ${FetchTaskCardHours}    ${TaskCardHours}
+

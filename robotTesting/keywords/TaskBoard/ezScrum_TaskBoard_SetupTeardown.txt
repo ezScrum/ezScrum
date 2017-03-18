@@ -414,3 +414,14 @@ Test TaskBoard - Initial Release ID Check Setup
 
 Test TaskBoard - Initial Release ID Check Teardown
     Test TaskBoard - New Postcondition
+
+Test TaskBoard - Check Task Consistency After Dragging Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    1
+
+Test TaskBoard - Check Task Consistency After Dragging Teardown
+    Close Browser
+    Close All Browsers
