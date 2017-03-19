@@ -345,46 +345,6 @@ Test TaskBoard - Check Task ID On The Window After Move To Done
     Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
 
-Test TaskBoard - Check Task ID On The Window After Noncheckout To Checkout
-    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
-    ${Story_ID}=    Set Variable    1
-    ${Task_ID}=    Set Variable    4
-    ${Task_NotCheckOut}    Set Variable    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]
-    Wait until Page Contains Element    ${Task_NotCheckOut}
-    ${initialTaskName}=    Get Text    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    Move Task From Not Check Out To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
-
-Test TaskBoard - Check Task ID On The Window After Checkout To Done
-    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
-    ${Story_ID}=    Set Variable    1
-    ${Task_ID}=    Set Variable    2
-    ${Task_NotCheckOut}    Set Variable    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]
-    Wait until Page Contains Element    ${Task_NotCheckOut}
-    ${initialTaskName}=    Get Text    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    Move Task From Check Out To Done Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
-
-Test TaskBoard - Check Task ID On The Window After Done To Checkout
-    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
-    ${Story_ID}=    Set Variable    1
-    ${Task_ID}=    Set Variable    1
-    ${Task_NotCheckOut}    Set Variable    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_ID}"]
-    Wait until Page Contains Element    ${Task_NotCheckOut}
-    ${initialTaskName}=    Get Text    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    Move Task From Done To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
-
-Test TaskBoard - Check Task ID On The Window After Checkout To Noncheckout
-    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
-    ${Story_ID}=    Set Variable    1
-    ${Task_ID}=    Set Variable    3
-    ${Task_NotCheckOut}    Set Variable    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]
-    Wait until Page Contains Element    ${Task_NotCheckOut}
-    ${initialTaskName}=    Get Text    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
-
 Test TaskBoard - Check Sprint ID
     [Setup]    Test TaskBoard - Check Sprint ID Setup
     ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
