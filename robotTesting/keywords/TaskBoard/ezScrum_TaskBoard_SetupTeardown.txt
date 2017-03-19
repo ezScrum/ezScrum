@@ -429,3 +429,18 @@ Test TaskBoard - Check Task Consistency After Dragging Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
     Close All Browsers
+
+Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    TwoProjectsTest.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    FirstCreateProject
+    Select Node Product    TaskBoard
+
+Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+    Close All Browsers
