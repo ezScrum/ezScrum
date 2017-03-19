@@ -437,7 +437,7 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
-    Select Project    FirstCreateProject
+    Select Project    SecondCreateProject
     Select Node Product    TaskBoard
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
