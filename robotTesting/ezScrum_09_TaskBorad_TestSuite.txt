@@ -331,7 +331,6 @@ Test TaskBoard - Check Task Consistency After Dragging
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
 
-<<<<<<< HEAD
 Test TaskBoard - Check Task ID On The Window After Move To Done
     [Documentation]    Try to move TaskBoard between "not Check Out", "Check Out", "Done", and check their ID and Name doesn't change in the windows
     [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
@@ -389,14 +388,18 @@ Test TaskBoard - Check Task ID On The Window After Checkout To Noncheckout
 Test TaskBoard - Check Sprint ID
     [Setup]    Test TaskBoard - Check Sprint ID Setup
     ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
-    Click Element    //label[text()="Sprint ID:"]/../div[1]/div/input
-    Click Element    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
-    Click Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
-    ${sprntID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
-    Should Be Equal    ${sprintInitialID}    ${sprntID}
+    ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Click Element    ${sprintIDSelect}
+    ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
+    Click Element    ${selectSprint2}
+    ${sprintBaxklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
+    Click Element    ${sprintBaxklog}
+    ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
+    Click Element    ${taskBoard}
+    ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Should Be Equal    ${sprintInitialID}    ${sprntModernID}
     [Teardown]    Test TaskBoard - Check Sprint ID Teardown
-=======
+
 Test TaskBoard - Check Task Consistency After Editing in Done Area
     [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
     ${storyID}=    Set Variable    3
@@ -412,4 +415,3 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area
     Page Should Contain Element    //div[@id="${storyID}_closed"]//div[@id="Task:${taskID}"]
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
->>>>>>> 2bdb53e55231b1b26e735e461d4edef777db601b
