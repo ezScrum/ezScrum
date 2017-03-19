@@ -1,4 +1,4 @@
-﻿*** Settings ***
+*** Settings ***
 Documentation     CI 測試不穩定,需加入同步機制?
 Suite Setup       Test TaskBoard - Setup
 Suite Teardown    Test TaskBoard - Teardown
@@ -327,17 +327,12 @@ Test TaskBoard - Check Task ID On The Window After Move To Done
 
 Test TaskBoard - Check Task Consistency After Dragging
     [Setup]    Test TaskBoard - Check Task Consistency After Dragging Setup
-    Select Node Product    TaskBoard
-    ${taskID}=    Set Variable    2
+    ${storyID}=    Set Variable    3
+    ${taskID}=    Set Variable    9
     Wait Until Page Contains Element    //div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
     ${TaskCardContent}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
     ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
     ${TaskCardHours}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Value"]
-    Drag And Drop    //h2[text()="[Task] \ #${taskID}"]    //div[@id="Task:2"]/../../../..//div[3]
-    ${ActualHour}=    Fetch From Left    ${TaskCardHours}    ${SPACE}
-    Input Text    //input[@name="Actualhour"]    ${ActualHour}
-    ${xpathSubmit}=    Find Current Window Element    Done Task #${taskID}    Done
-    Element Enable And Submit    ${xpathSubmit}
-    Wait Until Page Contains    Success.
-    Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    ${TaskCardHours}
+    Task Done With Arguments    ${storyID}    ${taskID}
+    Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
