@@ -102,10 +102,8 @@ Check if Done column has TaskCard
     Page Should Contain Element    xpath=//div[@id="639_closed"]//div[@id="Task:${TaskNumber}"]    message=#${TaskNumber} taskcard doesn't in the done column
 
 Move Task From Check Out To Done Check ID Before Click Done
-    [Arguments]    ${Task_ID}
-    Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]//h2[text()="[Task] \ #${Task_ID}"]
-    ${initialTaskName}=    Get Text    //h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
-    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_ID}"]    xpath=//div[@id="639_closed"]
+    [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_closed"]
     ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
     Should Be Equal    ${windowTaskName}    ${initialTaskName}
     ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
@@ -124,3 +122,29 @@ Check TaskCard Contents
     ${FetchTaskCardHours}=    Get Text    //div[@id="Task:${TaskCardID}"]//td[@class="TaskCard_Value"]
     Should Be Equal    ${FetchTaskCardHours}    ${TaskCardHours}
 
+Move Task From Not Check Out To Check Out Check ID Before Click Done
+    [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Drag and Drop    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_assigned"]
+    ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${windowTaskName}    ${initialTaskName}
+    ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${windowTital}    Check Out Task #${Task_ID}
+    Click Element    xpath=//button[text()="Check Out"]
+
+Move Task From Done To Check Out Check ID Before Click Done
+    [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Drag and Drop    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_ID}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_assigned"]
+    ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${windowTaskName}    ${initialTaskName}
+    ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${windowTital}    Re Opened Task #${Task_ID}
+    Click Element    xpath=//button[text()="Re Open"]
+
+Move Task From Check Out To Not Check Out Check ID Before Click Done
+    [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_ID}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_new"]
+    ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
+    Should Be Equal    ${windowTaskName}    ${initialTaskName}
+    ${windowTital}=    Set Variable    //span[@class="x-window-header-text"]
+    Compare Text In Specific Xpath    ${windowTital}    Reset Checked Out Task #${Task_ID}
+    Click Element    xpath=//button[text()="Reset Check Out"]

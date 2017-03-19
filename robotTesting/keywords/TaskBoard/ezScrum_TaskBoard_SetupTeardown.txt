@@ -425,3 +425,33 @@ Test TaskBoard - Check Task Consistency After Dragging Setup
 Test TaskBoard - Check Task Consistency After Dragging Teardown
     Close Browser
     Close All Browsers
+
+Test TaskBoard - Check TaskBoard ID And Name Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Test TaskBoard - Check Task ID And Name On The Window After Move To Done.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    Project02
+    ${TaskBoard}=    Set Variable    //div[@id="left_panel"]//span[text()="TaskBoard"]
+    Wait Until Page Contains Element    ${TaskBoard}
+    Click Element    ${TaskBoard}
+
+Test TaskBoard - Check TaskBoard ID And Name Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+
+Test TaskBoard - Check Sprint ID Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Test TaskBoard - Check Task ID And Name On The Window After Move To Done.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    Project02
+    ${TaskBoard}=    Set Variable    //div[@id="left_panel"]//span[text()="TaskBoard"]
+    Wait Until Page Contains Element    ${TaskBoard}
+    Click Element    ${TaskBoard}
+
+Test TaskBoard - Check Sprint ID Teardown
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
