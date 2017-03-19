@@ -378,7 +378,7 @@ Test ProductBacklog Button Enable or Disable Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Wait Until Page Contains Element    xpath=//li//span[text()="Product Backlog"]
+    Wait Until Page Contains Element    xpath=//li//span[text()="Product Backlog"]    8
     Select Node Product    Product Backlog
 
 Test ProductBacklog Button Enable or Disable Teardown

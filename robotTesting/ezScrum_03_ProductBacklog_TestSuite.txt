@@ -315,31 +315,38 @@ Test ProductBacklog - Invailid Change Line
     Should Be Equal    ${testHowToDemoText}    How To Demo:\nHowToDemo: newStory\nChangeLine
     [Teardown]    Test Edit Story Teardown    ${storyID}
 
-Test ProductBacklog - Select No Story Disable Button
-    [Documentation]    Check buttons disabled when selecting no story
+Test ProductBacklog - Select One Story Disabled Button To Enabled
+    [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
+    #Select no story
+    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]    8
     Element Class Should Be Disabled    //table[@id="ext-comp-1536"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1537"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1538"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1539"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1541"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1543"]
-    [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
-
-Test ProductBacklog - Select One Story Disabled Button To Enabled
-    [Documentation]    Check buttons enabled when selecting one story
-    [Setup]    Test ProductBacklog Button Enable or Disable Setup
-    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]
+    #Select one Story
     Click Element    xpath=//div[text()="Project01"]
-    Check If Button Enabled
-    [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
-
-Test Product Backlog - Select Two Story Check Button
-    [Setup]    Test ProductBacklog Button Enable or Disable Setup
-    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]    30
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Edit Story"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Delete Story"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Show History"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Print Selected"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Manage Tag"]
+    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Tag"]
+    #Select two story
     Click Element    xpath=//tbody//div[text()="Project01"]
     press_shift_and_click_element    xpath=//tbody//div[text()="Project02"]
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]
     Element Class Should Be Disabled    xpath=//table[@id='ext-comp-1543']
+    #Cancel selecting story
+    press_control_and_click_element    xpath=//tbody//div[text()="Project01"]
+    press_control_and_click_element    xpath=//tbody//div[text()="Project02"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1536"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1537"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1539"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1541"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1543"]
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown

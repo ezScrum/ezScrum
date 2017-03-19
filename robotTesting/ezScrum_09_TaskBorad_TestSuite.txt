@@ -331,7 +331,6 @@ Test TaskBoard - Check Task Consistency After Dragging
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
 
-<<<<<<< HEAD
 Test TaskBoard - Check Task ID On The Window After Move To Done
     [Documentation]    Try to move TaskBoard between "not Check Out", "Check Out", "Done", and check their ID and Name doesn't change in the windows
     [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
@@ -396,7 +395,7 @@ Test TaskBoard - Check Sprint ID
     ${sprntID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
     Should Be Equal    ${sprintInitialID}    ${sprntID}
     [Teardown]    Test TaskBoard - Check Sprint ID Teardown
-=======
+
 Test TaskBoard - Check Task Consistency After Editing in Done Area
     [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
     ${storyID}=    Set Variable    3
@@ -412,4 +411,8 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area
     Page Should Contain Element    //div[@id="${storyID}_closed"]//div[@id="Task:${taskID}"]
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
->>>>>>> 2bdb53e55231b1b26e735e461d4edef777db601b
+
+Test TaskBoard - Check Taskcard Position
+    [Documentation]    Check if taskcard position right after moving it from check out \ to done
+    [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
