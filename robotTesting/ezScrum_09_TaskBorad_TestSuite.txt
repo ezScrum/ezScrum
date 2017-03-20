@@ -379,4 +379,7 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area
 Test TaskBoard - Check Taskcard Position
     [Documentation]    Check if taskcard position right after moving it from check out \ to done
     [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    Wait until Page Contains Element    xpath=//iframe[@class="chartjs-hidden-iframe"]    10
+    Move Task From Check Out To Done    3    9
+    Check if Done column has TaskCard    3    9
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown

@@ -91,15 +91,15 @@ Verify Task Information With Arguments In TaskBoard
     Element Enable And Submit    ${_XpathEditStoryCancel}
 
 Move Task From Check Out To Done
-    [Arguments]    ${Task_number}
-    click element    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]
-    Drag and Drop    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    xpath=//div[@id="639_closed"]
+    [Arguments]    ${Story_ID}    ${Task_number}
+    Drag and Drop by Offset    xpath=//table[@class="TaskCard_Header"]//h2[text()="[Task] \ #${Task_number}"]    300    0
+    Wait Until Page Contains Element    xpath=//tr//button[text()="Done"]
     Click Element    xpath=//tr//button[text()="Done"]
 
 Check if Done column has TaskCard
-    [Arguments]    ${TaskNumber}
+    [Arguments]    ${Story_ID}    ${TaskNumber}
     Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]
-    Page Should Contain Element    xpath=//div[@id="639_closed"]//div[@id="Task:${TaskNumber}"]    message=#${TaskNumber} taskcard doesn't in the done column
+    Page Should Contain Element    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_number}"] \ \    message=#${TaskNumber} taskcard doesn't in the done column
 
 Move Task From Check Out To Done Check ID Before Click Done
     [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}

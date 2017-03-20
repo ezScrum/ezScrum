@@ -315,7 +315,7 @@ Test ProductBacklog - Invailid Change Line
     Should Be Equal    ${testHowToDemoText}    How To Demo:\nHowToDemo: newStory\nChangeLine
     [Teardown]    Test Edit Story Teardown    ${storyID}
 
-Test ProductBacklog - Select One Story Disabled Button To Enabled
+Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
@@ -347,6 +347,6 @@ Test ProductBacklog - Select One Story Disabled Button To Enabled
     Element Class Should Be Disabled    //table[@id="ext-comp-1537"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1538"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1539"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1541"]
+    Element Class Should Be Enabled    //table[@id="ext-comp-1541"]
     Element Class Should Be Disabled    //table[@id="ext-comp-1543"]
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
