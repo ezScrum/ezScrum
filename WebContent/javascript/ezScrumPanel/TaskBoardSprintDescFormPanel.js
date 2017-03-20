@@ -28,28 +28,35 @@ ezScrum.TaskBoardSprintForm = Ext.extend(Ext.form.FormPanel, {
 		this.setComboListenerInit();
     },
 	loadDataModel: function() {
+		if(this.sprintID)
+		{
+			delete this.sprintID;
+		}
+		this.loadData();
+	},
+	loadData : function(){
 		var obj = this;
 		Ext.Ajax.request({
 			url : obj.url,
 			params: {SprintID: obj.sprintID},
 			success: function(response) {
-	    		// set sprint store info
-	    		TaskBoardSprintStore.loadData(Ext.decode(response.responseText));
-	    		var record = TaskBoardSprintStore.getAt(0);
-    			obj.setDataModel(record);
+				// set sprint store info
+				TaskBoardSprintStore.loadData(Ext.decode(response.responseText));
+				var record = TaskBoardSprintStore.getAt(0);
+				obj.setDataModel(record);
 			},
 			failure: function(response) {
-				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');				
+				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
 			}
 		});
-		
+
 		if (this.sprintID == undefined || this.sprintID == '') {
 			this.TaskBoard_SprintIDCombo.loadDataModel();
 		}
 	},
 	setDataModel: function(record) {
-		var replaced_goal = replaceJsonSpecialChar(record.get('SprintGoal')); 
-			
+		var replaced_goal = replaceJsonSpecialChar(record.get('SprintGoal'));
+
 		this.getForm().setValues({
 			SprintGoal: replaced_goal,
 			CurrentStoryPoint: record.get('CurrentStoryPoint'), 
@@ -60,6 +67,7 @@ ezScrum.TaskBoardSprintForm = Ext.extend(Ext.form.FormPanel, {
 		this.TaskBoard_HandlerCombo.selectedIndex = 0;
 		this.TaskBoard_HandlerCombo.originalValue = 'ALL';
 		this.TaskBoard_HandlerCombo.reset();
+
 	},
 	setSprintID: function(sID) {
 		this.sprintID = sID;

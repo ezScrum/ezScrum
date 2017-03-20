@@ -230,9 +230,13 @@ ezScrum.BurndownChartForm = Ext.extend(Ext.Panel, {
 		this.sprintID = ID;
 	},
 	loadDataModel: function() {
+		this.sprintID = -1;
+		this.loadData();
+	},
+	loadData: function () {
 		this.StoryChart.setSprintID(this.sprintID);
 		this.StoryChart.loadDataModel();
-		
+
 		this.TaskChart.setSprintID(this.sprintID);
 		this.TaskChart.loadDataModel();
 	}
