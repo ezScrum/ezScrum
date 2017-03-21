@@ -92,7 +92,8 @@ Verify Task Information With Arguments In TaskBoard
 
 Move Task From Check Out To Done
     [Arguments]    ${Story_ID}    ${Task_number}
-    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_number}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_closed"]
+    Click Element    xpath=//div[@id="${Story_ID}_closed"]
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_number}"]/../../../../../../../..     target=${Story_ID}_closed
     Wait Until Page Contains Element    xpath=//tr//button[text()="Done"]
     Click Element    xpath=//tr//button[text()="Done"]
 
