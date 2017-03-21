@@ -323,10 +323,9 @@ Test TaskBoard - Check Task Consistency After Dragging
     [Setup]    Test TaskBoard - Check Task Consistency After Dragging Setup
     ${storyID}=    Set Variable    3
     ${taskID}=    Set Variable    9
-    Wait Until Page Contains Element    //div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
-    ${TaskCardContent}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
+    Wait Until Page Contains Element    xpath=//div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
+    ${TaskCardContent}=    Get Text    xpath=//div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
     ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
-    ${TaskCardHours}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Value"]
     Task Done With Arguments    ${storyID}    ${taskID}
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
     [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
