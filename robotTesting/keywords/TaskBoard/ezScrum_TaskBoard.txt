@@ -18,13 +18,8 @@ Task Checked Out With Arguments
 
 Task Done With Arguments
     [Arguments]    ${_StoryID}    ${_TaskID}
-    Select Node Product    Sprint Backlog
-    Select Node Product    TaskBoard
     Click Element    xpath=//div[@id="${_StoryID}_closed"]
     Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_closed
-    Comment    Wait Until Page Contains    Done Issue
-    Comment    ${_XpathDoneTask}=    Find Current Window Element    Done Issue    Done
-    Comment    Element Enable And Submit    ${_XpathDoneTask}
     Click Element    xpath=//button[text()="Done"]
     Wait Until Page Contains    Success.
 

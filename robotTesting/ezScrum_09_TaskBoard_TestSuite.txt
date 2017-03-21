@@ -345,14 +345,15 @@ Test TaskBoard - Check Task ID On The Window After Dragging
     [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
 
 Test TaskBoard - Check Sprint ID
+    [Documentation]    Check if sprint_ID is right, after get to other node and get back to TaskBoard.
     [Setup]    Test TaskBoard - Check Sprint ID Setup
     ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
     ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
     Click Element    ${sprintIDSelect}
     ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
     Click Element    ${selectSprint2}
-    ${sprintBaxklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
-    Click Element    ${sprintBaxklog}
+    ${sprintBacklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
+    Click Element    ${sprintBacklog}
     ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
     Click Element    ${taskBoard}
     ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
@@ -381,8 +382,8 @@ Test TaskBoard - Check Taskcard Position
     Wait until Page Contains Element    xpath=//iframe[@class="chartjs-hidden-iframe"]    10
     ${Story_ID}=    Set Variable    3
     ${Task_number}=    Set Variable    9
-    Move Task From Check Out To Done    ${Story_ID}     ${Task_number}
+    Move Task From Check Out To Done    ${Story_ID}    ${Task_number}
     Reload Page
     Select Node Product    TaskBoard
-    Check if Done column has TaskCard    ${Story_ID}     ${Task_number}
+    Check if Done column has TaskCard    ${Story_ID}    ${Task_number}
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown

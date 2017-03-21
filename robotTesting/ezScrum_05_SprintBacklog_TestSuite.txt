@@ -246,9 +246,8 @@ Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable
     [Setup]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable Setup
     Wait Until Page Contains Element    //button[text()="Printable Stories"]
     Element Class Should Be Enabled    //table[@id="SprintBacklog_showPrintableStoryBtn"]
-    #BUG!! To be fixed
     Wait Until Page Contains Element    //button[text()="Printable Tasks"]
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
+    Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
     Element Class Should Be Disabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
     [Teardown]    Test Sprint Backlog - Button Printable Stories Enable Printable Tasks DisableTeardown
 
