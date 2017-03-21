@@ -8,6 +8,7 @@ Task Checked Out With Arguments
     Wait Until Page Contains Element    xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..
     Wait Until Page Contains Element    xpath=//div[@id="${_StoryID}_assigned"]/div
     Assign Id To Element    xpath=//div[@id="${_StoryID}_assigned"]/div    checkedOutStageID
+    Click Element    checkedOutStageID
     Drag And Drop    xpath=//div[@id="${_StoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=checkedOutStageID
     Comment    Wait Until Page Contains    Check Out Task
     Comment    ${_XpathCheckOutTask}=    Find Current Window Element    Check Out Task    Check Out
@@ -19,6 +20,7 @@ Task Done With Arguments
     [Arguments]    ${_StoryID}    ${_TaskID}
     Select Node Product    Sprint Backlog
     Select Node Product    TaskBoard
+    Click Element    xpath=//div[@id="${_StoryID}_closed"]
     Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_closed
     Comment    Wait Until Page Contains    Done Issue
     Comment    ${_XpathDoneTask}=    Find Current Window Element    Done Issue    Done
@@ -92,7 +94,8 @@ Verify Task Information With Arguments In TaskBoard
 
 Move Task From Check Out To Done
     [Arguments]    ${Story_ID}    ${Task_number}
-    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//h2[text()="[Task] \ #${Task_number}"]    target=//div[@id="Story:${Story_ID}"]/../../../..//div[@id="${Story_ID}_closed"]
+    Click Element    xpath=//div[@id="${Story_ID}_closed"]
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_number}"]/../../../../../../../..     target=${Story_ID}_closed
     Wait Until Page Contains Element    xpath=//tr//button[text()="Done"]
     Click Element    xpath=//tr//button[text()="Done"]
 
