@@ -335,9 +335,9 @@ Test TaskBoard - Check Task ID On The Window After Dragging
     [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
     ${Story_ID}=    Set Variable    1
     ${Task_ID}=    Set Variable    4
-    ${Task_NotCheckOut}    Set Variable    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]
+    ${Task_NotCheckOut}=    Set Variable    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]
     Wait until Page Contains Element    ${Task_NotCheckOut}
-    ${initialTaskName}=    Get Text    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]/../../../../../../..//td[@class="TaskCard_Description"]/h1
+    ${initialTaskName}=    Get Text    ${Task_NotCheckOut}/../../../../../../..//td[@class="TaskCard_Description"]/h1
     Move Task From Not Check Out To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Move Task From Check Out To Done Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Move Task From Done To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
@@ -367,7 +367,6 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area
     Wait Until Page Contains Element    //div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
     ${TaskCardContent}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
     ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
-    ${TaskCardHours}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Value"]
     Task Done With Arguments    ${storyID}    ${taskID}
     click element    //div[@id="Task:${taskID}"]//img[@src="images/edit.png"]
     ${_XpathEditTaskSubmit}=    Find Current Window Element    Edit Task #${TaskID}    Submit

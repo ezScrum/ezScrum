@@ -427,7 +427,6 @@ Test TaskBoard - Check Task Consistency After Dragging Setup
 
 Test TaskBoard - Check Task Consistency After Dragging Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Close Browser
     Close All Browsers
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
@@ -442,7 +441,6 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Close Browser
     Close All Browsers
 
 Test TaskBoard - Check TaskBoard ID And Name Setup
@@ -472,5 +470,5 @@ Test TaskBoard - Check Sprint ID Setup
     Click Element    ${TaskBoard}
 
 Test TaskBoard - Check Sprint ID Teardown
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
