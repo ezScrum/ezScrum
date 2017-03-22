@@ -232,7 +232,7 @@ Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled S
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Click Element    xpath=//div[text()="TestProject"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
 
 Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Teardown
