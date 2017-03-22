@@ -19,7 +19,7 @@ Task Checked Out With Arguments
 Task Done With Arguments
     [Arguments]    ${_StoryID}    ${_TaskID}
     Click Element    xpath=//div[@id="${_StoryID}_closed"]
-    Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../../../../../../../..    target=${_StoryID}_closed
+    Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]    target=${_StoryID}_closed
     Click Element    xpath=//button[text()="Done"]
     Wait Until Page Contains    Success.
 
@@ -90,19 +90,19 @@ Verify Task Information With Arguments In TaskBoard
 Move Task From Check Out To Done
     [Arguments]    ${Story_ID}    ${Task_number}
     Click Element    xpath=//div[@id="${Story_ID}_closed"]
-    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_number}"]/../../../../../../../..     target=${Story_ID}_closed
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_number}"]    target=${Story_ID}_closed
     Wait Until Page Contains Element    xpath=//tr//button[text()="Done"]
     Click Element    xpath=//tr//button[text()="Done"]
 
 Check if Done column has TaskCard
     [Arguments]    ${Story_ID}    ${TaskNumber}
     Wait until Page Contains Element    xpath=//table[@class="TaskCard_Table"]
-    Page Should Contain Element    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_number}"] \ \    message=#${TaskNumber} taskcard doesn't in the done column
+    Page Should Contain Element    xpath=//div[@id="${Story_ID}_closed"]//h2[text()="[Task] \ #${Task_number}"]    message=#${TaskNumber} taskcard doesn't in the done column
 
 Move Task From Check Out To Done Check ID Before Click Done
     [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Click Element    //table[@class="x-table-layout"]//div[@id="${Story_ID}_closed"]
-    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]/../../../../../../../..    target=${Story_ID}_closed
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]    target=${Story_ID}_closed
     ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
     Should Be Equal    ${windowTaskName}    ${initialTaskName}
     ${windowTital}=    Set Variable    //div[@class="x-window-tl"]//span[text()="Done Task #${Task_ID}"]
@@ -124,7 +124,7 @@ Check TaskCard Contents
 Move Task From Not Check Out To Check Out Check ID Before Click Done
     [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Click Element    //table[@class="x-table-layout"]//div[@id="${Story_ID}_closed"]
-    Drag and Drop    xpath=//div[@id="${Story_ID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]/../../../../../../../..    target=${Story_ID}_assigned
+    Drag and Drop    xpath=//div[@id="${Story_ID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]    target=${Story_ID}_assigned
     ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
     Should Be Equal    ${windowTaskName}    ${initialTaskName}
     ${windowTital}=    Set Variable    //div[@class="x-window-tl"]//span[text()="Check Out Task #${Task_ID}"]
@@ -134,7 +134,7 @@ Move Task From Not Check Out To Check Out Check ID Before Click Done
 Move Task From Done To Check Out Check ID Before Click Done
     [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Click Element    //table[@class="x-table-layout"]//div[@id="${Story_ID}_closed"]
-    Drag and Drop    xpath=//div[@id="${Story_ID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]/../../../../../../../..    target=${Story_ID}_assigned
+    Drag and Drop    xpath=//div[@id="${Story_ID}_closed"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]    target=${Story_ID}_assigned
     ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
     Should Be Equal    ${windowTaskName}    ${initialTaskName}
     ${windowTital}=    Set Variable    //div[@class="x-window-tl"]//span[text()="Re Opened Task #${Task_ID}"]
@@ -144,7 +144,7 @@ Move Task From Done To Check Out Check ID Before Click Done
 Move Task From Check Out To Not Check Out Check ID Before Click Done
     [Arguments]    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Click Element    //table[@class="x-table-layout"]//div[@id="${Story_ID}_closed"]
-    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]/../../../../../../../..    target=${Story_ID}_new
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]    target=${Story_ID}_new
     ${windowTaskName}=    Get Value    //input[@name="Id"]/../div[1]/div/input
     Should Be Equal    ${windowTaskName}    ${initialTaskName}
     ${windowTital}=    Set Variable    //div[@class="x-window-tl"]//span[text()="Reset Checked Out Task #${Task_ID}"]

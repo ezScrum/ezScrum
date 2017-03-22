@@ -319,34 +319,34 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
-    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]    8
-    Element Class Should Be Disabled    //table[@id="ext-comp-1536"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1537"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1539"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1541"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1543"]
+    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]    #Release element
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Edit Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Delete Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1539"]    #Printed Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Tag
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1543"]    #Attach File
     #Select one Story
     Click Element    xpath=//div[text()="Project01"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Edit Story"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Delete Story"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Show History"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Print Selected"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Manage Tag"]
-    Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Tag"]
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1536"]    #Edit Story
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1537"]    #Delete Story
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1539"]    #Printed Story
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1540"]    #Manage Tag
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1541"]    #Tag
     #Select two story
     Click Element    xpath=//tbody//div[text()="Project01"]
     press_shift_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]
-    Element Class Should Be Disabled    xpath=//table[@id='ext-comp-1543']
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Edit Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History \
+    Element Class Should Be Disabled    xpath=//table[@id='ext-comp-1543']    #Attach File
     #Cancel selecting story
     press_control_and_click_element    xpath=//tbody//div[text()="Project01"]
     press_control_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1536"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1537"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1539"]
-    Element Class Should Be Enabled    //table[@id="ext-comp-1541"]
-    Element Class Should Be Disabled    //table[@id="ext-comp-1543"]
+    Element Class Should Be Disabled    //table[@id="ext-comp-1536"]    #Edit Story
+    Element Class Should Be Disabled    //table[@id="ext-comp-1537"]    #Delete Story
+    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Disabled    //table[@id="ext-comp-1539"]    #Printed Story
+    Element Class Should Be Enabled    //table[@id="ext-comp-1541"]    #Tag
+    Element Class Should Be Disabled    //table[@id="ext-comp-1543"]    #Attach File
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
