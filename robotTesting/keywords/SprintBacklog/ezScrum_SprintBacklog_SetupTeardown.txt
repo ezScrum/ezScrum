@@ -220,7 +220,7 @@ Test Sprint Backlog - Printable Task Teardown
     Close Browser
     Close All Browsers
 
-Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Setup
+Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled Setup
     Set Selenium Speed    ${SELENIUM_SPEED}
     #Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
@@ -235,11 +235,11 @@ Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled S
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
 
-Test Sprint Backlog - Printable Stories and Printable Tasks should be Disabled Teardown
+Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
 
-Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable Setup
+Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled Setup
     Set Selenium Speed    ${SELENIUM_SPEED}
     #Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
@@ -254,11 +254,11 @@ Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Disable Se
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
 
-Test Sprint Backlog - Button Printable Stories Enable Printable Tasks DisableTeardown
+Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
 
-Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Enable Setup
+Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled Setup
     Set Selenium Speed    ${SELENIUM_SPEED}
     #Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
@@ -273,6 +273,6 @@ Test Sprint Backlog - Button Printable Stories Enable Printable Tasks Enable Set
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
 
-Test Sprint Backlog - Button Printable Stories Enable Printable Tasks EnableTeardown
+Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
