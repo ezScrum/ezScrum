@@ -319,7 +319,7 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
-    Wait Until Page Contains Element    xpath=//div[@class="x-grid3-hd-inner x-grid3-hd-4"]    #Release element
+    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Edit Story
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Delete Story
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
@@ -347,6 +347,5 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     Element Class Should Be Disabled    //table[@id="ext-comp-1537"]    #Delete Story
     Element Class Should Be Disabled    //table[@id="ext-comp-1538"]    #Show History
     Element Class Should Be Disabled    //table[@id="ext-comp-1539"]    #Printed Story
-    Element Class Should Be Enabled    //table[@id="ext-comp-1541"]    #Tag
     Element Class Should Be Disabled    //table[@id="ext-comp-1543"]    #Attach File
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
