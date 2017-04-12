@@ -196,7 +196,41 @@ public class TaskObject implements IBaseObject {
 		}
 		return status;
 	}
+	
+	public boolean checkVisableByDate(Date date){
+		ArrayList<HistoryObject> histories = getHistories();
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+					isInSprint = true;
+				}
+				else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		return isInSprint;
+	}
 
+	public int getTaskPointByDate(Date date){
+		ArrayList<HistoryObject> histories = getHistories();
+		int taskPoint = -1;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE){
+					taskPoint =  Integer.valueOf(history.getNewValue());
+				}
+			}
+		}
+		if(taskPoint < 0)
+		{
+			return this.getEstimate();
+		}
+		return taskPoint;
+	}
+	
+	
 	/*
 	 * 之後要拔掉,為了符合目前的IIssue
 	 */
