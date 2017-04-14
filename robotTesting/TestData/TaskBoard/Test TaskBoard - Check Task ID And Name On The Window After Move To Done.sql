@@ -412,10 +412,10 @@ CREATE TABLE IF NOT EXISTS `sprint` (
 -- 正在導出表  ezscrum_180.sprint 的資料：4 rows
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 REPLACE INTO `sprint` (`id`, `serial_id`, `goal`, `interval`, `team_size`, `available_hours`, `focus_factor`, `start_date`, `end_date`, `demo_date`, `demo_place`, `daily_info`, `project_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'SprintTest01', 2, 3, 40, 20, '2017-03-18 00:00:00', '2017-03-31 00:00:00', '2017-03-31 00:00:00', '', '', 1, 1489766486240, 1489766486240),
-	(2, 2, 'SprintTest02', 4, 3, 60, 30, '2017-04-03 00:00:00', '2017-04-30 00:00:00', '2017-04-28 00:00:00', '', '', 1, 1489766511552, 1489766511552),
-	(3, 1, 'Sprint01', 2, 3, 40, 30, '2017-03-18 00:00:00', '2017-03-31 00:00:00', '2017-03-31 00:00:00', '', '', 2, 1489767988021, 1489767988021),
-	(4, 2, 'Sprint02', 3, 3, 50, 40, '2017-04-03 00:00:00', '2017-04-23 00:00:00', '2017-04-21 00:00:00', '', '', 2, 1489768013628, 1489768013628);
+	(1, 1, 'SprintTest01', 2, 3, 40, 20, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 1, 1489766486240, 1489766486240),
+	(2, 2, 'SprintTest02', 4, 3, 60, 30, NOW() + INTERVAL 14 DAY, NOW() + INTERVAL 41 DAY, NOW() + INTERVAL 41 DAY, '', '', 1, 1489766511552, 1489766511552),
+	(3, 1, 'Sprint01', 2, 3, 40, 30, NOW(), NOW() + INTERVAL 13 DAY, NOW() + INTERVAL 13 DAY, '', '', 2, 1489767988021, 1489767988021),
+	(4, 2, 'Sprint02', 3, 3, 50, 40, NOW() + INTERVAL 14 DAY, NOW() + INTERVAL 34 DAY, NOW() + INTERVAL 34 DAY, '', '', 2, 1489768013628, 1489768013628);
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
