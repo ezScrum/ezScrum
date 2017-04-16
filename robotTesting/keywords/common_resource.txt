@@ -43,7 +43,7 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]
+    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]    8
     Click Element    xpath=//span[text()="${nodeName}"]
 
 Element Enable And Submit
@@ -168,3 +168,15 @@ Assert Local Text Is Same
     [Arguments]    ${Local}    ${string}
     ${text}=    Get Text    ${Local}
     Should Be Equal As Strings    ${text}    ${string}
+
+Element Class Should Be Disabled
+    [Arguments]    ${ElementLocator}
+    [Documentation]    Assert if an element is Disabled without using "Element Should Be Disabled" keyword.
+    ...    The 'class' attribute of given element should contain "x-item-disabled".
+    ${ElementClass}=    Get Element Attribute    ${ElementLocator}@class
+    Should Contain    ${ElementClass}    x-item-disabled
+
+Element Class Should Be Enabled
+    [Arguments]    ${ElementLocator}
+    ${ElementClass}=    Get Element Attribute    ${ElementLocator}@class
+    Should Not Contain    ${ElementClass}    x-item-disabled
