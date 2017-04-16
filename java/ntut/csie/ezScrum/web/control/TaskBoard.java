@@ -26,6 +26,8 @@ public class TaskBoard {
 
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
+	private ArrayList<StoryObject> m_dropedStories;
+	private ArrayList<TaskObject> m_dropedTasks;	
 	private ArrayList<StoryObject> mStories;
 	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
 	private LinkedHashMap<Date, Double> mDateToStoryPoint;
@@ -61,6 +63,9 @@ public class TaskBoard {
 	private void init() {
 		// 取得目前最新的Story與Task狀態
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
+		m_dropedStories = mSprintBacklogMapper.getDroppedStories();
+		ProjectObject project = mSprintBacklogMapper.getProject();
+		m_dropedTasks = mSprintBacklogMapper.getDroppedTasks(project.getId());
 		if (mSprintBacklogMapper != null) {
 			// Sprint的起始與結束日期資訊
 			Date sprintStartWorkDate = mSprintBacklogLogic.getSprintStartWorkDate();
@@ -120,8 +125,12 @@ public class TaskBoard {
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if (story.getSprintId() == mSprintBacklogMapper.getSprintId()) {
-			point = story.getEstimate();
+		if(story.checkVisableByDate(date)){
+			try{
+				point = story.getStoryPointByDate(date);
+			}catch(Exception e){
+				return 0;
+			}
 		} else {
 			// 表示這個Story在當時不存在於這個Sprint裡面
 			throw new Exception("this story isn't at this sprint");
@@ -129,19 +138,19 @@ public class TaskBoard {
 		return point;
 	}
 
-	private double getTaskPoint(Date date, TaskObject task) {
+	private double getTaskPoint(Date date, TaskObject task)throws Exception {
 		double point = 0;
-
-		try {
-			point = task.getRemains(date);
-		} catch (Exception e) {
-			try {
-				// 表示這個Task沒有REMAINS，那麼就取得ESTIMATION
-				point = task.getEstimate();
-			} catch (Exception e1) {
-				// 如果還是沒有，那就回傳 0
+		if(task.checkVisableByDate(date))
+		{
+			try{
+				point = task.getTaskPointByDate(date);
+			}catch (Exception e1) {
+				// 如果沒有，那就回傳 0
 				return 0;
 			}
+			
+		}else{
+			throw new Exception("this task isn't at this sprint");
 		}
 		return point;
 	}
@@ -175,6 +184,46 @@ public class TaskBoard {
 				}
 			} catch (Exception e) {
 				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
+				continue;
+			}
+		}
+		
+		//Visit all DropStory
+		for(StoryObject story:m_dropedStories)
+		{
+			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
+				continue;
+			}
+			
+			
+			try{
+				//Calculate story Point
+				point[0] += getStoryPoint(endDate, story);
+				
+				//Calculate task Point
+				
+				ArrayList<TaskObject> tasks = story.getTasks();
+				for (TaskObject task : tasks) {
+					if(task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+						continue;
+					}
+					point[1] += getTaskPoint(endDate, task);
+				}
+			}catch(Exception e){
+				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
+				continue;
+			}
+			
+		}
+		
+		for(TaskObject task : m_dropedTasks){
+			if(task.getStatus(endDate) == TaskObject.STATUS_DONE){
+				continue;
+			}
+			
+			try{
+				point[1] += getTaskPoint(endDate, task);
+			}catch(Exception e){
 				continue;
 			}
 		}

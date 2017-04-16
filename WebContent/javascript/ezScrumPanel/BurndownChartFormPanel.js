@@ -12,7 +12,7 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
     	});
     	
     	var that = this;
-		
+		var myLine;
 		this.StoryStore.on('load', function(s, rs) {
 			var label = rs.map(function(obj) {
 				return obj.data.Date.substr(5)
@@ -25,7 +25,7 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 			var realPoint = rs.map(function(obj) {
 				return obj.data.RealPoint
 			})
-			
+
 			var storyChart = {
 				labels : label,
 				datasets : [ {
@@ -50,10 +50,14 @@ ezScrum.StoryBurndownChart = Ext.extend(ezScrum.layout.Chart, {
 					data : idealPoint
 				} ]
 			}
-			
+
 			var canvas = that.items.items[0].el.dom;
 			var ctx = canvas.getContext("2d");
-			var myLine = new Chart(ctx, {
+			if(myLine)
+			{
+				myLine.destroy();
+			}
+			myLine = new Chart(ctx, {
 				type : 'line',
 				data : storyChart,
 				options : {
@@ -114,7 +118,7 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
     	});
     	
     	var that = this;
-		
+		var myLine;
 		this.TaskStore.on('load', function(s, rs) {
 			var label = rs.map(function(obj) {
 				return obj.data.Date.substr(5)
@@ -155,7 +159,11 @@ ezScrum.TaskBurndownChart =  Ext.extend(ezScrum.layout.Chart, {
 			
 			var canvas = that.items.items[0].el.dom;
 			var ctx = canvas.getContext("2d");
-			var myLine = new Chart(ctx, {
+			if(myLine)
+			{
+				myLine.destroy();
+			}
+			myLine = new Chart(ctx, {
 				type : 'line',
 				data : taskChart,
 				options : {
@@ -230,9 +238,13 @@ ezScrum.BurndownChartForm = Ext.extend(Ext.Panel, {
 		this.sprintID = ID;
 	},
 	loadDataModel: function() {
+		this.sprintID = -1;
+		this.loadData();
+	},
+	loadData: function () {
 		this.StoryChart.setSprintID(this.sprintID);
 		this.StoryChart.loadDataModel();
-		
+
 		this.TaskChart.setSprintID(this.sprintID);
 		this.TaskChart.loadDataModel();
 	}

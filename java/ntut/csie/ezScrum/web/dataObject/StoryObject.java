@@ -3,20 +3,24 @@ package ntut.csie.ezScrum.web.dataObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.jdom.Element;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.jcis.core.util.DateUtil;
 
 public class StoryObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = StatusEnum.NEW;
@@ -171,6 +175,39 @@ public class StoryObject implements IBaseObject {
 			}
 		}
 		return status;
+	}
+	
+	public boolean checkVisableByDate(Date date){
+		ArrayList<HistoryObject> histories = getHistories();
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+					isInSprint = true;
+				}
+				else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		return isInSprint;
+	}
+	
+	public int getStoryPointByDate(Date date){
+		ArrayList<HistoryObject> histories = getHistories();
+		int storyPoint = -1;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE){
+					storyPoint =  Integer.valueOf(history.getNewValue());
+				}
+			}
+		}
+		if(storyPoint < 0)
+		{
+			return this.getEstimate();
+		}
+		return storyPoint;
 	}
 	
 	private long getLastMillisecondOfDate(Date date) {
