@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -160,6 +161,7 @@ public class StoryObject implements IBaseObject {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
 			int historyType = history.getHistoryType();
@@ -179,6 +181,7 @@ public class StoryObject implements IBaseObject {
 	
 	public boolean checkVisableByDate(Date date){
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		boolean isInSprint = false;
 		for(HistoryObject history : histories){
 			if(date.getTime() >= history.getCreateTime()){
@@ -195,6 +198,7 @@ public class StoryObject implements IBaseObject {
 	
 	public int getStoryPointByDate(Date date){
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		int storyPoint = -1;
 		for(HistoryObject history : histories){
 			if(date.getTime() >= history.getCreateTime()){
