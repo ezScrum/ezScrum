@@ -12,7 +12,7 @@ import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 
-public class HistoryObject implements IBaseObject {
+public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 	public final static int TYPE_CREATE = 1;
 	public final static int TYPE_NAME = 2;
 	public final static int TYPE_ESTIMATE = 3;
@@ -347,6 +347,16 @@ public class HistoryObject implements IBaseObject {
 	public String getFormattedModifiedTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 		return sdf.format(new Date(mCreateTime));
+	}
+	
+	public int compareTo(HistoryObject compareHO){
+		if(this.getId() > compareHO.getId()){
+			return 1;
+		}
+		else{
+			return -1;
+		}
+		
 	}
 
 	@Override

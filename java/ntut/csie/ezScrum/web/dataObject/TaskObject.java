@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -177,6 +178,7 @@ public class TaskObject implements IBaseObject {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
 			int historyType = history.getHistoryType();
@@ -199,6 +201,7 @@ public class TaskObject implements IBaseObject {
 	
 	public boolean checkVisableByDate(Date date){
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		boolean isInSprint = false;
 		for(HistoryObject history : histories){
 			if(date.getTime() >= history.getCreateTime()){
@@ -215,10 +218,11 @@ public class TaskObject implements IBaseObject {
 
 	public int getTaskPointByDate(Date date){
 		ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		int taskPoint = -1;
 		for(HistoryObject history : histories){
 			if(date.getTime() >= history.getCreateTime()){
-				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE){
+				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE || history.getHistoryType() == HistoryObject.TYPE_REMAIMS){
 					taskPoint =  Integer.valueOf(history.getNewValue());
 				}
 			}
