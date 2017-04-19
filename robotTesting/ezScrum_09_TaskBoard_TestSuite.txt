@@ -316,17 +316,29 @@ Test TaskBoard - Check Task Checked Out
 Test TaskBoard - Check Sprint ID
     [Documentation]    Check if sprint_ID is right, after get to other node and get back to TaskBoard.
     [Setup]    Test TaskBoard - Check Sprint ID Setup
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
     ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
     ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
     Click Element    ${sprintIDSelect}
     ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
     Click Element    ${selectSprint2}
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint02
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    16
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    32
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #2
     ${sprintBacklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
     Click Element    ${sprintBacklog}
     ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
     Click Element    ${taskBoard}
     ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
     Should Be Equal    ${sprintInitialID}    ${sprntModernID}
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
     [Teardown]    Test TaskBoard - Check Sprint ID Teardown
 
 Tset TaskBoard - ReleaseID Check
