@@ -13,7 +13,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -26,6 +25,7 @@ public class MakePDFService {
 	private static Log log = LogFactory.getLog(MakePDFService.class);
 
 	public File getTaskFile(String filePath, ArrayList<TaskObject> tasks) throws Exception {
+		BaseFont bfChinese = BaseFont.createFont(filePath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		File tempFile = File.createTempFile("ezScrum", Long.toString(System.nanoTime()));
 		String path = tempFile.getAbsolutePath();
 		Document document1 = new Document(PageSize.A4);
@@ -39,7 +39,7 @@ public class MakePDFService {
 
 			for (int i = 0; i < tasks.size(); i += 2) {
 				// generate table by task
-				PdfPTable table = getPdfTableWithContent(tasks.get(i), tasks.get(i + 1));
+				PdfPTable table = getPdfTableWithContent(bfChinese, tasks.get(i), tasks.get(i + 1));
 				document1.add(table);
 				document1.add(new Paragraph("\n"));
 			}
@@ -51,6 +51,28 @@ public class MakePDFService {
 		return file;
 	}
 
+	public PdfPTable getPdfTableWithContent(BaseFont bfChinese, TaskObject leftTask, TaskObject rightTask) {
+		
+		PdfPTable table = generateCustomPdfPTable();
+		// set left column cell
+		PdfPCell leftColumnCell = new PdfPCell();
+		String leftColumnCellContent = generateTaskCellContent(leftTask);
+		Paragraph leftParagraph = new Paragraph(leftColumnCellContent, new Font(bfChinese, 12, Font.NORMAL));
+		leftColumnCell.addElement(leftParagraph);
+		table.addCell(leftColumnCell);
+		// set middle column cell
+		PdfPCell spaceCell = new PdfPCell();
+		spaceCell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(spaceCell);
+		// set right column cell
+		PdfPCell rightColumnCell = new PdfPCell();
+		String rightColumnCellContent = generateTaskCellContent(rightTask);
+		Paragraph rightParagraph = new Paragraph(rightColumnCellContent, new Font(bfChinese, 12, Font.NORMAL));
+		rightColumnCell.addElement(rightParagraph);
+		table.addCell(rightColumnCell);
+		return table;
+	}
+	
 	public PdfPTable generateCustomPdfPTable() {
 		float tableWidth = 100f;
 		int field = 3;
@@ -68,24 +90,6 @@ public class MakePDFService {
 		return table;
 	}
 
-	public PdfPTable getPdfTableWithContent(TaskObject leftTask, TaskObject rightTask) {
-		PdfPTable table = generateCustomPdfPTable();
-		// set left column cell
-		PdfPCell leftColumnCell = new PdfPCell();
-		String leftColumnCellContent = generateTaskCellContent(leftTask);
-		leftColumnCell.addElement(new Phrase(leftColumnCellContent));
-		table.addCell(leftColumnCell);
-		// set middle column cell
-		PdfPCell spaceCell = new PdfPCell();
-		spaceCell.setBorder(PdfPCell.NO_BORDER);
-		table.addCell(spaceCell);
-		// set right column cell
-		PdfPCell rightColumnCell = new PdfPCell();
-		String rightColumnCellContent = generateTaskCellContent(rightTask);
-		rightColumnCell.addElement(new Phrase(rightColumnCellContent));
-		table.addCell(rightColumnCell);
-		return table;
-	}
 
 	public String generateTaskCellContent(TaskObject task) {
 		if (task == null) {
@@ -94,13 +98,14 @@ public class MakePDFService {
 		String name = task.getName();
 		String taskCardContent = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
+		System.out.println(" nameSize = " + nameSize);
 		if (nameSize < 175) {
 			int addEndOfLineNum = nameSize / 35;
 			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
 				taskCardContent += "\n";
 			}
 		}
-		taskCardContent += "                                                        " + task.getEstimate() + " hrs";
+		taskCardContent += task.getEstimate() + " hrs";
 		return taskCardContent;
 	}
 
