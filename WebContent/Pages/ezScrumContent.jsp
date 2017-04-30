@@ -14,7 +14,7 @@
 <script type="text/javascript" src="javascript/ext-all.js"></script>
 
 <!-- chartjs -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
+<script type="text/javascript" src="javascript/Chartjs/Chart.bundle.min.js"></script>
 
 <!--ezScrum team design tools  -->
 <script type="text/javascript" src="javascript/ezScrumJSTool.js"></script>
