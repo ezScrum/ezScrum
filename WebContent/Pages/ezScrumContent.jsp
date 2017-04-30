@@ -16,10 +16,6 @@
 <!-- chartjs -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
 
-<!-- chartistjs -->
-<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
-
 <!--ezScrum team design tools  -->
 <script type="text/javascript" src="javascript/ezScrumJSTool.js"></script>
 
