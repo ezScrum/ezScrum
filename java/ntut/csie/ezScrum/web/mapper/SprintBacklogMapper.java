@@ -70,6 +70,17 @@ public class SprintBacklogMapper {
 	public ArrayList<StoryObject> getDroppedStories() {
 		return mProject.getDroppedStories();
 	}
+	
+	// Get Tasks in DropStories
+	public ArrayList<TaskObject> getTasksInDropStories(){
+		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
+		for(StoryObject story : mProject.getDroppedStories()){
+			for(TaskObject task : story.getTasks()){
+				tasks.add(task);
+			}
+		}
+		return tasks;
+	}
 
 	// for ezScrum 1.8
 	public long addTask(long projectId, TaskInfo taskInfo) {

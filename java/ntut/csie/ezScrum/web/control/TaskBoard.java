@@ -27,8 +27,10 @@ public class TaskBoard {
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private ArrayList<StoryObject> m_dropedStories;
-	private ArrayList<TaskObject> m_dropedTasks;	
+	private ArrayList<TaskObject> m_dropedTasks;
 	private ArrayList<StoryObject> mStories;
+	private ArrayList<TaskObject> mTasksInDropStories;
+	private ArrayList<TaskObject> mTasks;
 	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
 	private LinkedHashMap<Date, Double> mDateToStoryPoint;
 	private LinkedHashMap<Date, Double> mDateToTaskIdealPoint;
@@ -36,7 +38,7 @@ public class TaskBoard {
 	private Date mCurrentDate = new Date();
 	private Date mGeneratedTime = new Date();
 	final private long mOneDay = ScrumEnum.DAY_MILLISECOND;
-
+	
 	public TaskBoard(SprintBacklogLogic sprintBacklogLogic, SprintBacklogMapper sprintBacklogMapper) {
 		mSprintBacklogLogic = sprintBacklogLogic;
 		mSprintBacklogMapper = sprintBacklogMapper;
@@ -62,168 +64,185 @@ public class TaskBoard {
 
 	private void init() {
 		// 取得目前最新的Story與Task狀態
+		ProjectObject project = mSprintBacklogMapper.getProject();
+
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		m_dropedStories = mSprintBacklogMapper.getDroppedStories();
-		ProjectObject project = mSprintBacklogMapper.getProject();
+		mTasks = mSprintBacklogMapper.getTasksInSprint();
 		m_dropedTasks = mSprintBacklogMapper.getDroppedTasks(project.getId());
-		
-		mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>();	// Story的理想線
-		mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>();	// Task的理想線
-		mDateToStoryPoint = new LinkedHashMap<Date, Double>();		// Story的真實線
-		mDateToTaskRealPoint = new LinkedHashMap<Date, Double>();	// Task的真實線
+		mTasksInDropStories = mSprintBacklogMapper.getTasksInDropStories();
+		mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>(); // Story的理想線
+		mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>(); // Task的理想線
+		mDateToStoryPoint = new LinkedHashMap<Date, Double>(); // Story的真實線
+		mDateToTaskRealPoint = new LinkedHashMap<Date, Double>(); // Task的真實線
 	}
 
-	public void buildPointMap(String burndownType){
-		if (mSprintBacklogMapper != null){
+	public void buildPointMap(String burndownType) {
+		if (mSprintBacklogMapper != null) {
 			Date sprintStartWorkDate = mSprintBacklogLogic.getSprintStartWorkDate();
 			Date sprintEndWorkDate = mSprintBacklogLogic.getSprintEndWorkDate();
 			Date sprintEndDate = mSprintBacklogMapper.getSprintEndDate();
-			
+
 			Calendar indexDate = Calendar.getInstance();
 			indexDate.setTime(sprintStartWorkDate);
-			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays();   //The sprint have number of day exclude holiday.
+			
+			// The sprint have number of day exclude holiday.
+			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays(); 
 			double initPoint;
 			double tolerancingByDay;
-			long today = mCurrentDate.getTime();						// 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
+			long today = mCurrentDate.getTime(); // 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
 			if (mCurrentDate.getTime() > sprintEndDate.getTime()) {
 				// end date 為當日的 00:00:00 ，所以還要加入OneDay，這樣時間才會是 00:00:00 - 23:59:59
 				today = sprintEndDate.getTime() + mOneDay;
 			}
-			
-			if(burndownType.equals("story")){
-				initPoint = getStoryPointByDate(sprintStartWorkDate); //Initial story point
+
+			if (burndownType.equals("story")) {
+				initPoint = getStoryPointByDate(sprintStartWorkDate); // Initial story point
 				tolerancingByDay = initPoint / dayOfSprint;
 				setStoryPointMap(indexDate, sprintEndWorkDate, initPoint, tolerancingByDay, today);
-			}
-			else if(burndownType.equals("task")){
-				initPoint = getTaskPointByDate(sprintStartWorkDate); //Initial task point
+			} else if (burndownType.equals("task")) {
+				initPoint = getTaskPointByDate(sprintStartWorkDate); // Initial task point
 				tolerancingByDay = initPoint / dayOfSprint;
 				setTaskPointMap(indexDate, sprintEndWorkDate, initPoint, tolerancingByDay, today);
 			}
-		}		
+		}
 	}
-	
-	private void setStoryPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay, long today){
+
+	private void setStoryPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay,
+			long today) {
 		int sprintDayCount = 0;
-		while(indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()){
+		while (indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()) {
 			Date ckeckDate = indexDate.getTime();
-			if(!DateUtil.isHoliday(ckeckDate)){
+			if (!DateUtil.isHoliday(ckeckDate)) {
 				mDateToStoryIdealPoint.put(ckeckDate, initPoint - tolerancingByDay * sprintDayCount);
-				if(indexDate.getTimeInMillis() < today){
+				if (indexDate.getTimeInMillis() < today) {
 					mDateToStoryPoint.put(ckeckDate, getStoryPointByDate(ckeckDate));
-				}
-				else{
+				} else {
 					mDateToStoryPoint.put(ckeckDate, null);
 				}
 				sprintDayCount++;
 			}
 			indexDate.add(Calendar.DATE, 1);
 		}
+		cleanHistories("Story");
 	}
-	
-	private void setTaskPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay, long today){
+
+	private void setTaskPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay,
+			long today) {
 		int sprintDayCount = 0;
-		while(indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()){
+		while (indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()) {
 			Date ckeckDate = indexDate.getTime();
-			if(!DateUtil.isHoliday(ckeckDate)){
+			if (!DateUtil.isHoliday(ckeckDate)) {
 				mDateToTaskIdealPoint.put(ckeckDate, initPoint - tolerancingByDay * sprintDayCount);
-				if(indexDate.getTimeInMillis() < today){
+				if (indexDate.getTimeInMillis() < today) {
 					double i = getTaskPointByDate(ckeckDate);
 					mDateToTaskRealPoint.put(ckeckDate, i);
-				}
-				else{
+				} else {
 					mDateToTaskRealPoint.put(ckeckDate, null);
 				}
 				sprintDayCount++;
 			}
 			indexDate.add(Calendar.DATE, 1);
 		}
+		cleanHistories("Task");
 	}
 	
-	private double getStoryPointByDate(Date date){
+	private void cleanHistories(String issueType){
+		if(issueType == "Story"){
+			for(StoryObject story : mStories){
+				story.cleanHistories();
+			}
+			for(StoryObject story : m_dropedStories){
+				story.cleanHistories();
+			}
+		}
+		else if(issueType == "Task"){
+			for(TaskObject task : mTasks){
+				task.cleanHistories();
+			}
+			for(TaskObject task : m_dropedTasks){
+				task.cleanHistories();
+			}
+			for(TaskObject task : mTasksInDropStories){
+				task.cleanHistories();
+			}
+		}
+	}
+
+	private double getStoryPointByDate(Date date) {
 		Date endDate = new Date(date.getTime() + mOneDay);
 		double storyPoint = 0;
-		//Visit all Story
-		for(StoryObject story : mStories){
+		// Visit all Story
+		for (StoryObject story : mStories) {
 			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
-			try{
+			try {
 				storyPoint += getStoryPoint(endDate, story);
-			}catch(Exception e){
+			} catch (Exception e) {
 				continue;
 			}
 		}
-		//Visit all DropStory
-		for(StoryObject story : m_dropedStories){
+		// Visit all DropStory
+		for (StoryObject story : m_dropedStories) {
 			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
-			try{
+			try {
 				storyPoint += getStoryPoint(endDate, story);
-			}catch(Exception e){
+			} catch (Exception e) {
 				continue;
 			}
 		}
 		return storyPoint;
 	}
-	
-	private double getTaskPointByDate(Date date){
+
+	private double getTaskPointByDate(Date date) {
 		Date endDate = new Date(date.getTime() + mOneDay);
 		double taskPoint = 0;
-		//Visit all Story
-		for(StoryObject story : mStories){
-			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
-				continue;
-			}
-			for (TaskObject task : story.getTasks()){
-				if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
-					continue;
-				}
-				try{
-					taskPoint += getTaskPoint(endDate, task);
-				}catch(Exception e){
-					continue;
-				}
-			}
-		}
-		//Visit all DropStory
-		for(StoryObject story : m_dropedStories){
-			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
-				continue;
-			}
-			for (TaskObject task : story.getTasks()){
-				if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
-					continue;
-				}
-				try{
-					taskPoint += getTaskPoint(endDate, task);
-				}catch(Exception e){
-					continue;
-				}
-			}			
-		}
-		//Visit all DropTask
-		for (TaskObject task : m_dropedTasks){
+		// Visit all Story
+		for (TaskObject task : mTasks) {
 			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 				continue;
 			}
-			try{
+			try {
 				taskPoint += getTaskPoint(endDate, task);
-			}catch(Exception e){
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		// Visit all DropStory
+		for (TaskObject task : mTasksInDropStories) {
+			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			try {
+				taskPoint += getTaskPoint(endDate, task);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		// Visit all DropTask
+		for (TaskObject task : m_dropedTasks) {
+			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+				continue;
+			}
+			try {
+				taskPoint += getTaskPoint(endDate, task);
+			} catch (Exception e) {
 				continue;
 			}
 		}
 		return taskPoint;
 	}
-	
+
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if(story.checkVisableByDate(date)){
-			try{
+		if (story.checkVisableByDate(date)) {
+			try {
 				point = story.getStoryPointByDate(date);
-			}catch(Exception e){
+			} catch (Exception e) {
 				return 0;
 			}
 		} else {
@@ -233,25 +252,24 @@ public class TaskBoard {
 		return point;
 	}
 
-	private double getTaskPoint(Date date, TaskObject task)throws Exception {
+	private double getTaskPoint(Date date, TaskObject task) throws Exception {
 		double point = 0;
-		if(task.checkVisableByDate(date))
-		{
-			try{
+		if (task.checkVisableByDate(date)) {
+			try {
 				point = task.getTaskPointByDate(date);
-			}catch (Exception e1) {
+			} catch (Exception e1) {
 				// 如果沒有，那就回傳 0
 				return 0;
 			}
-			
-		}else{
+
+		} else {
 			throw new Exception("this task isn't at this sprint");
 		}
 		return point;
 	}
 
 	private double[] getPointByDate(Date date) {
-		double[] point = {0, 0};
+		double[] point = { 0, 0 };
 
 		// 依照Type取出當天的Story或者是Task來進行計算
 		// 因為輸入的日期為當日的0:0:0,但在23:59:59之前也算當日，所以必需多加一日做為當天的計算
@@ -272,7 +290,7 @@ public class TaskBoard {
 				// 取得這個Story底下的Task點數
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
-					if(task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+					if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 						continue;
 					}
 					point[1] += getTaskPoint(endDate, task);
@@ -282,43 +300,41 @@ public class TaskBoard {
 				continue;
 			}
 		}
-		
-		//Visit all DropStory
-		for(StoryObject story:m_dropedStories)
-		{
+
+		// Visit all DropStory
+		for (StoryObject story : m_dropedStories) {
 			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
-			
-			
-			try{
-				//Calculate story Point
+
+			try {
+				// Calculate story Point
 				point[0] += getStoryPoint(endDate, story);
-				
-				//Calculate task Point
-				
+
+				// Calculate task Point
+
 				ArrayList<TaskObject> tasks = story.getTasks();
 				for (TaskObject task : tasks) {
-					if(task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+					if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 						continue;
 					}
 					point[1] += getTaskPoint(endDate, task);
 				}
-			}catch(Exception e){
+			} catch (Exception e) {
 				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
 				continue;
 			}
-			
+
 		}
-		
-		for(TaskObject task : m_dropedTasks){
-			if(task.getStatus(endDate) == TaskObject.STATUS_DONE){
+
+		for (TaskObject task : m_dropedTasks) {
+			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
 				continue;
 			}
-			
-			try{
+
+			try {
 				point[1] += getTaskPoint(endDate, task);
-			}catch(Exception e){
+			} catch (Exception e) {
 				continue;
 			}
 		}
@@ -335,7 +351,7 @@ public class TaskBoard {
 
 	public String getStoryPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		if(sprint == null){
+		if (sprint == null) {
 			return "0.0 / 0.0";
 		}
 		return sprint.getStoryUnclosedPoints() + " / " + sprint.getTotalStoryPoints();
@@ -343,7 +359,7 @@ public class TaskBoard {
 
 	public String getTaskPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		if(sprint == null){
+		if (sprint == null) {
 			return "0.0 / 0.0";
 		}
 		return sprint.getTaskRemainsPoints() + " / " + sprint.getTotalTaskPoints();
@@ -351,7 +367,7 @@ public class TaskBoard {
 
 	public String getInitialStoryPoint() {
 		SprintObject sprint = mSprintBacklogMapper.getSprint();
-		if(sprint == null){
+		if (sprint == null) {
 			return "0.0 / 0.0";
 		}
 		return (getStoryPointByDate(mSprintBacklogMapper.getSprintStartDate())) + " / " + sprint.getLimitedPoint();
@@ -372,16 +388,14 @@ public class TaskBoard {
 	public String getStoryChartLink() {
 		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/ChartLink
-		String chartPath = "./Workspace/" + project.getName() + "/"
-		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
-		        + getSprintId() + File.separator + STORY_CHART_FILE;
+		String chartPath = "./Workspace/" + project.getName() + "/" + IProject.METADATA + "/" + NAME + File.separator
+				+ "Sprint" + getSprintId() + File.separator + STORY_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.STORY_ISSUE_TYPE, chartPath, "Story Points");
 
-		String link = "./Workspace/" + project.getName() + "/"
-		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + getSprintId() + "/" + STORY_CHART_FILE;
+		String link = "./Workspace/" + project.getName() + "/" + IProject.METADATA + "/" + NAME + "/Sprint"
+				+ getSprintId() + "/" + STORY_CHART_FILE;
 
 		return link;
 	}
@@ -389,26 +403,25 @@ public class TaskBoard {
 	public String getTaskChartLink() {
 		ProjectObject project = mSprintBacklogMapper.getProject();
 		// workspace/project/_metadata/TaskBoard/Sprint1/ChartLink
-		String chartPath = "./Workspace/" + project.getName() + "/"
-		        + IProject.METADATA + "/" + NAME + File.separator + "Sprint"
-		        + getSprintId() + File.separator + TASK_CHART_FILE;
+		String chartPath = "./Workspace/" + project.getName() + "/" + IProject.METADATA + "/" + NAME + File.separator
+				+ "Sprint" + getSprintId() + File.separator + TASK_CHART_FILE;
 
 		// 繪圖
 		drawGraph(ScrumEnum.TASK_ISSUE_TYPE, chartPath, "Remaining Hours");
 
-		String link = "./Workspace/" + project.getName() + "/"
-		        + IProject.METADATA + "/" + NAME + "/Sprint"
-		        + getSprintId() + "/" + TASK_CHART_FILE;
+		String link = "./Workspace/" + project.getName() + "/" + IProject.METADATA + "/" + NAME + "/Sprint"
+				+ getSprintId() + "/" + TASK_CHART_FILE;
 
 		return link;
 	}
 
 	private synchronized void drawGraph(String type, String chartPath, String Y_axis_value) {
 		// 設定圖表內容
-		ChartUtil chartUtil = new ChartUtil((type
-		        .equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories")
-		        + " Burndown Chart in Sprint #" + getSprintId(),
-		        mSprintBacklogMapper.getSprintStartDate(), new Date(mSprintBacklogMapper.getSprintEndDate().getTime() + 24 * 3600 * 1000));
+		ChartUtil chartUtil = new ChartUtil(
+				(type.equals(ScrumEnum.TASK_ISSUE_TYPE) ? "Tasks" : "Stories") + " Burndown Chart in Sprint #"
+						+ getSprintId(),
+				mSprintBacklogMapper.getSprintStartDate(),
+				new Date(mSprintBacklogMapper.getSprintEndDate().getTime() + 24 * 3600 * 1000));
 
 		chartUtil.setChartType(ChartUtil.LINECHART);
 
@@ -423,13 +436,12 @@ public class TaskBoard {
 		chartUtil.setInterval(1);
 		chartUtil.setValueAxisLabel(Y_axis_value);
 		// 依照輸入的順序來呈現顏色
-		Color[] colors = {Color.RED, Color.GRAY};
+		Color[] colors = { Color.RED, Color.GRAY };
 		chartUtil.setColor(colors);
 
-		float[] dashes = {8f};
-		BasicStroke[] strokes = {
-		        new BasicStroke(1.5f),
-		        new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 16f, dashes, 0.f)};
+		float[] dashes = { 8f };
+		BasicStroke[] strokes = { new BasicStroke(1.5f),
+				new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 16f, dashes, 0.f) };
 		chartUtil.setStrokes(strokes);
 
 		// 產生圖表
