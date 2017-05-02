@@ -24,13 +24,10 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 	public final static int TYPE_STATUS = 12;
 	public final static int TYPE_HANDLER = 13;
 	public final static int TYPE_SPECIFIC_TIME = 14;
-	public final static int TYPE_DROP = 15; // Drop from parent (for task
-	                                        // history)
-	public final static int TYPE_APPEND = 16; // Append to parent (for task
-	                                          // history)
+	public final static int TYPE_DROP = 15; // Drop from parent (for task history)
+	public final static int TYPE_APPEND = 16; // Append to parent (for task history)
 	public final static int TYPE_ADD = 17; // Add Child (for story history)
-	public final static int TYPE_REMOVE = 18; // Remove Child (for story
-	                                          // history)
+	public final static int TYPE_REMOVE = 18; // Remove Child (for story history)
 	public final static int TYPE_NOTE = 19;
 	public final static int TYPE_HOW_TO_DEMO = 20;
 	public final static int TYPE_ADD_PARTNER = 21;

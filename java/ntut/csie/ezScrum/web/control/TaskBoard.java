@@ -27,7 +27,6 @@ public class TaskBoard {
 	private SprintBacklogMapper mSprintBacklogMapper;
 	private SprintBacklogLogic mSprintBacklogLogic;
 	private ArrayList<StoryObject> m_dropedStories;
-	private ArrayList<TaskObject> m_dropedTasks;
 	private ArrayList<StoryObject> mStories;
 	private ArrayList<TaskObject> mTasksInDropStories;
 	private ArrayList<TaskObject> mTasks;
@@ -69,7 +68,6 @@ public class TaskBoard {
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		m_dropedStories = mSprintBacklogMapper.getDroppedStories();
 		mTasks = mSprintBacklogMapper.getTasksInSprint();
-		m_dropedTasks = mSprintBacklogMapper.getDroppedTasks(project.getId());
 		mTasksInDropStories = mSprintBacklogMapper.getTasksInDropStories();
 		mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>(); // Story的理想線
 		mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>(); // Task的理想線
@@ -89,7 +87,6 @@ public class TaskBoard {
 			// The sprint have number of day exclude holiday.
 			int dayOfSprint = mSprintBacklogLogic.getSprintWorkDays(); 
 			double initPoint;
-			double tolerancingByDay;
 			long today = mCurrentDate.getTime(); // 今天的日期，如果今天已經在EndDate之後，那就設為EndDate
 			if (mCurrentDate.getTime() > sprintEndDate.getTime()) {
 				// end date 為當日的 00:00:00 ，所以還要加入OneDay，這樣時間才會是 00:00:00 - 23:59:59
@@ -98,23 +95,21 @@ public class TaskBoard {
 
 			if (burndownType.equals("story")) {
 				initPoint = getStoryPointByDate(sprintStartWorkDate); // Initial story point
-				tolerancingByDay = initPoint / dayOfSprint;
-				setStoryPointMap(indexDate, sprintEndWorkDate, initPoint, tolerancingByDay, today);
+				setStoryPointMap(indexDate, sprintEndWorkDate, initPoint, dayOfSprint, today);
 			} else if (burndownType.equals("task")) {
 				initPoint = getTaskPointByDate(sprintStartWorkDate); // Initial task point
-				tolerancingByDay = initPoint / dayOfSprint;
-				setTaskPointMap(indexDate, sprintEndWorkDate, initPoint, tolerancingByDay, today);
+				setTaskPointMap(indexDate, sprintEndWorkDate, initPoint, dayOfSprint, today);
 			}
 		}
 	}
 
-	private void setStoryPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay,
+	private void setStoryPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double dayOfSprint,
 			long today) {
 		int sprintDayCount = 0;
 		while (indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()) {
 			Date ckeckDate = indexDate.getTime();
 			if (!DateUtil.isHoliday(ckeckDate)) {
-				mDateToStoryIdealPoint.put(ckeckDate, initPoint - tolerancingByDay * sprintDayCount);
+				mDateToStoryIdealPoint.put(ckeckDate, initPoint - (initPoint / (dayOfSprint -1))* sprintDayCount);
 				if (indexDate.getTimeInMillis() < today) {
 					mDateToStoryPoint.put(ckeckDate, getStoryPointByDate(ckeckDate));
 				} else {
@@ -127,13 +122,13 @@ public class TaskBoard {
 		cleanHistories("Story");
 	}
 
-	private void setTaskPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double tolerancingByDay,
+	private void setTaskPointMap(Calendar indexDate, Date sprintEndWorkDate, double initPoint, double dayOfSprint,
 			long today) {
 		int sprintDayCount = 0;
 		while (indexDate.getTimeInMillis() <= sprintEndWorkDate.getTime()) {
 			Date ckeckDate = indexDate.getTime();
 			if (!DateUtil.isHoliday(ckeckDate)) {
-				mDateToTaskIdealPoint.put(ckeckDate, initPoint - tolerancingByDay * sprintDayCount);
+				mDateToTaskIdealPoint.put(ckeckDate, initPoint - (initPoint / (dayOfSprint -1)) * sprintDayCount);
 				if (indexDate.getTimeInMillis() < today) {
 					double i = getTaskPointByDate(ckeckDate);
 					mDateToTaskRealPoint.put(ckeckDate, i);
@@ -160,9 +155,6 @@ public class TaskBoard {
 			for(TaskObject task : mTasks){
 				task.cleanHistories();
 			}
-			for(TaskObject task : m_dropedTasks){
-				task.cleanHistories();
-			}
 			for(TaskObject task : mTasksInDropStories){
 				task.cleanHistories();
 			}
@@ -183,7 +175,7 @@ public class TaskBoard {
 				continue;
 			}
 		}
-		// Visit all DropStory
+		// Visit all DropStory		
 		for (StoryObject story : m_dropedStories) {
 			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
@@ -212,25 +204,20 @@ public class TaskBoard {
 			}
 		}
 		// Visit all DropStory
-		for (TaskObject task : mTasksInDropStories) {
-			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+		for (StoryObject story : m_dropedStories) {
+			if (story.getStatus(endDate) == StoryObject.STATUS_DONE || 
+					!(story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId()))) {
 				continue;
 			}
-			try {
-				taskPoint += getTaskPoint(endDate, task);
-			} catch (Exception e) {
-				continue;
-			}
-		}
-		// Visit all DropTask
-		for (TaskObject task : m_dropedTasks) {
-			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
-				continue;
-			}
-			try {
-				taskPoint += getTaskPoint(endDate, task);
-			} catch (Exception e) {
-				continue;
+			for (TaskObject task : story.getTasks()) {
+				if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+					continue;
+				}
+				try {
+					taskPoint += getTaskPoint(endDate, task);
+				} catch (Exception e) {
+					continue;
+		   	 	}
 			}
 		}
 		return taskPoint;
@@ -239,7 +226,7 @@ public class TaskBoard {
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if (story.checkVisableByDate(date)) {
+		if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId())) {
 			try {
 				point = story.getStoryPointByDate(date);
 			} catch (Exception e) {
@@ -254,7 +241,7 @@ public class TaskBoard {
 
 	private double getTaskPoint(Date date, TaskObject task) throws Exception {
 		double point = 0;
-		if (task.checkVisableByDate(date)) {
+		if (task.checkVisableByDate(date, mSprintBacklogMapper.getSprintId())) {
 			try {
 				point = task.getTaskPointByDate(date);
 			} catch (Exception e1) {
@@ -322,19 +309,6 @@ public class TaskBoard {
 				}
 			} catch (Exception e) {
 				// 如果會有Exception表示此時間Story不在此Sprint中，所以getTagValue回傳null乘parseDouble產生exception
-				continue;
-			}
-
-		}
-
-		for (TaskObject task : m_dropedTasks) {
-			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
-				continue;
-			}
-
-			try {
-				point[1] += getTaskPoint(endDate, task);
-			} catch (Exception e) {
 				continue;
 			}
 		}

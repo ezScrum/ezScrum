@@ -190,7 +190,7 @@ public class StoryObject implements IBaseObject {
 		return status;
 	}
 
-	public boolean checkVisableByDate(Date date){
+	public boolean checkVisableByDate(Date date, long sprintId){
 		if(histories.size()<1){
 			setHistory();
 		}
@@ -198,11 +198,12 @@ public class StoryObject implements IBaseObject {
 		Collections.sort(histories);
 		boolean isInSprint = false;
 		for(HistoryObject history : histories){
-			if(date.getTime() >= history.getCreateTime()){
+			if (date.getTime() >= history.getCreateTime()) {
 				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
-					isInSprint = true;
-				}
-				else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					if(history.getNewValue().equals(String.valueOf(sprintId))){
+						isInSprint = true;
+					}
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
 					isInSprint = false;
 				}
 			}
@@ -224,8 +225,7 @@ public class StoryObject implements IBaseObject {
 				}
 			}
 		}
-		if(storyPoint < 0)
-		{
+		if(storyPoint < 0) {
 			return this.getEstimate();
 		}
 		return storyPoint;

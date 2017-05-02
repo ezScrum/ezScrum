@@ -206,7 +206,7 @@ public class TaskObject implements IBaseObject {
 		return status;
 	}
 
-	public boolean checkVisableByDate(Date date){
+	public boolean checkVisableByDate(Date date, long sprintId){
 		if(histories.size()<1){
 			setHistory();
 		}
@@ -223,6 +223,7 @@ public class TaskObject implements IBaseObject {
 				}
 			}
 		}
+		
 		return isInSprint;
 	}
 
