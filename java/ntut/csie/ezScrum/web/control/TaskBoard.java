@@ -226,7 +226,7 @@ public class TaskBoard {
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
 		// 確認這個Story在那個時間是否存在
-		if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId())) {
+		if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprint().getSerialId())) {
 			try {
 				point = story.getStoryPointByDate(date);
 			} catch (Exception e) {
