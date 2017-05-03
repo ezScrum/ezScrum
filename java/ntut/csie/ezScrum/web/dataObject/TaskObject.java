@@ -39,7 +39,7 @@ public class TaskObject implements IBaseObject {
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-
+	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
@@ -174,10 +174,17 @@ public class TaskObject implements IBaseObject {
 		return mStatus;
 	}
 
+	public void setHistory(){
+		histories = getHistories();
+	}
+
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
@@ -198,9 +205,12 @@ public class TaskObject implements IBaseObject {
 		}
 		return status;
 	}
-	
-	public boolean checkVisableByDate(Date date){
-		ArrayList<HistoryObject> histories = getHistories();
+
+	public boolean checkVisableByDate(Date date, long sprintId){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		boolean isInSprint = false;
 		for(HistoryObject history : histories){
@@ -213,11 +223,15 @@ public class TaskObject implements IBaseObject {
 				}
 			}
 		}
+		
 		return isInSprint;
 	}
 
 	public int getTaskPointByDate(Date date){
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		int taskPoint = -1;
 		for(HistoryObject history : histories){
@@ -674,5 +688,9 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
 		history.save();
+	}
+	
+	public void cleanHistories(){
+		histories.clear();
 	}
 }

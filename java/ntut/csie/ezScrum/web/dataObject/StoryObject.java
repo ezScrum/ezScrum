@@ -45,6 +45,7 @@ public class StoryObject implements IBaseObject {
 	
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
+	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
 	
 	private ArrayList<Long> mCacheTagsId = new ArrayList<Long>();
 	private boolean mUpdateTags = false;
@@ -156,11 +157,21 @@ public class StoryObject implements IBaseObject {
 	public int getStatus() {
 		return mStatus;
 	}
-	
+
+	public void setHistory(){
+		histories = getHistories();
+	}
+	public void cleanHistories(){
+		histories.clear();
+	}
+
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
@@ -178,17 +189,40 @@ public class StoryObject implements IBaseObject {
 		}
 		return status;
 	}
-	
-	public boolean checkVisableByDate(Date date){
-		ArrayList<HistoryObject> histories = getHistories();
+
+	public boolean checkVisableByDate(Date date, long sprintId){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		boolean isInSprint = false;
 		for(HistoryObject history : histories){
-			if(date.getTime() >= history.getCreateTime()){
+			if (date.getTime() >= history.getCreateTime()) {
 				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
-					isInSprint = true;
+					if(history.getNewValue().equals(String.valueOf(sprintId))){
+						isInSprint = true;
+					}
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
 				}
-				else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+			}
+		}
+		return isInSprint;
+	}
+
+	public boolean checkVisableByDate(Date date){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if (date.getTime() >= history.getCreateTime()) {
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+						isInSprint = true;
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
 					isInSprint = false;
 				}
 			}
@@ -197,7 +231,10 @@ public class StoryObject implements IBaseObject {
 	}
 	
 	public int getStoryPointByDate(Date date){
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
 		Collections.sort(histories);
 		int storyPoint = -1;
 		for(HistoryObject history : histories){
@@ -207,8 +244,7 @@ public class StoryObject implements IBaseObject {
 				}
 			}
 		}
-		if(storyPoint < 0)
-		{
+		if(storyPoint < 0) {
 			return this.getEstimate();
 		}
 		return storyPoint;

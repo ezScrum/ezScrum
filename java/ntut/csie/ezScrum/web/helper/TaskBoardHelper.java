@@ -57,6 +57,7 @@ public class TaskBoardHelper {
 			TaskBoard taskBoard = new TaskBoard(mSprintBacklogLogic, mSprintBacklogMapper);
 			// Get Sprint Data
 			if (taskBoard != null) {
+				taskBoard.buildPointMap(type);
 				if (type.equals("story")) {
 					responseText = Translation.translateBurndownChartDataToJson(taskBoard.getStoryIdealPointMap(), taskBoard.getStoryRealPointMap());
 				} else if (type.equals("task")) {
