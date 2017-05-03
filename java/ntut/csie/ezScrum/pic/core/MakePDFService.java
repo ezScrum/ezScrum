@@ -98,7 +98,6 @@ public class MakePDFService {
 		String name = task.getName();
 		String taskCardContent = "Task Id # " + task.getSerialId() + "\n" + name;
 		int nameSize = name.length();
-		System.out.println(" nameSize = " + nameSize);
 		if (nameSize < 175) {
 			int addEndOfLineNum = nameSize / 35;
 			for (int i = 0; i < (4 - addEndOfLineNum); i++) {
