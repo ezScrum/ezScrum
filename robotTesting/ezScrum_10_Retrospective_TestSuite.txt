@@ -64,3 +64,33 @@ Test Retrospective - Delete Retrospective
     Page Should Not Contain    Type: Improvement
     Page Should Not Contain Element    //div[@id='Retrospective_Panel']//table[@class='x-grid3-row-table']
     [Teardown]    Test Retrospective Delete Teardown
+
+Test Retrospective - Edit Retrospective Check SprintID Issue
+    [Setup]    Test Retrospective Edit Multiple Setup
+    sleep    1s
+    Select Node Product    Retrospective
+    #edit 1
+    Click Element    //div[@id="Retrospective_Page_Layout"]//table/tbody/tr/td[1]/div[text()=3]/../..
+    Click Element    xpath=//button[.='Edit Retrospective']
+    Focus AND Input Text    //span[text()="Edit Retrospective #3"]/../../../../../div[2]//form[@method="POST"]/div[1]//input[@name="Name"]    New Retrospective Edit Name #3
+    # select Type
+    Focus AND Input Text    //span[text()="Edit Retrospective #3"]/../../../../../div[2]//form[@method="POST"]/div[5]//textarea[@name='Description']    New Retrospective Edit Description #3
+    # save
+    ${_xpathEdit} =    Find Current Window Element    Edit Retrospective #3    Submit
+    Element Enable And Submit    ${_xpathEdit}
+    Wait Until Page Contains    Success.
+    ${value1}=    Get Text    xpath=//div[contains(@id,"Type-Good")]/div[3]/table/tbody/tr/td[3]/div
+    Should Be Equal As Strings    ${value1}    New Retrospective Edit Name #3
+    #edit 2
+    Click Element    xpath=//div[@id="Retrospective_Page_Layout"]//table/tbody/tr/td[1]/div[text()=5]/../..
+    Click Element    xpath=//button[.='Edit Retrospective']
+    Focus AND Input Text    //span[text()="Edit Retrospective #5"]/../../../../../div[2]//form[@method="POST"]/div[1]//input[@name="Name"]    Improvement Edit Name #2
+    # select Type
+    Focus AND Input Text    //span[text()="Edit Retrospective #5"]/../../../../../div[2]//form[@method="POST"]/div[5]//textarea[@name='Description']    Improvement Edit Description #2
+    # save
+    ${_xpathEdit} =    Find Current Window Element    Edit Retrospective #5    Submit
+    Element Enable And Submit    ${_xpathEdit}
+    Wait Until Page Contains    Success.
+    ${value2}=    Get Text    xpath=//div[contains(@id,"Type-Improvement")]/div[2]/table/tbody/tr/td[3]/div
+    Should Be Equal As Strings    ${value2}    Improvement Edit Name #2
+    [Teardown]    Test Retrospective Edit Teardown
