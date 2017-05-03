@@ -211,6 +211,25 @@ public class StoryObject implements IBaseObject {
 		return isInSprint;
 	}
 
+	public boolean checkVisableByDate(Date date){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if (date.getTime() >= history.getCreateTime()) {
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+						isInSprint = true;
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		return isInSprint;
+	}
+	
 	public int getStoryPointByDate(Date date){
 		if(histories.size()<1){
 			setHistory();

@@ -225,17 +225,33 @@ public class TaskBoard {
 
 	private double getStoryPoint(Date date, StoryObject story) throws Exception {
 		double point = 0;
+		boolean isGeneral = (story.getSprintId() == mSprintBacklogMapper.getSprintId());
 		// 確認這個Story在那個時間是否存在
-		if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprint().getSerialId())) {
-			try {
-				point = story.getStoryPointByDate(date);
-			} catch (Exception e) {
-				return 0;
+		if(isGeneral)
+		{
+			if (story.checkVisableByDate(date)) {
+				try {
+					point = story.getStoryPointByDate(date);
+				} catch (Exception e) {
+					return 0;
+				}
+			} else {
+				// 表示這個Story在當時不存在於這個Sprint裡面
+				throw new Exception("this story isn't at this sprint");
 			}
-		} else {
-			// 表示這個Story在當時不存在於這個Sprint裡面
-			throw new Exception("this story isn't at this sprint");
+		}else{
+			if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId())) {
+				try {
+					point = story.getStoryPointByDate(date);
+				} catch (Exception e) {
+					return 0;
+				}
+			} else {
+				// 表示這個Story在當時不存在於這個Sprint裡面
+				throw new Exception("this story isn't at this sprint");
+			}
 		}
+		
 		return point;
 	}
 
