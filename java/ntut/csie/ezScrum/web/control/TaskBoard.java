@@ -206,7 +206,7 @@ public class TaskBoard {
 		// Visit all DropStory
 		for (StoryObject story : m_dropedStories) {
 			if (story.getStatus(endDate) == StoryObject.STATUS_DONE || 
-					!(story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId()))) {
+					!(story.checkVisableByDate(date, mSprintBacklogMapper.getSprint().getSerialId()))) {
 				continue;
 			}
 			for (TaskObject task : story.getTasks()) {
@@ -230,8 +230,9 @@ public class TaskBoard {
 		if(isGeneral)
 		{
 			if (story.checkVisableByDate(date)) {
+				
 				try {
-					point = story.getStoryPointByDate(date);
+					point = story.getStoryPointByDate(date);					
 				} catch (Exception e) {
 					return 0;
 				}
@@ -240,7 +241,7 @@ public class TaskBoard {
 				throw new Exception("this story isn't at this sprint");
 			}
 		}else{
-			if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprintId())) {
+			if (story.checkVisableByDate(date, mSprintBacklogMapper.getSprint().getSerialId())) {
 				try {
 					point = story.getStoryPointByDate(date);
 				} catch (Exception e) {
