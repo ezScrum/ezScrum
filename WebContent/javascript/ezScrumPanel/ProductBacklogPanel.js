@@ -531,13 +531,13 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 		}
 	},
 	itemClick: function(baseItem, e) {
-		var issueID = Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelected().data['Id'];
+		var storyID = Ext.getCmp('productBacklogGridPanel').getSelectionModel().getSelected().data['sId'];
 
 		if (baseItem.checked == false) {
 			Ext.Ajax.request({
 				url: 'AjaxAddStoryTag.do',
 				params: {
-					storyId: issueID,
+					storyId: storyID,
 					tagId: baseItem.tagId
 				},
 				success: function(response) {
@@ -551,7 +551,7 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 			Ext.Ajax.request({
 				url: 'AjaxRemoveStoryTag.do',
 				params: {
-					storyId: issueID,
+					storyId: storyID,
 					tagId: baseItem.tagId
 				},
 				success: function(response) {
