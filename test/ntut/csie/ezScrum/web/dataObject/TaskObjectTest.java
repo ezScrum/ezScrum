@@ -731,6 +731,8 @@ public class TaskObjectTest {
 		// check task status before test
 		Date specificDate = DateUtil.dayFillter("2015/02/04", DateUtil._8DIGIT_DATE_1);
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		// clean task storage histories data
+		task.cleanHistories();
 		// create a check task out history
 		Date changeStatusDate = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
 		HistoryObject history = new HistoryObject();
@@ -752,7 +754,10 @@ public class TaskObjectTest {
 		task.save();
 		// check task status before test
 		Date specificDate = DateUtil.dayFillter("2015/02/04", DateUtil._8DIGIT_DATE_1);
+		
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus(specificDate));
+		// clean task storage histories data
+		task.cleanHistories();
 		// create check task out history1
 		Date changeStatusDate1 = DateUtil.dayFillter("2015/02/04-13:14:01", DateUtil._16DIGIT_DATE_TIME);
 		HistoryObject history1 = new HistoryObject();
