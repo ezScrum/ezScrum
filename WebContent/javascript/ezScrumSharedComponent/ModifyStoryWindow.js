@@ -303,7 +303,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 	},
 	UpdateStoryTag: function(tagId, text, checked) {
 		var recordTags = this.EditRecord.data['Tag'].split(',');
-		var storyid = this.EditRecord.data['Id'];
+		var storyid = this.EditRecord.data['sId'];
 		var tagExist = false;
 
 		for ( var i = 0; i < recordTags.length; i++) {

@@ -83,6 +83,7 @@ public class GetEditStoryInfoActionTest extends MockStrutsTestCase{
 		expectedResponseText.append("<ProductBacklog>")
 				.append("<Total>1</Total>")
 				.append("<Story>")
+					.append("<sId>2</sId>")	
 					.append("<Id>2</Id>")
 					.append("<Link></Link>")
 					.append("<Name>TEST_STORY_2</Name>")

@@ -39,7 +39,7 @@ var SprintReader = new Ext.data.XmlReader({
 
 /* 定義 Story 資料欄位 */
 var Story = Ext.data.Record.create([
-   {name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
+	{name:'sId', sortType:'asInt'}, {name:'Id', sortType:'asInt'}, 'Name',{name:'Value',sortType:'asInt'}, {name:'Importance', sortType:'asInt'}, {name:'Estimate', sortType:'asFloat'}, 'Status', 'Notes', 'HowToDemo', {name:'Release', sortType:'asInt'}, {name:'Sprint', sortType:'asInt'}, 'Tag', 'Link', 'Attach', 'AttachFileList', 'FilterType'
 ]);
 
 /* 定義 Task 資料欄位 */

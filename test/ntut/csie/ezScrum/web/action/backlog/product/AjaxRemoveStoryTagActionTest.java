@@ -99,6 +99,7 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		String expectedStoryHoewToDemo = mCPB.getStories().get(0).getHowToDemo();
 		String expectedStoryNote = mCPB.getStories().get(0).getNotes();
 		long storyId = mCPB.getStoryIds().get(0);
+		long storySerialId = mCPB.getStories().get(0).getSerialId();
 		// ================ set session info ========================
 		request.getSession().setAttribute("UserSession", mConfig.getUserSession());
 		// ================ 執行 action ======================
@@ -112,7 +113,8 @@ public class AjaxRemoveStoryTagActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(storyId).append(",")
+							.append("\"sId\":").append(storyId).append(",")
+							.append("\"Id\":").append(storySerialId).append(",")
 							.append("\"Type\":\"Story\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":").append(expectedStoryValue).append(",")	
