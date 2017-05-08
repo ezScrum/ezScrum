@@ -4,6 +4,7 @@
     <form-beans>
         <form-bean name="projectInfoForm"		type="ntut.csie.ezScrum.web.form.ProjectInfoForm" />
         <form-bean name="logonForm"				type="ntut.csie.ezScrum.web.form.LogonForm" />
+        <form-bean name="logonGithubSubmit"		type="ntut.csie.ezScrum.web.form.GithubLoginForm" />
         <form-bean name="iterationPlanForm"		type="ntut.csie.ezScrum.web.form.IterationPlanForm" />        
         <form-bean name="uploadForm"			type="ntut.csie.ezScrum.web.form.UploadForm">
             <form-property name="file"			type="org.apache.struts.uploadFormFile" />
@@ -32,6 +33,7 @@
 		<forward name="permissionDenied" path="/PermissionDenied.jsp" />
 		
 		<!-- GAE -->
+		
 		<forward name="InvalidTenancy" path="/InvalidTenancy.jsp" />
     </global-forwards>
 
@@ -40,7 +42,7 @@
 		<!-- ========================================= -->
 		<!-- Login / Logout -->
 		<!-- ========================================= -->
-	
+		<action path="/checkgithub"		type="ntut.csie.ezScrum.web.action.rbac.CheckGithubAccountByEmail" />	
 						
 		<!-- ========================================= -->
 		<!-- Project List -->
@@ -202,10 +204,23 @@
 			<forward name="existedUserSession" path="/viewList.do" redirect="true"/>
         </action>
         
+        
+		<action path="/register" type="ntut.csie.ezScrum.web.action.LogonAction">
+			<exception key="error.invalidateUser"			type="ntut.csie.ezScrum.web.InvalidUserException" scope="request" />
+			<forward name="success" path="main.Register" />
+			<forward name="existedUserSession" path="/viewList.do" redirect="true"/>
+        </action>
+        
         <action attribute="logonForm" input="main.logon" name="logonForm" path="/logonSubmit" type="ntut.csie.ezScrum.web.action.LogonSubmitAction">
 			<forward name="success"					path="/resetProjectSession.do" />
 			<forward name="Admin_ManagementView"	path="project.Management" />
 			<forward name="Tenant_ManagementView"	path="project.Management.admin" />
+		</action>
+		
+		
+        
+        <action  path="/logongithubsubmit" name="logonGithubSubmit" type="ntut.csie.ezScrum.web.action.LogonGithubSubmitAction">
+			<forward name="success"					path="/viewList.do" redirect="true" />
 		</action>
 		
 		<action path="/resetProjectSession" type="ntut.csie.ezScrum.web.action.ResetProjectSessionAction">

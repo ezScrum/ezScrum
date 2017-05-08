@@ -5,6 +5,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
 <script type="text/javascript">
+
 	function showIssueReport() {
 		window.location = "showReportIssues.do";
 	}
@@ -25,7 +26,7 @@
 </table>
 <% } else { %>
 <% } %>
-adafafsfsfs
+
 <br />
 <table width="60%"  border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -73,14 +74,9 @@ adafafsfsfs
 <input  type="hidden"  id="method" name="method" />
 <input  type="hidden"  id="projectName" name="projectName" />
 
-</html:form >
-<div align="center" cellpadding="0" cellspacing="0">
-    <button value="afafaf" id="dedd" style="padding:10px;text-align:center" >
-	<img src="/ezScrum/images/github-512.png" height="40px"> Login with GitHub</button>
-</div>
-<html:form action="/logongithubsubmit" method="Post" styleId="token">
-<html:hidden property="token" styleClass="tokenForm" />
 </html:form>
+    <button value="afafaf" id="dedd">fafafa</button>
+
 <style type ="text/css">
 body{font-size:13px}
 #divFrame{
@@ -144,10 +140,8 @@ body{font-size:13px}
 
 	        return result;
 	    }
-        $(document).bind('getCode', function(e, code){
-        	$('.tokenForm').val(code);
-        	$('#token').submit();       	
-            
+        $(document).bind('getCode', function(e, message){
+            console.log(message)
         });
 	    
 	    if (queryParameters().code){

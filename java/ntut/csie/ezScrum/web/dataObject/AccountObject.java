@@ -141,6 +141,10 @@ public class AccountObject implements IBaseObject {
 	public static AccountObject get(String username) {
 		return AccountDAO.getInstance().get(username);
 	}
+	
+	public static AccountObject getByEmail(String mEmail) {
+		return AccountDAO.getInstance().get(mEmail);
+	}
 
 	/**
 	 * get accounts in ezScrum
@@ -222,6 +226,11 @@ public class AccountObject implements IBaseObject {
 			password = AccountDAO.getMd5(password);
 		}
 		return AccountDAO.getInstance().confirmAccount(username, password);
+	}
+
+	public static AccountObject confirmAccount(String email) {
+		
+		return AccountDAO.getInstance().getByEmail(email);
 	}
 
 	@Override

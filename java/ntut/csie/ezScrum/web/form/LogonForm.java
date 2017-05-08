@@ -47,6 +47,7 @@ public class LogonForm extends ValidatorForm {
 
     /** UserId property */
     private String UserId;
+    private String token;
 
     // --------------------------------------------------------- Methods
 
@@ -73,7 +74,12 @@ public class LogonForm extends ValidatorForm {
     public String getUserId() {
         return UserId;
     }
-
+    public void setToken(String Token){
+    	this.token = Token;
+    }
+    public String getToken(){
+    	return this.token;
+    }
     /**
      * Set the UserId.
      * @param UserId The UserId to set

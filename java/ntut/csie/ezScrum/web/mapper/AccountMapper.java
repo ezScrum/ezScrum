@@ -98,6 +98,15 @@ public class AccountMapper {
 		}
 	}
 
+	public AccountObject confirmAccount(String email) throws LogonException {
+		AccountObject account = AccountObject.confirmAccount(email);
+		if (account == null) {
+			throw new LogonException(false, false);
+		} else {
+			return account;
+		}
+	}
+
 	/**
 	 * 取出 account 的在 project 的 role 權限列表
 	 * 

@@ -373,6 +373,27 @@ public class AccountDAO extends AbstractDAO<AccountObject, AccountObject> {
 		return accountObject;
 	}
 
+	public AccountObject getByEmail(String mEmail) {
+		AccountObject accountObject = null;
+
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(AccountEnum.TABLE_NAME);
+		valueSet.addTextFieldEqualCondition(AccountEnum.EMAIL, mEmail);
+		String query = valueSet.getSelectQuery();
+
+		ResultSet result = mControl.executeQuery(query);
+		try {
+			if (result.next()) {
+				accountObject = convertAccount(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		return accountObject;
+	}
+	
 	/**
 	 * Get all accounts in ezScrum
 	 * 

@@ -30,4 +30,12 @@ public class ProjectInfoCenter {
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}
+
+	public IUserSession login(String email) throws LogonException {
+		AccountObject theAccount = null;
+		AccountMapper accountMapper = new AccountMapper();
+		theAccount = accountMapper.confirmAccount(email);
+		IUserSession theUserSession = new UserSession(theAccount);
+		return theUserSession;
+	}
 }
