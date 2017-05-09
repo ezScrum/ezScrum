@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TaskObject implements IBaseObject {
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
-
+	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
 	public static TaskObject get(long id) {
 		return TaskDAO.getInstance().get(id);
 	}
@@ -173,10 +174,18 @@ public class TaskObject implements IBaseObject {
 		return mStatus;
 	}
 
+	public void setHistory(){
+		histories = getHistories();
+	}
+
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
 			int historyType = history.getHistoryType();
@@ -197,6 +206,49 @@ public class TaskObject implements IBaseObject {
 		return status;
 	}
 
+	public boolean checkVisableByDate(Date date, long sprintId){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+					isInSprint = true;
+				}
+				else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		
+		return isInSprint;
+	}
+
+	public int getTaskPointByDate(Date date){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		int taskPoint = -1;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE || history.getHistoryType() == HistoryObject.TYPE_REMAIMS){
+					taskPoint =  Integer.valueOf(history.getNewValue());
+				}
+			}
+		}
+		if(taskPoint < 0)
+		{
+			return this.getEstimate();
+		}
+		return taskPoint;
+	}
+	
+	
 	/*
 	 * 之後要拔掉,為了符合目前的IIssue
 	 */
@@ -636,5 +688,9 @@ public class TaskObject implements IBaseObject {
 		HistoryObject history = new HistoryObject(mId, IssueTypeEnum.TYPE_TASK,
 				type, oldValue, newValue, specificTime);
 		history.save();
+	}
+	
+	public void cleanHistories(){
+		histories.clear();
 	}
 }

@@ -26,7 +26,7 @@ Test ScrumRole Setup
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
     SwitchToPage    Management
-    SwitchToItemLink    False    Scrum Role Management
+    Wait Until Keyword Succeeds    1 min    5s    SwitchToItemLink    False    Scrum Role Management
 
 Test ScrumRole Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

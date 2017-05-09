@@ -2,21 +2,26 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.jdom.Element;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StatusEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.jcis.core.util.DateUtil;
 
 public class StoryObject implements IBaseObject {
 	public final static int STATUS_UNCHECK = StatusEnum.NEW;
@@ -40,6 +45,7 @@ public class StoryObject implements IBaseObject {
 	
 	private long mCreateTime = 0;
 	private long mUpdateTime = 0;
+	private ArrayList<HistoryObject> histories = new ArrayList<HistoryObject>();
 	
 	private ArrayList<Long> mCacheTagsId = new ArrayList<Long>();
 	private boolean mUpdateTags = false;
@@ -151,11 +157,22 @@ public class StoryObject implements IBaseObject {
 	public int getStatus() {
 		return mStatus;
 	}
-	
+
+	public void setHistory(){
+		histories = getHistories();
+	}
+	public void cleanHistories(){
+		histories.clear();
+	}
+
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
-		ArrayList<HistoryObject> histories = getHistories();
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
 		for (HistoryObject history : histories) {
 			long historyTime = history.getCreateTime();
 			int historyType = history.getHistoryType();
@@ -171,6 +188,66 @@ public class StoryObject implements IBaseObject {
 			}
 		}
 		return status;
+	}
+
+	public boolean checkVisableByDate(Date date, long sprintId){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if (date.getTime() >= history.getCreateTime()) {
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+					if(history.getNewValue().equals(String.valueOf(sprintId))){
+						isInSprint = true;
+					}
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		return isInSprint;
+	}
+
+	public boolean checkVisableByDate(Date date){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		boolean isInSprint = false;
+		for(HistoryObject history : histories){
+			if (date.getTime() >= history.getCreateTime()) {
+				if(history.getHistoryType() == HistoryObject.TYPE_APPEND){
+						isInSprint = true;
+				} else if(history.getHistoryType() == HistoryObject.TYPE_REMOVE){
+					isInSprint = false;
+				}
+			}
+		}
+		return isInSprint;
+	}
+	
+	public int getStoryPointByDate(Date date){
+		if(histories.size()<1){
+			setHistory();
+		}
+		//ArrayList<HistoryObject> histories = getHistories();
+		Collections.sort(histories);
+		int storyPoint = -1;
+		for(HistoryObject history : histories){
+			if(date.getTime() >= history.getCreateTime()){
+				if(history.getHistoryType() == HistoryObject.TYPE_ESTIMATE){
+					storyPoint =  Integer.valueOf(history.getNewValue());
+				}
+			}
+		}
+		if(storyPoint < 0) {
+			return this.getEstimate();
+		}
+		return storyPoint;
 	}
 	
 	private long getLastMillisecondOfDate(Date date) {

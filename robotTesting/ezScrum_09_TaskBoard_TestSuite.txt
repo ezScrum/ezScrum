@@ -1,4 +1,4 @@
-﻿*** Settings ***
+*** Settings ***
 Documentation     CI 測試不穩定,需加入同步機制?
 Suite Setup       Test TaskBoard - Setup
 Suite Teardown    Test TaskBoard - Teardown
@@ -313,31 +313,88 @@ Test TaskBoard - Check Task Checked Out
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
     [Teardown]    Test TaskBoard - Task Checked Out Teardown
 
+Test TaskBoard - Check Sprint ID
+    [Documentation]    Check if sprint_ID is right, after get to other node and get back to TaskBoard.
+    [Setup]    Test TaskBoard - Check Sprint ID Setup
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
+    ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
+    ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Click Element    ${sprintIDSelect}
+    ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
+    Click Element    ${selectSprint2}
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint02
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    16
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    32
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #2
+    ${sprintBacklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
+    Click Element    ${sprintBacklog}
+    ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
+    Click Element    ${taskBoard}
+    ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Should Be Equal    ${sprintInitialID}    ${sprntModernID}
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
+    [Teardown]    Test TaskBoard - Check Sprint ID Teardown
+
 Tset TaskBoard - ReleaseID Check
     [Setup]    Test TaskBoard - Initial Release ID Check Setup
     Select Node Product    TaskBoard
     Compare Field Content    //input[@name="ReleaseID"]    None
     [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
 
-Test TaskBoard - Check Task ID On The Window After Move To Done
-    [Setup]    Test TaskBoard - Check Task position Setup
-    ${ID}=    Set Variable    #TaskBoard ID
-    Move Task From Check Out To Done Check ID Before Click Done    ${ID}
-    [Teardown]    Test TaskBoard - Check Task position Teardown
-
 Test TaskBoard - Check Task Consistency After Dragging
     [Setup]    Test TaskBoard - Check Task Consistency After Dragging Setup
-    Select Node Product    TaskBoard
-    ${taskID}=    Set Variable    2
+    ${storyID}=    Set Variable    3
+    ${taskID}=    Set Variable    9
+    Wait Until Page Contains Element    xpath=//div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
+    ${TaskCardContent}=    Get Text    xpath=//div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
+    ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
+    Task Done With Arguments    ${storyID}    ${taskID}
+    Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
+    [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
+
+Test TaskBoard - Check Task ID On The Window After Dragging
+    [Documentation]    Try to move TaskBoard between "not Check Out", "Check Out", "Done", and check their ID and Name doesn't change in the windows
+    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
+    ${Story_ID}=    Set Variable    1
+    ${Task_ID}=    Set Variable    4
+    ${Task_NotCheckOut}=    Set Variable    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]
+    Wait until Page Contains Element    ${Task_NotCheckOut}
+    ${initialTaskName}=    Get Text    ${Task_NotCheckOut}/../../../../../../..//td[@class="TaskCard_Description"]/h1
+    Move Task From Not Check Out To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Move Task From Check Out To Done Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Move Task From Done To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
+
+Test TaskBoard - Check Task Consistency After Editing in Done Area
+    [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    ${storyID}=    Set Variable    3
+    ${taskID}=    Set Variable    9
     Wait Until Page Contains Element    //div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
     ${TaskCardContent}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Description"]
     ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
-    ${TaskCardHours}=    Get Text    //div[@id="Task:${taskID}"]//td[@class="TaskCard_Value"]
-    Drag And Drop    //h2[text()="[Task] \ #${taskID}"]    //div[@id="Task:2"]/../../../..//div[3]
-    ${ActualHour}=    Fetch From Left    ${TaskCardHours}    ${SPACE}
-    Input Text    //input[@name="Actualhour"]    ${ActualHour}
-    ${xpathSubmit}=    Find Current Window Element    Done Task #${taskID}    Done
-    Element Enable And Submit    ${xpathSubmit}
-    Wait Until Page Contains    Success.
-    Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    ${TaskCardHours}
-    [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
+    Task Done With Arguments    ${storyID}    ${taskID}
+    click element    //div[@id="Task:${taskID}"]//img[@src="images/edit.png"]
+    ${_XpathEditTaskSubmit}=    Find Current Window Element    Edit Task #${TaskID}    Submit
+    Element Enable And Submit    ${_XpathEditTaskSubmit}
+    Page Should Contain Element    //div[@id="${storyID}_closed"]//div[@id="Task:${taskID}"]
+    Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
+    [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
+
+Test TaskBoard - Check Taskcard Position
+    [Documentation]    Check if taskcard position right after moving it from check out \ to done and reloading
+    [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    Wait until Page Contains Element    xpath=//iframe[@class="chartjs-hidden-iframe"]
+    ${Story_ID}=    Set Variable    3
+    ${Task_number}=    Set Variable    9
+    Move Task From Check Out To Done    ${Story_ID}    ${Task_number}
+    Reload Page
+    Select Node Product    TaskBoard
+    Check if Done column has TaskCard    ${Story_ID}    ${Task_number}
+    [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
