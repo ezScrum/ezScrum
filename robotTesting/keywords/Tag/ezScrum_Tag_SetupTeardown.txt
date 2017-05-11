@@ -5,7 +5,8 @@ Resource          ../Project/ezScrum_Project.txt
 Resource          ../../ServerConfig.txt
 
 *** Keywords ***
-Sprint Backlog Edit Tag Setup
+Test Tag - Sprint Backlog Setup
+    [Arguments]    ${Project}
     #setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
@@ -13,8 +14,28 @@ Sprint Backlog Edit Tag Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
-    Select Project    Project01
+    Select Project    ${Project}
+    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
+    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
 
-Sprint Backlog Edit Tag Teardown
+Test Tag - Sprint Backlog Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
+
+Test Tag - ProductBacklog Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Printable_StoryEnable_and_TaskDisable.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="TestProject"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+
+Test Tag - ProductBacklog Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser

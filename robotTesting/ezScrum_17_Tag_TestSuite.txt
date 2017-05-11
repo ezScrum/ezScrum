@@ -1,3 +1,43 @@
+*** Settings ***
+Library           BuiltIn
+Library           keywords/lib/Selenium2Improved.py
+Library           Collections
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           keywords/lib/DatabaseHandler.py
+Resource          keywords/Tag/ezScrum_Tag_SetupTeardown.txt
+
 *** Test Cases ***
-Test Tag - Sprint Backlog Edit Tag
-    [Setup]    Sprint Backlog Edit Tag Setup
+Test Tag - Sprint Backlog Edit Story Not Edit Tags
+    [Documentation]    Test if the tags is the same after editing story and not changing tags
+    [Setup]    Test Tag - Sprint Backlog Setup    Project02
+    ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    ${StoryID}=    Set Variable    xpath = //span[text()="7"]
+    Double Click Element    ${StoryID}
+    Click Element    xpath = //button[text()="Submit"]
+    ${Project02_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
+    [Teardown]    Test Tag - Sprint Backlog Teardown
+
+Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
+    [Setup]    Test Tag - Sprint Backlog Setup    Project01
+    ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
+    Click Element    ${ProjectList}
+    Select Project    Project02
+    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
+    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
+    ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    ${StoryID}=    Set Variable    xpath = //span[text()="7"]
+    Double Click Element    ${StoryID}
+    Click Element    xpath = //button[text()="Submit"]
+    ${Project02_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
+    Click Element    ${ProjectList}
+    Select Project    Project01
+    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
+    ${Project01_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
+    [Teardown]    Test Tag - Sprint Backlog Teardown
