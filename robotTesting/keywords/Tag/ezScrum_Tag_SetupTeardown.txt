@@ -5,6 +5,23 @@ Resource          ../Project/ezScrum_Project.txt
 Resource          ../../ServerConfig.txt
 
 *** Keywords ***
+Test Tag - ProductBacklog Add Tag with Edit Story Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="Project02"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+
+Test Tag - ProductBacklog Add Tag with Edit Story Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
 Test Tag - Sprint Backlog Setup
     [Arguments]    ${Project}
     #setup
@@ -37,5 +54,23 @@ Test Tag - ProductBacklog Setup
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
 
 Test Tag - ProductBacklog Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+
+Test Tag - Add Mutiple Tags with Tag Button Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="Project02"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+
+Test Tag - Add Mutiple Tags with Tag Button Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
