@@ -1,0 +1,25 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../common_resource.txt
+
+*** Keywords ***
+Test Tag - ProductBacklog Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Printable_StoryEnable_and_TaskDisable.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+    #Select Project
+    Click Element    xpath=//div[text()="TestProject"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+
+Test Tag - ProductBacklog Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
+
+Test Tag - Setup
+
+Test Tag - Teardown

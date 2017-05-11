@@ -1,1 +1,12 @@
+*** Settings ***
+Suite Setup       Test Tag - Setup
+Suite Teardown    Test Tag - Teardown
+Library           BuiltIn
+Library           keywords/lib/Selenium2Improved.py
+Library           Collections
+Resource          Global Define.txt
+Resource          ServerConfig.txt
+Library           keywords/lib/DatabaseHandler.py
+Resource          keywords/Tag/ezScrum_Tag_SetupTeardown.txt
+
 *** Test Cases ***
