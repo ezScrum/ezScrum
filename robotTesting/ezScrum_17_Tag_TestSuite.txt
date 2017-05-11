@@ -1,1 +1,3 @@
 *** Test Cases ***
+Test Tag - Sprint Backlog Edit Tag
+    [Setup]    Sprint Backlog Edit Tag Setup

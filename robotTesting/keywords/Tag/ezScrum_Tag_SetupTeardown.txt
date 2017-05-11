@@ -1,0 +1,20 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../../Global Define.txt
+Resource          ../Project/ezScrum_Project.txt
+Resource          ../../ServerConfig.txt
+
+*** Keywords ***
+Sprint Backlog Edit Tag Setup
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    Project01
+
+Sprint Backlog Edit Tag Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System
