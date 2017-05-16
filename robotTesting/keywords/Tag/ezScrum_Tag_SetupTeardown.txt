@@ -22,6 +22,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story Setup
 Test Tag - ProductBacklog Add Tag with Edit Story Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
 Test Tag - Sprint Backlog Setup
     [Arguments]    ${Project}
     #setup
@@ -74,3 +75,21 @@ Test Tag - Add Mutiple Tags with Tag Button Setup
 Test Tag - Add Mutiple Tags with Tag Button Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
+Test Tag - Edit Tag Setup
+    [Arguments]    ${Project}
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    ${Project}
+    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+
+Test Tag - Edit Tag Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Exit ezScrum System

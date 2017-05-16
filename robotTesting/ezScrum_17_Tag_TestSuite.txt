@@ -33,6 +33,7 @@ Test Tag - Add Mutiple Tags with Tag Button
     Comment    Click Element    //span[text()="Project02Tag02"]
     Comment    Compare Field Content    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01,Project02Tag02
     [Teardown]    Test Tag - Add Mutiple Tags with Tag Button Teardown
+
 Test Tag - Sprint Backlog Edit Story Not Edit Tags
     [Documentation]    Test if the tags is the same after editing story and not changing tags
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
@@ -66,3 +67,51 @@ Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
     ${Project01_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
+
+Test Tag - Project01 Edit Tag
+    [Setup]    Test Tag - Edit Tag Setup    Project01
+    ${Id1_OriginalTag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${Id2_OriginalTag}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${Id6_OriginalTag}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${Id7_OriginalTag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    #Add one tag to Story01
+    Click Element    xpath=//div[text()="Story01"]
+    Click Button    xpath=//button[text()="Tag"]
+    #All Tags
+    ${Project01Tag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project01Tag01Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${Project01Tag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project01Tag02Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${ProjectMutualTag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[3]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[4]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project01Tag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[5]/a[@class="x-menu-item x-menu-check-item"]/img
+    Click image    ${Project01Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Add two tags to Story02
+    Click Element    xpath=//div[text()="Story02"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project01Tag01}
+    Click image    ${Project01Tag02}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete one tag on Story 06
+    Click Element    xpath=//div[text()="Story06"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project01Tag02}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete all tags on Story 07
+    Click Element    xpath=//div[text()="Story07"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project01Tag01}
+    Click image    ${Project01Tag02}
+    Click image    ${ProjectMutualTag01}
+    Click image    ${ProjectMutualTag02}
+    Click image    ${Project01Tag03}
+    Click Button    xpath=//button[text()="Tag"]
+    #Check all tags
+    ${Story01_Tag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${Story02_Tag}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${Story06_Tag}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${Story07_Tag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    Should Be Equal    ${Story01_Tag}    ${Project01Tag01Name}
+    Should Be Equal    ${Story02_Tag}    ${Project01Tag01Name},${Project01Tag02Name}
+    [Teardown]    Test Tag - Edit Tag Teardown
