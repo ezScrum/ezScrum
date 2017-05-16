@@ -114,4 +114,8 @@ Test Tag - Project01 Edit Tag
     ${Story07_Tag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
     Should Be Equal    ${Story01_Tag}    ${Project01Tag01Name}
     Should Be Equal    ${Story02_Tag}    ${Project01Tag01Name},${Project01Tag02Name}
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    Should Be Equal    ${Story06_Tag}    ${Space}
+    Should Be Equal    ${Story07_Tag}    ${Space}
     [Teardown]    Test Tag - Edit Tag Teardown
