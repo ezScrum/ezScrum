@@ -80,6 +80,7 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		String expectedStoryHoewToDemo = "UT for Update Story for How to Demo";
 		String expectedStoryNote = "UT for Update Story for Notes";
 		String storyId = String.valueOf(CPB.getStoryIds().get(0));
+		String storySerialId = String.valueOf(CPB.getStories().get(0).getSerialId());
 		addRequestParameter("issueID", storyId);
 		addRequestParameter("Name", expectedStoryName);
 		addRequestParameter("Importance", expectedStoryImportance);
@@ -102,7 +103,8 @@ public class AjaxEditStoryActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(storyId).append(",")
+							.append("\"sId\":").append(storyId).append(",")
+							.append("\"Id\":").append(storySerialId).append(",")
 							.append("\"Type\":\"Story\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":").append(expectedStoryValue).append(",")			

@@ -13,6 +13,7 @@ public class StoryEnum {
 	public static final String HOW_TO_DEMO = "how_to_demo";
 	public static final String PROJECT_ID = "project_id";
 	public static final String SPRINT_ID = "sprint_id";
+	public static final String SPRINT_SERIAL_ID = "sprint_serial_id";
 	public static final String CREATE_TIME = "create_time";
 	public static final String UPDATE_TIME = "update_time";
 }

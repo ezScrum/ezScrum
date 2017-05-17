@@ -121,6 +121,7 @@ public class TranslationTest {
 			expectedText.append("<ProductBacklog>");
 			expectedText.append("<Total>1</Total>");
 			expectedText.append("<Story>");
+			expectedText.append("<sId>" + story.getId() + "</sId>");
 			expectedText.append("<Id>" + story.getId() + "</Id>");
 			expectedText.append("<Link></Link>");
 			expectedText.append("<Name>0</Name>");
@@ -173,6 +174,7 @@ public class TranslationTest {
 			expectedText.append("<ProductBacklog>");
 			expectedText.append("<Total>1</Total>");
 			expectedText.append("<Story>");
+			expectedText.append("<sId>" + story.getId() + "</sId>");
 			expectedText.append("<Id>" + story.getId() + "</Id>");
 			expectedText.append("<Link></Link>");
 			expectedText.append("<Name>" + storyInfo.name + "</Name>");

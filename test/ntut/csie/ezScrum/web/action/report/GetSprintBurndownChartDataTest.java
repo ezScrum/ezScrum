@@ -94,6 +94,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
+		taskBoard.buildPointMap("story");
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
@@ -144,6 +145,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
+		taskBoard.buildPointMap("story");
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
@@ -210,6 +212,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
+		taskBoard.buildPointMap("story");
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
@@ -253,6 +256,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, mCS.getSprintsId().get(0));
 		SprintBacklogMapper SprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
 		TaskBoard taskBoard = new TaskBoard(sprintBacklogLogic, SprintBacklogMapper);
+		taskBoard.buildPointMap("story");
 		LinkedHashMap<Date, Double> ideal = taskBoard.getStoryIdealPointMap();
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();

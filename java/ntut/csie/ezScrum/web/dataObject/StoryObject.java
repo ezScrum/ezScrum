@@ -14,6 +14,7 @@ import org.jdom.Element;
 
 import ntut.csie.ezScrum.dao.AttachFileDAO;
 import ntut.csie.ezScrum.dao.HistoryDAO;
+import ntut.csie.ezScrum.dao.SprintDAO;
 import ntut.csie.ezScrum.dao.StoryDAO;
 import ntut.csie.ezScrum.dao.TagDAO;
 import ntut.csie.ezScrum.dao.TaskDAO;
@@ -33,6 +34,7 @@ public class StoryObject implements IBaseObject {
 	private long mSerialId = DEFAULT_VALUE;
 	private long mProjectId = DEFAULT_VALUE;
 	private long mSprintId = DEFAULT_VALUE;
+	private long mSprintSerialId = DEFAULT_VALUE;
 	
 	private String mName = "";
 	private String mNotes = "";
@@ -157,6 +159,10 @@ public class StoryObject implements IBaseObject {
 	public int getStatus() {
 		return mStatus;
 	}
+	
+	public long getSprintSerialId(){
+		return mSprintSerialId;
+	}
 
 	public void setHistory(){
 		histories = getHistories();
@@ -164,7 +170,18 @@ public class StoryObject implements IBaseObject {
 	public void cleanHistories(){
 		histories.clear();
 	}
-
+	
+	private void setSprintSerialId(){
+		SprintObject sprint = SprintDAO.getInstance().get(mSprintId);
+		if(sprint != null)
+		{
+			mSprintSerialId = sprint.getSerialId();
+		}else{
+			//For Import project
+			mSprintSerialId = mSprintId;
+		}
+	}
+	
 	public int getStatus(Date date) {
 		long lastSecondOfTheDate = getLastMillisecondOfDate(date);
 		int status = STATUS_UNCHECK;
@@ -458,6 +475,7 @@ public class StoryObject implements IBaseObject {
 			.put(StoryEnum.ESTIMATE, mEstimate)
 			.put(StoryEnum.STATUS, getStatusString())
 			.put(StoryEnum.SPRINT_ID, mSprintId)
+			.put(StoryEnum.SPRINT_SERIAL_ID, mSprintSerialId)
 			.put("totalTaskPoint", getTotalTaskPoints())
 			.put("tasks", taskJsonArray)
 			.put("histories", historyJsonArray)
@@ -482,7 +500,8 @@ public class StoryObject implements IBaseObject {
 		history.save();
 		if (mSprintId != DEFAULT_VALUE) {
 			// Append this story to sprint
-			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mCreateTime);
+			setSprintSerialId();
+			addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintSerialId), mCreateTime);
 		}
 	}
 	
@@ -557,13 +576,14 @@ public class StoryObject implements IBaseObject {
 		if (mSprintId != oldStory.getSprintId()) {
 			if (mSprintId == DEFAULT_VALUE) {
 				// Remove this story from sprint
-				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);				
+				addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintSerialId()), mUpdateTime);				
 			} else if (mSprintId != DEFAULT_VALUE) {
 				// Append this story to sprint
+				setSprintSerialId();
 				if (oldStory.getSprintId() != DEFAULT_VALUE) {
-					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintId()), mUpdateTime);
+					addHistory(HistoryObject.TYPE_REMOVE, "", String.valueOf(oldStory.getSprintSerialId()), mUpdateTime);
 				}
-				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintId), mUpdateTime);
+				addHistory(HistoryObject.TYPE_APPEND, "", String.valueOf(mSprintSerialId), mUpdateTime);
 			}
 		}
 	}

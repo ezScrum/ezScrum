@@ -116,7 +116,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		// 取2次Story資料
 		for (int i = 0; i < storyCount; i++) {
 			expectedResponseText
-					.append("{\"Id\":").append(CPB.getStories().get(i).getId()).append(",")
+					.append("{\"sId\":").append(CPB.getStories().get(i).getId()).append(",")		
+					.append("\"Id\":").append(CPB.getStories().get(i).getSerialId()).append(",")
 					.append("\"Type\":\"Story\",")
 					.append("\"Name\":\"").append(CPB.getStories().get(i).getName()).append("\",")
 					.append("\"Value\":").append(CPB.getStories().get(i).getValue()).append(",")
@@ -174,7 +175,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		for (int i = 1; i < 3; i++) {
 			StoryObject story = stories.get(i - 1);
 			expectedResponseText
-					.append("{\"Id\":").append(story.getId()).append(",")
+					.append("{\"sId\":").append(story.getId()).append(",")		
+					.append("\"Id\":").append(story.getSerialId()).append(",")
 					.append("\"Type\":\"Story\",")
 					.append("\"Name\":\"").append(story.getName()).append("\",")
 					.append("\"Value\":").append(story.getValue()).append(",")
@@ -235,6 +237,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 				.getHowToDemo();
 		String expectedStoryNote = ASTS.getStories().get(0).getNotes();
 		long storyId = ASTS.getStories().get(0).getId();
+		long storySerialId = ASTS.getStories().get(0).getSerialId();
 		long SprintId = CS.getSprintsId().get(0);
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, mProject);
@@ -251,7 +254,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")
 				.append("\"Total\":1,").append("\"Stories\":[{")
-				.append("\"Id\":").append(storyId).append(",")
+				.append("\"sId\":").append(storyId).append(",")
+				.append("\"Id\":").append(storySerialId).append(",")
 				.append("\"Type\":\"Story\",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
 				.append("\"Value\":").append(expectedStoryValue)
@@ -306,6 +310,7 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		String expectedStoryHoewToDemo = CPB.getStories().get(2).getHowToDemo();
 		String expectedStoryNote = CPB.getStories().get(2).getNotes();
 		long storyId = CPB.getStories().get(2).getId();
+		long storySerialId = CPB.getStories().get(2).getSerialId();
 		// ================ set session info ========================
 		request.getSession().setAttribute(projectName, mProject);
 		request.getSession().setAttribute("UserSession",
@@ -321,7 +326,8 @@ public class ShowProductBacklogActionTest extends MockStrutsTestCase {
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{\"success\":true,")
 				.append("\"Total\":1,").append("\"Stories\":[{")
-				.append("\"Id\":").append(storyId).append(",")
+				.append("\"sId\":").append(storyId).append(",")
+				.append("\"Id\":").append(storySerialId).append(",")
 				.append("\"Type\":\"Story\",")
 				.append("\"Name\":\"").append(expectedStoryName).append("\",")
 				.append("\"Value\":").append(expectedStoryValue)

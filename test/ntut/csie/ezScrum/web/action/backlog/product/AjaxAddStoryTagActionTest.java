@@ -80,6 +80,7 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		addRequestParameter("tagId", String.valueOf(tags.get(0).getId()));
 		addRequestParameter("storyId", String.valueOf(storyIDList.get(0)));
 		long expectedStoryId = mCPB.getStoryIds().get(0);
+		long expectedStorySerialId = mCPB.getStories().get(0).getSerialId();
 		String expectedStoryName = mCPB.getStories().get(0).getName();
 		int expectedStoryValue = mCPB.getStories().get(0).getValue();
 		int expectedStoryImportance = mCPB.getStories().get(0).getImportance();
@@ -102,7 +103,8 @@ public class AjaxAddStoryTagActionTest extends MockStrutsTestCase {
 		expectedResponseText.append("{\"success\":true,")
 							.append("\"Total\":1,")
 							.append("\"Stories\":[{")
-							.append("\"Id\":").append(expectedStoryId).append(",")
+							.append("\"sId\":").append(expectedStoryId).append(",")
+							.append("\"Id\":").append(expectedStorySerialId).append(",")
 							.append("\"Type\":\"Story\",")
 							.append("\"Name\":\"").append(expectedStoryName).append("\",")
 							.append("\"Value\":").append(expectedStoryValue).append(",")			

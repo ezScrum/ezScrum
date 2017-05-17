@@ -46,6 +46,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		String value = request.getParameter("Value");
 		String howToDemo = request.getParameter("HowToDemo");
 		String notes = request.getParameter("Notes");
+		String tags = request.getParameter("Tags");
 		
 		StoryInfo storyInfo = new StoryInfo();
 		storyInfo.serialId = serialStoryId;
@@ -55,6 +56,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		storyInfo.value = Integer.parseInt(value);
 		storyInfo.howToDemo = howToDemo;
 		storyInfo.notes = notes;
+		storyInfo.tags = tags;
 		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project);
 		
