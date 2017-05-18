@@ -56,6 +56,7 @@ Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Project01 Edit Tag
+    [Documentation]    Check if editing tags in Project01 is seccessed
     [Setup]    Test Tag - Edit Tag Setup    Project01
     #Add one tag to Story01
     Click Element    xpath=//div[text()="Story01"]
@@ -107,6 +108,7 @@ Test Tag - Project01 Edit Tag
     [Teardown]    Test Tag - Edit Tag Teardown
 
 Test Tag - Project02 Edit Tag
+    [Documentation]    Check if editing tags in Project02 is successed
     [Setup]    Test Tag - Edit Tag Setup    Project02
     #Add one tag on story01
     Click Element    xpath=//div[text()="Story01"]
@@ -150,6 +152,68 @@ Test Tag - Project02 Edit Tag
     Should Be Equal    ${Story02_Tag}    ${Project02Tag01Name},${Project02Tag02Name}
     ${ASCII}=    Evaluate    b" "
     ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
-    Comment    Should Be Equal    ${Story06_Tag}    ${Space}
+    Should Be Equal    ${Story06_Tag}    ${Space}
     Should Be Equal    ${Story07_Tag}    ${Space}
+    [Teardown]    Test Tag - Edit Tag Teardown
+
+Test Tag - Project02 Edit Tag Check Project01
+    [Documentation]    Check if edting tags in Project02 effected the tags in Project01
+    [Setup]    Test Tag - Edit Tag Setup    Project01
+    #Get Project01 original tags
+    ${P01Story01_Original}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${P01Story02_Original}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${P01Story06_Original}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${P01Story07_Original}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
+    #Move to Project02
+    Click Element    ${ProjectList}
+    Select Project    Project02
+    Wait Until Page Contains Element    xpath=//span[text()="Product Backlog"]
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+    #Add one tag on story01
+    Click Element    xpath=//div[text()="Story01"]
+    Click Button    xpath=//button[text()="Tag"]
+    ###All Tags
+    ${Project02Tag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag01Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${Project02Tag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag02Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${ProjectMutualTag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[3]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[4]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[5]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[6]/a[@class="x-menu-item x-menu-check-item"]/img
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Add two tags to Story02
+    Click Element    xpath=//div[text()="Story02"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${Project02Tag02}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete one tag from Story06
+    Click Element    xpath=//div[text()="Story06"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete all tags from Story07
+    Click Element    xpath=//div[text()="Story07"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${ProjectMutualTag01}
+    #Move to Project01
+    Click Element    ${ProjectList}
+    Select Project    Project01
+    Wait Until Page Contains Element    xpath=//span[text()="Product Backlog"]
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+    #Check if Project01 is effected
+    ${P01Story01}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${P01Story02}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${P01Story06}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${P01Story07}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    should be equal    ${P01Story01}    ${P01Story01_Original}
+    should be equal    ${P01Story02}    ${P01Story02_Original}
+    should be equal    ${P01Story06}    ${P01Story06_Original}
+    should be equal    ${P01Story07}    ${P01Story07_Original}
     [Teardown]    Test Tag - Edit Tag Teardown
