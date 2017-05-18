@@ -111,3 +111,17 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
+Test Tag - ProductBacklog Edit Story and Tag Tags Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    Input Text    xpath=//input[@name="userId"]    admin
+    Input Text    xpath=//input[@name="password"]    admin
+    Click Button    xpath=//input[@id="Next"]
+
+Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
+    Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Close Browser
