@@ -44,6 +44,7 @@ public class ShowSprintInformationAction extends Action {
  
 		// get parameter info
 		long serialSprintId = Long.parseLong(request.getParameter("sprintID"));
+		long uniqueSprintId;
 		SprintObject tempSprint = SprintObject.get(project.getId(), serialSprintId);
 		long sprintId = -1;
 		if (tempSprint != null) {
@@ -54,8 +55,9 @@ public class ShowSprintInformationAction extends Action {
 		}
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, sprintId);
 		SprintBacklogMapper sprintBacklogMapper = sprintBacklogLogic.getSprintBacklogMapper();
-		serialSprintId = sprintBacklogMapper.getSprintId();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, serialSprintId);
+		serialSprintId = sprintBacklogMapper.getSprintSeriaId();
+		uniqueSprintId = sprintBacklogMapper.getSprintId();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, uniqueSprintId);
 		ArrayList<StoryObject> stories = sprintBacklogHelper.getStoriesSortedByImpInSprint();
 		SprintObject sprint = sprintBacklogMapper.getSprint();
 		

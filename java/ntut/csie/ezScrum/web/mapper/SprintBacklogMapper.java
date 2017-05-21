@@ -199,6 +199,13 @@ public class SprintBacklogMapper {
 		return mSprint.getId();
 	}
 
+	public long getSprintSeriaId() {
+		if (mSprint == null) {
+			return -1;
+		}
+		return mSprint.getSerialId();
+	}
+	
 	public ProjectObject getProject() {
 		return mProject;
 	}
