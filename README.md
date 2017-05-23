@@ -65,55 +65,58 @@ How to start
     2. Double click ```InstallApp-NT.bat``` to install service.
     3. Double click ```ServiceStart.bat``` to start ezScrum service.
 
- ####OS: Ubuntu
+    ####OS: Ubuntu
 
-	- Change directory to ezScrum_Ubuntu : 
+	1. Change directory to ezScrum_Ubuntu : 
 	
-    ``` bash
-      cd ezScrum_Ubuntu/
-    ```
+	       ``` bash
+	       $ cd ezScrum_Ubuntu/
+	       ```
 	
-	- Install dos2unix : 
+	2. Install dos2unix : 
 
-	```bash
-	sudo apt-get install tofrodos
-	```
-
-	```bash
-	sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
-	```
-	- change ./setup.sh mod to execute : 
-	```bash 
-    chmod 755 ./setup.sh
-    ```
-	- Use dos2unix command only once in the first time.
-
-	 Set up
+		```bash
+		$ sudo apt-get install tofrodos
+		```
 	
-	```bash
-	sudo dos2unix ./setup.sh
-	```
+		```bash
+		$ sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+		```
+	3. Change ./setup.sh mod to execute : 
+		```bash 
+	    $ chmod 755 ./setup.sh
+	    ```
+	4. Use dos2unix command only once.
+
+	5. Set up
 	
-	```bash
-	sudo ./setup.sh
-	```
-	##### start
+		```bash
+		$ sudo dos2unix ./setup.sh
+		```
+		
+		```bash
+		$ sudo ./setup.sh
+		```
+    #####6. start
 
-	```bash
-	sudo ./launch
-	```
-	##### Stop ezScrum service
+	   ```bash
+	   $ sudo ./launch
+	   ```
+	##### 7.  Stop ezScrum service
 
-	```bash
-	sudo ./shutDown.sh
-	```
-	##### remove ezScrum
+	   ```bash
+	   $ sudo ./shutDown.sh```
+	   
+	   Use ```echo '<<YOUR PASSWORD>>' | sudo -S  losf -i tcp:<<YOUR PORT NUMBER>> -s tcp:listen``` to check whether ezScrum already shutdown.
+       
+       If not shutdown, use ```echo '<<YOUR PASSWORD>>' | sudo -S  losf -i tcp:<<YOUR PORT NUMBER>> -s tcp:listen``` to get pid, then use ```sudo kill -9 <<YOUR　PID>>``` to shutdown.
+	
+	##### 8. remove ezScrum
 
-	```bash
-	sudo ./remove.sh
-	```
-8. Open the browser and go to ``http://127.0.0.1:8080/ezScrum`` or ``http://<<IP_ADDRESS>>:8080/ezScrum``
-
+	   ```bash
+	   $ sudo ./remove.sh
+	   ```
+6. Open the browser and go to ``http://127.0.0.1:8080/ezScrum`` or ``http://<<IP_ADDRESS>>:8080/ezScrum``
 
 Readme
 ----------
