@@ -8,13 +8,13 @@ function renderTaskTitle(record) {
 }
 
 // Story最上層的Title，用一個Table包起來，裡面放Imp. Est. 與動作的Icon
-function renderTaskHeader(record, edit, history, upload) {
+function renderTaskHeader(record, edit, /*history,*/ upload) {
 	return String.format(
 			'<table class="TaskCard_Header">' +
 				'<td><td><h2>{0}</h2></td>' +
-				'<td align="right">{1}{2}{3}</td>' +
+				'<td align="right">{1}{2}</td>' +// we remove {3} because history bug is not fixed.
 			'</table>',
-			renderTaskTitle(record), edit, history, upload);
+			renderTaskTitle(record), edit, /*history,*/ upload);
 }
 
 function renderTaskContext(record) {
@@ -64,12 +64,12 @@ function taskRenderRHH(handler, partners) {
 function createTaskContent(task)
 {
     var editIcon = '<a href="javascript:editTask(' + task.Id + ')" title="Edit the Task"><img src="images/edit.png" border="0"></a>'
-    var historyIcon = '<a href="javascript:showHistory(' + task.Id + ', \'Task\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>'
+    //var historyIcon = '<a href="javascript:showHistory(' + task.Id + ', \'Task\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>'
     var uploadIcon = '<a href="javascript:taskAttachFile(' + task.Id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>'
     
     return '<table class="TaskCard_Table">'
                 +'<tr><td colspan=2>'
-                + renderTaskHeader(task, editIcon, historyIcon, uploadIcon)
+                + renderTaskHeader(task, editIcon, /*historyIcon, */uploadIcon)
                 + '</td></tr>'
                 // ============ Story的描述內容 ==============
                 +taskRenderDescription(task.Name, task.RemainHours, 'RemainHours')
