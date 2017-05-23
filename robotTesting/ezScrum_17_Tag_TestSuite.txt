@@ -125,7 +125,7 @@ Test Tag - Sprint Backlog Edit Project01 Story Edit Tags Check Project01
     Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Progect02 Story Edit Tags Check Project02
+Test Tag - Sprint Backlog Edit Project02 Story Edit Tags Check Project02
     [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     #add one tag to story 1
