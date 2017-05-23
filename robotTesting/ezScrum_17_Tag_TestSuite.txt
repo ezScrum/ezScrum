@@ -32,7 +32,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
 
-Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags Only Submit
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${StoryID}=    Set Variable    xpath = //span[text()="7"]
@@ -42,7 +42,7 @@ Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags Only Submit
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02
     [Documentation]    Test if the tags is the same after editing story and not changing tags
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
@@ -53,7 +53,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit
     Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit Check Proj.01
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02 Check Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
@@ -74,7 +74,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit Check Proj.01
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.01
     [Documentation]    Edit story that add one tag or two tags in Project01.And edit story that cancel one tag or two tags in Project01.Check Project01 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     #add one tag to story 1
@@ -125,7 +125,7 @@ Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags
     Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
     [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     #add one tag to story 1
@@ -176,7 +176,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags
     Should Be Empty    ${NewTags_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Check Proj.1
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02 Check Proj.1
     [Documentation]    Edit story ithat add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project02.Check Project01 if the result of tags is being changed.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag_StoryId3}    Get Text    xpath = //span[text()="3"]/../../../td[2]/div[1]
