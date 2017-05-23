@@ -79,7 +79,7 @@ Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Progect01 Story Edit Tags Check Project01
+Test Tag - Sprint Backlog Edit Project01 Story Edit Tags Check Project01
     [Documentation]    Edit story that add one tag or two tags in Project01.And edit story that cancel one tag or two tags in Project01.Check Project01 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     #add one tag to story 1
@@ -124,17 +124,17 @@ Test Tag - Sprint Backlog Edit Progect01 Story Edit Tags Check Project01
     Reload Page
     ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
     Click Element    ${SprintBacklog}
-    Should Be Equal    ${NewTags_StoryId1}     Project01Tag01
-    Should Be Equal    ${NewTags_StoryId2}     Project01Tag02, ProjectsMutualTag01
+    Should Be Equal    ${NewTags_StoryId1}    Project01Tag01
+    Should Be Equal    ${NewTags_StoryId2}    Project01Tag02, ProjectsMutualTag01
     Should Be Empty    ${NewTags_StoryId6}
-    Should Be Equal    ${NewTags_StoryId7}     ProjectsMutualTag02, Project01Tag02, Project01Tag03
+    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Sprint Backlog Edit Project02 Story Tags Check Project1
     [Documentation]    Edit story ithat add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project02.Check Project01 if the result of tags is being changed.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag_StoryId3}    Get Text    xpath = //span[text()="3"]/../../../td[2]/div[1]
-    ${Project01_OriginalTag_StoryId4}    Get Text     xpath = //span[text()="4"]/../../../td[2]/div[1]
+    ${Project01_OriginalTag_StoryId4}    Get Text    xpath = //span[text()="4"]/../../../td[2]/div[1]
     ${Project01_OriginalTag_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
     ${Project01_OriginalTag_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}    Set Variable    xpath = //td[@background="images/TopMenu_SelectBG.gif"]
@@ -188,13 +188,13 @@ Test Tag - Sprint Backlog Edit Project02 Story Tags Check Project1
     ${Project01_NewTag_StoryId4}    Get Text    xpath = //span[text()="4"]/../../../td[2]/div[1]
     ${Project01_NewTag_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
     ${Project01_NewTag_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    Should Be equal    ${Project01_NewTag_StoryId3}     ${Project01_OriginalTag_StoryId3}
+    Should Be equal    ${Project01_NewTag_StoryId3}    ${Project01_OriginalTag_StoryId3}
     Should Be equal    ${Project01_NewTag_StoryId4}    ${Project01_OriginalTag_StoryId4}
     Should Be equal    ${Project01_NewTag_StoryId6}    ${Project01_OriginalTag_StoryId6}
     Should Be equal    ${Project01_NewTag_StoryId7}    ${Project01_OriginalTag_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Progect02 Story Edit Tags Check Project02
+Test Tag - Sprint Backlog Edit Project02 Story Edit Tags Check Project02
     [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     #add one tag to story 1
@@ -244,6 +244,7 @@ Test Tag - Sprint Backlog Edit Progect02 Story Edit Tags Check Project02
     Should Be Empty    ${NewTags_StoryId6}
     Should Be Empty    ${NewTags_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
+
 Test Tag - Project01 Edit Tag
     [Setup]    Test Tag - Edit Tag Setup    Project01
     ${Id1_OriginalTag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
@@ -295,6 +296,100 @@ Test Tag - Project01 Edit Tag
     Should Be Equal    ${Story06_Tag}    ${Space}
     Should Be Equal    ${Story07_Tag}    ${Space}
     [Teardown]    Test Tag - Edit Tag Teardown
+
+ProductBacklog Edit Story and Tag Tags
+
+Test Tag - Project02 Edit Tag
+    [Documentation]    Check if editing tags in Project02 is successed
+    [Setup]    Test Tag - Edit Tag Setup    Project02
+    #Add one tag on story01
+    Click Element    xpath=//div[text()="Story01"]
+    Click Button    xpath=//button[text()="Tag"]
+    ###All Tags
+    ${Project02Tag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag01Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${Project02Tag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag02Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${ProjectMutualTag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[3]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[4]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[5]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[6]/a[@class="x-menu-item x-menu-check-item"]/img
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Add two tags to Story02
+    Click Element    xpath=//div[text()="Story02"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${Project02Tag02}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete one tag from Story06
+    Click Element    xpath=//div[text()="Story06"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete all tags from Story07
+    Click Element    xpath=//div[text()="Story07"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${ProjectMutualTag01}
+    #Check all tags
+    ${Story01_Tag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${Story02_Tag}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${Story06_Tag}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${Story07_Tag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    reload page
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+    Should Be Equal    ${Story01_Tag}    ${Project02Tag01Name}
+    Should Be Equal    ${Story02_Tag}    ${Project02Tag01Name},${Project02Tag02Name}
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    Should Be Equal    ${Story06_Tag}    ${Space}
+    Should Be Equal    ${Story07_Tag}    ${Space}
+    [Teardown]    Test Tag - Edit Tag Teardown
+
+Test Tag - Project02 Edit Tag Check Project01
+    [Documentation]    Check if edting tags in Project02 effected the tags in Project01
+    [Setup]    Test Tag - Edit Tag Setup    Project01
+    #Get Project01 original tags
+    ${P01Story01_Original}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${P01Story02_Original}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${P01Story06_Original}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${P01Story07_Original}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
+    #Move to Project02
+    Click Element    ${ProjectList}
+    Select Project    Project02
+    Wait Until Page Contains Element    xpath=//span[text()="Product Backlog"]
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+    #Add one tag on story01
+    Click Element    xpath=//div[text()="Story01"]
+    Click Button    xpath=//button[text()="Tag"]
+    ###All Tags
+    ${Project02Tag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag01Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${Project02Tag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag02Name}=    get text    xpath=//ul[@class="x-menu-list"]/li[2]/a[@class="x-menu-item x-menu-check-item"]/span
+    ${ProjectMutualTag01}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[3]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${Project02Tag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[4]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag02}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[5]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ProjectMutualTag03}=    set Variable    xpath=//ul[@class="x-menu-list"]/li[6]/a[@class="x-menu-item x-menu-check-item"]/img
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Add two tags to Story02
+    Click Element    xpath=//div[text()="Story02"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${Project02Tag02}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete one tag from Story06
+    Click Element    xpath=//div[text()="Story06"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click Button    xpath=//button[text()="Tag"]
+    #Delete all tags from Story07
+    Click Element    xpath=//div[text()="Story07"]
 
 Test Tag - ProductBacklog Edit Story and Tag Tags
     #Select Project
