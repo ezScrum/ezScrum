@@ -45,7 +45,17 @@ Test Tag - Add Mutiple Tags with Tag Button
     Comment    Compare Field Content    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01,Project02Tag02
     [Teardown]    Test Tag - Add Mutiple Tags with Tag Button Teardown
 
-Test Tag - Sprint Backlog Edit Story Not Edit Tags
+Test Tag - Sprint Backlog Edit Project01 Story Edit Tags Only Submit
+    [Setup]    Test Tag - Sprint Backlog Setup    Project01
+    ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    ${StoryID}=    Set Variable    xpath = //span[text()="7"]
+    Double Click Element    ${StoryID}
+    Click Element    xpath = //button[text()="Submit"]
+    ${Project01_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
+    [Teardown]    Test Tag - Sprint Backlog Teardown
+
+Test Tag - Sprint Backlog Edit Project02 Story Edit Tags Only Submit
     [Documentation]    Test if the tags is the same after editing story and not changing tags
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
@@ -56,7 +66,7 @@ Test Tag - Sprint Backlog Edit Story Not Edit Tags
     Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
+Test Tag - Sprint Backlog Edit Project02 Story Edit Tags Only Submit Check Project01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
@@ -69,8 +79,6 @@ Test Tag - Sprint Backlog Edit Story Not Edit Tags Check Project01
     ${StoryID}=    Set Variable    xpath = //span[text()="7"]
     Double Click Element    ${StoryID}
     Click Element    xpath = //button[text()="Submit"]
-    ${Project02_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
     Click Element    ${ProjectList}
     Select Project    Project01
     Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
@@ -124,17 +132,68 @@ Test Tag - Sprint Backlog Edit Progect01 Story Edit Tags Check Project01
     Reload Page
     ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
     Click Element    ${SprintBacklog}
-    Should Be Equal    ${NewTags_StoryId1}     Project01Tag01
-    Should Be Equal    ${NewTags_StoryId2}     Project01Tag02, ProjectsMutualTag01
+    Should Be Equal    ${NewTags_StoryId1}    Project01Tag01
+    Should Be Equal    ${NewTags_StoryId2}    Project01Tag02, ProjectsMutualTag01
     Should Be Empty    ${NewTags_StoryId6}
-    Should Be Equal    ${NewTags_StoryId7}     ProjectsMutualTag02, Project01Tag02, Project01Tag03
+    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
+    [Teardown]    Test Tag - Sprint Backlog Teardown
+
+Test Tag - Sprint Backlog Edit Progect02 Story Edit Tags Check Project02
+    [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
+    [Setup]    Test Tag - Sprint Backlog Setup    Project02
+    #add one tag to story 1
+    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
+    Double Click Element    ${StoryId_1}
+    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    Click Element    ${SelectedTag_StoryId1}
+    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
+    Click Element    ${Submit}
+    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
+    #add two tags to story 2
+    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
+    Double Click Element    ${StoryId_2}
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
+    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${SelectedTag_StoryId2_First}
+    Click Element    ${SelectedTag_StoryId2_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1] \
+    #cancel one tag of story 6
+    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
+    Double Click Element    ${StoryId_6}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    Click Element    ${CancelTag_StoryId6_First}
+    Click Element    ${Submit}
+    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
+    #cancel two tags of story 7
+    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
+    Double Click Element    ${StoryId_7}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${CancelTag_StoryId7_First}
+    Click Element    ${CancelTag_StoryId7_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    #Compare after reload page
+    Reload Page
+    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
+    Should Be Equal    ${NewTags_StoryId1}    Project02Tag01
+    Should Be Equal    ${NewTags_StoryId2}    Project02Tag02, ProjectsMutualTag01
+    Should Be Empty    ${NewTags_StoryId6}
+    Should Be Empty    ${NewTags_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Sprint Backlog Edit Project02 Story Tags Check Project1
     [Documentation]    Edit story ithat add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project02.Check Project01 if the result of tags is being changed.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag_StoryId3}    Get Text    xpath = //span[text()="3"]/../../../td[2]/div[1]
-    ${Project01_OriginalTag_StoryId4}    Get Text     xpath = //span[text()="4"]/../../../td[2]/div[1]
+    ${Project01_OriginalTag_StoryId4}    Get Text    xpath = //span[text()="4"]/../../../td[2]/div[1]
     ${Project01_OriginalTag_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
     ${Project01_OriginalTag_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}    Set Variable    xpath = //td[@background="images/TopMenu_SelectBG.gif"]
@@ -188,62 +247,12 @@ Test Tag - Sprint Backlog Edit Project02 Story Tags Check Project1
     ${Project01_NewTag_StoryId4}    Get Text    xpath = //span[text()="4"]/../../../td[2]/div[1]
     ${Project01_NewTag_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
     ${Project01_NewTag_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    Should Be equal    ${Project01_NewTag_StoryId3}     ${Project01_OriginalTag_StoryId3}
+    Should Be equal    ${Project01_NewTag_StoryId3}    ${Project01_OriginalTag_StoryId3}
     Should Be equal    ${Project01_NewTag_StoryId4}    ${Project01_OriginalTag_StoryId4}
     Should Be equal    ${Project01_NewTag_StoryId6}    ${Project01_OriginalTag_StoryId6}
     Should Be equal    ${Project01_NewTag_StoryId7}    ${Project01_OriginalTag_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Progect02 Story Edit Tags Check Project02
-    [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
-    [Setup]    Test Tag - Sprint Backlog Setup    Project02
-    #add one tag to story 1
-    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
-    Double Click Element    ${StoryId_1}
-    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
-    Click Element    ${Tag_selectedFrame}
-    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Click Element    ${SelectedTag_StoryId1}
-    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
-    Click Element    ${Submit}
-    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
-    #add two tags to story 2
-    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
-    Double Click Element    ${StoryId_2}
-    Click Element    ${Tag_selectedFrame}
-    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
-    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Click Element    ${SelectedTag_StoryId2_First}
-    Click Element    ${SelectedTag_StoryId2_Second}
-    Click Element    ${Submit}
-    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1] \
-    #cancel one tag of story 6
-    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
-    Double Click Element    ${StoryId_6}
-    Click Element    ${Tag_selectedFrame}
-    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Click Element    ${CancelTag_StoryId6_First}
-    Click Element    ${Submit}
-    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
-    #cancel two tags of story 7
-    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
-    Double Click Element    ${StoryId_7}
-    Click Element    ${Tag_selectedFrame}
-    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Click Element    ${CancelTag_StoryId7_First}
-    Click Element    ${CancelTag_StoryId7_Second}
-    Click Element    ${Submit}
-    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    #Compare after reload page
-    Reload Page
-    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Click Element    ${SprintBacklog}
-    Should Be Equal    ${NewTags_StoryId1}    Project02Tag01
-    Should Be Equal    ${NewTags_StoryId2}    Project02Tag02, ProjectsMutualTag01
-    Should Be Empty    ${NewTags_StoryId6}
-    Should Be Empty    ${NewTags_StoryId7}
-    [Teardown]    Test Tag - Sprint Backlog Teardown
 Test Tag - Project01 Edit Tag
     [Setup]    Test Tag - Edit Tag Setup    Project01
     ${Id1_OriginalTag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
