@@ -32,19 +32,6 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
 
-Test Tag - Add Mutiple Tags with Tag Button
-    [Setup]    Test Tag - Add Mutiple Tags with Tag Button Setup
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story02"]/../../..
-    Click Element    //button[text()="Tag"]
-    Click Element    //span[text()="Project02Tag01"]
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story02"]/../../..
-    Wait Until Element Contains    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
-    Compare Field Content    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
-    Comment    Click Element    //button[text()="Tag"]
-    Comment    Click Element    //span[text()="Project02Tag02"]
-    Comment    Compare Field Content    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01,Project02Tag02
-    [Teardown]    Test Tag - Add Mutiple Tags with Tag Button Teardown
-
 Test Tag - Sprint Backlog Edit Story Not Edit Tags
     [Documentation]    Test if the tags is the same after editing story and not changing tags
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
