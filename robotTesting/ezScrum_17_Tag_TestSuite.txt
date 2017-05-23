@@ -392,6 +392,7 @@ Test Tag - Project02 Edit Tag Check Project01
     Click Element    xpath=//div[text()="Story07"]
 
 Test Tag - ProductBacklog Edit Story and Tag Tags
+    [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     #Select Project
     Click Element    xpath=//div[text()="Project01"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
@@ -409,3 +410,4 @@ Test Tag - ProductBacklog Edit Story and Tag Tags
     Click Button    xpath=//button[text()="Tag"]
     Click Element    //span[text()="Project01Tag01"]
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
