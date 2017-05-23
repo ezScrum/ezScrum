@@ -521,5 +521,8 @@ Test Tag - Product Backlog Tag Button Project02 repeat edit a story
     Click image    ${ProjectMutualTag01}
     Click Button    xpath=//button[text()="Tag"]
     ${Story01_Tag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    reload page
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
     Should Be Equal    ${Story01_Tag}    ${Project02Tag03_Name},${ProjectMutualTag01_Name}
     [Teardown]    Test Tag - Edit Tag Teardown
