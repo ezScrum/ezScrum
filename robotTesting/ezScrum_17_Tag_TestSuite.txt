@@ -284,8 +284,6 @@ Test Tag - Project01 Edit Tag
     Should Be Equal    ${Story07_Tag}    ${Space}
     [Teardown]    Test Tag - Edit Tag Teardown
 
-ProductBacklog Edit Story and Tag Tags
-
 Test Tag - Project02 Edit Tag
     [Documentation]    Check if editing tags in Project02 is successed
     [Setup]    Test Tag - Edit Tag Setup    Project02
@@ -377,6 +375,25 @@ Test Tag - Project02 Edit Tag Check Project01
     Click Button    xpath=//button[text()="Tag"]
     #Delete all tags from Story07
     Click Element    xpath=//div[text()="Story07"]
+    Click Button    xpath=//button[text()="Tag"]
+    Click image    ${Project02Tag01}
+    Click image    ${ProjectMutualTag01}
+    #Move to Project01
+    Click Element    ${ProjectList}
+    Select Project    Project01
+    Wait Until Page Contains Element    xpath=//span[text()="Product Backlog"]
+    ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
+    Click Element    ${ProductBacklog}
+    #Check if Project01 is effected
+    ${P01Story01}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
+    ${P01Story02}=    get text    xpath=//div[text()="Story02"]/../../td[3]/div[1]
+    ${P01Story06}=    get text    xpath=//div[text()="Story06"]/../../td[3]/div[1]
+    ${P01Story07}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    should be equal    ${P01Story01}    ${P01Story01_Original}
+    should be equal    ${P01Story02}    ${P01Story02_Original}
+    should be equal    ${P01Story06}    ${P01Story06_Original}
+    should be equal    ${P01Story07}    ${P01Story07_Original}
+    [Teardown]    Test Tag - Edit Tag Teardown
 
 Test Tag - ProductBacklog Edit Story and Tag Tags
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
