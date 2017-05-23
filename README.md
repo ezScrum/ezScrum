@@ -11,7 +11,7 @@ ezScrum is a process management tool for Scrum.
 
 Version
 ------------
-1.8.0 Alpha 3
+1.8.1
 
 
 License
@@ -60,48 +60,56 @@ How to start
     </Set>
     ```
 
-6. OS: Windows
-    - Set User Account Control (UAC) to lowest level.
-    - Double click ```InstallApp-NT.bat``` to install service.
-    - Double click ```ServiceStart.bat``` to start ezScrum service.
+	####OS: Windows
+    1. Set User Account Control (UAC) to lowest level.
+    2. Double click ```InstallApp-NT.bat``` to install service.
+    3. Double click ```ServiceStart.bat``` to start ezScrum service.
 
-7. OS: Ubuntu
+ ####OS: Ubuntu
 
-	- Change directory to ezScrum_Ubuntu : ``` cd ezScrum_Ubuntu/```
+	- Change directory to ezScrum_Ubuntu : 
+	
+    ``` bash
+      cd ezScrum_Ubuntu/
+    ```
+	
 	- Install dos2unix : 
 
-		```
-			sudo apt-get install tofrodos
-		```
+	```bash
+	sudo apt-get install tofrodos
+	```
 
-		```
-			sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
-		```
-	- change ./setup.sh mod to execute : ``` chmod 755 ./setup.sh```
+	```bash
+	sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
+	```
+	- change ./setup.sh mod to execute : 
+	```bash 
+    chmod 755 ./setup.sh
+    ```
 	- Use dos2unix command only once in the first time.
 
-	##### Set up
+	 Set up
 	
-	```
+	```bash
 	sudo dos2unix ./setup.sh
 	```
 	
-	```
+	```bash
 	sudo ./setup.sh
 	```
 	##### start
 
-	```    
+	```bash
 	sudo ./launch
 	```
 	##### Stop ezScrum service
 
-	```
+	```bash
 	sudo ./shutDown.sh
 	```
 	##### remove ezScrum
 
-	```
+	```bash
 	sudo ./remove.sh
 	```
 8. Open the browser and go to ``http://127.0.0.1:8080/ezScrum`` or ``http://<<IP_ADDRESS>>:8080/ezScrum``
