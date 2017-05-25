@@ -194,12 +194,40 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 	EditSubmit: function() {
 		var obj = this;
 		var form = this.getForm();
+		var addTags;
+		var removeTags;
 		// update tag info
 		IssueTagMenu.items.each(function() {
-			obj.UpdateStoryTag(this.tagId, this.text, this.checked);
+			var tag = obj.UpdateStoryTag(this.tagId, this.text, this.checked);
+			if(tag.status == "Add"){
+				addTags.push(tag.tagId);
+				}
+			else if(tag.status == "Remove"){
+				removeTags.push(tag.tagId);
+			}
 		});
-		
-		
+		if(addTags.length > 0){
+			Ext.Ajax.request({
+			url: 'AjaxAddStoryTag.do',
+			success: function(response) {
+			},
+			params: {
+				storyId: storyid,
+				tagsId: tagId
+			}
+			});
+		}
+		if(removeTags.length > 0){
+			Ext.Ajax.request({
+				url: 'AjaxRemoveStoryTag.do',
+				success: function(response) {
+				},
+				params: {
+					storyId: storyid,
+					tagsId: removeTags
+				}
+			});
+		}
 		
 		Ext.Ajax.request({
 			url: obj.editurl,
@@ -315,25 +343,29 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 
 		if (tagExist == true && checked == true) {
 		} else if (tagExist == true && checked == false) {
-			Ext.Ajax.request({
-				url: 'AjaxRemoveStoryTag.do',
-				success: function(response) {
-				},
-				params: {
-					storyId: storyid,
-					tagId: tagId
-				}
-			});
+//			Ext.Ajax.request({
+//				url: 'AjaxRemoveStoryTag.do',
+//				success: function(response) {
+//				},
+//				params: {
+//					storyId: storyid,
+//					tagId: tagId
+//				}
+//			
+//			});
+			return {"tagId" :tagId, "status": "Remove"};
 		} else if (tagExist == false && checked == true) {
-			Ext.Ajax.request({
-				url: 'AjaxAddStoryTag.do',
-				success: function(response) {
-				},
-				params: {
-					storyId: storyid,
-					tagId: tagId
-				}
-			});
+//			Ext.Ajax.request({
+//				url: 'AjaxAddStoryTag.do',
+//				success: function(response) {
+//				},
+//				params: {
+//					storyId: storyid,
+//					tagId: tagId
+//				}
+//			
+//			});
+			return {"tagId" :tagId, "status": "Add"};
 		} else if (tagExist == false && checked == false) {
 		}
 	},
