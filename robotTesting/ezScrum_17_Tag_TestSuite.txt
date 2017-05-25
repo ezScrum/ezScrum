@@ -32,7 +32,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
 
-Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags Only Submit
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${StoryID}=    Set Variable    xpath = //span[text()="7"]
@@ -45,7 +45,7 @@ Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags Only Submit
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02
     [Documentation]    Test if the tags is the same after editing story and not changing tags
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
@@ -59,7 +59,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit
     Should Be Equal    ${Project02_OriginalTag}    ${Project02_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit Check Proj.01
+Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02 Check Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
@@ -80,7 +80,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Only Submit Check Proj.01
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.01
     [Documentation]    Edit story that add one tag or two tags in Project01.And edit story that cancel one tag or two tags in Project01.Check Project01 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     #add one tag to story 1
@@ -131,7 +131,7 @@ Test Tag - Sprint Backlog Edit Proj.01 Story Edit Tags
     Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
     [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     #add one tag to story 1
@@ -182,7 +182,7 @@ Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags
     Should Be Empty    ${NewTags_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
-Test Tag - Sprint Backlog Edit Proj.02 Story Edit Tags Check Proj.1
+Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02 Check Proj.1
     [Documentation]    Edit story ithat add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project02.Check Project01 if the result of tags is being changed.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
     ${Project01_OriginalTag_StoryId3}    Get Text    xpath = //span[text()="3"]/../../../td[2]/div[1]
@@ -412,29 +412,6 @@ Test Tag - Product Backlog Tag Button Project02 Edit Tag Check Project01
     should be equal    ${P01Story07}    ${P01Story07_Original}
     [Teardown]    Test Tag - Edit Tag Teardown
 
-Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
-    [Documentation]    edit tags with "edit story" and "tag" button
-    ...    and check the Tag
-    [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
-    #Select Project
-    Click Element    xpath=//div[text()="Project01"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    #Select Story
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    #Add tag with Edit Story
-    Click Element    //button[text()="Edit Story"]
-    Click Element    //label[text()="Tags:"]/..//img
-    Click Element    //span[text()="Project01Tag01"]
-    Click Element    //label[text()="Tags:"]
-    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
-    #Add tag with Tag
-    Click Button    xpath=//button[text()="Tag"]
-    Click Element    //span[text()="Project01Tag01"]
-    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
-    [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
-
 Test Tag - Product Backlog Tag Button Project01 repeat edit tag on same story
     [Setup]    Test Tag - Edit Tag Setup    Project01
     #Add one tag to Story01
@@ -474,29 +451,6 @@ Test Tag - Product Backlog Tag Button Project01 repeat edit tag on same story
     Click Element    ${ProductBacklog}
     Should Be Equal    ${Story01_Tag}    ${Project01Tag03_Name},${ProjectMutualTag01_Name}
     [Teardown]    Test Tag - Edit Tag Teardown
-
-Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
-    [Documentation]    edit tags with "edit story" and "tag" button
-    ...    and check the Tag
-    [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
-    #Select Project
-    Click Element    xpath=//div[text()="Project02"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    #Select Story
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    #Add tag with Edit Story
-    Click Element    //button[text()="Edit Story"]
-    Click Element    //label[text()="Tags:"]/..//img
-    Click Element    //span[text()="Project02Tag01"]
-    Click Element    //label[text()="Tags:"]
-    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
-    #Add tag with Tag
-    Click Button    xpath=//button[text()="Tag"]
-    Click Element    //span[text()="Project02Tag01"]
-    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
-    [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
 
 Test Tag - Product Backlog Tag Button Project02 repeat edit tag on same story
     [Setup]    Test Tag - Edit Tag Setup    Project02
@@ -538,3 +492,49 @@ Test Tag - Product Backlog Tag Button Project02 repeat edit tag on same story
     Click Element    ${ProductBacklog}
     Should Be Equal    ${Story01_Tag}    ${Project02Tag03_Name},${ProjectMutualTag01_Name}
     [Teardown]    Test Tag - Edit Tag Teardown
+
+Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
+    [Documentation]    edit tags with "edit story" and "tag" button
+    ...    and check the Tag
+    [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
+    #Select Project
+    Click Element    xpath=//div[text()="Project01"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    #Add tag with Edit Story
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    #Add tag with Tag
+    Click Button    xpath=//button[text()="Tag"]
+    Click Element    //span[text()="Project01Tag01"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
+
+Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
+    [Documentation]    edit tags with "edit story" and "tag" button
+    ...    and check the Tag
+    [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
+    #Select Project
+    Click Element    xpath=//div[text()="Project02"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    #Add tag with Edit Story
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    #Add tag with Tag
+    Click Button    xpath=//button[text()="Tag"]
+    Click Element    //span[text()="Project02Tag01"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
