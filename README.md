@@ -61,19 +61,21 @@ How to start
     ```
 
 	####OS: Windows
-    1. Set User Account Control (UAC) to lowest level.
-    2. Double click ```InstallApp-NT.bat``` to install service.
-    3. Double click ```ServiceStart.bat``` to start ezScrum service.
+    (1) Set User Account Control (UAC) to lowest level.
+
+    (2) Double click ```InstallApp-NT.bat``` to install service.
+
+    (3) Double click ```ServiceStart.bat``` to start ezScrum service.
 
     ####OS: Ubuntu
 
-	1. Change directory to ezScrum_Ubuntu : 
+	(1) Change directory to ezScrum_Ubuntu : 
 	
-	       ``` bash
-	       $ cd ezScrum_Ubuntu/
-	       ```
+	    ``` bash
+	    $ cd ezScrum_Ubuntu/
+	    ```
 	
-	2. Install dos2unix : 
+	(2) Install dos2unix : 
 
 		```bash
 		$ sudo apt-get install tofrodos
@@ -82,13 +84,13 @@ How to start
 		```bash
 		$ sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
 		```
-	3. Change ./setup.sh mod to execute : 
+	(3) Change ./setup.sh mod to execute : 
 		```bash 
 	    $ chmod 755 ./setup.sh
 	    ```
-	4. Use dos2unix command only once.
+	(4) Use dos2unix command only once.
 
-	5. Set up
+	(5) Set up
 	
 		```bash
 		$ sudo dos2unix ./setup.sh
@@ -97,12 +99,12 @@ How to start
 		```bash
 		$ sudo ./setup.sh
 		```
-    #####6. start
+    #####(6) start
 
-	   ```bash
+	  ```bash
 	   $ sudo ./launch
 	   ```
-	##### 7.  Stop ezScrum service
+	#####(7)  Stop ezScrum service
 
 	   ```bash
 	   $ sudo ./shutDown.sh```
@@ -111,7 +113,7 @@ How to start
        
        If not shutdown, use ```echo '<<YOUR PASSWORD>>' | sudo -S  losf -i tcp:<<YOUR PORT NUMBER>> -s tcp:listen``` to get pid, then use ```sudo kill -9 <<YOUR　PID>>``` to shutdown.
 	
-	##### 8. remove ezScrum
+	#####(8) remove ezScrum
 
 	   ```bash
 	   $ sudo ./remove.sh
