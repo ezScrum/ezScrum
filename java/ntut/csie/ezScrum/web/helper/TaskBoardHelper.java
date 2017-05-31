@@ -10,6 +10,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.control.TaskBoard;
 import ntut.csie.ezScrum.web.dataObject.AttachFileObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -90,7 +91,7 @@ public class TaskBoardHelper {
 			if (release != null) {
 				serialReleaseId = release.getSerialId();
 			}
-			if (mSprintBacklogMapper.getSprintEndDate().getTime() > (new Date()).getTime()) {
+			if (mSprintBacklogMapper.getSprintEndDate().getTime() + ScrumEnum.DAY_MILLISECOND > (new Date()).getTime()) {
 				isCurrentSprint = true;
 			}
 			sprintInfoUI = new SprintInfoUI(sprint.getSerialId(), mSprintBacklogMapper.getSprintGoal(), currentPoint, currentHours, serialReleaseId, isCurrentSprint);
