@@ -9,6 +9,7 @@ Library           String
 Test Import - Check Project
     [Setup]    Test Import Setup
     # 驗證 Project
+    Wait Until Page Contains    Project01
     Page Should Contain    Project01
     Page Should Contain    Project02
     # 進入 Project01
