@@ -7,13 +7,13 @@ function renderStoryTitle(record) {
 }
 
 // Story最上層的Title，用一個Table包起來，裡面放Imp. Est. 與動作的Icon
-function renderStoryHeader(record, edit, history, upload) {
+function renderStoryHeader(record, edit, /*history,*/ upload) {
 	return String.format(
 			'<table class="StoryCard_Header">' + 
 				'<td><h2>{0}</h2></td>'	+
-				'<td align="right">{1}{2}{3}</td>' + 
+				'<td align="right">{1}{2}</td>' + // we remove {3} because history bug is not fixed.
 			'</table>',
-			renderStoryTitle(record), edit, history, upload);
+			renderStoryTitle(record), edit, /*history,*/ upload);
 }
 
 // 顯示Story的Attach File
@@ -60,13 +60,13 @@ function renderNotes(notes, value) {
 function createStoryContent(story) {
 	// 幾個動作Icon的超連結
 	var editIcon = '<a href="javascript:editStory('	+ story.id + ')" title="Edit the Story"><img src="images/edit.png" border="0"></a>';
-	var historyIcon = '<a href="javascript:showHistory(' + story.id + ', \'Story\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
+	//var historyIcon = '<a href="javascript:showHistory(' + story.id + ', \'Story\')" title="Show History"><img src="images/history.png" class="LinkBorder"></a>';
 	var uploadIcon = '<a href="javascript:storyAttachFile(' + story.id + ')" title="Upload File"><img src="images/upload.png" class="LinkBorder"></a>';
 	
 	return '<table class="StoryCard_Table">'
 				+ '<tr><td colspan=2>'
 				// ============= Story Title================
-				+ renderStoryHeader(story, editIcon, historyIcon, uploadIcon)
+				+ renderStoryHeader(story, editIcon,/* historyIcon,*/ uploadIcon)
 				+ '</td></tr>'
 				// ============ Story的描述內容 ==============
 				+ renderDescription(story.get('Name'), story.get('Estimate'))

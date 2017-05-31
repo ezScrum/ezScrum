@@ -1,4 +1,4 @@
-ezScrum.Version=1.8.0 alpha2
+ezScrum.Version=1.8.1
 ezScrum.FTP.site.ip=IP_ADDRESS
 ezScrum.FTP.site.username=FTP_USERNAME
 ezScrum.FTP.site.password=FTP_PASSWORD
