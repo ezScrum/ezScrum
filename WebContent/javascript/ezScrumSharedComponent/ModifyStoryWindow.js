@@ -199,7 +199,11 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 		// update tag info
 		IssueTagMenu.items.each(function() {
 			var tag = obj.UpdateStoryTag(this.tagId, this.text, this.checked);
-			if(tag.status == "Add"){
+			
+			if(tag == null){
+				continue;
+				}
+			else if(tag.status == "Add"){
 				addTags.push(tag.tagId);
 				}
 			else if(tag.status == "Remove"){
@@ -213,7 +217,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 			},
 			params: {
 				storyId: storyid,
-				tagsId: tagId
+				tagsId: addTags
 			}
 			});
 		}
