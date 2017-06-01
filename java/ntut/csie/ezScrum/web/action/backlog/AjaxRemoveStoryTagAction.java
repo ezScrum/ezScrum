@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class AjaxRemoveStoryTagAction extends PermissionAction {
 	private static Log log = LogFactory.getLog(AjaxRemoveStoryTagAction.class);
@@ -35,8 +39,19 @@ public class AjaxRemoveStoryTagAction extends PermissionAction {
 
 		// get parameter info
 		long storyId = Long.parseLong(request.getParameter("storyId"));
-		long tagId = Long.parseLong(request.getParameter("tagId"));
-
+		long tagId;
+		String s;
+		try{
+			tagId = Long.parseLong(request.getParameter("tagId"));
+		}
+		catch(NumberFormatException e) {
+			s = "double";
+		}
+		String[] tagsIdArray = request.getParameterValues("tagsId");
+		ArrayList<Long> tagsId = new ArrayList<Long> ();
+		for (int i = 0; i < tagsIdArray.length; i++){
+			tagsId.add(Long.parseLong(tagsIdArray[i]));
+		}
 		StringBuilder result = new ProductBacklogHelper(project)
 				.getRemoveStoryTagResponseText(storyId, tagId);
 		return result;
