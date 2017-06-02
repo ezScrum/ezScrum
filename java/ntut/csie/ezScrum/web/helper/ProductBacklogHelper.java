@@ -212,6 +212,16 @@ public class ProductBacklogHelper {
 		result.append(translateStoryToJson(story));
 		return result;
 	}
+	
+	public StringBuilder getRemoveStoryTagResponseText(long storyId, ArrayList<Long> tagsId) {
+		for (Long tagId:tagsId) {
+			removeStoryTag(storyId, new Long(tagId));
+		}
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
+		StringBuilder result = new StringBuilder("");
+		result.append(translateStoryToJson(story));
+		return result;
+	}
 
 	/**
 	 * 將 story 資訊轉換成 JSon format

@@ -40,20 +40,21 @@ public class AjaxRemoveStoryTagAction extends PermissionAction {
 		// get parameter info
 		long storyId = Long.parseLong(request.getParameter("storyId"));
 		long tagId;
-		String s;
-		try{
+		StringBuilder result;
+		if (request.getParameterMap().containsKey("tagId")) {
 			tagId = Long.parseLong(request.getParameter("tagId"));
-		}
-		catch(NumberFormatException e) {
-			s = "double";
+			result = new ProductBacklogHelper(project)
+					.getRemoveStoryTagResponseText(storyId, tagId);
+			return result;
 		}
 		String[] tagsIdArray = request.getParameterValues("tagsId");
 		ArrayList<Long> tagsId = new ArrayList<Long> ();
 		for (int i = 0; i < tagsIdArray.length; i++){
 			tagsId.add(Long.parseLong(tagsIdArray[i]));
 		}
-		StringBuilder result = new ProductBacklogHelper(project)
-				.getRemoveStoryTagResponseText(storyId, tagId);
+		result = new ProductBacklogHelper(project)
+				.getRemoveStoryTagResponseText(storyId, tagsId);
+		
 		return result;
 	}
 }
