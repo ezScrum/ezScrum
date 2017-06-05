@@ -12,24 +12,133 @@ Resource          keywords/Tag/ezScrum_Tag_SetupTeardown.txt
 *** Test Cases ***
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
+    #Submit Story07 Without Edit Tag
+    ${Story07_Original}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    Click Element    //div[text()="Story02"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story07_Tag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    Should Be Equal    ${Story07_Tag}    ${Story07_Original}
+    #Edit Story01 Add One Tag
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //button[text()="Edit Story"]
     Click Element    //label[text()="Tags:"]/..//img
     Click Element    //span[text()="Project01Tag01"]
     Click Element    //label[text()="Tags:"]
     Click Element    //button[text()="Submit"]
-    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Set Variable    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Compare Field Content    ${Story01_Tag}    Project01Tag01
+    #Edit Story02 Add Two Tags
+    Click Element    //div[text()="Story02"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //span[text()="Project01Tag03"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story02_Tag}=    Set Variable    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Comment    Compare Field Content    ${Story02_Tag}    Project01Tag01,ProjectsMutualTag01,Project01Tag03
+    #Edit Story06 Delete One Tag
+    Click Element    //div[text()="Story06"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    ${Story06_Tag}=    Set Variable    //div[text()="Story06"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Compare Field Content    ${Story06_Tag}    ${Space}
+    #Edit Story07 Delete All Tags
+    Click Element    //div[text()="Story07"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //span[text()="ProjectsMutualTag02"]
+    Click Element    //span[text()="Project01Tag03"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    ${Story07_Tag}=    Set Variable    //div[text()="Story07"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Compare Field Content    ${Story07_Tag}    ${Space}
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
 
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
+    #Submit Story07 Without Edit Tag
+    ${Story07_Original}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    Click Element    //div[text()="Story02"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story07_Tag}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
+    Should Be Equal    ${Story07_Tag}    ${Story07_Original}
+    #Edit Story01 Add One Tag
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //button[text()="Edit Story"]
     Click Element    //label[text()="Tags:"]/..//img
     Click Element    //span[text()="Project02Tag01"]
     Click Element    //label[text()="Tags:"]
     Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Set Variable    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
+    #Edit Story02 Add Two Tags
+    Click Element    //div[text()="Story02"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //span[text()="Project02Tag03"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story02_Tag}=    Set Variable    //div[text()="Story02"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Comment    Compare Field Content    ${Story02_Tag}    Project02Tag01,ProjectsMutualTag01,Project02Tag03
+    #Edit Story06 Delete One Tag
+    Click Element    //div[text()="Story06"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    ${Story06_Tag}=    Set Variable    //div[text()="Story06"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Compare Field Content    ${Story06_Tag}    ${Space}
+    #Edit Story07 Delete All Tags
+    Click Element    //div[text()="Story07"]
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    ${Story07_Tag}=    Set Variable    //div[text()="Story07"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Compare Field Content    ${Story07_Tag}    ${Space}
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
 
 Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.01
@@ -698,3 +807,235 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
     ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
     Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    ${Space}
     [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
+
+Test Tag - Product Backlog Repeat Edit One Story in Proj. 01
+    [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    List Elements Should Be Equal    ${Story01_Tag}    Project01Tag01,Project01Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    List Elements Should Be Equal    ${Story01_Tag}    Project01Tag01,Project01Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
+
+Test Tag - Product Backlog Repeat Edit One Story in Proj. 02
+    [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    List Elements Should Be Equal    ${Story01_Tag}    Project02Tag01,Project02Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    List Elements Should Be Equal    ${Story01_Tag}    Project02Tag01,Project02Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
+
+Test Tag - Product Backlog Repeat Edit One Story in Proj. 01 Check Sequence
+    [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    Project01Tag01,Project01Tag02,ProjectsMutualTag01
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    Project01Tag01,Project01Tag02,ProjectsMutualTag01
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //span[text()="Project01Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
+
+Test Tag - Product Backlog Repeat Edit One Story in Proj. 02 Check Sequence
+    [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    Project02Tag01,Project02Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    Project02Tag01,Project02Tag02,ProjectsMutualTag01    ,
+    #Edit Story01 With Three Tags
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //span[text()="Project02Tag02"]
+    Click Element    //span[text()="ProjectsMutualTag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Reload Page
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    ${Story01_Tag}=    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    Should Be Equal    ${Story01_Tag}    ${Space}
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
