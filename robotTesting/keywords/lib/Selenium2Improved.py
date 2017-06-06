@@ -24,7 +24,7 @@ class Selenium2Improved(Selenium2Library):
         """
         driver = self._current_browser()
         driver.execute_script("window.open('" + url + "', '_blank');")
-    
+
     def press_shift_and_click_element(self, locator):
         if locator.startswith("xpath="):
             web_element = self._current_browser().find_element(By.XPATH, locator[len("xpath="):])
@@ -35,3 +35,13 @@ class Selenium2Improved(Selenium2Library):
             web_element = self._current_browser().find_element(By.XPATH, locator[len("xpath="):])
             actions = ActionChains(self._current_browser())
             actions.key_down(Keys.CONTROL).click(web_element).key_up(Keys.CONTROL).perform()
+
+    def list_elements_should_be_equal(self, target, expect, seperate):
+        targets = target.split(seperate)
+        expects = expect.split(seperate)
+        for t in targets:
+            if t not in expects:
+                raise AssertionError('"' + target + '" elements are not equal to "' + expect + '"')
+            expects.remove(t)
+        if  len(expects) != 0:
+            raise AssertionError('"' + target + '" elements are not equal to "' + expect + '"')
