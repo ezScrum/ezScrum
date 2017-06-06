@@ -122,7 +122,7 @@ Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.01
     Should Be Equal    ${NewTags_StoryId1}    Project01Tag01
     Should Be Equal    ${NewTags_StoryId2}    Project01Tag02, ProjectsMutualTag01
     Should Be Empty    ${NewTags_StoryId6}
-    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag02, Project01Tag03
+    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag01, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
