@@ -48,7 +48,7 @@
 <script type="text/javascript" src="javascript/ux/treegrid/TreeGridLoader.js"></script>
 <script type="text/javascript" src="javascript/ux/treegrid/TreeGridColumns.js"></script>
 <script type="text/javascript" src="javascript/ux/treegrid/TreeGrid.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
 <!-- extjs -->
 
 

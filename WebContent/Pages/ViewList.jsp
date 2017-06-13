@@ -9,6 +9,7 @@
 <script type="text/javascript" src="javascript/ext-base.js"></script>
 <script type="text/javascript" src="javascript/ext-all-debug.js"></script>
 
+
 <!--ezScrum team design tools  -->
 <script type="text/javascript" src="javascript/ezScrumJSTool.js"></script>
 
@@ -24,6 +25,7 @@
 <script type="text/javascript" src="javascript/ezScrumWidget/CreateProjectWindow.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/Top_Panel.js"></script>
 <script type="text/javascript" src="javascript/ezScrumPanel/Footer_Panel.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
 
 <!--check session  -->
 <script type="text/javascript" src="javascript/ezScrumPage/ValidateUserEvent.js"></script>
