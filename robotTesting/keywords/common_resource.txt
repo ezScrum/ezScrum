@@ -34,7 +34,7 @@ New Tab With Alias
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
     ${testValue}=    Get Text    xpath=${xpath}
-    Should Be Equal    ${correctValue}    ${testValue}
+    Should Be Equal    ${testValue}    ${correctValue}
 
 Select Project
     [Arguments]    ${PROJECT_NAME}

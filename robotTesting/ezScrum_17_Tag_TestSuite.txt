@@ -1042,7 +1042,7 @@ Test Tag - Product Backlog Repeat Edit One Story in Proj. 02 Check Sequence
 
 Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.01
     [Documentation]    "cat" , "dog","cow","sheep" are commong tags in two projects
-    [Setup]    Test Tag - ProductBacklog Stress Test Setup
+    [Setup]    Test Tag - ProductBacklog Stress Test Setup    Project01
     ${Story01}    Set Variable    //div[text()="Story01"]
     ${EditTagsFrame}    Set Variable    //label[text()="Tags:"]/..//img
     Click Element    //span[text()="Product Backlog"]
@@ -1054,6 +1054,7 @@ Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.01
     Click Element    //span[text()="cow"]
     Click Element    //span[text()="sheep"]
     Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
     Click Element    //button[text()="Edit Story"]
     Click Element    ${EditTagsFrame}
     Click Element    //span[text()="cat"]
@@ -1065,6 +1066,32 @@ Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.01
     Click Element    //span[text()="popcorn"]
     Click Element    //span[text()="coffee"]
     Click Element    //button[text()="Submit"]
-    ${NewTags}    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
-    Should Be Equal    ${NewTags}    juice,potato,popcorn,coffee
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    juice,potato,popcorn,coffee
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
+
+Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.02
+    [Documentation]    "cat" , "dog","cow","sheep" are commong tags in two projects
+    [Setup]    Test Tag - ProductBacklog Stress Test Setup    Project02
+    ${Story01}    Set Variable    //div[text()="Story01"]
+    ${EditTagsFrame}    Set Variable    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Product Backlog"]
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="pineapple"]
+    Click Element    //span[text()="tea"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    pineapple,tea
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown

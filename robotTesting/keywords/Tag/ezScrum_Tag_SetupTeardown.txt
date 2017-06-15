@@ -127,6 +127,7 @@ Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
     Close Browser
 
 Test Tag - ProductBacklog Stress Test Setup
+    [Arguments]    ${proj.}
     Set Selenium Speed    ${SELENIUM_SPEED}
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagStressTest.sql
@@ -136,6 +137,6 @@ Test Tag - ProductBacklog Stress Test Setup
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
-    Click Element    xpath=//div[text()="Project01"]
+    Click Element    xpath=//div[text()="${proj.}"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
