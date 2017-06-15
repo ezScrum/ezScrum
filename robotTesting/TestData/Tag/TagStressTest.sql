@@ -302,9 +302,9 @@ CREATE TABLE IF NOT EXISTS `tag` (
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum_180.tag 的資料：8 rows
+-- 正在導出表  ezscrum_180.tag 的資料：16 rows
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
 REPLACE INTO `tag` (`id`, `name`, `project_id`, `create_time`, `update_time`) VALUES
 	(1, 'cat', 2, 1496888250458, 1496888250458),
@@ -314,7 +314,15 @@ REPLACE INTO `tag` (`id`, `name`, `project_id`, `create_time`, `update_time`) VA
 	(5, 'dog', 1, 1496888285095, 1496888285095),
 	(6, 'juice', 1, 1496888291871, 1496888291871),
 	(7, 'potato', 1, 1496888310503, 1496888310503),
-	(8, 'tomato', 2, 1496888322362, 1496888322362);
+	(8, 'tomato', 2, 1496888322362, 1496888322362),
+	(9, 'cow', 1, 1497492842023, 1497492842023),
+	(10, 'popcorn', 1, 1497492870962, 1497492870962),
+	(17, 'coffee', 1, 1497493427666, 1497493427666),
+	(12, 'sheep', 1, 1497492913138, 1497492913138),
+	(13, 'cow', 2, 1497492928596, 1497492928596),
+	(14, 'sheep', 2, 1497492934235, 1497492934235),
+	(15, 'pineapple', 2, 1497492944162, 1497492944162),
+	(16, 'tea', 2, 1497492961881, 1497492961881);
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 
 -- 導出  表 ezscrum_180.task 結構
