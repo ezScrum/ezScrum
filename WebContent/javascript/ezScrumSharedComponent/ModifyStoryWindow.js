@@ -226,8 +226,20 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				async: false
 				});console.log("removeTags:"+removeTags);
 			}	
-
 		}
+		
+		var editSuccess = function() {
+			Ext.Ajax.request({
+				url: obj.editurl,
+				params: form.getValues(),
+				success: function(response) {
+					obj.onEditSuccess(response);
+				},
+				failure: function(response) { /* notify logon form, not finish yet */
+				}
+			});
+		}
+		
 		if((addTags) && addTags.length > 0){
 			console.log("addTags:"+addTags);
 			Ext.Ajax.request({
@@ -238,6 +250,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 //				}
 
 				removeThisTags();
+				editSuccess();
 			},
 			params: {
 				storyId: storyid,
@@ -247,19 +260,8 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 			});
 		}else {
 			removeThisTags();
+			editSuccess();
 		}
-		
-
-		
-		Ext.Ajax.request({
-			url: obj.editurl,
-			params: form.getValues(),
-			success: function(response) {
-				obj.onEditSuccess(response);
-			},
-			failure: function(response) { /* notify logon form, not finish yet */
-			}
-		});
 	},
 	onSuccess: function(response) {
 		var success = false;
