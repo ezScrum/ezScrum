@@ -1065,8 +1065,6 @@ Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.01
     Click Element    //span[text()="popcorn"]
     Click Element    //span[text()="coffee"]
     Click Element    //button[text()="Submit"]
-    Reload Page
-    Click Element    //span[text()="Product Backlog"]
     ${NewTags}    Get Text    xpath=//div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]
     Should Be Equal    ${NewTags}    juice,potato,popcorn,coffee
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown

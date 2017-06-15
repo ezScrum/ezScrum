@@ -212,9 +212,6 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 		});
 		var removeThisTags = function(){
 			if((removeTags) && removeTags.length > 0){
-
-				console.log('afafa')
-				//console.log("removeTags:"+removeTags);
 				Ext.Ajax.request({
 				url: 'AjaxRemoveStoryTag.do',
 				success: function(response) {
@@ -224,7 +221,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 					tagsId: removeTags
 				},
 				async: false
-				});console.log("removeTags:"+removeTags);
+				});
 			}	
 		}
 		
@@ -241,14 +238,9 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 		}
 		
 		if((addTags) && addTags.length > 0){
-			console.log("addTags:"+addTags);
 			Ext.Ajax.request({
 			url: 'AjaxAddStoryTag.do',
 			success: function(response) {
-//				while(typeof response == 'undefined'){
-//					console.log("while");
-//				}
-
 				removeThisTags();
 				editSuccess();
 			},
