@@ -68,7 +68,6 @@ var IssueTagMenu = new Ext.menu.Menu({
 			tags.splice(index, 1);
 			tagIDs.splice(index, 1);
 		}
-
 		tagTriggerField.setValue(tags.join(","));
 		tagIDTextField.setValue(tagIDs.join(","));
 	},
@@ -211,28 +210,46 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				removeTags.push(tag.tagId);
 			}
 		});
-		if((addTags) && addTags.length > 0){
-			Ext.Ajax.request({
-			url: 'AjaxAddStoryTag.do',
-			success: function(response) {
-			},
-			params: {
-				storyId: storyid,
-				tagsId: addTags
-			}
-			});
-		}
-		if((removeTags) && removeTags.length > 0){
-			Ext.Ajax.request({
+		var removeThisTags = function(){
+			if((removeTags) && removeTags.length > 0){
+
+				console.log('afafa')
+				//console.log("removeTags:"+removeTags);
+				Ext.Ajax.request({
 				url: 'AjaxRemoveStoryTag.do',
 				success: function(response) {
 				},
 				params: {
 					storyId: storyid,
 					tagsId: removeTags
-				}
-			});
+				},
+				async: false
+				});console.log("removeTags:"+removeTags);
+			}	
+
 		}
+		if((addTags) && addTags.length > 0){
+			console.log("addTags:"+addTags);
+			Ext.Ajax.request({
+			url: 'AjaxAddStoryTag.do',
+			success: function(response) {
+//				while(typeof response == 'undefined'){
+//					console.log("while");
+//				}
+
+				removeThisTags();
+			},
+			params: {
+				storyId: storyid,
+				tagsId: addTags
+			},
+			async: false
+			});
+		}else {
+			removeThisTags();
+		}
+		
+
 		
 		Ext.Ajax.request({
 			url: obj.editurl,

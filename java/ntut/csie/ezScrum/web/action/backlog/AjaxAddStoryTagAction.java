@@ -54,6 +54,7 @@ public class AjaxAddStoryTagAction extends PermissionAction {
 		result = new ProductBacklogHelper(project)
 				.getAddStoryTagResponseText(storyId, tagsId);
 		
+		System.out.println("AddTagResult = " + result);
 		return result;
 	}
 }
