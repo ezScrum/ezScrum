@@ -14,7 +14,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
     #Submit Story07 Without Edit Tag
     ${Story07_Original}=    get text    xpath=//div[text()="Story07"]/../../td[3]/div[1]
-    Click Element    //div[text()="Story02"]
+    Click Element    //div[text()="Story07"]
     Click Element    //button[text()="Edit Story"]
     Click Element    //button[text()="Submit"]
     Reload Page
