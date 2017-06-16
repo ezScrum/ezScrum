@@ -10,8 +10,30 @@ function GoManagement() {
 }
 
 function GoLogout() {
+	NotifyLogout();
 	replaceURL( "./logout.do" );
 	//window.document.location = "./logout.do"
+}
+
+function NotifyLogout(){
+	try{
+		var UserNameInfo = Ext.getDom("UserNameInfo_Project").innerHTML;
+		var leftBracketIndex = UserNameInfo.indexOf("(");
+		var userName = UserNameInfo.slice(0,leftBracketIndex);
+		var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
+		Ext.Ajax.request({
+			url: '127.0.0.1:5000/notify/notifyLogout',
+			type: "POST",
+			dataType: "json",
+			params:{
+				username: userName,
+				token:firebaseToken
+			},
+			success:function(data){
+				SetNotifyImgSubscript();
+			}
+		});
+	}catch(e){}
 }
 
 function SubscriptNotificationService(){
@@ -20,7 +42,7 @@ function SubscriptNotificationService(){
 	var userName = UserNameInfo.slice(0,leftBracketIndex);
 	var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
 	Ext.Ajax.request({
-		url: '127.0.0.1:5000/subscript',
+		url: '127.0.0.1:5000/notify/subscript',
 		type: "POST",
 		dataType: "json",
 		params:{
@@ -44,7 +66,7 @@ function UnSubscriptNotificationService(){
 		var userName = UserNameInfo.slice(0,leftBracketIndex);
 		var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
 		Ext.Ajax.request({
-			url: '127.0.0.1:5000/unSubscript',
+			url: '127.0.0.1:5000/notify/unSubscript',
 			type: "POST",
 			dataType: "json",
 			params:{
