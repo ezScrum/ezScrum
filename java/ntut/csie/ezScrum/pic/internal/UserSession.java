@@ -15,6 +15,7 @@ public class UserSession implements IUserSession {
     private AccountObject _account = null;
     private Date _loginTime = null;
     private String _IP = "";
+    private String token = "";
 
     /**
      *
