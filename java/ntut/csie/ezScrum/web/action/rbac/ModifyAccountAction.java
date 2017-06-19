@@ -66,6 +66,7 @@ public class ModifyAccountAction extends Action {
 //				accountInfo.password = newAccount.getPassword();
 				accountInfo.password = session.getAccount().getPassword();
 			}
+			System.out.println("accountInfo.password = " + accountInfo.password);
 
 			// 如果更新的是登入者的密碼則更新 session 中屬於插件使用的密碼
 			String username = session.getAccount().getUsername();
