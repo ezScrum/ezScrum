@@ -49,7 +49,6 @@ public class SubscriptNotificationAction extends Action{
 			JSONObject json = new JSONObject();
 			json.put("username", username);
 			json.put("token", firebaseToken);
-			System.out.println("firebaseToken : " + firebaseToken);
 			
 			URL url = new URL("http://localhost:5000/notify/subscript");
 			connection = (HttpURLConnection) url.openConnection();

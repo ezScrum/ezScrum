@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.web.action.report;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,14 +67,16 @@ public class CheckOutTaskAction extends PermissionAction {
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sender = session.getAccount().getUsername();
-		SendNotification(sender,project.getId() ,taskId, handler, project.getName());
+		ArrayList<Long> receiversId = project.getProjectMembersId();
+		SendNotification(sender, receiversId, project.getId() ,taskId, handler, project.getName());
 		
 		return result;
 	}
 	
-	private void SendNotification(String sender, long projectId, long taskId, String handler,String projectName){
+	private void SendNotification(String sender, ArrayList<Long> receiversId, long projectId, long taskId, String handler,String projectName){
 		NotificationObject notification = new NotificationObject();
 		notification.setSender(sender);
+		notification.setReceiversId(receiversId);
 		notification.setProjectId(projectId);
 		notification.setMessageTitle(handler +" check out Task: " + taskId);
 		notification.setMessageBody("In project:" + projectName);

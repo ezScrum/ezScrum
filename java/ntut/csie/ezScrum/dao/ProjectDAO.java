@@ -9,6 +9,7 @@ import ntut.csie.ezScrum.issue.sql.service.internal.MySQLQuerySet;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectRoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 
@@ -232,5 +233,26 @@ public class ProjectDAO extends AbstractDAO<ProjectObject, ProjectObject> {
 		        .setCreateTime(result.getLong(ProjectEnum.CREATE_TIME))
 		        .setUpdateTime(result.getLong(ProjectEnum.UPDATE_TIME));
 		return project;
+	}
+	
+	public ArrayList<Long> getProjectMembersId(long projectId){
+		IQueryValueSet valueSet = new MySQLQuerySet();
+		valueSet.addTableName(ProjectRoleEnum.TABLE_NAME);
+		valueSet.addEqualCondition(ProjectRoleEnum.PROJECT_ID, projectId);
+		String query = valueSet.getSelectQuery();
+		ResultSet result = mControl.executeQuery(query);
+		ArrayList<Long> membersId = new ArrayList<Long>();
+		
+		try{
+			while(result.next()){
+				membersId.add(result.getLong(ProjectRoleEnum.ACCOUNT_ID));
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(result);
+		}
+		
+		return membersId;
 	}
 }

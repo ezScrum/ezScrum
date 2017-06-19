@@ -28,8 +28,6 @@ public class NotifyNotificationLogout extends Action{
 		AccountObject account = session.getAccount();
 		String username = account.getUsername();
 		String firebaseToken = request.getParameter("firebaseToken");
-		System.out.println(username);
-		System.out.println(firebaseToken);
 		String s = Logout(username, firebaseToken);
 		response.setContentType("text/html; charset=utf-8");
 		

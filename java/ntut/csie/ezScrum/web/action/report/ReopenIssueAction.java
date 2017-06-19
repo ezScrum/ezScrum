@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.report;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,14 +66,16 @@ public class ReopenIssueAction extends PermissionAction {
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sender = session.getAccount().getUsername();
-		SendNotification(sender,project.getId(), id, issueType, project.getName());
+		ArrayList<Long> receiversId = project.getProjectMembersId();
+		SendNotification(sender, receiversId, project.getId(), id, issueType, project.getName());
 		
 		return result;
 	}
 	
-	private void SendNotification(String sender, long projectId, long id, String issueType,String projectName){
+	private void SendNotification(String sender, ArrayList<Long> receiversId, long projectId, long id, String issueType,String projectName){
 		NotificationObject notification = new NotificationObject();
 		notification.setSender(sender);
+		notification.setReceiversId(receiversId);
 		notification.setProjectId(projectId);
 		notification.setMessageTitle(sender +" ReOpen " + issueType +": " + id);
 		notification.setMessageBody("In project:" + projectName);

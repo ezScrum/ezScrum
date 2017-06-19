@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.report;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,18 +62,20 @@ public class DoneIssueAction extends PermissionAction {
 			TaskObject task = sprintBacklogHelper.getTask(issueId);
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
-
+		
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		String sender = session.getAccount().getUsername();
-		SendNotification(sender, project.getId(), issueId, issueType, project.getName());
+		ArrayList<Long> receiversId = project.getProjectMembersId();
+		SendNotification(sender, receiversId, project.getId(), issueId, issueType, project.getName());
 		
 		return result;
 	}
 	
-	private void SendNotification(String sender, long projectId, long issueId, String issueType,String projectName){
+	private void SendNotification(String sender, ArrayList<Long> receiversId, long projectId, long issueId, String issueType,String projectName){
 		NotificationObject notification = new NotificationObject();
 		notification.setSender(sender);
+		notification.setReceiversId(receiversId);
 		notification.setProjectId(projectId);
 		notification.setMessageTitle(sender +" Done " + issueType +": " + issueId);
 		notification.setMessageBody("In project:" + projectName);

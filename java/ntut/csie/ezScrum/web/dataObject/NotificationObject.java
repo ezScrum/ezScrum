@@ -1,13 +1,13 @@
 package ntut.csie.ezScrum.web.dataObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 public class NotificationObject {
@@ -16,9 +16,12 @@ public class NotificationObject {
 	private String messageBody ="";
 	private String fromURL = "";
 	private long projectId;
+	private ArrayList<Long> receiversId;
+	private ArrayList<String> receiversName;
 		
 	public NotificationObject(){
-		
+		receiversId = new ArrayList<Long>();
+		receiversName = new ArrayList<String>();
 	}
 	
 	public NotificationObject(String sender,Long projectId, String messageTitle,String messageBody){
@@ -26,6 +29,8 @@ public class NotificationObject {
 		this.projectId = projectId;
 		this.messageTitle = messageTitle;
 		this.messageBody = messageBody;
+		receiversId = new ArrayList<Long>();
+		receiversName = new ArrayList<String>();
 	}
 	
 	public void setSender(String sender){
@@ -48,11 +53,59 @@ public class NotificationObject {
 		this.fromURL = fromURL;
 	}
 	
+	public void setReceiversId(ArrayList<Long> receiversId){
+		this.receiversId.clear();
+		this.receiversName.clear();
+		for(long receiverId : receiversId){
+			this.receiversId.add(receiverId);
+		}
+		//setReceiversName();
+	}
+	
+	private void setReceiversName(){
+		HttpURLConnection connection = null;
+		try{
+			JSONArray jsonArray = new JSONArray(receiversId);
+			JSONObject json = new JSONObject();
+			json.put("accounts_id", jsonArray);
+			
+			
+			URL url = new URL("http://localhost:8088/accounts/getAccountList");
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(true );
+	        connection.setRequestMethod("POST");
+	        connection.setRequestProperty("Content-Type","application/json");
+	        
+	        OutputStream wr = connection.getOutputStream();
+            wr.write(json.toString().getBytes("UTF-8"));
+            
+            StringBuilder sb = new StringBuilder();
+            int HttpResult = connection.getResponseCode();
+            if (HttpResult == HttpURLConnection.HTTP_OK){
+            	BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+            	String line = null;
+            	while ((line = br.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+            	JSONObject result = new JSONObject(sb.toString());
+            	for(long receiverId:receiversId){
+            		String name = result.getString(Long.valueOf(receiverId).toString());
+            		this.receiversName.add(name);
+            	}
+                br.close();
+            }
+		}catch(Exception e){
+		}
+	}
+	
 	public String send(){
 		HttpURLConnection connection = null;
+		this.receiversName.add("Joy");
+		this.receiversName.add("Lee");
 		try{
 			JSONObject json = new JSONObject();
 			json.put("sender", sender);
+			json.put("receivers", new JSONArray(receiversName).toString());
 			json.put("projectId", projectId);
 			json.put("messageTitle", messageTitle);
 			json.put("messageBody", messageBody);
@@ -73,13 +126,12 @@ public class NotificationObject {
                 BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
                 sb.append(br.readLine());
                 br.close();
-                return sb.toString();
+                return "Send Message " + sb.toString();
             } else {
-                System.out.println(connection.getResponseMessage());
-                return "fail";
+                return "Notification service not connect.";
             }
 		}catch(Exception e){
-			return "fail";
+			return "Send Message Fail.";
 		}
 	}
 }

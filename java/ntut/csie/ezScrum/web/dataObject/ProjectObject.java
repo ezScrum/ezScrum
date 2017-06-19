@@ -247,6 +247,10 @@ public class ProjectObject implements IBaseObject {
 				RoleEnum.valueOf(scrumRole.getRoleName()), scrumRole);
 	}
 	
+	public ArrayList<Long> getProjectMembersId(){
+		return ProjectDAO.getInstance().getProjectMembersId(mId);
+	}
+	
 	/**
 	 * 透過 Tag Name 取得 Tag
 	 * @param name
