@@ -11,84 +11,47 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.dataObject.ProjectObject;
-import ntut.csie.ezScrum.web.support.SessionManager;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.google.gson.Gson;
 
-// this action is for top title user info
-public class GetTopTitleInfoAction extends Action {
-	
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
+
+public class UnSubscriptNotificationAction extends Action{
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response){
 		
-		ProjectObject project = SessionManager.getProject(request);
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
-		
 		String username = account.getUsername();
-		String nickname = account.getNickName();
-		String projectName = "";
-		String subscriptNotify = "";
+		String firebaseToken = request.getParameter("firebaseToken");
 		
-		if (project != null) {
-			projectName = project.getName();
-		}
-		
-		try{
-			String firebaseToken = request.getParameter("firebaseToken");
-			subscriptNotify = NotifyLogonToNotificationService(firebaseToken,username);
-		}catch(JSONException e){
-			subscriptNotify = "Error";
-			e.printStackTrace();
-		}
-		
-		
-		TopTitleInfoUI ttiui = new TopTitleInfoUI(username, nickname, projectName, subscriptNotify);
-		Gson gson = new Gson();
-		
-		
-		
+		String s = UnSubscript(username, firebaseToken);
 		response.setContentType("text/html; charset=utf-8");
+		
 		try {
-			response.getWriter().write(gson.toJson(ttiui));
+			response.getWriter().write(s);
 			response.getWriter().close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return null;
 	}
 	
-	private class TopTitleInfoUI {
-		private String Username = "";
-		private String Nickname = "";
-		private String ProjectName = "";
-		private String SubscriptNotify;
-		public TopTitleInfoUI(String username, String nickname, String projectname, String subscriptNotify) {
-			this.Username = username;
-			this.Nickname = nickname;
-			this.ProjectName = projectname;
-			this.SubscriptNotify = subscriptNotify;
-		}
-	}
-	
-	private String NotifyLogonToNotificationService(String firebaseToken, String username) throws JSONException{
-		JSONObject json = new JSONObject();
-		json.put("username", username);
-		json.put("token", firebaseToken);
+	private String UnSubscript(String username, String firebaseToken){
 		HttpURLConnection connection = null;
 		try{
-			URL url = new URL("http://localhost:5000/notify/notifyLogon");
+			JSONObject json = new JSONObject();
+			json.put("username", username);
+			json.put("token", firebaseToken);
+			System.out.println("firebaseToken : " + firebaseToken);
+			
+			URL url = new URL("http://localhost:5000/notify/unSubscript");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
@@ -108,7 +71,8 @@ public class GetTopTitleInfoAction extends Action {
             	throw new ConnectException("Connected fail");
             	}            
 		}catch(Exception e){
+			e.printStackTrace();
 			return "Error";
-		}		
+		}
 	}
 }

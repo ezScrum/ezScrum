@@ -12,3 +12,12 @@ var config = {
 firebase.initializeApp(config);
 
 const messaging = firebase.messaging();
+messaging.setBackgroundMessageHandler(function(payload){
+	var option = {
+			title: payload.notification.title,
+			body: payload.notification.body,
+			icon: "./images/scrum_16.png",
+			click_action : payload.notification.click_action
+	}
+	var notification = new Notification(payload.notification.title,option);
+});

@@ -7,9 +7,11 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -35,8 +37,8 @@ public class CheckOutTaskAction extends PermissionAction {
 	        HttpServletRequest request, HttpServletResponse response) {
 
 		// get project from session or DB
-		ProjectObject project = SessionManager.getProject(request);
-
+		ProjectObject project = SessionManager.getProject(request);		
+		
 		// get parameter info
 		long taskId = Long.parseLong(request.getParameter("Id"));
 		String name = request.getParameter("Name");
@@ -60,6 +62,23 @@ public class CheckOutTaskAction extends PermissionAction {
 			result.append("fail...issue不存在");
 		}
 		System.out.println(result);
+		
+		//Send Notification
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		String sender = session.getAccount().getUsername();
+		SendNotification(sender,project.getId() ,taskId, handler, project.getName());
+		
 		return result;
+	}
+	
+	private void SendNotification(String sender, long projectId, long taskId, String handler,String projectName){
+		NotificationObject notification = new NotificationObject();
+		notification.setSender(sender);
+		notification.setProjectId(projectId);
+		notification.setMessageTitle(handler +" check out Task: " + taskId);
+		notification.setMessageBody("In project:" + projectName);
+		notification.setFromURL("http://localhost:8080/ezScrum/viewProject.do?projectName=" + projectName);
+		String result = notification.send();
+		System.out.println(result);
 	}
 }

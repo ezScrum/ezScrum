@@ -3,7 +3,9 @@ package ntut.csie.ezScrum.web.action.report;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
@@ -52,6 +54,22 @@ public class ResetTaskAction extends PermissionAction {
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateTaskboardTaskToJson(task));
 
+		//Send Notification
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		String sender = session.getAccount().getUsername();
+		SendNotification(sender,project.getId(), issueId, project.getName());
+		
 		return result;
+	}
+	
+	private void SendNotification(String sender, long projectId, long taskId,String projectName){
+		NotificationObject notification = new NotificationObject();
+		notification.setSender(sender);
+		notification.setProjectId(projectId);
+		notification.setMessageTitle(sender + " reset Task: " + taskId);
+		notification.setMessageBody("In project:" + projectName);
+		notification.setFromURL("http://localhost:8080/ezScrum/viewProject.do?projectName=" + projectName);
+		String result = notification.send();
+		System.out.println(result);
 	}
 }

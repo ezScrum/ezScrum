@@ -3,7 +3,9 @@ package ntut.csie.ezScrum.web.action.report;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -59,6 +61,22 @@ public class ReopenIssueAction extends PermissionAction {
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}
 
+		//Send Notification
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		String sender = session.getAccount().getUsername();
+		SendNotification(sender,project.getId(), id, issueType, project.getName());
+		
 		return result;
+	}
+	
+	private void SendNotification(String sender, long projectId, long id, String issueType,String projectName){
+		NotificationObject notification = new NotificationObject();
+		notification.setSender(sender);
+		notification.setProjectId(projectId);
+		notification.setMessageTitle(sender +" ReOpen " + issueType +": " + id);
+		notification.setMessageBody("In project:" + projectName);
+		notification.setFromURL("http://localhost:8080/ezScrum/viewProject.do?projectName=" + projectName);
+		String result = notification.send();
+		System.out.println(result);
 	}
 }
