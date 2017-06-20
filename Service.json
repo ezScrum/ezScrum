@@ -1,0 +1,6 @@
+{
+  "Notification" : {
+    "URL" : "localhost",
+    "Port" : "5000"
+  }
+}
