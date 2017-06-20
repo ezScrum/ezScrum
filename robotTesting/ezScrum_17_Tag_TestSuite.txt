@@ -1095,3 +1095,179 @@ Test Tag - Product Backlog Add and Remove Tags at the same time in Proj.02
     Click Element    //button[text()="Submit"]
     compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    pineapple,tea
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
+
+Test Tag - Product Backlog Repeat Add and Remove Tags at the same time in Proj.01
+    [Documentation]    "cat" , "dog","cow","sheep" are commong tags in two projects
+    [Setup]    Test Tag - ProductBacklog Stress Test Setup    Project01
+    #First Edit
+    ${Story01}    Set Variable    //div[text()="Story01"]
+    ${EditTagsFrame}    Set Variable    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Product Backlog"]
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
+    #Second Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="juice"]
+    Click Element    //span[text()="potato"]
+    Click Element    //span[text()="popcorn"]
+    Click Element    //span[text()="coffee"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    juice,potato,popcorn,coffee
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    juice,potato,popcorn,coffee
+    #Third Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="potato"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="juice"]
+    Click Element    //span[text()="cow"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    popcorn,coffee,dog,cow
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    popcorn,coffee,dog,cow
+    #Fourth Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="juice"]
+    Click Element    //span[text()="potato"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="popcorn"]
+    Click Element    //span[text()="coffee"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,juice,potato,sheep
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,juice,potato,sheep
+    #Fifth Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="juice"]
+    Click Element    //span[text()="potato"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,sheep,dog,cow
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,sheep,dog,cow
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
+
+Test Tag - Product Backlog Repeat Add and Remove Tags at the same time in Proj.02
+    [Documentation]    "cat" , "dog","cow","sheep" are commong tags in two projects
+    [Setup]    Test Tag - ProductBacklog Stress Test Setup    Project02
+    ${Story01}    Set Variable    //div[text()="Story01"]
+    ${EditTagsFrame}    Set Variable    //label[text()="Tags:"]/..//img
+    #First Edit
+    Click Element    //span[text()="Product Backlog"]
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../../td[3]/div[1]    cat,dog,cow,sheep
+    #Second Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="pineapple"]
+    Click Element    //span[text()="tea"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    pineapple,tea
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    pineapple,tea
+    #Third Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="tomato"]
+    Click Element    //span[text()="pineapple"]
+    Click Element    //span[text()="tea"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,dog,tomato
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cat,dog,tomato
+    #Fourth Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="dog"]
+    Click Element    //span[text()="milk"]
+    Click Element    //span[text()="tomato"]
+    Click Element    //span[text()="cow"]
+    Click Element    //span[text()="sheep"]
+    Click Element    //span[text()="pineapple"]
+    Click Element    //span[text()="tea"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    milk,cow,sheep,pineapple,tea
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    milk,cow,sheep,pineapple,tea
+    #Fifth Edit
+    Click Element    ${Story01}
+    Click Element    //button[text()="Edit Story"]
+    Click Element    ${EditTagsFrame}
+    Click Element    //span[text()="cat"]
+    Click Element    //span[text()="milk"]
+    Click Element    //span[text()="pineapple"]
+    Click Element    //span[text()="tea"]
+    Click Element    //span[text()="dog"]
+    Click Element    //button[text()="Submit"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cow,sheep,cat,dog
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    compare field content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    cow,sheep,cat,dog
+    [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
