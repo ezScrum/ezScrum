@@ -50,14 +50,12 @@ public class AjaxRemoveStoryTagAction extends PermissionAction {
 		//System.out.println("RemoveTag = " + result);
 		String[] tagsIdArray = request.getParameterValues("tagsId");
 		ArrayList<Long> tagsId = new ArrayList<Long> ();
-		System.out.println("Remove_tagsId = " + tagsId);
 		for (int i = 0; i < tagsIdArray.length; i++){
 			tagsId.add(Long.parseLong(tagsIdArray[i]));
 		}
 		result = new ProductBacklogHelper(project)
 				.getRemoveStoryTagResponseText(storyId, tagsId);
 		
-		System.out.println("RemoveTagResult = " + result);
 		return result;
 	}
 }
