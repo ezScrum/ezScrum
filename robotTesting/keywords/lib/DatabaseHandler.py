@@ -67,7 +67,27 @@ class DatabaseHandler:
         cursor.execute("INSERT INTO `system` VALUES (1, 1)")
         db.commit()
 
+    def Clean_Microservice_Database(self, hostUrl, account, password, databaseName):
+        print 'clean database1'
+        db = MySQLdb.connect(host=hostUrl, user=account, passwd=password, db=databaseName)
+        cursor = db.cursor()
 
+        cursor.execute("Show Tables from " + databaseName)
+        result = cursor.fetchall()
+
+        for record in result:
+            tableName = record[0]
+            isDelete = self.is_delete(tableName)
+            if isDelete == 0:
+                print "Reserve " + tableName
+
+            else :
+                print "TRUNCATE TABLE `" + tableName + "`"
+                cursor.execute("TRUNCATE TABLE `" + tableName + "`")
+
+        print 'Add admin'
+        cursor.execute("INSERT INTO `user` VALUES (1, 'example@ezScrum.tw',  1, '$10$0DRUh2uIJZu6gqfwLFch2OgU0yrKeSymMP9mbOumxSgdlj/zdAMlG', 1, 'admin','admin')")
+        db.commit()
 
 #if __name__ == '__main__':
 #    databaseHandler = DatabaseHandler()

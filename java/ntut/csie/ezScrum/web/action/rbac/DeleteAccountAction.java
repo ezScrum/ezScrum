@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScru.web.microservice.CallAccountMicroservice;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -26,14 +27,14 @@ public class DeleteAccountAction extends Action {
 		} catch (NumberFormatException e) {
 			accountId = 0;
 		}
-
+		CallAccountMicroservice accountsService = new CallAccountMicroservice(userSession.getAccount().getToken());
 		// 設置 Header 與編碼
 		response.setContentType("text/html");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setCharacterEncoding("UTF-8");
 		
-		boolean result = (new AccountHelper()).deleteAccount(accountId);
-		
+//		boolean result = (new AccountHelper()).deleteAccount(accountId);
+		boolean result = accountsService.deleteAccount(accountId);
 		try {
 			response.getWriter().write(String.valueOf(result));
 			response.getWriter().close();

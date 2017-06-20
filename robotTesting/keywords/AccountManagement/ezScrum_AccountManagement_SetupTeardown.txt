@@ -41,6 +41,8 @@ Test Account Management - Add Account Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Add_Account.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Add_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -50,6 +52,7 @@ Test Account Management - Add Account Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Add Duplicate Account Setup
@@ -58,6 +61,8 @@ Test Account Management - Add Duplicate Account Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Add_Duplicate_Account.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Add_Duplicate_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -66,6 +71,7 @@ Test Account Management - Add Duplicate Account Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Edit Account Setup
@@ -77,6 +83,8 @@ Test Account Management - Edit Account Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Edit_Account.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Edit_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -85,6 +93,7 @@ Test Account Management - Edit Account Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Delete Account Setup
@@ -94,6 +103,8 @@ Test Account Management - Delete Account Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Delete_Account.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Delete_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -103,6 +114,7 @@ Test Account Management - Delete Account Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Comment    Exit ezScrum System
     Close Browser
     Close All Browsers
@@ -116,6 +128,8 @@ Test Account Management - Enable Account Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Enable_Account.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Enable_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -125,6 +139,7 @@ Test Account Management - Enable Account Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Click Add Account Can Display Correct Information Setup
@@ -133,6 +148,8 @@ Test Account Management - Click Add Account Can Display Correct Information Setu
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Click_Add_Account_Can_Display_Correct_Information.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Click_Add_Account_Can_Display_Correct_Information.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -145,6 +162,7 @@ Test Account Management - Click Add Account Can Display Correct Information Tear
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Do Not Delete Account of Admin Setup
@@ -156,6 +174,8 @@ Do Not Delete Account of Admin Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Do_Not_Delete_Account_of_Admin.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Do_Not_Delete_Account_of_Admin.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -166,6 +186,7 @@ Do Not Delete Account of Admin Teardown
     Comment    Set Selenium Speed    ${SELENIUM_SPEED}
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Change Password Setup
@@ -175,6 +196,8 @@ Test Account Management - Change Password Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Change_Password.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Change_Password.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -186,6 +209,7 @@ Test Account Management - Change Password Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Validate Confirm Password Setup
@@ -195,6 +219,8 @@ Test Account Management - Validate Confirm Password Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Validate_Confirm_Password.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Validate_Confirm_Password.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -206,6 +232,7 @@ Test Account Management - Validate Confirm Password Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - User Modify Personal Information Setup
@@ -215,6 +242,8 @@ Test Account Management - User Modify Personal Information Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    User_Modify_Personal_Information.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    User_Modify_Personal_Information.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
@@ -231,15 +260,19 @@ Test Account Management - User Modify Personal Information Teardown
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Manaement - Admin's email shouldn't be null Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Admin's_Email_Shouldn't_Be_Null.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Admin's_Email_Shouldn't_Be_Null.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
 
 Test Account Manaement - Admin's email shouldn't be null Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System

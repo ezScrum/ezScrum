@@ -130,9 +130,9 @@ TableGrid3_GetItemCount
     [Return]    ${ItemCount}
 
 Clean DB
-    [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
     [Documentation]    GAE 清除資料庫的方式稍後再補上
-    Run Keyword if    "${VERSION}"=="Web"    clean database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Run Keyword if    "${VERSION}"=="Web"    clean database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
 
 Compare Text In Specific Xpath
     [Arguments]    ${xpathToAssert}    ${expectedText}
@@ -180,3 +180,7 @@ Element Class Should Be Enabled
     [Arguments]    ${ElementLocator}
     ${ElementClass}=    Get Element Attribute    ${ElementLocator}@class
     Should Not Contain    ${ElementClass}    x-item-disabled
+
+Clean Microservice DB
+    [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
+    Run Keyword if    "${VERSION}"=="Web"    Clean Microservice Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}

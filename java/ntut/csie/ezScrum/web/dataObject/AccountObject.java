@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ntut.csie.ezScrum.dao.AccountDAO;
+import ntut.csie.ezScrum.dao.RoleDAO;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 
@@ -21,6 +23,8 @@ public class AccountObject implements IBaseObject {
 	private boolean mEnable = false;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
+	private String token = "";
+	private boolean isAdmin = false;
 
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -36,12 +40,20 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	public boolean isAdmin() {
-		ProjectRole projectRole = getSystemRole();
-		if (projectRole != null && projectRole.getProject().getName()
-				.equals("system")) {
+//		ProjectRole projectRole = getSystemRole();
+//		if (projectRole != null && projectRole.getProject().getName()
+//				.equals("system")) {
+//			return true;
+//		}
+//		return false;
+		
+		if(isAdmin == true)
 			return true;
-		}
 		return false;
+	}
+	
+	public void setAdmin(boolean systemRole){
+		isAdmin = systemRole;
 	}
 
 	public String toString() {
@@ -113,9 +125,36 @@ public class AccountObject implements IBaseObject {
 		mEnable = enable;
 		return this;
 	}
-
+	
+	
+	/**
+	 *  Microservice token
+	 */
+	public void setToken(String token){
+		this.token = token;
+	}
+	
+	public String getToken(){
+		return token;
+	}
+	/**
+	 * Microservice check system role
+	 * @return
+	 */
 	public HashMap<String, ProjectRole> getRoles() {
-		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleMap(mId);
+		HashMap<String, ProjectRole> roles = RoleDAO.getInstance().getProjectRoleMap(mId);
+		if(isAdmin()){
+			ScrumRole scrumRole = new ScrumRole("system", "admin");
+			scrumRole.setisAdmin(true);
+			ProjectObject project = new ProjectObject(0, "system");
+			project.setDisplayName("system")
+			       .setComment("system")
+				   .setManager("admin")
+				   .setAttachFileSize(0)
+				   .setCreateTime(0);
+			ProjectRole projectRole = new ProjectRole(project, scrumRole);
+			roles.put("system", projectRole);
+		}
 		if (roles == null) {
 			roles = new HashMap<String, ProjectRole>();
 		}
@@ -159,7 +198,7 @@ public class AccountObject implements IBaseObject {
 	 * @return isCreateSuccess
 	 */
 	public boolean joinProjectWithScrumRole(long projectId, RoleEnum role) {
-		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
+		return RoleDAO.getInstance().createProjectRole(projectId, mId, role);
 	}
 
 	/**
@@ -179,7 +218,7 @@ public class AccountObject implements IBaseObject {
 	 * @return isDeleteSuccess
 	 */
 	public boolean deleteProjectRole(long projectId, RoleEnum role) {
-		return AccountDAO.getInstance().deleteProjectRole(projectId, mId, role);
+		return RoleDAO.getInstance().deleteProjectRole(projectId, mId, role);
 	}
 
 	/**

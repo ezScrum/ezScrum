@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScru.web.microservice.CallAccountMicroservice;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -15,6 +16,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jettison.json.JSONObject;
 
 import ch.ethz.ssh2.crypto.Base64;
 
@@ -37,17 +39,28 @@ public class UpdateAccountAction extends Action {
 		} catch (NumberFormatException e) {
 			accountInfo.id = 0;
 		}
-	
-		AccountHelper accountHelper = new AccountHelper();
-		AccountMapper accountMapper = new AccountMapper();
-		AccountObject oldAccount = accountMapper.getAccount(accountInfo.id);
-		AccountObject newAccount = accountHelper.updateAccount(accountInfo);
+		AccountObject newAccount = null;
+		String token = session.getAccount().getToken();
+		CallAccountMicroservice accountService = new CallAccountMicroservice(token);
+		String responseString = accountService.updateAccount(accountInfo);
+		JSONObject accountJSON = new JSONObject(responseString);
+		newAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
+		newAccount.setEmail(accountJSON.getString("email"));
+		newAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
+		newAccount.setNickName(accountJSON.getString("nickname"));	
+		newAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
+		newAccount.setToken(token);
+		
+//		AccountHelper accountHelper = new AccountHelper();
+//		AccountMapper accountMapper = new AccountMapper();
+//		AccountObject oldAccount = accountMapper.getAccount(accountInfo.id);
+//		AccountObject newAccount = accountHelper.updateAccount(accountInfo);
 
 		//	no password, use the default password
 		if ((accountInfo.password == null) || (accountInfo.password.length() == 0) || accountInfo.password.equals("")) {
-			accountInfo.password = oldAccount.getPassword();
+			accountInfo.password = session.getAccount().getPassword();
 		}
-
+		newAccount.setPassword(accountInfo.password);
 		//	如果更新的是登入者的密碼則更新 session 中屬於插件使用的密碼
 		if (session.getAccount().getUsername().equals(accountInfo.username)) {
 			String encodedPassword = new String(Base64.encode(accountInfo.password.getBytes()));
@@ -63,7 +76,8 @@ public class UpdateAccountAction extends Action {
 
 		try {
 			response.setContentType("text/xml; charset=utf-8");
-			response.getWriter().write(accountHelper.getAccountXML(newAccount));
+//			response.getWriter().write(accountHelper.getAccountXML(newAccount));
+			response.getWriter().write(accountService.getAccountXML(newAccount));
 			response.getWriter().close();
 		} catch (IOException e) {
 			System.out.println("class : UpdateAccountAction, method : execute, exception : " + e.toString());
