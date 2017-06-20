@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScru.web.microservice.ServiceConfiguration;
+
 public class NotificationObject {
 	private String sender = "";
 	private String messageTitle = "";
@@ -18,9 +20,11 @@ public class NotificationObject {
 	private long projectId;
 	private String accToken;
 	private ArrayList<Long> receiversId;
+	private String NotificationURL;
 		
 	public NotificationObject(){
 		receiversId = new ArrayList<Long>();
+		setNotificationURL();
 	}
 	
 	public NotificationObject(String sender,Long projectId, String messageTitle,String messageBody){
@@ -29,6 +33,7 @@ public class NotificationObject {
 		this.messageTitle = messageTitle;
 		this.messageBody = messageBody;
 		receiversId = new ArrayList<Long>();
+		setNotificationURL();
 	}
 	
 	public void setSender(String sender){
@@ -62,19 +67,29 @@ public class NotificationObject {
 		this.accToken = accToken;
 	}
 	
+	private void setNotificationURL(){
+		try{
+			ServiceConfiguration sc = new ServiceConfiguration("Notification");
+			this.NotificationURL = "http://" + sc.getServiceUrl() + ":" + sc.getServicePort();
+			System.out.println(this.NotificationURL);
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
+	
 	public String send(){
 		HttpURLConnection connection = null;
 		try{
 			JSONObject json = new JSONObject();
 			json.put("sender", sender);
 			json.put("receivers", new JSONArray(receiversId).toString());
-			json.put("accToken", projectId);
+			json.put("accToken", accToken);
 			json.put("projectId", projectId);
 			json.put("messageTitle", messageTitle);
 			json.put("messageBody", messageBody);
 			json.put("fromURL", fromURL);
 			
-			URL url = new URL("http://localhost:5000/notify/send");
+			URL url = new URL(NotificationURL + "/notify/send");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true );
 	        connection.setRequestMethod("POST");
