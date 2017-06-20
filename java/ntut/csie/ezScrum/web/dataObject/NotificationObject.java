@@ -59,29 +59,34 @@ public class NotificationObject {
 		for(long receiverId : receiversId){
 			this.receiversId.add(receiverId);
 		}
-		//setReceiversName();
+		setReceiversName();
 	}
 	
 	private void setReceiversName(){
 		HttpURLConnection connection = null;
+		System.out.println("setReceiversName");
 		try{
+			System.out.println("Start");
 			JSONArray jsonArray = new JSONArray(receiversId);
 			JSONObject json = new JSONObject();
 			json.put("accounts_id", jsonArray);
-			
+			System.out.println("Json");
 			
 			URL url = new URL("http://localhost:8088/accounts/getAccountList");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true );
 	        connection.setRequestMethod("POST");
 	        connection.setRequestProperty("Content-Type","application/json");
-	        
+	        connection.setRequestProperty("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTQ5ODc5OTEwMn0.r18R0bF0ZpfIPqTPUu82632T5lGZ-i3AB_Y5V79zl4s");
+	        System.out.println("URL");
 	        OutputStream wr = connection.getOutputStream();
             wr.write(json.toString().getBytes("UTF-8"));
-            
+            System.out.println("Set write");
             StringBuilder sb = new StringBuilder();
             int HttpResult = connection.getResponseCode();
+            System.out.println("if befor");
             if (HttpResult == HttpURLConnection.HTTP_OK){
+            	System.out.println("if In");
             	BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
             	String line = null;
             	while ((line = br.readLine()) != null) {
@@ -92,8 +97,13 @@ public class NotificationObject {
             		String name = result.getString(Long.valueOf(receiverId).toString());
             		this.receiversName.add(name);
             	}
+            	System.out.println("receiversName");
+            	for(String name : receiversName){
+            		System.out.println(name);
+            	}
                 br.close();
             }
+            System.out.println("if After");
 		}catch(Exception e){
 		}
 	}
