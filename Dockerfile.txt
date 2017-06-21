@@ -1,1 +1,1 @@
-test
+FROM java:8
