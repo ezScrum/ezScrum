@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
@@ -66,21 +67,28 @@ public class CheckOutTaskAction extends PermissionAction {
 		
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		String accToken = session.getAccount().getToken();
 		String sender = session.getAccount().getUsername();
 		ArrayList<Long> receiversId = project.getProjectMembersId();
-		SendNotification(sender, receiversId, project.getId() ,taskId, handler, project.getName());
+		SendNotification(sender, accToken, receiversId, taskId, handler, project.getName());
 		
 		return result;
 	}
 	
-	private void SendNotification(String sender, ArrayList<Long> receiversId, long projectId, long taskId, String handler,String projectName){
+	private void SendNotification(String sender, String accToken, ArrayList<Long> receiversId, long taskId, String handler,String projectName){
+		Configuration configuration = new Configuration();
+		String fromServiceUrl;
+		if(configuration.getServerUrl() == "127.0.0.1")
+			fromServiceUrl = "localhost";
+		else
+			fromServiceUrl = configuration.getServerUrl();
 		NotificationObject notification = new NotificationObject();
 		notification.setSender(sender);
+		notification.setAccToken(accToken);
 		notification.setReceiversId(receiversId);
-		notification.setProjectId(projectId);
 		notification.setMessageTitle(handler +" check out Task: " + taskId);
 		notification.setMessageBody("In project:" + projectName);
-		notification.setFromURL("http://localhost:8080/ezScrum/viewProject.do?projectName=" + projectName);
+		notification.setFromURL("http://"+fromServiceUrl+":8080/ezScrum/viewProject.do?projectName=" + projectName);
 		String result = notification.send();
 		System.out.println(result);
 	}

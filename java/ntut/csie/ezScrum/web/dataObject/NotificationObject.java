@@ -17,7 +17,6 @@ public class NotificationObject {
 	private String messageTitle = "";
 	private String messageBody ="";
 	private String fromURL = "";
-	private long projectId;
 	private String accToken;
 	private ArrayList<Long> receiversId;
 	private String NotificationURL;
@@ -26,22 +25,9 @@ public class NotificationObject {
 		receiversId = new ArrayList<Long>();
 		setNotificationURL();
 	}
-	
-	public NotificationObject(String sender,Long projectId, String messageTitle,String messageBody){
-		this.sender = sender;
-		this.projectId = projectId;
-		this.messageTitle = messageTitle;
-		this.messageBody = messageBody;
-		receiversId = new ArrayList<Long>();
-		setNotificationURL();
-	}
-	
+		
 	public void setSender(String sender){
 		this.sender = sender;
-	}
-	
-	public void setProjectId(long projectId){
-		this.projectId = projectId;
 	}
 	
 	public void setMessageTitle(String messageTitle){
@@ -84,7 +70,6 @@ public class NotificationObject {
 			json.put("sender", sender);
 			json.put("receivers", new JSONArray(receiversId).toString());
 			json.put("accToken", accToken);
-			json.put("projectId", projectId);
 			json.put("messageTitle", messageTitle);
 			json.put("messageBody", messageBody);
 			json.put("fromURL", fromURL);
