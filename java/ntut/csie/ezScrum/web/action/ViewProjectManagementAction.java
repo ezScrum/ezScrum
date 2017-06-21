@@ -8,6 +8,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.IAccountController;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 
 public class ViewProjectManagementAction extends Action {
@@ -16,11 +18,9 @@ public class ViewProjectManagementAction extends Action {
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		
+		IAccountController accountService = new AccountRESTClientProxy();
+		return mapping.findForward(accountService.getManagementView(session.getAccount()));
 //		return mapping.findForward(new AccountHelper().getManagementView(session.getAccount()));
-		if(session.getAccount().isAdmin() == true)
-			return mapping.findForward("Admin_ManagementView");
-		else 
-			return mapping.findForward("User_ManagementView");
+		
 	}
 }

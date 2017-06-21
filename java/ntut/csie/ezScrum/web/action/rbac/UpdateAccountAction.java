@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScru.web.microservice.CallAccountMicroservice;
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -41,14 +41,14 @@ public class UpdateAccountAction extends Action {
 		}
 		AccountObject newAccount = null;
 		String token = session.getAccount().getToken();
-		CallAccountMicroservice accountService = new CallAccountMicroservice(token);
-		String responseString = accountService.updateAccount(accountInfo);
-		JSONObject accountJSON = new JSONObject(responseString);
-		newAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
-		newAccount.setEmail(accountJSON.getString("email"));
-		newAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
-		newAccount.setNickName(accountJSON.getString("nickname"));	
-		newAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
+		AccountRESTClientProxy accountService = new AccountRESTClientProxy(token);
+		newAccount = accountService.updateAccount(accountInfo);
+//		JSONObject accountJSON = new JSONObject(responseString);
+//		newAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
+//		newAccount.setEmail(accountJSON.getString("email"));
+//		newAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
+//		newAccount.setNickName(accountJSON.getString("nickname"));	
+//		newAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
 		newAccount.setToken(token);
 		
 //		AccountHelper accountHelper = new AccountHelper();

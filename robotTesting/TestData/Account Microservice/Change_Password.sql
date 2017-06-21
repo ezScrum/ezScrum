@@ -11,11 +11,13 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- 導出 account_ms 的資料庫結構
+DROP DATABASE IF EXISTS `account_ms`;
 CREATE DATABASE IF NOT EXISTS `account_ms` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `account_ms`;
 
 
 -- 導出  表 account_ms.user 結構
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) DEFAULT NULL,
@@ -27,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  account_ms.user 的資料：~0 rows (大約)
+-- 正在導出表  account_ms.user 的資料：~1 rows (大約)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `email`, `enabled`, `password`, `systemrole`, `username`, `nickname`) VALUES

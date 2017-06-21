@@ -86,7 +86,7 @@ class DatabaseHandler:
                 cursor.execute("TRUNCATE TABLE `" + tableName + "`")
 
         print 'Add admin'
-        cursor.execute("INSERT INTO `user` VALUES (1, 'example@ezScrum.tw',  1, '$10$0DRUh2uIJZu6gqfwLFch2OgU0yrKeSymMP9mbOumxSgdlj/zdAMlG', 1, 'admin','admin')")
+        cursor.execute("INSERT INTO `user` VALUES (1, 'example@ezScrum.tw',  1, '$2a$10$0DRUh2uIJZu6gqfwLFch2OgU0yrKeSymMP9mbOumxSgdlj/zdAMlG', 1, 'admin','admin')")
         db.commit()
 
 #if __name__ == '__main__':
