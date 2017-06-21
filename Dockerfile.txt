@@ -1,1 +1,1 @@
-FROM java:10
+FROM java:8
