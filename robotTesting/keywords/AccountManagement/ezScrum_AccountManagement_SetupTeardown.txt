@@ -208,8 +208,8 @@ Test Account Management - Change Password Teardown
     Comment    Login With Admin
     Comment    _ClickManagmentElement    admin
     Comment    _Logon
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Account Management - Validate Confirm Password Setup

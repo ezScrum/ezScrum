@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `username` varchar(255) NOT NULL,
   `nickname` varchar(255) NOT NULL DEFAULT 'username',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- 正在導出表  account_ms.user 的資料：~0 rows (大約)
+-- 正在導出表  account_ms.user 的資料：~1 rows (大約)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id`, `email`, `enabled`, `password`, `systemrole`, `username`, `nickname`) VALUES

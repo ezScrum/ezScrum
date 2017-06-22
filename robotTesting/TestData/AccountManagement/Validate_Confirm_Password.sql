@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- 主機:                           127.0.0.1
--- 服務器版本:                        5.7.8-rc-log - MySQL Community Server (GPL)
+-- 服務器版本:                        5.6.28-log - MySQL Community Server (GPL)
 -- 服務器操作系統:                      Win64
 -- HeidiSQL 版本:                  9.3.0.4984
 -- --------------------------------------------------------
@@ -9,6 +9,12 @@
 /*!40101 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- 導出 ezscrum_180 的資料庫結構
+DROP DATABASE IF EXISTS `ezscrum_180`;
+CREATE DATABASE IF NOT EXISTS `ezscrum_180` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `ezscrum_180`;
+
 
 -- 導出  表 ezscrum_180.account 結構
 DROP TABLE IF EXISTS `account`;
@@ -23,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `update_time` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- 正在導出表  ezscrum_180.account 的資料：1 rows
 DELETE FROM `account`;

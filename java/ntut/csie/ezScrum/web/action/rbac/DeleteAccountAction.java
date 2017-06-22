@@ -5,15 +5,15 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScru.web.microservice.CallAccountMicroservice;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.helper.AccountHelper;
-import ntut.csie.ezScrum.web.support.SessionManager;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.support.SessionManager;
 
 public class DeleteAccountAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -27,7 +27,7 @@ public class DeleteAccountAction extends Action {
 		} catch (NumberFormatException e) {
 			accountId = 0;
 		}
-		CallAccountMicroservice accountsService = new CallAccountMicroservice(userSession.getAccount().getToken());
+		IAccountController accountsService = new AccountRESTClientProxy(userSession.getAccount().getToken());
 		// 設置 Header 與編碼
 		response.setContentType("text/html");
 		response.setHeader("Cache-Control", "no-cache");

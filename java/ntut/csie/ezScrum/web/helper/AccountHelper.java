@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ntut.csie.ezScru.web.microservice.IAccountController;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -16,8 +17,9 @@ import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
+import ntut.csie.jcis.account.core.LogonException;
 
-public class AccountHelper {
+public class AccountHelper implements IAccountController{
 	private final String SYSTEM = "system";
 	private AccountMapper mAccountMapper;
 	public AccountHelper() {
@@ -56,6 +58,10 @@ public class AccountHelper {
 	public boolean deleteAccount(long id) {
 		return mAccountMapper.deleteAccount(id);
 	}
+	
+	public AccountObject getAccountById(long id){
+		return mAccountMapper.getAccount(id);
+	}
 
 	/**
 	 * Assign Role
@@ -63,7 +69,7 @@ public class AccountHelper {
 	 * @return XML string
 	 */
 	public String getAssignedProject(long accountId) {
-		AccountObject account = mAccountMapper.getAccount(accountId);
+		AccountObject account = getAccountById(accountId);
 		HashMap<String, ProjectRole> rolesMap = mAccountMapper.getProjectRoleList(accountId);
 		List<String> assignedProject = new ArrayList<String>();
 		StringBuilder assignRoleInfo = new StringBuilder();
@@ -124,7 +130,7 @@ public class AccountHelper {
 		return account;
 	}
 
-	public AccountObject removeAssignRole(long accountId, long projectId, String role) throws Exception {
+	public AccountObject removeAssignRole(long accountId, long projectId, String role) {
 		// ezScrum v1.8
 		AccountObject account = null;
 		if (role.equals("admin")) {
@@ -179,6 +185,10 @@ public class AccountHelper {
 		stringBuilder.append("</Accounts>");
 		
 		return stringBuilder.toString();
+	}
+	
+	public AccountObject confirmAccount(String id, String password) throws LogonException{
+		return mAccountMapper.confirmAccount(id, password);
 	}
 
 }

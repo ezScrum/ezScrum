@@ -1,12 +1,9 @@
 package ntut.csie.ezScrum.pic.internal;
 
-import org.codehaus.jettison.json.JSONObject;
-
-import ntut.csie.ezScru.web.microservice.CallAccountMicroservice;
+import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
-import ntut.csie.jcis.account.core.LogonException;
 
 public class ProjectInfoCenter {
 	private static ProjectInfoCenter m_pic = null;
@@ -31,31 +28,32 @@ public class ProjectInfoCenter {
 		AccountObject theAccount = null;
 //		AccountMapper accountMapper = new AccountMapper();
 //		theAccount = accountMapper.confirmAccount(id, password);
-		theAccount = confirmAccount(id, password);
+		IAccountController accountMicroservice = new AccountRESTClientProxy();
+		theAccount = accountMicroservice.confirmAccount(id, password);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}
 	
-	public AccountObject confirmAccount(String username, String password) throws Exception{
-		AccountObject theAccount = null;
-		CallAccountMicroservice accountMicroservice = new CallAccountMicroservice();
-		String token = accountMicroservice.Login(username, password);
-		if(token == "Fail")
-			throw new LogonException(false, false);
-		accountMicroservice.setToken(token);
-		String account = accountMicroservice.sendGetAccountByUsernamePassword(username, password);
-		JSONObject accountJSON = new JSONObject(account);
-		boolean checkEnabled = Boolean.valueOf(accountJSON.getString("enabled"));
-		if(checkEnabled == false){
-			throw new LogonException(false, false);
-		}
-		theAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
-		theAccount.setEmail(accountJSON.getString("email"));
-		theAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
-		theAccount.setNickName(accountJSON.getString("nickname"));	
-		theAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
-		theAccount.setToken(token);
-		
-		return theAccount;
-	}
+//	public AccountObject confirmAccount(String username, String password) throws Exception{
+//		AccountObject theAccount = null;
+//		AccountRESTClientProxy accountMicroservice = new AccountRESTClientProxy();
+//		String token = accountMicroservice.Login(username, password);
+//		if(token == "Fail")
+//			throw new LogonException(false, false);
+//		accountMicroservice.setToken(token);
+//		String account = accountMicroservice.sendGetAccountByUsernamePassword(username, password);
+//		JSONObject accountJSON = new JSONObject(account);
+//		boolean checkEnabled = Boolean.valueOf(accountJSON.getString("enabled"));
+//		if(checkEnabled == false){
+//			throw new LogonException(false, false);
+//		}
+//		theAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
+//		theAccount.setEmail(accountJSON.getString("email"));
+//		theAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
+//		theAccount.setNickName(accountJSON.getString("nickname"));	
+//		theAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
+//		theAccount.setToken(token);
+//		
+//		return theAccount;
+//	}
 }
