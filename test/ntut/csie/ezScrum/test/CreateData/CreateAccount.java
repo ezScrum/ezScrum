@@ -2,6 +2,8 @@ package ntut.csie.ezScrum.test.CreateData;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ntut.csie.ezScru.web.microservice.IAccountController;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
@@ -17,7 +19,7 @@ public class CreateAccount {
 	private String mAccountMail = "TEST_ACCOUNT_MAIL_";
 
 	private List<AccountObject> mAccounts;
-	private AccountHelper mAccountHelper;
+	private IAccountController mAccountHelper;
 
 	public CreateAccount(int count) {
 		mAccountCount = count;

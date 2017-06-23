@@ -11,9 +11,10 @@ public interface IAccountController {
 	public String getAssignedProject(long accountId);
 	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole);
 	public AccountObject removeAssignRole(long accountId, long projectId, String role);
-	public String getAccountXML(AccountObject account);
-	public String getAccountListXML();
-	public String getManagementView(AccountObject account);
+	public String getAccountListXML() ;
 	public String  validateUsername(String username);
-	public AccountObject confirmAccount(String id, String password)throws Exception;
+	public AccountObject confirmAccount(String id, String password) throws Exception;
+	public AccountObject getAccountById(long id); 
+	public String getAccountXML(AccountObject account);
+	public String getManagementView(AccountObject account) ;
 }

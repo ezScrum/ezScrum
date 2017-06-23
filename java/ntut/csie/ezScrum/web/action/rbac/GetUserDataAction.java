@@ -27,7 +27,7 @@ public class GetUserDataAction extends Action {
 			response.setContentType("text/xml; charset=utf-8");
 			String token = session.getAccount().getToken();
 			AccountRESTClientProxy accountService = new AccountRESTClientProxy(token);
-			String responseString = accountService.sendGetAccountByUsernamePassword(account.getUsername(), account.getPassword());
+			String responseString = accountService.getAccountByUsernamePassword(account.getUsername(), account.getPassword());
 			JSONObject accountJSON = new JSONObject(responseString);
 			AccountObject newAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
 			newAccount.setEmail(accountJSON.getString("email"));

@@ -5,20 +5,16 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
-import ntut.csie.ezScrum.pic.core.IUserSession;
-import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
-import ntut.csie.ezScrum.web.dataObject.AccountObject;
-import ntut.csie.ezScrum.web.helper.AccountHelper;
-import ntut.csie.ezScrum.web.mapper.AccountMapper;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.codehaus.jettison.json.JSONObject;
 
 import ch.ethz.ssh2.crypto.Base64;
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScrum.pic.core.IUserSession;
+import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 /**
  * update account info (非 admin account 專用)
