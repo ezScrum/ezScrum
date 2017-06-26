@@ -2,17 +2,23 @@ package ntut.csie.ezScru.web.microservice;
 
 import java.io.IOException;
 
-import org.codehaus.jettison.json.JSONException;
-
+import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.CreateAccountCommand;
+import ntut.csie.ezScru.web.microservice.command.DeleteAccountCommand;
+import ntut.csie.ezScru.web.microservice.command.UpdateAccountCommand;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
+import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountRESTClientProxy implements IAccountController{
 	
 	String token;
 	private AccountHelper accountHelper;
 	private AccountRESTClient accountRESTClient;
+	private AccountRESTCommand mAccountRESTCommand;
+	private AccountServiceInvoker invoker = new AccountServiceInvoker();
+	private ConnectionQueue notDoneActionQueue;
 	public AccountRESTClientProxy(){
 		accountHelper = new AccountHelper();
 		accountRESTClient = new AccountRESTClient();
@@ -21,6 +27,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		accountHelper = new AccountHelper();
 		accountRESTClient = new AccountRESTClient(token);
 		this.token = token;
+		notDoneActionQueue = new ConnectionQueue(accountRESTClient);
 	}
 	
 	public String validateUsername(String inputUsername) {
@@ -46,44 +53,56 @@ public class AccountRESTClientProxy implements IAccountController{
 	}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
-		AccountObject accountFromHelper = accountHelper.createAccount(accountInfo);
 		AccountObject account = null;
+		mAccountRESTCommand = new CreateAccountCommand(accountRESTClient, accountInfo);
+		invoker.addAction(mAccountRESTCommand);
 		try {
-			account = accountRESTClient.createAccount(accountInfo);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return accountFromHelper;
+			account = (AccountObject) invoker.doCommand();
+			return account;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return accountFromHelper;
+			notDoneActionQueue.queue(mAccountRESTCommand);
+			return accountHelper.createAccount(accountInfo);
 		}
-		return account;
-		
+//			account = accountRESTClient.createAccount(accountInfo);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return accountFromHelper;
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return accountFromHelper;
+//		}
 	}
 	
 	public AccountObject updateAccount(AccountInfo accountInfo){
 		AccountObject accountFromHelper = accountHelper.updateAccount(accountInfo);
 		AccountObject account = null;
+		mAccountRESTCommand = new UpdateAccountCommand(accountRESTClient,accountInfo);
+		invoker.addAction(mAccountRESTCommand);
 		try {
 			account = accountRESTClient.updateAccount(accountInfo);
-		} catch (JSONException | IOException e) {
+			return account;
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			notDoneActionQueue.queue(mAccountRESTCommand);
 			return accountFromHelper;
 		}
-		return account;
 	}
 	
 	public boolean deleteAccount(long id){
 		boolean deleteFromAccountHelper = accountHelper.deleteAccount(id);
 		boolean checkDelete = false;
+		mAccountRESTCommand = new DeleteAccountCommand(accountRESTClient, id);
 		try {
 			checkDelete = accountRESTClient.deleteAccount(id);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			notDoneActionQueue.queue(mAccountRESTCommand);
 			return deleteFromAccountHelper;
 		}
 		return checkDelete;
@@ -98,11 +117,7 @@ public class AccountRESTClientProxy implements IAccountController{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return accountFromHelper;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return accountFromHelper;
-		}
+		} 
 		return account;
 	}
 	
@@ -112,7 +127,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		String assingedProject;
 		try {
 			assingedProject = accountRESTClient.getAssignedProject(accountId);
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return assignedProjectFromHelper;
@@ -126,7 +141,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		AccountObject account = null;
 		try {
 			account = accountRESTClient.addAssignedRole(accountId, projectId, scrumRole);
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return accountFromHelper;
@@ -145,11 +160,7 @@ public class AccountRESTClientProxy implements IAccountController{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return accountFromHelper;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return accountFromHelper;
-		}
+		} 
 		return account;
 	}
 	
@@ -163,7 +174,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		String response;
 		try {
 			response = accountRESTClient.getAccountListXML();
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return responseFromHelper;
@@ -178,16 +189,17 @@ public class AccountRESTClientProxy implements IAccountController{
 			return "User_ManagementView";
 	}
 	
-	public AccountObject confirmAccount(String username, String password) throws Exception{
+	public AccountObject confirmAccount(String username, String password) throws LogonException{
 		
-		AccountObject theAccount = accountRESTClient.confirmAccount(username, password);
-		
-//		AccountObject accountFromHelper = accountHelper.confirmAccount(username, password);
-		
+		AccountObject theAccount = null;
+		AccountObject accountFromHelper = accountHelper.confirmAccount(username, password);
+		try {
+			theAccount = accountRESTClient.confirmAccount(username, password);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new LogonException(false, false);
+		} 
 		return theAccount;
-	}
-	public String getAccountByUsernamePassword(String username, String password) throws Exception{
-		String response = accountRESTClient.getAccountByUsernamePassword(username, password);
-		return response;
 	}
 }

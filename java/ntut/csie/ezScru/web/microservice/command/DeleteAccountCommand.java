@@ -7,7 +7,7 @@ import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 public class DeleteAccountCommand implements AccountRESTCommand{
 	private AccountRESTClient accountService;
 	private long id;
-	DeleteAccountCommand(AccountRESTClient accountService, long id){
+	public DeleteAccountCommand(AccountRESTClient accountService, long id){
 		this.accountService = accountService;
 		this.id = id;
 	}
@@ -15,8 +15,8 @@ public class DeleteAccountCommand implements AccountRESTCommand{
 		return accountService.deleteAccount(id);
 	}
 	@Override
-	public Object Execute() throws Exception {
-		return deleteAccount();
+	public Object Execute() throws IOException {
+		return accountService.deleteAccount(id);
 	}
 
 }

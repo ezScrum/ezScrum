@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
-import ntut.csie.jcis.account.core.LogonException;
 
 public class AccountRESTClient{
 	String baseURL = "http://localhost:8088";
@@ -48,13 +48,19 @@ public class AccountRESTClient{
 		this.token = token;
 	}
 	
-	public AccountObject createAccount(AccountInfo accountInfo) throws JSONException, IOException {
+	public AccountObject createAccount(AccountInfo accountInfo) throws IOException {
 		JSONObject json = new JSONObject();
-		json.put("username", accountInfo.username)
-			.put("password", accountInfo.password)
-			.put("nickname", accountInfo.nickName)
-			.put("email", accountInfo.email)
-			.put("enabled", accountInfo.enable);
+		try {
+			json.put("username", accountInfo.username)
+				.put("password", accountInfo.password)
+				.put("nickname", accountInfo.nickName)
+				.put("email", accountInfo.email)
+				.put("enabled", accountInfo.enable);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IOException();
+		}
 		String requestURL = baseURL + "/accounts/add";
 		URL url;
 		HttpURLConnection conn;
@@ -70,12 +76,16 @@ public class AccountRESTClient{
 		conn.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
 		wr.write(json.toString().getBytes("UTF-8"));
-		responsecode = conn.getResponseCode();
 		wr.flush();
 		wr.close();
+		responsecode = conn.getResponseCode();
+		
 		if(responsecode != 200){
 //			return accountFromHelper;
+			throw new IOException();
 		}
+		
+
 		InputStream is = conn.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuffer sb = new StringBuffer();
@@ -93,23 +103,30 @@ public class AccountRESTClient{
 	}
 
 	
-	public AccountObject updateAccount(AccountInfo accountInfo) throws JSONException, IOException {
+	public AccountObject updateAccount(AccountInfo accountInfo) throws IOException {
 		JSONObject json = new JSONObject();
-		json.put("username", accountInfo.username)
+		try {
+			json.put("username", accountInfo.username)
 //		.put("password", accountInfo.password)
-			.put("nickname", accountInfo.nickName)
-			.put("email", accountInfo.email)
-			.put("enabled", accountInfo.enable);
-		if(accountInfo.password == null || accountInfo.password.isEmpty() || accountInfo.password == "")
-			json.put("password", "");
-		else 
-			json.put("password", accountInfo.password);
+				.put("nickname", accountInfo.nickName)
+				.put("email", accountInfo.email)
+				.put("enabled", accountInfo.enable);
+			if(accountInfo.password == null || accountInfo.password.isEmpty() || accountInfo.password == "")
+				json.put("password", "");
+			else 
+				json.put("password", accountInfo.password);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IOException();
+		}
+		
 		String requestURL = baseURL + "/accounts/update/"+accountInfo.id;
 		String response = "";
 		HttpURLConnection conn;
 		URL url;
 		int responsecode = 0;
-		AccountObject account;
+		AccountObject account = null;
 		url = new URL(requestURL);
 		
 		conn = (HttpURLConnection) url.openConnection();
@@ -134,7 +151,12 @@ public class AccountRESTClient{
 		}
 		is.close();
 		response = sb.toString();
-		account = translateToAccount(response);
+		try {
+			account = translateToAccount(response);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return account;
 	}
 
@@ -165,7 +187,7 @@ public class AccountRESTClient{
 	}
 
 	
-	public String getAssignedProject(long accountId) throws IOException, JSONException {
+	public String getAssignedProject(long accountId) throws IOException {
 		AccountObject account = getAccountById(accountId);
 		HashMap<String, ProjectRole> rolesMap = account.getRoles();
 		List<String> assignedProject = new ArrayList<String>();
@@ -219,13 +241,18 @@ public class AccountRESTClient{
 		return assignRoleInfo.toString();
 	}
 
-	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) throws IOException, JSONException {
+	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) throws IOException {
 		AccountObject account = null;
 		
 		if(scrumRole.equals("admin")){
 			String responseString;
 			responseString = updateAccountSystemRole(accountId, true);
-			account = translateToAccount(responseString);
+			try {
+				account = translateToAccount(responseString);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		} else{
 			account = getAccountById(accountId);
@@ -235,11 +262,16 @@ public class AccountRESTClient{
 	}
 
 	
-	public AccountObject removeAssignRole(long accountId, long projectId, String role) throws IOException, JSONException {
+	public AccountObject removeAssignRole(long accountId, long projectId, String role) throws IOException {
 		AccountObject account = null;
 		if (role.equals("admin")) {
 			String responseString = updateAccountSystemRole(accountId, false);
-			account = translateToAccount(responseString);
+			try {
+				account = translateToAccount(responseString);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}else{
 			account = getAccountById(accountId);
@@ -249,7 +281,7 @@ public class AccountRESTClient{
 	}
 
 	
-	public String getAccountListXML() throws IOException, JSONException {
+	public String getAccountListXML() throws IOException {
 		ArrayList<AccountObject> accounts;
 		accounts = getAccounts();
 		return getXmlstring(accounts);
@@ -270,29 +302,36 @@ public class AccountRESTClient{
 	}
 
 	
-	public AccountObject confirmAccount(String username, String password) throws Exception {
+	public AccountObject confirmAccount(String username, String password) throws IOException {
 		AccountObject theAccount = null;
 		String token = this.Login(username, password);
 		if(token == "Fail")
-			throw new LogonException(false, false);
+			throw new IOException();
 		this.setToken(token);
-		String account = this.getAccountByUsernamePassword(username, password);
-		JSONObject accountJSON = new JSONObject(account);
-		boolean checkEnabled = Boolean.valueOf(accountJSON.getString("enabled"));
-		if(checkEnabled == false){
-			throw new LogonException(false, false);
+		String account = "";
+		try {
+			account = this.getAccountByUsernamePassword(username, password);
+			JSONObject accountJSON = new JSONObject(account);
+			boolean checkEnabled = Boolean.valueOf(accountJSON.getString("enabled"));
+			if(checkEnabled == false){
+				throw new IOException();
+			}
+			theAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
+			theAccount.setEmail(accountJSON.getString("email"));
+			theAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
+			theAccount.setNickName(accountJSON.getString("nickname"));	
+			theAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
+			theAccount.setToken(token);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+//			throw new JSONException("account data incorrect");
 		}
-		theAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));
-		theAccount.setEmail(accountJSON.getString("email"));
-		theAccount.setEnable(Boolean.valueOf(accountJSON.getString("enabled")));
-		theAccount.setNickName(accountJSON.getString("nickname"));	
-		theAccount.setAdmin(Boolean.valueOf(accountJSON.getString("systemrole")));
-		theAccount.setToken(token);
 		return theAccount;
 	}
 
 	
-	public AccountObject getAccountById(long id) throws IOException, JSONException {
+	public AccountObject getAccountById(long id) throws IOException {
 		String requestURL = baseURL + "/accounts/getUserById/"+id;
 		URL url;
 		AccountObject account = null;
@@ -305,7 +344,7 @@ public class AccountRESTClient{
 		conn.setDoOutput(false);
 		int responsecode = conn.getResponseCode();
 		if(responsecode != 200){
-			
+			throw new ConnectException("Connected fail");
 		}
 		InputStream is = conn.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -316,7 +355,12 @@ public class AccountRESTClient{
 		}
 		is.close();
 		String response = sb.toString();
-		account = translateToAccount(response);
+		try {
+			account = translateToAccount(response);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return account;
 	}
 	
@@ -333,7 +377,7 @@ public class AccountRESTClient{
 		return newAccount;
 	}
 	
-	public ArrayList<AccountObject> getAccounts() throws IOException, JSONException{
+	public ArrayList<AccountObject> getAccounts() throws IOException {
 		String requestURL = baseURL + "/accounts/all";
 		URL url = new URL(requestURL);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -358,18 +402,25 @@ public class AccountRESTClient{
 		String response = sb.toString();
 		conn.disconnect();
 		ArrayList<AccountObject> result = new ArrayList();
-		JSONObject accountsJSON = new JSONObject(response);
-		JSONArray accountsJSONArray = accountsJSON.getJSONArray("accounts");
-		for(int i = 0; i < accountsJSONArray.length(); i++){
-			JSONObject explrObject = accountsJSONArray.getJSONObject(i);
-			AccountObject account = new AccountObject(Long.valueOf(explrObject.get("id").toString()), explrObject.get("username").toString());
-			account.setEmail(explrObject.get("email").toString());
-			account.setNickName(explrObject.get("username").toString());
-			account.setAdmin(Boolean.valueOf(explrObject.get("systemrole").toString()));
-			account.setEnable(Boolean.valueOf(explrObject.get("enabled").toString()));
-			account.setNickName(explrObject.get("nickname").toString());
-			result.add(account);
+		JSONObject accountsJSON;
+		try {
+			accountsJSON = new JSONObject(response);
+			JSONArray accountsJSONArray = accountsJSON.getJSONArray("accounts");
+			for(int i = 0; i < accountsJSONArray.length(); i++){
+				JSONObject explrObject = accountsJSONArray.getJSONObject(i);
+				AccountObject account = new AccountObject(Long.valueOf(explrObject.get("id").toString()), explrObject.get("username").toString());
+				account.setEmail(explrObject.get("email").toString());
+				account.setNickName(explrObject.get("username").toString());
+				account.setAdmin(Boolean.valueOf(explrObject.get("systemrole").toString()));
+				account.setEnable(Boolean.valueOf(explrObject.get("enabled").toString()));
+				account.setNickName(explrObject.get("nickname").toString());
+				result.add(account);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return result;
 	}
 	public String updateAccountSystemRole(long id, boolean systemrole) throws IOException{
@@ -390,7 +441,7 @@ public class AccountRESTClient{
 			wr.flush();
 			wr.close();
 			if(responsecode != 200)
-				return "Fail";
+				throw new IOException();
 			
 			InputStream is = conn.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -472,7 +523,7 @@ public class AccountRESTClient{
 					
 //		return response.toString();
 	}
-	public String getAccountByUsernamePassword(String username, String password) throws Exception{
+	public String getAccountByUsernamePassword(String username, String password) throws IOException{
 		String requestURL = baseURL + "/accounts/getAccount";
 		requestURL += "?username="+username+"&password="+password;
 		URL url = new URL(requestURL);
@@ -531,4 +582,27 @@ public class AccountRESTClient{
 		accounts.add(account);
 		return getXmlstring(accounts);
 	}
+	public boolean checkConnect() throws IOException{
+		String requestURL = baseURL + "/accounts/checkConnect";
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(false);
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		conn.disconnect();
+		
+		return Boolean.valueOf(response);
+	}
+	
 }
