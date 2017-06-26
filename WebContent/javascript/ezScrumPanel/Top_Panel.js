@@ -37,31 +37,30 @@ function NotifyLogout(){
 }
 
 function SubscriptNotificationService(){
-	var userName = Ext.getDom("Notification_Subscript").userName;
-	var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
-	Ext.Ajax.request({
-		url: 'subscriptNotification.do',
-		params:{
-			username: userName,
-			firebaseToken:firebaseToken
-		},
-		success:function(data){
-			if(data.responseText == "Success")
-				SetNotifyImg("Subscript");
-		},
-		failure:function(XMLHttpRequest,s,o){
-			alert("Subscript fail");
-		}
-	});
-	
+	if(confirm("Are you sure to subscript?")){
+		var userName = Ext.getDom("Notification_Subscript").userName;
+		var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
+		Ext.Ajax.request({
+			url: 'subscriptNotification.do',
+			params:{
+				username: userName,
+				firebaseToken:firebaseToken
+			},
+			success:function(data){
+				if(data.responseText == "Success")
+					SetNotifyImg("Subscript");
+			},
+			failure:function(XMLHttpRequest,s,o){
+				alert("Subscript fail");
+			}
+		});
+	}
 }
 
 function UnSubscriptNotificationService(){
-	if(confirm("Are you sure to cancle subscription?")){
+	if(confirm("Are you sure to cancel subscription?")){
 		var userName = Ext.getDom("Notification_Subscript").userName;
 		var firebaseToken = Ext.getDom("Notification_Subscript").firebaseToken;
-		console.log("In Subscript");
-		console.log(firebaseToken);
 		Ext.Ajax.request({
 			url: 'unSubscriptNotification.do',
 			params:{
@@ -99,9 +98,11 @@ function SettingNotification(){
 		Ext.Ajax.request({
 			url: './firebase.json',
 			type: "GET",
-			dataType: "json",
-			success: function(jdata){
-				var j = JSON.parse(jdata.responseText);
+			dataType: 'jsonp',
+			jsonp: "mycallback",
+			crossDomain: true,
+			success: function(mycallback){
+				var j = JSON.parse(mycallback.responseText);
 				var config = {
 						apiKey: j.apiKey,
 						authDomain: j.authDomain,
@@ -111,9 +112,8 @@ function SettingNotification(){
 						messagingSenderId: j.messagingSenderId
 				}
 				firebase.initializeApp(config);
-				
 				const messaging = firebase.messaging();
-				navigator.serviceWorker.register("firebase-messaging-sw.js", {scope: "firebase-cloud-messaging-push-scope"})
+				navigator.serviceWorker.register("./javascript/firebase-messaging-sw.js")
 				.then(function (registration) {
 					messaging.useServiceWorker(registration);
 					messaging.requestPermission()
@@ -144,7 +144,7 @@ function SettingNotification(){
 					}
 				});
 			},
-			failure: function(){console.log("Setting faile.")}
+			failure: function(){SetNotifyImg("Error");}
 		});
 	})
 	return promise;
@@ -181,8 +181,6 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
     	beforerender: function() {
     		var obj = this;
     		SettingNotification().then(function(data){
-    			
-    		console.log("firebaseToken : " + data);
 	    		Ext.Ajax.request({
 	    			url: 'GetTopTitleInfo.do',
 	    			params:{firebaseToken: data},
@@ -206,7 +204,7 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
 	    		});
     		})
     		.catch(function(err){
-    			console.log('couldnt get token')
+    			SetNotifyImg("Error");
     		});
     	}
     }
