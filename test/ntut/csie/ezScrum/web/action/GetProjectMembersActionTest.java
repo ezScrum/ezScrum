@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.action;
 
 import java.io.File;
 
+import ntut.csie.ezScru.web.microservice.IAccountController;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
@@ -153,7 +154,7 @@ public class GetProjectMembersActionTest extends MockStrutsTestCase {
 		AddUserToRole AUTR = new AddUserToRole(mCP, CA);
 		AUTR.exe_PO();
 
-		AccountHelper accountHelper = new AccountHelper();
+		IAccountController accountHelper = new AccountHelper();
 		accountHelper.removeAssignRole(CA.getAccountList().get(0).getId(), mCP.getAllProjects().get(0).getId(), ScrumEnum.SCRUMROLE_PRODUCTOWNER);
 
 		AUTR.exe_SM();
