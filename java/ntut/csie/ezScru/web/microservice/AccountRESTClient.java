@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -605,4 +606,151 @@ public class AccountRESTClient{
 		return Boolean.valueOf(response);
 	}
 	
+	public String getNotificationSubscriptStatus(Long account_id, String firebaseToken) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/getNotificationSubscriptStatus";
+
+		JSONObject json = new JSONObject();
+		json.put("account_id", account_id.toString());
+		json.put("firebaseToken", firebaseToken);
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		return response;
+	}
+	
+	public String subscribeNotification(Long account_id, String firebaseToken) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/subscribeNotification";
+		
+		JSONObject json = new JSONObject();
+		json.put("account_id", account_id.toString());
+		json.put("firebaseToken", firebaseToken);
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		return response;
+	}
+	
+	public String cancelSubscribeNotification(Long account_id, String firebaseToken) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/cancelSubscribeNotification";
+		
+		JSONObject json = new JSONObject();
+		json.put("account_id", account_id.toString());
+		json.put("firebaseToken", firebaseToken);
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		return response;
+	}
+	
+	public String notifyServiceLogout(Long account_id, String firebaseToken) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/notifyServiceLogout";
+		
+		JSONObject json = new JSONObject();
+		json.put("account_id", account_id.toString());
+		json.put("firebaseToken", firebaseToken);
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		return response;
+	}
+	
+	public String sendNotification(ArrayList<Long> accounts_id, String title, String body, String eventSource) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/notifyServiceLogout";
+		
+		JSONArray array = new JSONArray(accounts_id);
+		JSONObject json = new JSONObject();
+		json.put("accounts_id", array.toString());
+		json.put("title", title);
+		json.put("body", body);
+		json.put("eventSource", eventSource);
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		return response;
+	}
 }

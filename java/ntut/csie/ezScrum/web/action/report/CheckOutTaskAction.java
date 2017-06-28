@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
-import ntut.csie.ezScrum.web.dataObject.NotificationObject;
+import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -67,29 +68,26 @@ public class CheckOutTaskAction extends PermissionAction {
 		
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		String accToken = session.getAccount().getToken();
-		String sender = session.getAccount().getUsername();
-		ArrayList<Long> receiversId = project.getProjectMembersId();
-		SendNotification(sender, accToken, receiversId, taskId, handler, project.getName());
+		AccountObject account = session.getAccount();
+		ArrayList<Long> recipients_id = project.getProjectMembersId();
+		SendNotification(account, recipients_id, taskId, handler, project.getName());
 		
 		return result;
 	}
 	
-	private void SendNotification(String sender, String accToken, ArrayList<Long> receiversId, long taskId, String handler,String projectName){
+	private String SendNotification(AccountObject sender, ArrayList<Long> recipients_id, long taskId, String handler,String projectName){
 		Configuration configuration = new Configuration();
-		String fromServiceUrl;
+		String systemUrl;
 		if(configuration.getServerUrl() == "127.0.0.1")
-			fromServiceUrl = "localhost";
+			systemUrl = "localhost";
 		else
-			fromServiceUrl = configuration.getServerUrl();
-		NotificationObject notification = new NotificationObject();
-		notification.setSender(sender);
-		notification.setAccToken(accToken);
-		notification.setReceiversId(receiversId);
-		notification.setMessageTitle(handler +" check out Task: " + taskId);
-		notification.setMessageBody("In project:" + projectName);
-		notification.setFromURL("http://"+fromServiceUrl+":8080/ezScrum/viewProject.do?projectName=" + projectName);
-		String result = notification.send();
-		System.out.println(result);
+			systemUrl = configuration.getServerUrl();
+		
+		String title = handler +" check out Task: " + taskId;
+		String body = "In project:" + projectName;
+		String eventSource = "http://"+systemUrl+":8080/ezScrum/viewProject.do?projectName=" + projectName;
+		
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(sender.getToken());
+		return ap.sendNotification(sender.getId(), recipients_id, title, body, eventSource);
 	}
 }

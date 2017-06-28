@@ -1,6 +1,9 @@
 package ntut.csie.ezScru.web.microservice;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import org.codehaus.jettison.json.JSONException;
 
 import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
 import ntut.csie.ezScru.web.microservice.command.CreateAccountCommand;
@@ -201,5 +204,61 @@ public class AccountRESTClientProxy implements IAccountController{
 			throw new LogonException(false, false);
 		} 
 		return theAccount;
+	}
+	
+	public String getNotificationSubscriptStatus(Long account_id, String firebaseToken){
+		try{
+			return accountRESTClient.getNotificationSubscriptStatus(account_id, firebaseToken);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}		
+	}
+	
+	public String subscribeNotification(Long account_id, String firebaseToken){
+		try{
+			return accountRESTClient.subscribeNotification(account_id, firebaseToken);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}		
+	}
+	
+	public String cancelSubscribeNotification(Long account_id, String firebaseToken){
+		try{
+			return accountRESTClient.cancelSubscribeNotification(account_id, firebaseToken);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}		
+	}
+	
+	public String notifyServiceLogout(Long account_id, String firebaseToken){
+		try{
+			return accountRESTClient.notifyServiceLogout(account_id, firebaseToken);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}		
+	}
+	
+	public String sendNotification(Long senderId, ArrayList<Long> recipients_id, String title, String body, String eventSource){
+		try{
+			for(int index = 0;index < recipients_id.size(); index++){
+				if(recipients_id.get(index) == senderId){
+					recipients_id.remove(index);
+					break;
+				}
+			}
+			return accountRESTClient.sendNotification(recipients_id, title, body, eventSource);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}		
 	}
 }

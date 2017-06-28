@@ -352,8 +352,7 @@
         <action path="/showIssueInformation" forward="project.IssueInformation" />
         
         <!-- Notification Service Action -->
-        <action path="/subscriptNotification" type="ntut.csie.ezScrum.web.action.SubscriptNotificationAction" />
-		<action path="/unSubscriptNotification" type="ntut.csie.ezScrum.web.action.UnSubscriptNotificationAction" />
+        <action path="/switchNotification" type="ntut.csie.ezScrum.web.action.SwitchNotificationStatusAction" />
 		<action path="/notifyLogout" type="ntut.csie.ezScrum.web.action.NotifyNotificationLogout" />
 		
         <!--    *********************

@@ -24,6 +24,7 @@ public class AccountObject implements IBaseObject {
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
 	private String token = "";
+	private String firebaseToken = "";
 	private boolean isAdmin = false;
 
 	public AccountObject(long id, String username) {
@@ -137,6 +138,19 @@ public class AccountObject implements IBaseObject {
 	public String getToken(){
 		return token;
 	}
+	
+	/**
+	 * Firebase token
+	 */
+	
+	public void setFirebaseToken(String firebaseToken){
+		this.firebaseToken = firebaseToken;
+	}
+	
+	public String getFirebaseToken(){
+		return firebaseToken;
+	}
+	
 	/**
 	 * Microservice check system role
 	 * @return

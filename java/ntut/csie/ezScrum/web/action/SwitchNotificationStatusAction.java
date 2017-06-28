@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.web.action;
 
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,17 +14,24 @@ import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public class NotifyNotificationLogout extends Action{
+public class SwitchNotificationStatusAction extends Action{
+	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response){
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
+		Long account_id = account.getId();
 		String firebaseToken = account.getFirebaseToken();
-		String token = account.getToken();
 		
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		String s = ap.notifyServiceLogout(account.getId(), firebaseToken);
+		String event = request.getParameter("event");
+		String s = "";
+		if(event.contains("Subscribe")){
+			s = Subscribe(account.getToken(), account_id, firebaseToken);
+		}
+		else if(event.contains("Cancel")){
+			s = CancelSubcribe(account.getToken(), account_id, firebaseToken);
+		}
 		response.setContentType("text/html; charset=utf-8");
 		
 		try {
@@ -37,4 +43,13 @@ public class NotifyNotificationLogout extends Action{
 		return null;
 	}
 	
+	private String Subscribe(String token, Long account_id, String firebaseToken){
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		return ap.subscribeNotification(account_id, firebaseToken);
+	}
+	
+	private String CancelSubcribe(String token, Long account_id, String firebaseToken){
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		return ap.cancelSubscribeNotification(account_id, firebaseToken);
+	}
 }
