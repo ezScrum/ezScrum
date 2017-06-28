@@ -70,7 +70,6 @@ function CancelSubscribeNotificationService(){
 }
 
 function SetNotifyImg(subscription){
-	console.log(subscription);
 	if(subscription == "Subscription"){
 		Ext.getDom("Notification_Subscript").src = "images/NotifyBell.png";
 		Ext.getDom("Notification_Subscript").onclick = CancelSubscribeNotificationService;

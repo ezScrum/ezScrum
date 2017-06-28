@@ -56,6 +56,7 @@ public class AccountRESTClientProxy implements IAccountController{
 	}
 
 	public AccountObject createAccount(AccountInfo accountInfo) {
+		AccountObject accountFromHelper = accountHelper.createAccount(accountInfo);
 		AccountObject account = null;
 		mAccountRESTCommand = new CreateAccountCommand(accountRESTClient, accountInfo);
 		invoker.addAction(mAccountRESTCommand);
@@ -66,7 +67,7 @@ public class AccountRESTClientProxy implements IAccountController{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			notDoneActionQueue.queue(mAccountRESTCommand);
-			return accountHelper.createAccount(accountInfo);
+			return accountFromHelper;
 		}
 //			account = accountRESTClient.createAccount(accountInfo);
 //		} catch (JSONException e) {
