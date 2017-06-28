@@ -30,16 +30,29 @@ import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
+import ntut.csie.ezScru.web.microservice.ServiceConfiguration;
 
 public class AccountRESTClient{
-	String baseURL = "http://localhost:8088";
+	
+	String baseURL;
 	String token;
 	private final String SYSTEM = "system";
 	
 	public AccountRESTClient(){
-		
+		try{
+			ServiceConfiguration sc = new ServiceConfiguration("AccountManagement");
+			baseURL = "http://" + sc.getServiceUrl() + ":" + sc.getServicePort();
+		}catch(Exception e){
+			baseURL = "http://localhost:8088";
+		}
 	}
 	public AccountRESTClient(String token){
+		try{
+			ServiceConfiguration sc = new ServiceConfiguration("AccountManagement");
+			baseURL = "http://" + sc.getServiceUrl() + ":" + sc.getServicePort();
+		}catch(Exception e){
+			baseURL = "http://localhost:8088";
+		}
 		this.token = token;
 	}
 	public String getToken(){
