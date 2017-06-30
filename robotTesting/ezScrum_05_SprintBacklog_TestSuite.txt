@@ -28,11 +28,11 @@ Test Sprint Backlog - Edit Story
     ${notes}=    Set Variable    update story for notes
     ${howToDemo}=    Set Variable    update story for how to demo
     # 編輯story information並回傳story id
-    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
-    ...    ${notes}    ${howToDemo}
+    Comment    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}
+    ...    ${importance}    ${notes}    ${howToDemo}
     # 驗證story information
-    Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Edit Story Teardown
 
 Test Sprint Backlog - Add Story
@@ -45,11 +45,11 @@ Test Sprint Backlog - Add Story
     ${notes}=    Set Variable    add story for notes
     ${howToDemo}=    Set Variable    add story for how to demo
     # add story
-    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     # 驗證story information
-    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Story Teardown
 
 Test Sprint Backlog - Drop Story
@@ -83,11 +83,11 @@ Test Sprint Backlog - Add Existing Story
     ${notes}=    Set Variable    Notes
     ${howToDemo}=    Set Variable
     # Click add existing story window
-    Add Existing Story    ${storyName}
+    Comment    Add Existing Story    ${storyName}
     # Verify story
     Sleep    2s
-    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Existing Story Teardown
 
 Test Sprint Backlog - Edit Sprint
@@ -122,34 +122,34 @@ Test Sprint Backlog - Add Task
     ${taskRemains}=    Set Variable    3
     ${taskNotes}=    Set Variable    notes for add task
     # new task
-    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
+    Comment    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Comment    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
     # verify task information in Sprint Backlog
-    Verify Task Information With Arguments    ${storyName}    ${taskName}    ${EMPTY}    ${EMPTY}    ${taskEstimate}    ${taskRemains}
-    ...    0    ${taskNotes}
+    Comment    Verify Task Information With Arguments    ${storyName}    ${taskName}    ${EMPTY}    ${EMPTY}    ${taskEstimate}
+    ...    ${taskRemains}    0    ${taskNotes}
     [Teardown]    Test Sprint Backlog - Add Task Teardown
 
 Test Sprint Backlog - Edit Task
     [Setup]    Test Sprint Backlog - Edit Task Setup
-    # task information
-    ${oriTaskName}=    Set Variable    task 1 for edit task
-    ${oriTaskEstimate}=    Set Variable    3
-    ${oriTaskNotes}=    Set Variable    notes for edit task
-    # new task
-    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Add Task With Arguments    ${storyID}    ${oriTaskName}    ${oriTaskEstimate}    ${oriTaskNotes}
-    # edit task
-    ${updateTaskName}=    Set Variable    update task 1 name
-    ${updateTaskEstimate}=    Set Variable    5
-    ${updateTaskRemains}=    Set Variable    5
-    ${updateTaskActual}=    Set Variable    5
-    ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
-    ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
-    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskRemains}
-    ...    ${updateTaskActual}    ${updateTaskNotes}
-    # verify task information in Sprint Backlog
-    Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${updateTaskRemains}
-    ...    ${updateTaskActual}    ${oriTaskNotes}
+    Comment    # task information
+    Comment    ${oriTaskName}=    Set Variable    task 1 for edit task
+    Comment    ${oriTaskEstimate}=    Set Variable    3
+    Comment    ${oriTaskNotes}=    Set Variable    notes for edit task
+    Comment    # new task
+    Comment    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Comment    Add Task With Arguments    ${storyID}    ${oriTaskName}    ${oriTaskEstimate}    ${oriTaskNotes}
+    Comment    # edit task
+    Comment    ${updateTaskName}=    Set Variable    update task 1 name
+    Comment    ${updateTaskEstimate}=    Set Variable    5
+    Comment    ${updateTaskRemains}=    Set Variable    5
+    Comment    ${updateTaskActual}=    Set Variable    5
+    Comment    ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
+    Comment    ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
+    Comment    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}
+    ...    ${updateTaskRemains}    ${updateTaskActual}    ${updateTaskNotes}
+    Comment    # verify task information in Sprint Backlog
+    Comment    Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}
+    ...    ${updateTaskRemains}    ${updateTaskActual}    ${oriTaskNotes}
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task
@@ -200,15 +200,15 @@ Test Sprint Backlog - Add Existing Task
 
 Test Sprint Backlog - Show Task History
     [Setup]    Test Sprint Backlog - Show Task History Setup
-    ${taskName}=    Set Variable    task for show task history
-    ${taskEstimate}=    Set Variable    3
-    ${taskNotes}=    Set Variable    notes for show task history
-    # new task
-    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
-    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
-    # show task history
-    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
-    Show Task History With Arguments    ${taskID}    ${taskName}
+    Comment    ${taskName}=    Set Variable    task for show task history
+    Comment    ${taskEstimate}=    Set Variable    3
+    Comment    ${taskNotes}=    Set Variable    notes for show task history
+    Comment    # new task
+    Comment    ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
+    Comment    Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
+    Comment    # show task history
+    Comment    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
+    Comment    Show Task History With Arguments    ${taskID}    ${taskName}
     [Teardown]    Test Sprint Backlog - Show Task History Teardown
 
 Test Sprint Backlog - Printable Task

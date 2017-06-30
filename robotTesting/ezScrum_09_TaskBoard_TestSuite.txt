@@ -27,34 +27,34 @@ Test TaskBoard - Sprint Information
     [Documentation]    驗證TaskBoard頁面，有關於Sprint Information的資料是否正確
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Sprint Information Setup
-    Select Node Product    TaskBoard
-    # Verify sprint information
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
-    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
-    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    None
-    # Verify taskcard information
-    # story information
-    ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
-    ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
-    Should Be Equal As Strings    ${_TempStoryName}    ${tcStoryName}
-    Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    # variables
-    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}    ${EMPTY}
-    ...    ${tcStoryNotes}    ${tcStoryHowToDemo}
-    # task information
-    ${_TempTaskName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
-    ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
-    Should Be Equal As Strings    ${_TempTaskName}    ${tcTaskName}
-    Should Be Equal    ${_TempTaskEstimate}    ${tcTaskEstimate} hr    # x hr
-    # Variable
-    Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
-    Set Test Variable    ${tcTaskEstimate}    3
-    Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
-    Verify Task Information With Arguments In TaskBoard    ${tcTaskID}    ${tcTaskName}    ${EMPTY}    ${EMPTY}    ${tcTaskEstimate}    ${tcTaskEstimate}
-    ...    0    ${tcTaskNotes}
+    Comment    Select Node Product    TaskBoard
+    Comment    # Verify sprint information
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Sprint ID:"]/..//input[@type="text"]    Sprint #${tcStoryID}
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentStoryPoint"]    2
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="CurrentTaskPoint"]    ${tcTaskEstimate}
+    Comment    Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="ReleaseID"]    None
+    Comment    # Verify taskcard information
+    Comment    # story information
+    Comment    ${_TempStoryName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StroyCard_Description"]
+    Comment    ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
+    Comment    Should Be Equal As Strings    ${_TempStoryName}    ${tcStoryName}
+    Comment    Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
+    Comment    # variables
+    Comment    Verify Story Information With Arguments In TaskBoard    ${tcStoryID}    ${tcStoryName}    ${tcStoryValue}    ${tcStoryEstimate}    ${tcStoryImportance}
+    ...    ${EMPTY}    ${tcStoryNotes}    ${tcStoryHowToDemo}
+    Comment    # task information
+    Comment    ${_TempTaskName}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
+    Comment    ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
+    Comment    Should Be Equal As Strings    ${_TempTaskName}    ${tcTaskName}
+    Comment    Should Be Equal    ${_TempTaskEstimate}    ${tcTaskEstimate} hr    # x hr
+    Comment    # Variable
+    Comment    Set Test Variable    ${tcTaskName}    task 1 for test Sprint Information
+    Comment    Set Test Variable    ${tcTaskEstimate}    3
+    Comment    Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
+    Comment    Verify Task Information With Arguments In TaskBoard    ${tcTaskID}    ${tcTaskName}    ${EMPTY}    ${EMPTY}    ${tcTaskEstimate}
+    ...    ${tcTaskEstimate}    0    ${tcTaskNotes}
     [Teardown]    Test TaskBoard - Sprint Information Teardown
 
 Test TaskBoard - Task Checked Out
@@ -271,24 +271,24 @@ Test TaskBoard - Attach File on Task
 
 Test TaskBoard - Task Done with partner
     [Setup]    Test TaskBoard - Task Done with Partner Setup
-    Select Node Product    TaskBoard
-    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
-    Compare Field Content    //input[@name="Name"]    Task02
-    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
-    Compare Field Content    //input[@name="Partners"]    Acount02
-    Compare Field Content    //input[@name="Estimate"]    5
-    Compare Field Content    //input[@name="Remains"]    5
-    Click Element    xpath=//button[text()="Cancel"]
-    Drag And Drop    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #2"]/../../../../../../../..    target=1_closed
-    Click Element    xpath=//button[text()="Done"]
-    Wait Until Page Contains    Success.
-    Click Element    xpath=//div[@id="1_closed"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
-    Compare Field Content    //input[@name="Name"]    Task02
-    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
-    Compare Field Content    //input[@name="Partners"]    Acount02
-    Compare Field Content    //input[@name="Estimate"]    5
-    Compare Field Content    //input[@name="Remains"]    0
-    Click Element    xpath=//button[text()="Cancel"]
+    Comment    Select Node Product    TaskBoard
+    Comment    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Comment    Compare Field Content    //input[@name="Name"]    Task02
+    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Comment    Compare Field Content    //input[@name="Partners"]    Acount02
+    Comment    Compare Field Content    //input[@name="Estimate"]    5
+    Comment    Compare Field Content    //input[@name="Remains"]    5
+    Comment    Click Element    xpath=//button[text()="Cancel"]
+    Comment    Drag And Drop    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #2"]/../../../../../../../..    target=1_closed
+    Comment    Click Element    xpath=//button[text()="Done"]
+    Comment    Wait Until Page Contains    Success.
+    Comment    Click Element    xpath=//div[@id="1_closed"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Comment    Compare Field Content    //input[@name="Name"]    Task02
+    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Comment    Compare Field Content    //input[@name="Partners"]    Acount02
+    Comment    Compare Field Content    //input[@name="Estimate"]    5
+    Comment    Compare Field Content    //input[@name="Remains"]    0
+    Comment    Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
 
 Test TaskBoard - Check Task Checked Out
@@ -316,35 +316,35 @@ Test TaskBoard - Check Task Checked Out
 Test TaskBoard - Check Sprint ID
     [Documentation]    Check if sprint_ID is right, after get to other node and get back to TaskBoard.
     [Setup]    Test TaskBoard - Check Sprint ID Setup
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
-    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
-    ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
-    ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
-    Click Element    ${sprintIDSelect}
-    ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
-    Click Element    ${selectSprint2}
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint02
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    16
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    32
-    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #2
-    ${sprintBacklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
-    Click Element    ${sprintBacklog}
-    ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
-    Click Element    ${taskBoard}
-    ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
-    Should Be Equal    ${sprintInitialID}    ${sprntModernID}
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
-    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
-    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Comment    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
+    Comment    ${sprintInitialID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Comment    ${sprintIDSelect}=    Set Variable    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Comment    Click Element    ${sprintIDSelect}
+    Comment    ${selectSprint2}=    Set Variable    //div[@class="x-layer x-combo-list "]//div[text()="Sprint #2"]
+    Comment    Click Element    ${selectSprint2}
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint02
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    16
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    32
+    Comment    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #2
+    Comment    ${sprintBacklog}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="Sprint Backlog"]
+    Comment    Click Element    ${sprintBacklog}
+    Comment    ${taskBoard}=    Set Variable    //ul[@class="x-tree-root-ct x-tree-no-lines"]//span[text()="TaskBoard"]
+    Comment    Click Element    ${taskBoard}
+    Comment    ${sprntModernID}=    Get Value    //label[text()="Sprint ID:"]/../div[1]/div/input
+    Comment    Should Be Equal    ${sprintInitialID}    ${sprntModernID}
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
+    Comment    Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
+    Comment    Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
     [Teardown]    Test TaskBoard - Check Sprint ID Teardown
 
 Tset TaskBoard - ReleaseID Check
     [Setup]    Test TaskBoard - Initial Release ID Check Setup
-    Select Node Product    TaskBoard
-    Compare Field Content    //input[@name="ReleaseID"]    None
+    Comment    Select Node Product    TaskBoard
+    Comment    Compare Field Content    //input[@name="ReleaseID"]    None
     [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
 
 Test TaskBoard - Check Task Consistency After Dragging
