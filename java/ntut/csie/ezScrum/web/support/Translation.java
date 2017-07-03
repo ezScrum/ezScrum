@@ -212,10 +212,11 @@ public class Translation {
 		return new JSONObject().toString();
 	}
 
-	public static String translateTaskboardStoryToJson(StoryObject story) {
+	public static String translateTaskboardStoryToJson(StoryObject story, String messageResponse) {
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
+			responseText.put("messageResponse", messageResponse);
 			JSONObject jsonIssue = new JSONObject();
 			// 若需要其他欄位請再新增
 			jsonIssue.put("Id", story.getId());
@@ -231,10 +232,11 @@ public class Translation {
 		return responseText.toString();
 	}
 
-	public static String translateTaskboardTaskToJson(TaskObject task) {
+	public static String translateTaskboardTaskToJson(TaskObject task, String messageResponse) {
 		JSONObject responseText = new JSONObject();
 		try {
 			responseText.put("success", true);
+			responseText.put("messageResponse", messageResponse);
 			JSONObject jsonIssue = new JSONObject();
 			// 若需要其他欄位請再新增
 			jsonIssue.put("Id", task.getId());

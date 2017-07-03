@@ -45,11 +45,13 @@ public class SwitchNotificationStatusAction extends Action{
 	
 	private String Subscribe(String token, Long account_id, String firebaseToken){
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		return ap.subscribeNotification(account_id, firebaseToken);
+		String s = ap.subscribeNotification(account_id, firebaseToken);
+		return s;
 	}
 	
 	private String CancelSubcribe(String token, Long account_id, String firebaseToken){
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		return ap.cancelSubscribeNotification(account_id, firebaseToken);
+		String s = ap.cancelSubscribeNotification(account_id, firebaseToken);
+		return s;
 	}
 }

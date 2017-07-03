@@ -52,13 +52,19 @@ public class CheckOutTaskAction extends PermissionAction {
 		DateFormat dateFormat = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME); // 設定changeDate正確的時間格式
 		StringBuilder result = new StringBuilder("");
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
-
+		
+		//Send Notification
+		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
+		AccountObject account = session.getAccount();
+		ArrayList<Long> recipients_id = project.getProjectMembersId();
+		String messageResponse = SendNotification(account, recipients_id, taskId, handler, project.getName());
+		
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
 				dateFormat.parse(changeDate);
 			sprintBacklogHelper.checkOutTask(taskId, name, handler, partners, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(taskId);	// return checkout的issue的相關資訊
-			result.append(Translation.translateTaskboardTaskToJson(task));
+			result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));
 		} catch (ParseException e) {								// ChangeDate格式錯誤
 			result.append("fail...非正確日期的參數");
 		} catch (NullPointerException e) {							// issue為null
@@ -66,11 +72,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		}
 		System.out.println(result);
 		
-		//Send Notification
-		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
-		AccountObject account = session.getAccount();
-		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		SendNotification(account, recipients_id, taskId, handler, project.getName());
+
 		
 		return result;
 	}

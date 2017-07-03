@@ -52,17 +52,17 @@ public class ResetTaskAction extends PermissionAction {
 
 		sprintBacklogHelper.resetTask(issueId, name, bugNote, changeDate);
 
-		// return reset task的相關資訊
-		TaskObject task = sprintBacklogHelper.getTask(issueId);
-		// IIssue issue = sprintBacklogHelper.getStory(issueID);
-		StringBuilder result = new StringBuilder("");
-		result.append(Translation.translateTaskboardTaskToJson(task));
-
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		SendNotification(account, recipients_id, issueId, project.getName());
+		String messageResponse = SendNotification(account, recipients_id, issueId, project.getName());
+		
+		// return reset task的相關資訊
+		TaskObject task = sprintBacklogHelper.getTask(issueId);
+		// IIssue issue = sprintBacklogHelper.getStory(issueID);
+		StringBuilder result = new StringBuilder("");
+		result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));
 
 		return result;
 	}

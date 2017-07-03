@@ -28,7 +28,7 @@ function NotifyLogout(){
 }
 
 function SubscriptNotificationService(){
-	if(confirm("Are you sure to subscript?")){
+	if(confirm("Are you sure to subscribe?")){
 		Ext.Ajax.request({
 			url: 'switchNotification.do',
 			params:{
@@ -38,7 +38,10 @@ function SubscriptNotificationService(){
 				if(data.responseText == "Success")
 					SetNotifyImg("Subscription");
 				else
+					{
 					alert(data.responseText);
+					}
+					
 			},
 			failure:function(XMLHttpRequest,s,o){
 				alert("Subscript fail");
@@ -75,7 +78,7 @@ function SetNotifyImg(subscription){
 		Ext.getDom("Notification_Subscript").onclick = CancelSubscribeNotificationService;
 	}
 	else if(subscription == "No-Subscription"){
-		Ext.getDom("Notification_Subscript").src = "images/NotifyBell_UnSubscript.png";
+		Ext.getDom("Notification_Subscript").src = "images/NotifyBell_NoSubscription.png";
 		Ext.getDom("Notification_Subscript").onclick = SubscriptNotificationService;
 	}
 	else{
@@ -108,20 +111,18 @@ function SettingNotification(){
 				navigator.serviceWorker.register("./javascript/firebase-messaging-sw.js")
 				.then(function (registration) {
 					messaging.useServiceWorker(registration);
-					messaging.requestPermission()
-					.then(function(){
-						messaging.getToken()
-						.then(function(token){
-							resolve(token);
-						})
-						.catch(function(err){
-							reject(err)
-						})
+					messaging.getToken()
+					.then(function(token){
+						resolve(token);
 					})
 					.catch(function(err){
 						reject(err)
 					})
+
 					
+				})
+				.catch(function(e){
+					console.log(e);
 				});
 				messaging.onMessage(function(payload){
 					var option = {

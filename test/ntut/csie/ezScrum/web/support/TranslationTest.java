@@ -492,11 +492,14 @@ public class TranslationTest {
 			storyInfo.status = StoryObject.STATUS_UNCHECK;
 			story = productBacklogHelper.updateStory(storyInfo);
 
-			String actualText = Translation.translateTaskboardStoryToJson(story);
+			String messageResponse = "Success";
+			
+			String actualText = Translation.translateTaskboardStoryToJson(story, messageResponse);
 			assertTrue(actualText.contains("\"success\":true"));
 			assertTrue(actualText.contains("\"Id\":" + story.getId()));
 			assertTrue(actualText.contains("\"Name\":\"" + storyInfo.name + "\""));
 			assertTrue(actualText.contains("\"Estimate\":" + storyInfo.estimate));
+			assertTrue(actualText.contains("\"messageResponse\":\"" + messageResponse+ "\""));
 		}
 	}
 
@@ -525,12 +528,15 @@ public class TranslationTest {
 			sprintBacklogHelper.updateTask(taskInfo, TEST_ACCOUNT_NAME, "");
 			task = sprintBacklogHelper.getTask(taskInfo.id);
 			
-			String actualText = Translation.translateTaskboardTaskToJson(task);
+			String messageResponse = "Success";
+			
+			String actualText = Translation.translateTaskboardTaskToJson(task, messageResponse);
 			assertTrue(actualText.contains("\"success\":true"));
 			assertTrue(actualText.contains("\"Id\":" + task.getId()));
 			assertTrue(actualText.contains("\"Name\":\"" + taskInfo.name + "\""));
 			assertTrue(actualText.contains("\"Handler\":\"" + TEST_ACCOUNT_NAME + "\""));
 			assertTrue(actualText.contains("\"Partners\":"));
+			assertTrue(actualText.contains("\"messageResponse\":\"" + messageResponse+ "\""));
 		}
 	}
 	

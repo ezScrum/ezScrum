@@ -736,7 +736,7 @@ public class AccountRESTClient{
 	}
 	
 	public String sendNotification(ArrayList<Long> accounts_id, String title, String body, String eventSource) throws IOException,JSONException{
-		String requestURL = baseURL + "/accounts/notifyServiceLogout";
+		String requestURL = baseURL + "/accounts/sendNotification";
 		
 		JSONArray array = new JSONArray(accounts_id);
 		JSONObject json = new JSONObject();

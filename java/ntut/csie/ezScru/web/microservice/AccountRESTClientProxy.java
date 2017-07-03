@@ -249,13 +249,13 @@ public class AccountRESTClientProxy implements IAccountController{
 	
 	public String sendNotification(Long senderId, ArrayList<Long> recipients_id, String title, String body, String eventSource){
 		try{
-			for(int index = 0;index < recipients_id.size(); index++){
-				if(recipients_id.get(index) == senderId){
-					recipients_id.remove(index);
-					break;
-				}
+			ArrayList<Long> recipientsExcludeSender = new ArrayList<Long>();
+			for(Long recipient_id : recipients_id){
+				if(recipient_id == senderId)
+					continue;
+				recipientsExcludeSender.add(recipient_id);
 			}
-			return accountRESTClient.sendNotification(recipients_id, title, body, eventSource);
+			return accountRESTClient.sendNotification(recipientsExcludeSender, title, body, eventSource);
 		}catch(IOException e){
 			return "Connection Error : account management.";
 		} catch (JSONException e) {

@@ -54,23 +54,24 @@ public class ReopenIssueAction extends PermissionAction {
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(
 				project);
 		StringBuilder result = new StringBuilder("");
-		if (issueType.equals("Story")) {
-			sprintBacklogHelper.reopenStory(id, name, notes, changeDate);
-			// return re open 的 issue的相關資訊
-			StoryObject story = sprintBacklogHelper.getStory(id);
-			result.append(Translation.translateTaskboardStoryToJson(story));
-		} else if (issueType.equals("Task")) {
-			sprintBacklogHelper.reopenTask(id, name, notes, changeDate);
-			TaskObject task = sprintBacklogHelper.getTask(id);
-			result.append(Translation.translateTaskboardTaskToJson(task));
-		}
-
+		
 		//Send Notification
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		SendNotification(account, recipients_id, id, issueType, project.getName());
+		String messageResponse = SendNotification(account, recipients_id, id, issueType, project.getName());
 		
+		if (issueType.equals("Story")) {
+			sprintBacklogHelper.reopenStory(id, name, notes, changeDate);
+			// return re open 的 issue的相關資訊
+			StoryObject story = sprintBacklogHelper.getStory(id);
+			result.append(Translation.translateTaskboardStoryToJson(story, messageResponse));
+		} else if (issueType.equals("Task")) {
+			sprintBacklogHelper.reopenTask(id, name, notes, changeDate);
+			TaskObject task = sprintBacklogHelper.getTask(id);
+			result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));
+		}
+
 		return result;
 	}
 	

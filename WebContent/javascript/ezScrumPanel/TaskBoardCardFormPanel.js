@@ -237,6 +237,8 @@ var CheckOutTaskWindow = new ezScrum.window.CheckOutWindow({
 			this.hide();
 			
 			Ext.example.msg('Check Out Task', 'Success.');
+			var r = JSON.parse(response.responseText);
+			Ext.example.msg("Notification",r.messageResponse);
 			// update task data : name, handler, partners, note
 			this.taskCard.moveToTarget();
 			this.taskCard.updateData(record.data);
@@ -262,6 +264,8 @@ var RE_CheckOutTaskWindow = new ezScrum.window.ReCheckOutWindow({
 		RECheckOutSuccess: function(win, response, record) {
 			this.hide();
 			Ext.example.msg('Reset Task', 'Success.');
+			var r = JSON.parse(response.responseText);
+			Ext.example.msg("Notification",r.messageResponse);
 			
 			// move task card, 清除 handler, partner 的動作在 TaskCard.js 做了
 			this.taskCard.moveToTarget();
@@ -288,6 +292,8 @@ var DoneIssueWindow = new ezScrum.window.DoneIssueWindow({
 		DoneSuccess: function(win, response, record) {
 			this.hide();
 			Ext.example.msg('Done Issue', 'Success.');
+			var r = JSON.parse(response.responseText);
+			Ext.example.msg("Notification",r.messageResponse);
 			
 			// move story or task card
 			this.issueCard.moveToTarget();
@@ -319,6 +325,8 @@ var RE_OpenIssueWindow = new ezScrum.window.ReOpenIssueWindow({
 		ReOpenSuccess: function(win, response, record) {
 			this.hide();
 			Ext.example.msg('Re Open Issue', 'Success.');
+			var r = JSON.parse(response.responseText);
+			Ext.example.msg("Notification",r.messageResponse);
 
 			// move story or task card
 			this.issueCard.moveToTarget();
