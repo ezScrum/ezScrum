@@ -30,6 +30,7 @@ Test ScrumRole Setup
 
 Test ScrumRole Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ScrumRole Setup with Account
@@ -56,6 +57,7 @@ Test ScrumRole Teardown with Account
     Wait until keyword succeeds    1min    5sec    SwitchToItemLink    False    Account Management
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest
@@ -89,6 +91,7 @@ Test ScrumRole Teardown for Guest
     Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ScrumRole Setup for Guest Default
@@ -132,6 +135,7 @@ Test ScrumRole Teardown for Guest Default
     # 可直接刪除帳號 ?
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder
@@ -163,6 +167,7 @@ Test ScrumRole Teardown for Stakeholder
     Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ScrumRole Setup for Stakeholder Default
@@ -206,6 +211,7 @@ Test ScrumRole Teardown for Stakeholder Default
     Comment    Assign Role Remove    ${tsAccountID}    ${PROJECT_NAME}
     Comment    Delete Account
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
 
 Test ScrumRole Setup for ScrumTeam
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
@@ -236,6 +242,7 @@ Test ScrumRole Teardown for ScrumTeam
     Comment    Delete Account
     Comment    Exit ezScrum System
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
 
 Test ScrumRole Setup for ScrumMaster
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
@@ -266,6 +273,7 @@ Test ScrumRole Teardown for ScrumMaster
     Comment    Delete Account
     Comment    Exit ezScrum System
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
 
 Test ScrumRole Setup for ProductOwner
     [Documentation]    1.以Admin身分登入並建立一個 user 後登出
@@ -296,3 +304,4 @@ Test ScrumRole Teardown for ProductOwner
     Comment    Delete Account
     Comment    Exit ezScrum System
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms

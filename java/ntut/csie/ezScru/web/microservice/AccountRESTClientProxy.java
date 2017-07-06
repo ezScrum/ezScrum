@@ -87,7 +87,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		mAccountRESTCommand = new UpdateAccountCommand(accountRESTClient,accountInfo);
 		invoker.addAction(mAccountRESTCommand);
 		try {
-			account = accountRESTClient.updateAccount(accountInfo);
+			account = (AccountObject) invoker.doCommand();
 			return account;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -101,8 +101,9 @@ public class AccountRESTClientProxy implements IAccountController{
 		boolean deleteFromAccountHelper = accountHelper.deleteAccount(id);
 		boolean checkDelete = false;
 		mAccountRESTCommand = new DeleteAccountCommand(accountRESTClient, id);
+		invoker.addAction(mAccountRESTCommand);
 		try {
-			checkDelete = accountRESTClient.deleteAccount(id);
+			checkDelete = (boolean) invoker.doCommand();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

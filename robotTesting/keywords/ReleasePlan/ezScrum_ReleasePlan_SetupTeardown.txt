@@ -42,6 +42,7 @@ Test Release Plan - Add Release Setup
 Test Release Plan - Add Release Teardown
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Edit Release Setup
@@ -62,6 +63,7 @@ Test Release Plan - Edit Release Setup
 Test Release Plan - Edit Release Teardown
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Show Release Backlog Setup
@@ -82,6 +84,7 @@ Test Release Plan - Show Release Backlog Setup
 Test Release Plan - Show Release Backlog Teardown
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Delete Release Setup
@@ -102,6 +105,7 @@ Test Release Plan - Delete Release Setup
 Test Release Plan - Delete Release Teardown
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Contain Sprints Setup
@@ -123,6 +127,7 @@ Test Release Plan - Contain Sprints Teardown
     Comment    Clean All Sprint
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - New Sprint Setup
@@ -149,6 +154,7 @@ Test Release Plan - New Sprint Teardown
     Comment    Clean All Sprint
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Edit Sprint Setup
@@ -179,6 +185,7 @@ Test Release Plan - Edit Sprint Teardown
     Comment    Clean All Sprint
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Release Plan - Session - Contain Sprints Setup
