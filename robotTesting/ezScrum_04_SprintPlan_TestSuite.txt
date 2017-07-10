@@ -36,101 +36,101 @@ Test Sprint Plan - Sprint Goal With NewLine
 
 Test Sprint Plan - Check End Date and Demo Date
     [Setup]    Test Check End Date and Demo Date Setup
-    Comment    #Select Sprint Plan
-    Comment    Select Node Product    Sprint Plan
-    Comment    #Click New Sprint
-    Comment    Page Should Contain    New Sprint
-    Comment    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/12/26
-    Comment    Focus AND Input Text    //input[@name="Interval"]    2
-    Comment    #Compare End date
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2017/01/08
-    Comment    #Copare Demo date
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2017/01/06
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2015/12/21
-    Comment    Focus AND Input Text    //input[@name="Interval"]    2
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/01/03
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/01/01
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2015/02/23
-    Comment    Focus AND Input Text    //input[@name="Interval"]    2
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2015/03/08
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2015/03/06
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
-    Comment    Focus AND Input Text    //input[@name="Interval"]    2
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/06
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/02/28
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/02/26
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/23
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/02/29
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/02/29
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/24
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/01
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/01
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/25
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/02
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/02
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/26
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/03
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/03
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/27
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/04
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    #Check End date
-    Comment    Focus AND Input Text    //input[@name="StartDate"]    2016/02/28
-    Comment    Focus AND Input Text    //input[@name="Interval"]    1
-    Comment    Click Element    //input[@name="EndDate"]
-    Comment    Compare Field Content    //input[@name="EndDate"]    2016/03/05
-    Comment    Click Element    //input[@name="DemoDate"]
-    Comment    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
-    Comment    Clear Element Text    //input[@name="Interval"]
-    Comment    Click Element    //button[text()="Cancel"]
+    #Select Sprint Plan
+    Select Node Product    Sprint Plan
+    #Click New Sprint
+    Page Should Contain    New Sprint
+    Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/12/26
+    Focus AND Input Text    //input[@name="Interval"]    2
+    #Compare End date
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2017/01/08
+    #Copare Demo date
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2017/01/06
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/12/21
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/01/03
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/01/01
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2015/02/23
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2015/03/08
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2015/03/06
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    2
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/06
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/22
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/02/28
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/02/26
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/23
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/02/29
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/02/29
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/24
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/01
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/01
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/25
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/02
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/02
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/26
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/03
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/03
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/27
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/04
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    Clear Element Text    //input[@name="Interval"]
+    #Check End date
+    Focus AND Input Text    //input[@name="StartDate"]    2016/02/28
+    Focus AND Input Text    //input[@name="Interval"]    1
+    Click Element    //input[@name="EndDate"]
+    Compare Field Content    //input[@name="EndDate"]    2016/03/05
+    Click Element    //input[@name="DemoDate"]
+    Compare Field Content    //input[@name="DemoDate"]    2016/03/04
+    Clear Element Text    //input[@name="Interval"]
+    Click Element    //button[text()="Cancel"]
     [Teardown]    Test Check End Date and Demo Date Teardown
 
 Test Sprint Plan - Check Recommended Start Date
