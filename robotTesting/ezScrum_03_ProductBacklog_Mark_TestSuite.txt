@@ -30,15 +30,15 @@ Test ProductBacklog - Mark And UnMark Story Tag
     [Documentation]    Mark And UnMark Tag
     [Setup]    Test Mark And UnMark Story Tag Setup
     # Mark
-    Comment    Mark And UnMark Tag With Arguments    Mark    newStory    markAndUnMarkTag
-    Comment    ${storyID}=    Get Story ID
-    Comment    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1
-    ...    Note: newStory    HowToDemo: newStory
+    Mark And UnMark Tag With Arguments    Mark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
     # UnMark
-    Comment    Mark And UnMark Tag With Arguments    UnMark    newStory    markAndUnMarkTag
-    Comment    ${storyID}=    Get Story ID
-    Comment    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1
-    ...    Note: newStory    HowToDemo: newStory
+    Mark And UnMark Tag With Arguments    UnMark    newStory    markAndUnMarkTag
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
     [Teardown]    Test Mark And UnMark Story Tag Teardown
 
 Test ProductBacklog - Filter - Done

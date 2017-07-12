@@ -21,17 +21,17 @@ ${tsAccountMail}    TestAccountMail@scrum.tw
 *** Test Cases ***
 Test Account Management - Add Account
     [Setup]    Test Account Management - Add Account Setup
-    Comment    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
-    Comment    Wait Until Page Contains    Success.
-    Comment    Check Account In Edit    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
-    Comment    # admin Log out
-    Comment    Click Image    images/logout.gif
-    Comment    Title Should Be    ezScrum Logon!
-    Comment    # log in by new account
-    Comment    Input Text    userId    ${tsAccountId}
-    Comment    Input Password    password    ${tsAccountId}
-    Comment    Submit Form    logonForm
-    Comment    Title Should Be    ezScrum, SSLab NTUT
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    # admin Log out
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    # log in by new account
+    Input Text    userId    ${tsAccountId}
+    Input Password    password    ${tsAccountId}
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
     [Teardown]    Test Account Management - Add Account Teardown
 
 Test Account Management - Add Duplicate Account
@@ -50,9 +50,9 @@ Test Account Management - Add Duplicate Account
 
 Test Account Management - Edit Account
     [Setup]    Test Account Management - Edit Account Setup
-    Comment    Edit Account    ${tsAccountId}
-    Comment    Wait Until Page Contains    Success.
-    Comment    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
+    Edit Account    ${tsAccountId}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
     [Teardown]    Test Account Management - Edit Account Teardown
 
 Test Account Management - Delete Account
@@ -149,38 +149,38 @@ Test Account Management - Change Password
     ...    更改密碼後能夠正常登入
     [Tags]    Bug
     [Setup]    Test Account Management - Change Password Setup
-    Comment    Edit Account    ${tsAccountId}
-    Comment    Wait Until Page Contains    Success.
-    Comment    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
-    Comment    # logout
-    Comment    Click Image    images/logout.gif
-    Comment    Title Should Be    ezScrum Logon!
-    Comment    # log in by user account
-    Comment    Input Text    userId    ${tsAccountId}
-    Comment    Input Password    password    ${tsAccountId}
-    Comment    Submit Form    logonForm
-    Comment    Title Should Be    ezScrum, SSLab NTUT
-    Comment    # logout
-    Comment    Click Image    images/logout.gif
-    Comment    Title Should Be    ezScrum Logon!
-    Comment    # login with admin
-    Comment    Input Text    userId    admin
-    Comment    Input Password    password    admin
-    Comment    Submit Form    logonForm
-    Comment    Title Should Be    ezScrum, SSLab NTUT
-    Comment    # change password
-    Comment    Wait Until Page Contains Element    xpath=//td[text()="Management"]
-    Comment    Click element    xpath=//td[text()="Management"]
-    Comment    ${newPassword}=    Set Variable    01234567890123456789
-    Comment    Change Account Password    ${tsAccountId}    ${newPassword}
-    Comment    # logout
-    Comment    Click Image    images/logout.gif
-    Comment    Title Should Be    ezScrum Logon!
-    Comment    # log in by user account
-    Comment    Input Text    userId    ${tsAccountId}
-    Comment    Input Password    password    ${newPassword}
-    Comment    Submit Form    logonForm
-    Comment    Title Should Be    ezScrum, SSLab NTUT
+    Edit Account    ${tsAccountId}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
+    # logout
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    # log in by user account
+    Input Text    userId    ${tsAccountId}
+    Input Password    password    ${tsAccountId}
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
+    # logout
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    # login with admin
+    Input Text    userId    admin
+    Input Password    password    admin
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
+    # change password
+    Wait Until Page Contains Element    xpath=//td[text()="Management"]
+    Click element    xpath=//td[text()="Management"]
+    ${newPassword}=    Set Variable    01234567890123456789
+    Change Account Password    ${tsAccountId}    ${newPassword}
+    # logout
+    Click Image    images/logout.gif
+    Title Should Be    ezScrum Logon!
+    # log in by user account
+    Input Text    userId    ${tsAccountId}
+    Input Password    password    ${newPassword}
+    Submit Form    logonForm
+    Title Should Be    ezScrum, SSLab NTUT
     [Teardown]    Test Account Management - Change Password Teardown
 
 Test Account Management - Validate Confirm Password

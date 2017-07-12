@@ -72,12 +72,12 @@ Test ProductBacklog - Edit Story Identify Invalid Value
 Test ProductBacklog - Create Story
     [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。
     [Setup]    Test Create Story Setup
-    Comment    Create Tag With Arguments    testTagName
-    Comment    Create Story With Arguments    newStory    5    3    1    testTagName
-    ...    Note: newStory    HowToDemo: newStory
-    Comment    ${storyID}=    Get Story ID
-    Comment    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1
-    ...    Note: newStory    HowToDemo: newStory
+    Create Tag With Arguments    testTagName
+    Create Story With Arguments    newStory    5    3    1    testTagName    Note: newStory
+    ...    HowToDemo: newStory
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
     [Teardown]    Test Create Story Teardown
 
 Test ProductBacklog - Create Story With Invalid Value
@@ -93,26 +93,26 @@ Test ProductBacklog - Create Story With Invalid Value
 Test ProductBacklog - Edit Story
     [Documentation]    Add Story(正常資料)。點選Story，點選按鈕Edit Story，修改各個欄位資料，Tag欄位勾選/取消勾選Tag後送出。
     [Setup]    Test Edit Story Setup
-    Comment    Edit Story With Arguments    oriStory    testTagName
-    Comment    ${storyID}=    Get Story ID
-    Comment    Verify Story Information With Arguments    ${storyID}    EditStoryName    3    5    8
-    ...    EditStoryNotes    EditStoryHowToDemo
+    Edit Story With Arguments    oriStory    testTagName
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments    ${storyID}    EditStoryName    3    5    8    EditStoryNotes
+    ...    EditStoryHowToDemo
     [Teardown]    Test Edit Story Teardown    ${storyID}
 
 Test ProductBacklog - Story History
     [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
     [Setup]    Test Story History Setup
-    Comment    Set Test Variable    ${storyName}    newStory
-    Comment    # Set Selenium Speed 1
-    Comment    ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
-    Comment    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
-    Comment    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
-    Comment    Click Element    xpath=//button[text()="Show History"]
-    Comment    ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
-    Comment    Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
-    Comment    Comment    Click Element    xpath=//button[text()="Close"]
-    Comment    ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
-    Comment    Element Enable And Submit    ${xpathIssueHistoryListClose}
+    Set Test Variable    ${storyName}    newStory
+    # Set Selenium Speed 1
+    ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Click Element    xpath=//button[text()="Show History"]
+    ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
+    Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
+    Comment    Click Element    xpath=//button[text()="Close"]
+    ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
+    Element Enable And Submit    ${xpathIssueHistoryListClose}
     # Set Selenium Speed 0
     # Test Product Backlog Filter
     # [Documentation] 建立多Story後點選按鈕Filter, 測試 Backlogged, Detailed, Done, Default。
@@ -179,11 +179,11 @@ Test ProductBacklog - Remove Story Tag
     [Documentation]    Remove Tag
     [Tags]    tag
     [Setup]    Test Remove Story Tag Setup
-    Comment    Delete Tag With Arguments    testTagName
-    Comment    ${storyID}=    Get Story ID
-    Comment    Click Element    xpath=//div[@id="productBacklogGridPanel"]/div[2]/div/div/div/div/div/div/div/div/div/table/tbody/tr
-    Comment    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1
-    ...    Note: newStory    HowToDemo: newStory
+    Delete Tag With Arguments    testTagName
+    ${storyID}=    Get Story ID
+    Click Element    xpath=//div[@id="productBacklogGridPanel"]/div[2]/div/div/div/div/div/div/div/div/div/table/tbody/tr
+    Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
+    ...    HowToDemo: newStory
     [Teardown]    Test Remove Story Tag Teardown
 
 Test ProductBacklog - Create Tag
@@ -319,33 +319,33 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
-    Comment    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1539"]    #Tag
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
+    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1539"]    #Tag
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
     #Select one Story
-    Comment    Click Element    xpath=//div[text()="Project01"]
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Manage Tag
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1539"]    #Tag
+    Click Element    xpath=//div[text()="Project01"]
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
+    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Manage Tag
+    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1539"]    #Tag
     #Select two story
-    Comment    Click Element    xpath=//tbody//div[text()="Project01"]
-    Comment    press_shift_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Comment    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    Click Element    xpath=//tbody//div[text()="Project01"]
+    press_shift_and_click_element    xpath=//tbody//div[text()="Project02"]
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
+    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
     #Cancel selecting story
-    Comment    press_control_and_click_element    xpath=//tbody//div[text()="Project01"]
-    Comment    press_control_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Comment    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]    #Show History
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    press_control_and_click_element    xpath=//tbody//div[text()="Project01"]
+    press_control_and_click_element    xpath=//tbody//div[text()="Project02"]
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
+    Comment    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]    #Show History
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
+    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown

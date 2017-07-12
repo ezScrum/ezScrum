@@ -12,24 +12,24 @@ Resource          keywords/Tag/ezScrum_Tag_SetupTeardown.txt
 *** Test Cases ***
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    Click Element    //button[text()="Edit Story"]
-    Comment    Click Element    //label[text()="Tags:"]/..//img
-    Comment    Click Element    //span[text()="Project01Tag01"]
-    Comment    Click Element    //label[text()="Tags:"]
-    Comment    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
 
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    Click Element    //button[text()="Edit Story"]
-    Comment    Click Element    //label[text()="Tags:"]/..//img
-    Comment    Click Element    //span[text()="Project02Tag01"]
-    Comment    Click Element    //label[text()="Tags:"]
-    Comment    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
 
 Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.01
@@ -83,103 +83,103 @@ Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02 Check Proj
 Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.01
     [Documentation]    Edit story that add one tag or two tags in Project01.And edit story that cancel one tag or two tags in Project01.Check Project01 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
-    Comment    #add one tag to story 1
-    Comment    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
-    Comment    Double Click Element    ${StoryId_1}
-    Comment    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project01Tag01"]
-    Comment    Click Element    ${SelectedTag_StoryId1}
-    Comment    ${Submit}    Set Variable    xpath = //button[text()="Submit"] \
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
-    Comment    #add two tags to story 2
-    Comment    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
-    Comment    Double Click Element    ${StoryId_2}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
-    Comment    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    Click Element    ${SelectedTag_StoryId2_First}
-    Comment    Click Element    ${SelectedTag_StoryId2_Second}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1] \
-    Comment    #cancel one tag of story 6
-    Comment    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
-    Comment    Double Click Element    ${StoryId_6}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
-    Comment    Click Element    ${CancelTag_StoryId6_First}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
-    Comment    #cancel two tags of story 7
-    Comment    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
-    Comment    Double Click Element    ${StoryId_7}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
-    Comment    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    Click Element    ${CancelTag_StoryId7_First}
-    Comment    Click Element    ${CancelTag_StoryId7_Second}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    Comment    #Compare after reload page
-    Comment    Reload Page
-    Comment    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Comment    Click Element    ${SprintBacklog}
-    Comment    Should Be Equal    ${NewTags_StoryId1}    Project01Tag01
-    Comment    Should Be Equal    ${NewTags_StoryId2}    Project01Tag02, ProjectsMutualTag01
-    Comment    Should Be Empty    ${NewTags_StoryId6}
-    Comment    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag01, Project01Tag03
+    #add one tag to story 1
+    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
+    Double Click Element    ${StoryId_1}
+    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project01Tag01"]
+    Click Element    ${SelectedTag_StoryId1}
+    ${Submit}    Set Variable    xpath = //button[text()="Submit"] \
+    Click Element    ${Submit}
+    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
+    #add two tags to story 2
+    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
+    Double Click Element    ${StoryId_2}
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
+    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${SelectedTag_StoryId2_First}
+    Click Element    ${SelectedTag_StoryId2_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1] \
+    #cancel one tag of story 6
+    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
+    Double Click Element    ${StoryId_6}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
+    Click Element    ${CancelTag_StoryId6_First}
+    Click Element    ${Submit}
+    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
+    #cancel two tags of story 7
+    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
+    Double Click Element    ${StoryId_7}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
+    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${CancelTag_StoryId7_First}
+    Click Element    ${CancelTag_StoryId7_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    #Compare after reload page
+    Reload Page
+    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
+    Should Be Equal    ${NewTags_StoryId1}    Project01Tag01
+    Should Be Equal    ${NewTags_StoryId2}    Project01Tag02, ProjectsMutualTag01
+    Should Be Empty    ${NewTags_StoryId6}
+    Should Be Equal    ${NewTags_StoryId7}    ProjectsMutualTag02, Project01Tag01, Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
     [Documentation]    Edit story that add one tag or two tags in Project02.And edit story that cancel one tag or two tags in Project01.Check Project02 if tags is the same as we expect.
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
-    Comment    #add one tag to story 1
-    Comment    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
-    Comment    Double Click Element    ${StoryId_1}
-    Comment    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Comment    Click Element    ${SelectedTag_StoryId1}
-    Comment    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
-    Comment    #add two tags to story 2
-    Comment    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
-    Comment    Double Click Element    ${StoryId_2}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
-    Comment    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    Click Element    ${SelectedTag_StoryId2_First}
-    Comment    Click Element    ${SelectedTag_StoryId2_Second}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
-    Comment    #cancel one tag of story 6
-    Comment    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
-    Comment    Double Click Element    ${StoryId_6}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Comment    Click Element    ${CancelTag_StoryId6_First}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
-    Comment    #cancel two tags of story 7
-    Comment    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
-    Comment    Double Click Element    ${StoryId_7}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Comment    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    Click Element    ${CancelTag_StoryId7_First}
-    Comment    Click Element    ${CancelTag_StoryId7_Second}
-    Comment    Click Element    ${Submit}
-    Comment    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
-    Comment    #Compare after reload page
-    Comment    Reload Page
-    Comment    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Comment    Click Element    ${SprintBacklog}
-    Comment    Should Be Equal    ${NewTags_StoryId1}    Project02Tag01
-    Comment    Should Be Equal    ${NewTags_StoryId2}    Project02Tag02, ProjectsMutualTag01
-    Comment    Should Be Empty    ${NewTags_StoryId6}
-    Comment    Should Be Empty    ${NewTags_StoryId7}
+    #add one tag to story 1
+    ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
+    Double Click Element    ${StoryId_1}
+    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId1}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    Click Element    ${SelectedTag_StoryId1}
+    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
+    Click Element    ${Submit}
+    ${NewTags_StoryId1}    Get Text    xpath = //span[text()="1"]/../../../td[2]/div[1]
+    #add two tags to story 2
+    ${StoryId_2}    Set Variable    xpath = //tr//span[text()="2"]
+    Double Click Element    ${StoryId_2}
+    Click Element    ${Tag_selectedFrame}
+    ${SelectedTag_StoryId2_First}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
+    ${SelectedTag_StoryId2_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${SelectedTag_StoryId2_First}
+    Click Element    ${SelectedTag_StoryId2_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId2}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
+    #cancel one tag of story 6
+    ${StoryId_6}    Set Variable    xpath = //tr//span[text()="6"]
+    Double Click Element    ${StoryId_6}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId6_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    Click Element    ${CancelTag_StoryId6_First}
+    Click Element    ${Submit}
+    ${NewTags_StoryId6}    Get Text    xpath = //span[text()="6"]/../../../td[2]/div[1]
+    #cancel two tags of story 7
+    ${StoryId_7}    Set Variable    xpath = //tr//span[text()="7"]
+    Double Click Element    ${StoryId_7}
+    Click Element    ${Tag_selectedFrame}
+    ${CancelTag_StoryId7_First}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    ${CancelTag_StoryId7_Second}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    Click Element    ${CancelTag_StoryId7_First}
+    Click Element    ${CancelTag_StoryId7_Second}
+    Click Element    ${Submit}
+    ${NewTags_StoryId7}    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
+    #Compare after reload page
+    Reload Page
+    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Click Element    ${SprintBacklog}
+    Should Be Equal    ${NewTags_StoryId1}    Project02Tag01
+    Should Be Equal    ${NewTags_StoryId2}    Project02Tag02, ProjectsMutualTag01
+    Should Be Empty    ${NewTags_StoryId6}
+    Should Be Empty    ${NewTags_StoryId7}
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02 Check Proj.1
@@ -495,90 +495,90 @@ Test Tag - Product Backlog Tag Button Project02 repeat edit tag on same story
 
 Test Tag - SprintBacklog Repeat Edit One Story in Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
-    Comment    #set variable
-    Comment    ${SprintBacklog}    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Comment    ${Story02_Project01}    Set Variable    xpath = //tr//span[text()="2"]
-    Comment    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
-    Comment    ${Project01Tag01}    Set Variable    xpath = //li[1]//span[text()="Project01Tag01"]
-    Comment    ${Project01Tag02}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
-    Comment    ${ProjectsMutualTag01}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    ${ProjectsMutualTag02}    Set Variable    xpath = //li[4]//span[text()="ProjectsMutualTag02"]
-    Comment    ${Project01Tag03}    Set Variable    xpath = //li[5]//span[text()="Project01Tag03"]
-    Comment    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
-    Comment    #repeat edit one story
-    Comment    Double Click Element    ${Story02_Project01}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project01Tag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project01}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project01Tag02}
-    Comment    Click Element    ${ProjectsMutualTag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project01}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${ProjectsMutualTag02}
-    Comment    Click Element    ${Project01Tag03}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project01}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project01Tag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project01}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project01Tag02}
-    Comment    Click Element    ${ProjectsMutualTag01}
-    Comment    Click Element    ${ProjectsMutualTag02}
-    Comment    Click Element    ${Submit}
-    Comment    Reload Page
-    Comment    Click Element    ${SprintBacklog}
-    Comment    ${NewTags}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
-    Comment    Should Be equal    ${NewTags}    Project01Tag03
+    #set variable
+    ${SprintBacklog}    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    ${Story02_Project01}    Set Variable    xpath = //tr//span[text()="2"]
+    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
+    ${Project01Tag01}    Set Variable    xpath = //li[1]//span[text()="Project01Tag01"]
+    ${Project01Tag02}    Set Variable    xpath = //li[2]//span[text()="Project01Tag02"]
+    ${ProjectsMutualTag01}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    ${ProjectsMutualTag02}    Set Variable    xpath = //li[4]//span[text()="ProjectsMutualTag02"]
+    ${Project01Tag03}    Set Variable    xpath = //li[5]//span[text()="Project01Tag03"]
+    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
+    #repeat edit one story
+    Double Click Element    ${Story02_Project01}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project01Tag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project01}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project01Tag02}
+    Click Element    ${ProjectsMutualTag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project01}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${ProjectsMutualTag02}
+    Click Element    ${Project01Tag03}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project01}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project01Tag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project01}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project01Tag02}
+    Click Element    ${ProjectsMutualTag01}
+    Click Element    ${ProjectsMutualTag02}
+    Click Element    ${Submit}
+    Reload Page
+    Click Element    ${SprintBacklog}
+    ${NewTags}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
+    Should Be equal    ${NewTags}    Project01Tag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - SprintBacklog Repeat Edit One Story in Proj.02
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
-    Comment    #set variable
-    Comment    ${SprintBacklog}    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Comment    ${Story02_Project02}    Set Variable    xpath = //tr//span[text()="2"]
-    Comment    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
-    Comment    ${Project02Tag01}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
-    Comment    ${Project02Tag02}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
-    Comment    ${ProjectsMutualTag01}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
-    Comment    ${Project02Tag03}    Set Variable    xpath = //li[4]//span[text()="Project02Tag03"]
-    Comment    ${ProjectsMutualTag02}    Set Variable    xpath = //li[5]//span[text()="ProjectsMutualTag02"]
-    Comment    ${ProjectsMutualTag03}    Set Variable    xpath = //li[6]//span[text()="ProjectsMutualTag03"]
-    Comment    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
-    Comment    #repeat edit one story
-    Comment    Double Click Element    ${Story02_Project02}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project02Tag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project02}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project02Tag02}
-    Comment    Click Element    ${ProjectsMutualTag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project02}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project02Tag03}
-    Comment    Click Element    ${ProjectsMutualTag02}
-    Comment    Click Element    ${ProjectsMutualTag03}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project02}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project02Tag01}
-    Comment    Click Element    ${Submit}
-    Comment    Double Click Element    ${Story02_Project02}
-    Comment    Click Element    ${Tag_selectedFrame}
-    Comment    Click Element    ${Project02Tag02}
-    Comment    Click Element    ${ProjectsMutualTag01}
-    Comment    Click Element    ${ProjectsMutualTag02}
-    Comment    Click Element    ${Submit}
-    Comment    Reload Page
-    Comment    Click Element    ${SprintBacklog}
-    Comment    ${NewTags}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
-    Comment    Should Be equal    ${NewTags}    Project02Tag03, ProjectsMutualTag03
+    #set variable
+    ${SprintBacklog}    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    ${Story02_Project02}    Set Variable    xpath = //tr//span[text()="2"]
+    ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
+    ${Project02Tag01}    Set Variable    xpath = //li[1]//span[text()="Project02Tag01"]
+    ${Project02Tag02}    Set Variable    xpath = //li[2]//span[text()="Project02Tag02"]
+    ${ProjectsMutualTag01}    Set Variable    xpath = //li[3]//span[text()="ProjectsMutualTag01"]
+    ${Project02Tag03}    Set Variable    xpath = //li[4]//span[text()="Project02Tag03"]
+    ${ProjectsMutualTag02}    Set Variable    xpath = //li[5]//span[text()="ProjectsMutualTag02"]
+    ${ProjectsMutualTag03}    Set Variable    xpath = //li[6]//span[text()="ProjectsMutualTag03"]
+    ${Submit}    Set Variable    xpath = //button[text()="Submit"]
+    #repeat edit one story
+    Double Click Element    ${Story02_Project02}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project02Tag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project02}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project02Tag02}
+    Click Element    ${ProjectsMutualTag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project02}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project02Tag03}
+    Click Element    ${ProjectsMutualTag02}
+    Click Element    ${ProjectsMutualTag03}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project02}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project02Tag01}
+    Click Element    ${Submit}
+    Double Click Element    ${Story02_Project02}
+    Click Element    ${Tag_selectedFrame}
+    Click Element    ${Project02Tag02}
+    Click Element    ${ProjectsMutualTag01}
+    Click Element    ${ProjectsMutualTag02}
+    Click Element    ${Submit}
+    Reload Page
+    Click Element    ${SprintBacklog}
+    ${NewTags}    Get Text    xpath = //span[text()="2"]/../../../td[2]/div[1]
+    Should Be equal    ${NewTags}    Project02Tag03, ProjectsMutualTag03
     [Teardown]    Test Tag - Sprint Backlog Teardown
 
 Test Tag - SprintBacklog Repeat Edit One Story in Proj.02 Check Proj.01
@@ -642,59 +642,59 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     [Documentation]    edit tags with "edit story" and "tag" button
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
-    Comment    #Select Project
-    Comment    Click Element    xpath=//div[text()="Project01"]
-    Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    Comment    #Select Story
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    #Add tag with Edit Story
-    Comment    Click Element    //button[text()="Edit Story"]
-    Comment    Click Element    //label[text()="Tags:"]/..//img
-    Comment    Click Element    //span[text()="Project01Tag01"]
-    Comment    Click Element    //label[text()="Tags:"]
-    Comment    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
-    Comment    #Add tag with Tag
-    Comment    reload page
-    Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    Comment    #Select Story
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    Click Button    xpath=//button[text()="Tag"]
-    Comment    Wait until page contains element    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
-    Comment    Click image    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
-    Comment    ${ASCII}=    Evaluate    b" "
-    Comment    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    ${Space}
+    #Select Project
+    Click Element    xpath=//div[text()="Project01"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    #Add tag with Edit Story
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project01Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
+    #Add tag with Tag
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Button    xpath=//button[text()="Tag"]
+    Wait until page contains element    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    Click image    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    ${Space}
     [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
 
 Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
     [Documentation]    edit tags with "edit story" and "tag" button
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
-    Comment    #Select Project
-    Comment    Click Element    xpath=//div[text()="Project02"]
-    Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    Comment    #Select Story
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    #Add tag with Edit Story
-    Comment    Click Element    //button[text()="Edit Story"]
-    Comment    Click Element    //label[text()="Tags:"]/..//img
-    Comment    Click Element    //span[text()="Project02Tag01"]
-    Comment    Click Element    //label[text()="Tags:"]
-    Comment    Click Element    //button[text()="Submit"]
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
-    Comment    #Add tag with Tag
-    Comment    reload page
-    Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
-    Comment    #Select Story
-    Comment    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Comment    Click Button    xpath=//button[text()="Tag"]
-    Comment    Click Element    //span[text()="Project02Tag01"]
-    Comment    ${ASCII}=    Evaluate    b" "
-    Comment    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
-    Comment    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    ${Space}
+    #Select Project
+    Click Element    xpath=//div[text()="Project02"]
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    #Add tag with Edit Story
+    Click Element    //button[text()="Edit Story"]
+    Click Element    //label[text()="Tags:"]/..//img
+    Click Element    //span[text()="Project02Tag01"]
+    Click Element    //label[text()="Tags:"]
+    Click Element    //button[text()="Submit"]
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
+    #Add tag with Tag
+    reload page
+    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
+    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    #Select Story
+    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Click Button    xpath=//button[text()="Tag"]
+    Click Element    //span[text()="Project02Tag01"]
+    ${ASCII}=    Evaluate    b" "
+    ${Space}=    Encode String To Bytes    ${ASCII}    UTF-8
+    Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    ${Space}
     [Teardown]    Test Tag - ProductBacklog Edit Story and Tag Tags Teardown
