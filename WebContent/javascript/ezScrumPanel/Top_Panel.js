@@ -173,29 +173,33 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
     listeners: {
     	beforerender: function() {
     		var obj = this;
+    		Ext.Ajax.request({
+    			url: 'GetTopTitleInfo.do',
+    			success: function(response) {
+    				var obj = Ext.util.JSON.decode(response.responseText);
+    				
+    				theProjectName = obj.ProjectName;
+    				var projectName = obj.ProjectName;
+    				var username = obj.Username;
+    				var nickname = obj.Nickname;
+    				Ext.getDom("UserNameInfo_Project").innerHTML = username + "(" + nickname + ")";
+    				Ext.getDom("ProjectNameInfo").innerHTML = "Project&nbsp;:&nbsp;&nbsp;" + projectName;
+    			},
+    			failure : function(){
+    				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
+    			}
+    		});
+    		
     		SettingNotification().then(function(data){
-	    		Ext.Ajax.request({
-	    			url: 'GetTopTitleInfo.do',
-	    			params:{firebaseToken: data},
-	    			success: function(response) {
-	    				var obj = Ext.util.JSON.decode(response.responseText);
-	    				
-	    				theProjectName = obj.ProjectName;
-	    				var projectName = obj.ProjectName;
-	    				var username = obj.Username;
-	    				var nickname = obj.Nickname;
-	    				var subscriptNotify = obj.NotificationStatus;
-	    				Ext.getDom("UserNameInfo_Project").innerHTML = username + "(" + nickname + ")";
-	    				Ext.getDom("ProjectNameInfo").innerHTML = "Project&nbsp;:&nbsp;&nbsp;" + projectName;
-	    				Ext.getDom("Notification_Subscript").userName = username;
-	    				Ext.getDom("Notification_Subscript").firebaseToken = data;
-	    				SetNotifyImg(subscriptNotify);
-	    				
-	    			},
-	    			failure : function(){
-	    				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-	    			}
-	    		});
+    			Ext.Ajax.request({
+        			url: 'getSubscriptStatus.do',
+        			success: function(response){
+        				var obj = Ext.util.JSON.decode(response.responseText);
+        				var subscriptStatue = obj.SubscriptStatus;
+        				SetNotifyImg(subscriptStatue);
+        			}
+    			});
+    			
     		})
     		.catch(function(err){
     			SetNotifyImg("Error");

@@ -42,15 +42,9 @@ public class GetTopTitleInfoAction extends Action {
 		
 		if (project != null) {
 			projectName = project.getName();
-		}
+		}		
 		
-		String firebaseToken = request.getParameter("firebaseToken");
-		session.getAccount().setFirebaseToken(firebaseToken);
-		String notificationStatus = getNotificationStatus(account.getId(), firebaseToken, account.getToken());
-
-		
-		
-		TopTitleInfoUI ttiui = new TopTitleInfoUI(username, nickname, projectName, notificationStatus);
+		TopTitleInfoUI ttiui = new TopTitleInfoUI(username, nickname, projectName);
 		Gson gson = new Gson();
 		
 		
@@ -71,16 +65,11 @@ public class GetTopTitleInfoAction extends Action {
 		private String Nickname = "";
 		private String ProjectName = "";
 		private String NotificationStatus = "";
-		public TopTitleInfoUI(String username, String nickname, String projectname, String NotificationStatus) {
+		public TopTitleInfoUI(String username, String nickname, String projectname) {
 			this.Username = username;
 			this.Nickname = nickname;
 			this.ProjectName = projectname;
-			this.NotificationStatus = NotificationStatus;
 		}
 	}
-	
-	private String getNotificationStatus(Long account_id ,String firebaseToken, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		return ap.getNotificationSubscriptStatus(account_id, firebaseToken);
-	}
+
 }
