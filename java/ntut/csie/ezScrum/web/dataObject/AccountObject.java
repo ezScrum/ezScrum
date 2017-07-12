@@ -41,16 +41,16 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	public boolean isAdmin() {
-//		ProjectRole projectRole = getSystemRole();
-//		if (projectRole != null && projectRole.getProject().getName()
-//				.equals("system")) {
-//			return true;
-//		}
-//		return false;
-		
 		if(isAdmin == true)
 			return true;
-		return false;
+		else{
+			ProjectRole projectRole = getSystemRole();
+			if (projectRole != null && projectRole.getProject().getName()
+					.equals("system")) {
+				return true;
+			}
+			return false;
+		}
 	}
 	
 	public void setAdmin(boolean systemRole){
@@ -156,8 +156,8 @@ public class AccountObject implements IBaseObject {
 	 * @return
 	 */
 	public HashMap<String, ProjectRole> getRoles() {
-		HashMap<String, ProjectRole> roles = RoleDAO.getInstance().getProjectRoleMap(mId);
-		if(isAdmin()){
+		HashMap<String, ProjectRole> roles = AccountDAO.getInstance().getProjectRoleMap(mId);
+		/*if(isAdmin()){
 			ScrumRole scrumRole = new ScrumRole("system", "admin");
 			scrumRole.setisAdmin(true);
 			ProjectObject project = new ProjectObject(0, "system");
@@ -168,7 +168,7 @@ public class AccountObject implements IBaseObject {
 				   .setCreateTime(0);
 			ProjectRole projectRole = new ProjectRole(project, scrumRole);
 			roles.put("system", projectRole);
-		}
+		}*/
 		if (roles == null) {
 			roles = new HashMap<String, ProjectRole>();
 		}
@@ -212,7 +212,7 @@ public class AccountObject implements IBaseObject {
 	 * @return isCreateSuccess
 	 */
 	public boolean joinProjectWithScrumRole(long projectId, RoleEnum role) {
-		return RoleDAO.getInstance().createProjectRole(projectId, mId, role);
+		return AccountDAO.getInstance().createProjectRole(projectId, mId, role);
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class AccountObject implements IBaseObject {
 	 * @return isDeleteSuccess
 	 */
 	public boolean deleteProjectRole(long projectId, RoleEnum role) {
-		return RoleDAO.getInstance().deleteProjectRole(projectId, mId, role);
+		return AccountDAO.getInstance().deleteProjectRole(projectId, mId, role);
 	}
 
 	/**

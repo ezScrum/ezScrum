@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import org.codehaus.jettison.json.JSONException;
 
 import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.AddAssignedRoleCommand;
 import ntut.csie.ezScru.web.microservice.command.CreateAccountCommand;
 import ntut.csie.ezScru.web.microservice.command.DeleteAccountCommand;
+import ntut.csie.ezScru.web.microservice.command.RemoveAssignRoleCommand;
 import ntut.csie.ezScru.web.microservice.command.UpdateAccountCommand;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -143,30 +145,42 @@ public class AccountRESTClientProxy implements IAccountController{
 	@Override
 	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) {
 		AccountObject accountFromHelper = accountHelper.addAssignedRole(accountId, projectId, scrumRole);
-		AccountObject account = null;
-		try {
-			account = accountRESTClient.addAssignedRole(accountId, projectId, scrumRole);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if(scrumRole.equals("admin")){
+			mAccountRESTCommand = new AddAssignedRoleCommand(accountRESTClient, accountId, projectId);
+			invoker.addAction(mAccountRESTCommand);
+			try {
+				AccountObject account = (AccountObject) invoker.doCommand();
+				return account;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				notDoneActionQueue.queue(mAccountRESTCommand);
+				return accountFromHelper;
+			}
+		}else{
 			return accountFromHelper;
-		}
-		return account;
+		}	
 	}
 	
 	@Override
-	public AccountObject removeAssignRole(long accountId, long projectId, String role) {
-		AccountObject accountFromHelper = accountHelper.removeAssignRole(accountId, projectId, role);
-		AccountObject account = null;
+	public AccountObject removeAssignRole(long accountId, long projectId, String scrumRole) {
+		AccountObject accountFromHelper = accountHelper.removeAssignRole(accountId, projectId, scrumRole);
 		
-		try {
-			account = accountRESTClient.removeAssignRole(accountId, projectId, role);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return accountFromHelper;
-		} 
-		return account;
+		if(scrumRole.equals("admin")){
+			mAccountRESTCommand = new RemoveAssignRoleCommand(accountRESTClient, accountId, projectId);
+			invoker.addAction(mAccountRESTCommand);
+			try {
+				AccountObject account = (AccountObject) invoker.doCommand();
+				return account;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				notDoneActionQueue.queue(mAccountRESTCommand);
+				return accountFromHelper;
+			} 
+		}
+		return accountFromHelper;
 	}
 	
 	public String getAccountXML(AccountObject account) {
@@ -262,5 +276,9 @@ public class AccountRESTClientProxy implements IAccountController{
 		} catch (JSONException e) {
 			return "";
 		}		
+	}
+	
+	public AccountObject getAccount(String username){
+		return accountHelper.getAccount(username);
 	}
 }

@@ -77,7 +77,7 @@ ImportFormLayout = Ext.extend(Ext.form.FormPanel, {
 								    				var topTopTitleInfo = Ext.util.JSON.decode(response.responseText);
 								    				var username = topTopTitleInfo.Username;
 								    				var MD5EncodingUsername = md5(username);
-								    				var MD5EncodingPassword = md5(password);
+								    				var MD5EncodingPassword = password;
 								    				$.ajax(
 			        										{
 			        										   url : "/ezScrum/resource/dataMigration/projects",

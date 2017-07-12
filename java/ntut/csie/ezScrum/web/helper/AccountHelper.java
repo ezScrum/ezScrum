@@ -190,5 +190,8 @@ public class AccountHelper implements IAccountController{
 	public AccountObject confirmAccount(String id, String password) throws LogonException{
 		return mAccountMapper.confirmAccount(id, password);
 	}
-
+	
+	public AccountObject getAccount(String username){
+		return mAccountMapper.getAccount(username);
+	}
 }

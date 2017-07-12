@@ -9,15 +9,13 @@ public class RemoveAssignRoleCommand implements AccountRESTCommand{
 	private AccountRESTClient accountService;
 	private long accountId;
 	private long projectId;
-	private String role;
-	public RemoveAssignRoleCommand(AccountRESTClient accountService, long accountId, long projectId, String role){
+	public RemoveAssignRoleCommand(AccountRESTClient accountService, long accountId, long projectId){
 		this.accountService = accountService;
 		this.accountId = accountId;
 		this.projectId = projectId;
-		this.role = role;
 	}
 	public AccountObject removeAssignRole() throws IOException{
-		return accountService.removeAssignRole(accountId, projectId, role);
+		return accountService.removeAssignRole(accountId, projectId);
 	}
 	@Override
 	public Object Execute() throws IOException {

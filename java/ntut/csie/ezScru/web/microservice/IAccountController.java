@@ -17,4 +17,5 @@ public interface IAccountController {
 	public AccountObject getAccountById(long id); 
 	public String getAccountXML(AccountObject account);
 	public String getManagementView(AccountObject account) ;
+	public AccountObject getAccount(String username);
 }

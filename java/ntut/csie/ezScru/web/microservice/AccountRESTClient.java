@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +26,8 @@ import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
-import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
-import ntut.csie.ezScru.web.microservice.ServiceConfiguration;
 
 public class AccountRESTClient{
 	
@@ -255,41 +252,29 @@ public class AccountRESTClient{
 		return assignRoleInfo.toString();
 	}
 
-	public AccountObject addAssignedRole(long accountId, long projectId, String scrumRole) throws IOException {
+	public AccountObject addSystemRole(long accountId, long projectId) throws IOException {
 		AccountObject account = null;
-		
-		if(scrumRole.equals("admin")){
-			String responseString;
-			responseString = updateAccountSystemRole(accountId, true);
-			try {
-				account = translateToAccount(responseString);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		} else{
-			account = getAccountById(accountId);
-			account.joinProjectWithScrumRole(projectId, RoleEnum.valueOf(scrumRole));
+		String responseString;
+		responseString = updateAccountSystemRole(accountId, true);
+		try {
+			account = translateToAccount(responseString);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return account;
 	}
 
 	
-	public AccountObject removeAssignRole(long accountId, long projectId, String role) throws IOException {
+	public AccountObject removeAssignRole(long accountId, long projectId) throws IOException {
 		AccountObject account = null;
-		if (role.equals("admin")) {
-			String responseString = updateAccountSystemRole(accountId, false);
-			try {
-				account = translateToAccount(responseString);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}else{
-			account = getAccountById(accountId);
-			account.deleteProjectRole(projectId, RoleEnum.valueOf(role));
+		
+		String responseString = updateAccountSystemRole(accountId, false);
+		try {
+			account = translateToAccount(responseString);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return account;
 	}

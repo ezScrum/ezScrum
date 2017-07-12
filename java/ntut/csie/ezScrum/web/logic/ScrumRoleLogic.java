@@ -14,10 +14,10 @@ public class ScrumRoleLogic {
 		synchronized (this) {
 			HashMap<String, ProjectRole> roles = account.getRoles();
 			ScrumRole scrumRole = null;
-			if(account.isAdmin() == true){
-				ProjectRole projectRole =  accountIsAdmin(account);
-				roles.put("system", projectRole);
-			}
+//			if(account.isAdmin() == true){
+//				ProjectRole projectRole =  accountIsAdmin(account);
+//				roles.put("system", projectRole);
+//			}
 			ProjectRole role = roles.get("system");
 			if (role != null) {
 				scrumRole = role.getScrumRole();}
@@ -30,17 +30,17 @@ public class ScrumRoleLogic {
 		}
 	}
 	
-	public ProjectRole accountIsAdmin(AccountObject account){
-		ProjectRole projectRole = null;
-		ProjectObject project = new ProjectObject(0, "system");
-		project.setDisplayName("system")
-		       .setComment("system")
-			   .setManager("admin")
-			   .setAttachFileSize(0)
-			   .setCreateTime(0);
-		ScrumRole scrumRole = new ScrumRole("system", "admin");
-		scrumRole.setisAdmin(true);
-		projectRole = new ProjectRole(project, scrumRole);
-		return projectRole;
-	}
+//	public ProjectRole accountIsAdmin(AccountObject account){
+//		ProjectRole projectRole = null;
+//		ProjectObject project = new ProjectObject(0, "system");
+//		project.setDisplayName("system")
+//		       .setComment("system")
+//			   .setManager("admin")
+//			   .setAttachFileSize(0)
+//			   .setCreateTime(0);
+//		ScrumRole scrumRole = new ScrumRole("system", "admin");
+//		scrumRole.setisAdmin(true);
+//		projectRole = new ProjectRole(project, scrumRole);
+//		return projectRole;
+//	}
 }

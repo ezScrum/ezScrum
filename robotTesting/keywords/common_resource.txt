@@ -136,7 +136,7 @@ Clean DB
 
 Compare Text In Specific Xpath
     [Arguments]    ${xpathToAssert}    ${expectedText}
-    ${textOfXpath}=    Get Text    xpath=${xpathToAssert}
+    ${textOfXpath}=     Get Text    xpath=${xpathToAssert}
     Should Be Equal    ${textOfXpath}    ${expectedText}
 
 Clean Database and Exit ezScrum
