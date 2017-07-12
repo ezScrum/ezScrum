@@ -191,14 +191,20 @@ ezScrum.Project_TopPanel = new ezScrum.TitlePanel({
     		});
     		
     		SettingNotification().then(function(data){
-    			Ext.Ajax.request({
-        			url: 'getSubscriptStatus.do',
-        			success: function(response){
-        				var obj = Ext.util.JSON.decode(response.responseText);
-        				var subscriptStatue = obj.SubscriptStatus;
-        				SetNotifyImg(subscriptStatue);
-        			}
-    			});
+    			if(data != null){
+    				Ext.Ajax.request({
+            			url: 'getSubscriptStatus.do',
+            			params:{firebaseToken:data},
+            			success: function(response){
+            				var obj = Ext.util.JSON.decode(response.responseText);
+            				var subscriptStatue = obj.SubscriptStatus;
+            				SetNotifyImg(subscriptStatue);
+            			}
+        			});
+    			}					
+				else
+					SetNotifyImg("Can not get firebaseToken");
+    			
     			
     		})
     		.catch(function(err){
