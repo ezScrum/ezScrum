@@ -67,6 +67,7 @@ Test TaskBoard - New Precondition
 
 Test TaskBoard - New Postcondition
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test TaskBoard - Sprint Information Setup
@@ -301,6 +302,7 @@ Test TaskBoard - Story Done Teardown
     Comment    # clean sprint
     Comment    Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test TaskBoard - Story ReOpen Setup
@@ -402,6 +404,7 @@ Test TaskBoard - Task Done with Partner Setup
 
 Test TaskBoard - Task Done with Partner Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Close Browser
 
 Test TaskBoard - Initial Release ID Check Setup

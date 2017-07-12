@@ -21,6 +21,7 @@ Test TaskBoard_AttachFile - Teardown on Story
     Wait Until Element Is Visible    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Click Button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test TaskBoard_AttachFile - Teardown on Task
@@ -32,4 +33,5 @@ Test TaskBoard_AttachFile - Teardown on Task
     Wait Until Page Contains Element    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Click Button    //span[text()='Confirm']/../../../../../div[2]//button[text()="Yes"]
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System

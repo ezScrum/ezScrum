@@ -145,6 +145,7 @@ Clean Database and Exit ezScrum
 
 Data Base Tear Down
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
 
 Select Sprint Plan
     Wait Until Page Contains    Sprint Plan

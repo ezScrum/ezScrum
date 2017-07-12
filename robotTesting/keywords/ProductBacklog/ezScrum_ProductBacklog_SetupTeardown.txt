@@ -57,6 +57,7 @@ Test Product Backlog Create Story Identify Invalid Value Setup
 
 Test Product Backlog Create Story Identify Invalid Value Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Edit Story Identify Invalid Value Setup
@@ -75,6 +76,7 @@ Test Edit Story Identify Invalid Value Setup
 Test Edit Story Identify Invalid Value Teardown
     Comment    Delete Story With Arguments    new Edit Story With Invalid Value
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Create Story Setup
@@ -92,6 +94,7 @@ Test Create Story Teardown
     Comment    Delete Story With Arguments    newStory
     Comment    Delete Tag With Arguments    testTagName
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Create Story With Invalid Value Setup
@@ -110,6 +113,7 @@ Test Create Story With Invalid Value Teardown
     Comment    Delete Tag With Arguments    testTagName
     Comment    Delete Story Use StoryID    ${storyID}
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Edit Story Setup
@@ -131,6 +135,7 @@ Test Edit Story Teardown
     Comment    Delete Tag With Arguments    testTagName
     Comment    Delete Story Use StoryID    ${storyID}
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Story History Setup
@@ -149,6 +154,7 @@ Test Story History Setup
 
 Test Story History Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Remove Story Tag Setup
@@ -168,6 +174,7 @@ Test Remove Story Tag Setup
 Test Remove Story Tag Teardown
     Comment    Delete Story With Arguments    newStory
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Create Tag Setup
@@ -193,6 +200,7 @@ Test Create Tag Teardown
     ${xpathTagManage} =    Find Current Window Element    Tag Manage    Close
     Click Element    xpath=${xpathTagManage}
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Duplicate Tag Setup
@@ -208,6 +216,7 @@ Test Duplicate Tag Setup
 
 Test Duplicate Tag Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Delete Tag Setup
@@ -232,6 +241,7 @@ Test Delete Tag Teardown
     ${xpathTagManageClose}=    Find Current Window Element    Tag Manage    Close
     Click Element    xpath=${xpathTagManageClose}
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Product Backlog Filter Setup
@@ -261,6 +271,7 @@ Test Product Backlog Filter Teardown
     Comment    Delete Story With Arguments    newStoryDetailed
     Comment    Delete Story With Arguments    newStoryDone
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Product Backlog Done Filter Teardown
@@ -271,6 +282,7 @@ Test Product Backlog Done Filter Teardown
     Comment    Delete Story With Arguments    newStoryDone
     Comment    Clean All Sprint
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Product Backlog Search Setup
@@ -332,6 +344,7 @@ Test Product Backlog Search Teardown
     Comment    Clean All Sprint
     Comment    Clean Release
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Mark And UnMark Story Tag Setup
@@ -352,6 +365,7 @@ Test Mark And UnMark Story Tag Teardown
     Comment    Delete Tag With Arguments    markAndUnMarkTag
     Comment    Delete Story With Arguments    newStory
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Attach File Setup
@@ -367,6 +381,7 @@ Test Attach File Setup
 
 Test Attach File Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test ProductBacklog Button Enable or Disable Setup
@@ -383,4 +398,5 @@ Test ProductBacklog Button Enable or Disable Setup
 
 Test ProductBacklog Button Enable or Disable Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Close Browser

@@ -20,6 +20,7 @@ Test Create Sprint Setup
 
 Test Create Sprint Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Delete Sprint Setup
@@ -34,6 +35,7 @@ Test Delete Sprint Setup
 
 Test Delete Sprint Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Sprint Goal With NewLine Setup
@@ -48,6 +50,7 @@ Test Sprint Goal With NewLine Setup
 
 Test Sprint Goal With NewLine Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Sprint Session Setup
@@ -86,6 +89,7 @@ Test Check End Date and Demo Date Setup
 
 Test Check End Date and Demo Date Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Check Recommended Start Date Setup
@@ -100,6 +104,7 @@ Test Check Recommended Start Date Setup
 
 Test Check Recommended Start Date Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test SprintPlan Teardown
@@ -115,6 +120,7 @@ Test Interval Check Setup
 
 Test Interval Check Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
 
 Test Can Not Create Second Sprint With Same Date Setup
@@ -127,4 +133,5 @@ Test Can Not Create Second Sprint With Same Date Setup
 
 Test Can Not Create Second Sprint With Same Date Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System

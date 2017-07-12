@@ -110,8 +110,8 @@ Edit Story With Arguments
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${oriTargetStoryName}")]
     Click Element    xpath=//button[text()="Edit Story"]
-    Click Image    xpath=//label[text()="Tags:"]/.././/img
-    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
+    Comment    Click Image    xpath=//label[text()="Tags:"]/.././/img
+    Comment    Click Element    xpath=//span[@class="x-menu-item-text" and text()="${tag}"]
     Focus AND Input Text    //textarea[@name="Name"]    EditStoryName
     Focus AND Input Text    //input[@name="Value"]    3
     Focus AND Input Text    //input[@name="Estimate"]    5
@@ -121,7 +121,8 @@ Edit Story With Arguments
     ${storyID}=    Get Value    xpath=//input[@name="issueID"]
     ${xpathEditStory}=    Find Current Window Element    Edit Story #${storyID}    Submit
     Element Enable And Submit    ${xpathEditStory}
-    Set Test Variable    ${correctTagText}    ${EMPTY}
+    Comment    Set Test Variable    ${correctTagText}    ${EMPTY}
+    Set Test Variable    ${correctTagText}    ${tag}
     Wait Until Page Contains    Success.
 
 Verify Invalid Value
