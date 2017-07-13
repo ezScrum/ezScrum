@@ -643,6 +643,7 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     #Select Project
+    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
     Click Element    xpath=//div[text()="Project01"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
@@ -674,6 +675,7 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     #Select Project
+    Wait Until Page Contains Element    xpath=//div[text()="Project02"]
     Click Element    xpath=//div[text()="Project02"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
