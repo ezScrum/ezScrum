@@ -38,8 +38,8 @@ Compare Field Content
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
-    Comment    Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
-    Wait Until Element Is Visible    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..    15
+    Wait Until Element Is Visible    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..    30
+    Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
     Click Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
 
 Select Node Product
