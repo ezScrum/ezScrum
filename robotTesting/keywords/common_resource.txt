@@ -33,17 +33,18 @@ New Tab With Alias
 
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
-    ${testValue}=    Get Text    xpath=${xpath}
+    ${testValue}=    Get Value    xpath=${xpath}
     Should Be Equal    ${testValue}    ${correctValue}
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
-    Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
+    Comment    Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
+    Wait Until Element Is Visible    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..    15
     Click Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]    8
+    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]    15
     Click Element    xpath=//span[text()="${nodeName}"]
 
 Element Enable And Submit

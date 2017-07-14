@@ -28,11 +28,11 @@ Test Sprint Backlog - Edit Story
     ${notes}=    Set Variable    update story for notes
     ${howToDemo}=    Set Variable    update story for how to demo
     # 編輯story information並回傳story id
-    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}    ${importance}
-    ...    ${notes}    ${howToDemo}
+    Comment    ${storyId}=    Edit Story With Arguments In Sprint Backlog    ${oriStoryName}    ${updateStoryName}    ${value}    ${estimate}
+    ...    ${importance}    ${notes}    ${howToDemo}
     # 驗證story information
-    Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Verify Story Information With Arguments In Sprint Backlog    ${updateStoryName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Edit Story Teardown
 
 Test Sprint Backlog - Add Story
@@ -45,11 +45,11 @@ Test Sprint Backlog - Add Story
     ${notes}=    Set Variable    add story for notes
     ${howToDemo}=    Set Variable    add story for how to demo
     # add story
-    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Create Story With Arguments    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     # 驗證story information
-    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}    ${notes}
-    ...    ${howToDemo}
+    Comment    Verify Story Information With Arguments In Sprint Backlog    ${storyName}    ${value}    ${estimate}    ${importance}    ${EMPTY}
+    ...    ${notes}    ${howToDemo}
     [Teardown]    Test Sprint Backlog - Add Story Teardown
 
 Test Sprint Backlog - Drop Story

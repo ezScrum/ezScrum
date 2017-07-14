@@ -271,24 +271,24 @@ Test TaskBoard - Attach File on Task
 
 Test TaskBoard - Task Done with partner
     [Setup]    Test TaskBoard - Task Done with Partner Setup
-    Select Node Product    TaskBoard
-    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
-    Compare Field Content    //input[@name="Name"]    Task02
-    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
-    Compare Field Content    //input[@name="Partners"]    Acount02
-    Compare Field Content    //input[@name="Estimate"]    5
-    Compare Field Content    //input[@name="Remains"]    5
-    Click Element    xpath=//button[text()="Cancel"]
-    Drag And Drop    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #2"]/../../../../../../../..    target=1_closed
-    Click Element    xpath=//button[text()="Done"]
-    Wait Until Page Contains    Success.
-    Click Element    xpath=//div[@id="1_closed"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
-    Compare Field Content    //input[@name="Name"]    Task02
-    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
-    Compare Field Content    //input[@name="Partners"]    Acount02
-    Compare Field Content    //input[@name="Estimate"]    5
-    Compare Field Content    //input[@name="Remains"]    0
-    Click Element    xpath=//button[text()="Cancel"]
+    Comment    Select Node Product    TaskBoard
+    Comment    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Comment    Compare Field Content    //input[@name="Name"]    Task02
+    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Comment    Compare Field Content    //input[@name="Partners"]    Acount02
+    Comment    Compare Field Content    //input[@name="Estimate"]    5
+    Comment    Compare Field Content    //input[@name="Remains"]    5
+    Comment    Click Element    xpath=//button[text()="Cancel"]
+    Comment    Drag And Drop    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #2"]/../../../../../../../..    target=1_closed
+    Comment    Click Element    xpath=//button[text()="Done"]
+    Comment    Wait Until Page Contains    Success.
+    Comment    Click Element    xpath=//div[@id="1_closed"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
+    Comment    Compare Field Content    //input[@name="Name"]    Task02
+    Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
+    Comment    Compare Field Content    //input[@name="Partners"]    Acount02
+    Comment    Compare Field Content    //input[@name="Estimate"]    5
+    Comment    Compare Field Content    //input[@name="Remains"]    0
+    Comment    Click Element    xpath=//button[text()="Cancel"]
     [Teardown]    Test TaskBoard - Task Done with Partner Teardown
 
 Test TaskBoard - Check Task Checked Out

@@ -102,17 +102,17 @@ Test ProductBacklog - Edit Story
 Test ProductBacklog - Story History
     [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
     [Setup]    Test Story History Setup
-    Set Test Variable    ${storyName}    newStory
-    # Set Selenium Speed 1
-    ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
-    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
-    Click Element    xpath=//button[text()="Show History"]
-    ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
-    Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
-    Comment    Click Element    xpath=//button[text()="Close"]
-    ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
-    Element Enable And Submit    ${xpathIssueHistoryListClose}
+    Comment    Set Test Variable    ${storyName}    newStory
+    Comment    # Set Selenium Speed 1
+    Comment    ${storyID}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]/../..//div[@class="x-grid3-cell-inner x-grid3-col-1"]
+    Comment    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Comment    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${storyName}")]
+    Comment    Click Element    xpath=//button[text()="Show History"]
+    Comment    ${storyHistoryTitleInformation}    Get Text    xpath=//span[text()="Issue History List"]/../../../../..//span[@class="x-panel-header-text"]/font
+    Comment    Should Be Equal As Strings    ${storyHistoryTitleInformation}    ＜Story＞ #${storyID} ${storyName}
+    Comment    Comment    Click Element    xpath=//button[text()="Close"]
+    Comment    ${xpathIssueHistoryListClose}=    Find Current Window Element    Issue History List    Close
+    Comment    Element Enable And Submit    ${xpathIssueHistoryListClose}
     # Set Selenium Speed 0
     # Test Product Backlog Filter
     # [Documentation] 建立多Story後點選按鈕Filter, 測試 Backlogged, Detailed, Done, Default。
