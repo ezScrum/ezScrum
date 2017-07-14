@@ -185,3 +185,7 @@ Element Class Should Be Enabled
 Clean Microservice DB
     [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
     Run Keyword if    "${VERSION}"=="Web"    Clean Microservice Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
+
+Clean NotificationMs DB
+    [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
+    Run Keyword if    "${VERSION}"=="Web"    Clean NotificationMs Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}

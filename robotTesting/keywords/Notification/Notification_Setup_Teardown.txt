@@ -1,0 +1,22 @@
+*** Settings ***
+Library           ../lib/Selenium2Improved.py
+Resource          ../common_resource.txt
+Resource          ../ezScrum_Login.txt
+
+*** Keywords ***
+Notification_Setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification_accms.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
+    ${attachFilePath3}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification_notificationms.sql
+    Load Database    ${DB_URL}    notificationms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath3}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+
+Notification_Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
+    Clean NotificationMs DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    notificationms
+    Exit ezScrum System
