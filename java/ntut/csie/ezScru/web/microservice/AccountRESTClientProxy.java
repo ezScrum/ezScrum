@@ -211,13 +211,15 @@ public class AccountRESTClientProxy implements IAccountController{
 	public AccountObject confirmAccount(String username, String password) throws LogonException{
 		
 		AccountObject theAccount = null;
-		AccountObject accountFromHelper = accountHelper.confirmAccount(username, password);
+		
 		try {
 			theAccount = accountRESTClient.confirmAccount(username, password);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new LogonException(false, false);
+//			throw new LogonException(false, false);
+			AccountObject accountFromHelper = accountHelper.confirmAccount(username, password);
+			return accountFromHelper;
 		} 
 		return theAccount;
 	}
