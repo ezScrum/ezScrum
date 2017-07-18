@@ -7,7 +7,6 @@ Resource          keywords/common_resource.txt
 Resource          keywords/Project/ezScrum_Project.txt
 Resource          Global Define.txt
 Resource          keywords/Notification/Notification_Setup_Teardown.txt
-Resource          keywords/Notification/Notification_Keywords.txt
 Resource          keywords/TaskBoard/ezScrum_TaskBoard.txt
 
 *** Test Cases ***
@@ -22,7 +21,7 @@ Test Notification - send message
     [Setup]    Notification_Setup
     Select Project    Test Notification service
     Sleep    5s
-     Wait Until Page Contains    TaskBoard
+    Wait Until Page Contains    TaskBoard
     Click element    //span[text()="TaskBoard"]
     Select Node Product    TaskBoard
     Task Checked Out With Arguments    1    1

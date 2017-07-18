@@ -59,7 +59,6 @@ public class DoneIssueAction extends PermissionAction {
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
 		String messageResponse = SendNotification(account, recipients_id, issueId, issueType, project.getName());
-		System.out.println(messageResponse);
 		
 		
 		if (issueType.equals("Story")) {
