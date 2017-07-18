@@ -106,6 +106,7 @@ public class ResetTaskActionTest extends MockStrutsTestCase {
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
+							.append("\"messageResponse\":\"Connection Error : account management.\",")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(taskId)).append(",")
 							.append("\"Link\":\"").append("\",")

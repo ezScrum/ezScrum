@@ -130,6 +130,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 			handlerUsername = handler.getUsername();
 		}
 		expectedResponseText.append("{").append("\"success\":true,")
+				.append("\"messageResponse\":\"Connection Error : account management.\",")
 				.append("\"Issue\":{").append("\"Id\":")
 				.append(String.valueOf(taskId)).append(",")
 				.append("\"Link\":\"").append("\",").append("\"Name\":\"")
@@ -182,6 +183,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 		story = sprintBacklogMapper.getStory(storyId);
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{").append("\"success\":true,")
+				.append("\"messageResponse\":\"Connection Error : account management.\",")
 				.append("\"Issue\":{").append("\"Id\":")
 				.append(String.valueOf(storyId)).append(",")
 				.append("\"Link\":\"").append("\",").append("\"Name\":\"")

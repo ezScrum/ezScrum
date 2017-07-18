@@ -123,6 +123,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		}
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
+							.append("\"messageResponse\":\"Connection Error : account management.\",")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(String.valueOf(taskId)).append(",")
 							.append("\"Link\":\"").append("\",")
@@ -173,6 +174,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		StringBuilder expectedResponseText = new StringBuilder();
 		expectedResponseText.append("{")
 							.append("\"success\":true,")
+							.append("\"messageResponse\":\"Connection Error : account management.\",")
 							.append("\"Issue\":{")
 							.append("\"Id\":").append(storyId).append(",")
 							.append("\"Link\":\"").append("\",")
