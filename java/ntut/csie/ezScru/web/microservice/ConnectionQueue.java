@@ -1,7 +1,6 @@
 package ntut.csie.ezScru.web.microservice;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -61,19 +60,4 @@ public class ConnectionQueue {
 			return false;
 		}
 	}
-	
-//	public void SyncAccount(){
-//		
-//		try {
-//			while(!notDoneAction.isEmpty()){
-//				AccountRESTCommand a = notDoneAction.element();
-//				a.Execute();
-//				notDoneAction.remove();
-//			}
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-	
 }

@@ -506,21 +506,6 @@ public class AccountRESTClient{
 			return "Fail";
 		}
 		
-//		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//		String inputLine;
-//		StringBuffer response = new StringBuffer();
-//
-//		while ((inputLine = in.readLine()) != null) {
-//			response.append(inputLine);
-//		}
-//		in.close();
-
-		//print result
-		
-//		AccRestClient client = new AccRestClient(token);
-//		client.getAcountList();
-					
-//		return response.toString();
 	}
 	public String getAccountByUsernamePassword(String username, String password) throws IOException{
 		String requestURL = baseURL + "/accounts/getAccount";

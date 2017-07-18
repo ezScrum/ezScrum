@@ -18,5 +18,4 @@ public class DeleteAccountCommand implements AccountRESTCommand{
 	public Object Execute() throws IOException {
 		return accountService.deleteAccount(id);
 	}
-
 }

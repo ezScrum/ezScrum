@@ -215,7 +215,7 @@ public class Configuration {
 	 */
 	public IUserSession getUserSession() {
 		IAccountController AccountHelper = new AccountHelper();
-		AccountObject theAccount = AccountHelper.getAccountById(Long.valueOf(USER_ID));
+		AccountObject theAccount = AccountHelper.getAccount(USER_ID);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;
 	}

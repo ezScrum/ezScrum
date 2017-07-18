@@ -4,7 +4,6 @@ import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
 public interface IAccountController {
-//	public AccountObject Login(String username, String password);
 	public AccountObject createAccount(AccountInfo user);
 	public AccountObject updateAccount(AccountInfo user);
 	public boolean deleteAccount(long id);

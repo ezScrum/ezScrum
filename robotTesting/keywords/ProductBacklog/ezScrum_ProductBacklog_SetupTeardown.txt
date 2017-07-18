@@ -352,6 +352,8 @@ Test Mark And UnMark Story Tag Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    ProductBacklog    Mark_And_UnMark_Story_Tag.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Add_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project

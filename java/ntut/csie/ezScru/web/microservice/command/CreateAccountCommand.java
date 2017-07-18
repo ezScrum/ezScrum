@@ -2,8 +2,6 @@ package ntut.csie.ezScru.web.microservice.command;
 
 import java.io.IOException;
 
-import org.codehaus.jettison.json.JSONException;
-
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -22,7 +20,4 @@ public class CreateAccountCommand implements AccountRESTCommand {
 	public Object Execute() throws IOException {
 		return addAccount(accountInfo);
 	}
-	
-	
-	
 }
