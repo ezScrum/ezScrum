@@ -29,7 +29,6 @@ public class TaskBoard {
 	private ArrayList<StoryObject> m_dropedStories;
 	private ArrayList<StoryObject> mStories;
 	private ArrayList<TaskObject> mTasksInDropStories;
-	private ArrayList<TaskObject> mTasks;
 	private LinkedHashMap<Date, Double> mDateToStoryIdealPoint;
 	private LinkedHashMap<Date, Double> mDateToStoryPoint;
 	private LinkedHashMap<Date, Double> mDateToTaskIdealPoint;
@@ -67,7 +66,6 @@ public class TaskBoard {
 
 		mStories = mSprintBacklogLogic.getStoriesSortedByImpInSprint();
 		m_dropedStories = mSprintBacklogMapper.getDroppedStories();
-		mTasks = mSprintBacklogMapper.getTasksInSprint();
 		mTasksInDropStories = mSprintBacklogMapper.getTasksInDropStories();
 		mDateToStoryIdealPoint = new LinkedHashMap<Date, Double>(); // Story的理想線
 		mDateToTaskIdealPoint = new LinkedHashMap<Date, Double>(); // Task的理想線
@@ -152,8 +150,10 @@ public class TaskBoard {
 			}
 		}
 		else if(issueType == "Task"){
-			for(TaskObject task : mTasks){
-				task.cleanHistories();
+			for(StoryObject story : mStories){
+				for(TaskObject task : story.getTasks()){
+					task.cleanHistories();
+				}
 			}
 			for(TaskObject task : mTasksInDropStories){
 				task.cleanHistories();
@@ -193,14 +193,19 @@ public class TaskBoard {
 		Date endDate = new Date(date.getTime() + mOneDay);
 		double taskPoint = 0;
 		// Visit all Story
-		for (TaskObject task : mTasks) {
-			if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+		for(StoryObject story : mStories){
+			if (story.getStatus(endDate) == StoryObject.STATUS_DONE) {
 				continue;
 			}
-			try {
-				taskPoint += getTaskPoint(endDate, task);
-			} catch (Exception e) {
-				continue;
+			for (TaskObject task : story.getTasks()) {
+				if (task.getStatus(endDate) == TaskObject.STATUS_DONE) {
+					continue;
+				}
+				try {
+					taskPoint += getTaskPoint(endDate, task);
+				} catch (Exception e) {
+					continue;
+				}
 			}
 		}
 		// Visit all DropStory
@@ -364,7 +369,6 @@ public class TaskBoard {
 		}
 		return (getStoryPointByDate(mSprintBacklogMapper.getSprintStartDate())) + " / " + sprint.getLimitedPoint();
 	}
-
 	public String getInitialTaskPoint() {
 		return (getTaskPointByDate(mSprintBacklogMapper.getSprintStartDate())) + " / -";
 	}

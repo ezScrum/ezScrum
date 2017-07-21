@@ -197,14 +197,14 @@
           target: BuildJar              
          ================================= -->
 	<target name="BuildJar" depends="create.manifest" description="建立可執行Jar檔">
-		<jar destfile="${Output.Dir}/start_ezScrum.jar" manifest="${Output.Dir}/MANIFEST.MF">
+		<jar destfile="${Output.Dir}/start.jar" manifest="${Output.Dir}/MANIFEST.MF">
 			<fileset dir="${Output.Dir}/WebContent/WEB-INF/classes">
 				<include name="**/Jetty*.class" />
 			</fileset>
 		</jar>
 
 		<!-- ======= for linux ======= -->
-		<copyfile dest="${Output.Dir.Linux.Ubuntu}/start_ezScrum.jar" src="${Output.Dir}/start_ezScrum.jar" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/start_ezScrum.jar" src="${Output.Dir}/start.jar" />
 	</target>
 
 	<!-- ================================= 
