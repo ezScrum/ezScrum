@@ -168,6 +168,7 @@
 		</copydir>
 		<copyfile dest="${Output.Dir}/JettyServer.xml" src="JettyServer.xml" />
 		<copyfile dest="${Output.Dir}/ezScrum.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir}/Service.json" src="Service.json" />
 		<copyfile dest="${Output.Dir}/README.md" src="README.md" />
 		<copydir dest="${Output.Dir}" src="${Service.Wrapper.x86}" />
 
@@ -175,6 +176,7 @@
 		<copydir dest="${Output.Dir.Linux.Ubuntu}/lib/" src="${Local.Library.Dir}" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/JettyServer.xml" src="JettyServer.xml" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/ezScrum.ini" src="ezScrum_default.ini" />
+		<copyfile dest="${Output.Dir.Linux.Ubuntu}/Service.json" src="Service.json" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/README.md" src="README.md" />
 		<copyfile dest="${Output.Dir.Linux.Ubuntu}/launch" src="launch.sh" />
 		<copydir dest="${Output.Dir.Linux.Ubuntu}" src="${Service.Wrapper.Linux.Ubuntu}" />
