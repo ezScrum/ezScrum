@@ -1,24 +1,29 @@
-import os
-import subprocess
+import sys, os
+import shlex, subprocess
 from subprocess import call
 from subprocess import Popen, PIPE, STDOUT
 
+p = None
 
-def turn_on_ams():
-    #command = 'java -jar acct-mgt-1.0.jar'
-    #p = subprocess.Popen(['java', '-jar', 'D:/test.jar'], stdin=PIPE, stderr=subprocess.STDOUT, shell = True)
-    #p = subprocess.Popen(['java', '-jar', 'D:/acct-mgt-1.0.jar'], stdin=PIPE, stderr=subprocess.STDOUT, shell = True)
-    #os.system("D:/anfaworkspace/ezScrum/robotTesting/keywords/lib/test.bat")
-    #p = subprocess.Popen("D:/anfaworkspace/ezScrum/robotTesting/keywords/lib/test.bat", stdin=PIPE, stderr=subprocess.STDOUT, shell = True)
-    p = subprocess.Popen("test.bat", cwd=r"D:/")
-    #subprocess.check_output(["echo", "Hello World!"])
-    #return p
-    #stdout, stderr = p.communicate()
-    #print p.returncode
+def turnOn():
+    #p = subprocess.Popen('start',shell=True)
+    #proc = subprocess.Popen('start', stdin = subprocess.PIPE, stdout = subprocess.PIPE,shell=True)
+    #call(["java -jar acct-mgt-1.0.jar"])
+    #if(num == 1):
+    p = subprocess.Popen(['C:/Program Files/Java/jdk1.8.0_121/bin/java.exe','-jar','acct-mgt-1.0.jar'])
+        #return p
+        #p.kill()
+    #os.system("java -jar acct-mgt-1.0.jar")
+    #stdout, stderr = proc.communicate('dir c:\\')
+    #stdout
+    #cmd_line = "java -jar D:/acct-mgt-1.0.jar run"
+    #p = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #out = p.communicate()[0]
+    #print out
+def turnOff():
+    p = subprocess.Popen(['taskkill','/F','/IM','java.exe'])
+
+
     
-def test():
-    print "test"
 
-def wfile():
-    file_ = open("ouput.txt", "w")
-    subprocess.Popen(["host", ipAddress], stdout=file_) 
+ 
