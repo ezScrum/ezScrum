@@ -12,6 +12,8 @@ Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
 Library           keywords/lib/Selenium2Improved.py
+Library           keywords/lib/AccountManagementServiceHandler.py
+Library           Process
 
 *** Variables ***
 ${tsAccountId}    TestAccountID
@@ -219,14 +221,14 @@ Test Account Management - User Edit Information
     Wait Until Page Contains Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited1)"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited1)"]    1
     # 第二次更新個人資料
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="name"]    ${tsAccountId}NameEdited2    # User Name
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited2@scrum.tw    # E-mail Address
     Wait Until Page Contains Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited2)"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited2)"]    1
     [Teardown]    Test Account Management - User Modify Personal Information Teardown
 
 Test Account Management - User Change Password
@@ -268,7 +270,7 @@ Test Account Management - User Change Password And Edit Information
     # 送出欲修改的密碼
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="passwd"]    ${correctPassword}    # Password
     Focus AND Input Text    //div[@id="userChangePasswordTab"]//input[@name="reenter"]    ${correctPassword}    # Password
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="userChangePasswordTab"]//button[text()="Save"]/../../../../../..//table[@class="x-btn${SPACE * 3}x-btn-noicon${SPACE}"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="userChangePasswordTab"]//button[text()="Save"]/../../../../../..//table[@class="x-btn${SPACE * 3}x-btn-noicon${SPACE}"]    1
     Click Element    xpath=//div[@id="userChangePasswordTab"]//button[text()="Save"]/..
     Wait Until Page Contains    Success.
     # 切換至Edit Information Tab Panel
@@ -277,12 +279,12 @@ Test Account Management - User Change Password And Edit Information
     Focus AND Input Text    //div[@id="userEditInformationTab"]//input[@name="mail"]    ${tsAccountId}Edited@scrum.tw    # E-mail Address
     Click Element    xpath=//div[@id="userEditInformationTab"]//button[text()="Save"]
     Wait Until Page Contains    Success.
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited)"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Management" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited)"]    1
     # 登出系統
     Logon ezScrum System
     # 用更新的密碼登入系統
     Login Page With Account In The Same Browser    ${tsAccountId}    ${correctPassword}
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Project" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited)"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="UserNameInfo_Project" and @class="UserProfile" and text()="${tsAccountId}(${tsAccountId}NameEdited)"]    1
     [Teardown]    Test Account Management - User Modify Personal Information Teardown
 
 Test Account Management - Admin's email shouldn't be null
@@ -294,5 +296,11 @@ Test Account Management - Admin's email shouldn't be null
     Title Should Be    ezScrum, SSLab NTUT
     Click element    xpath=//td[text()="Management"]
     Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
-    Wait until keyword succeeds     1min    5s    Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1
+    Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1
     [Teardown]    Test Account Manaement - Admin's email shouldn't be null Teardown
+
+Test Microservice
+    turnOn
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    sleep    1min
+    turnOff
