@@ -111,13 +111,17 @@ function SettingNotification(){
 				navigator.serviceWorker.register("./javascript/firebase-messaging-sw.js")
 				.then(function (registration) {
 					messaging.useServiceWorker(registration);
-					messaging.getToken()
-					.then(function(token){
-						resolve(token);
+					messaging.requestPermission()
+					.then(function(){
+						messaging.getToken()
+						.then(function(token){
+							resolve(token);
+						})
+						.catch(function(err){
+							reject(err)
+						})
 					})
-					.catch(function(err){
-						reject(err)
-					})
+					
 
 					
 				})
