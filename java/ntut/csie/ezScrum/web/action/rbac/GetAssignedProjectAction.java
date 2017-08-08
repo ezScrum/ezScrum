@@ -10,8 +10,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 
 public class GetAssignedProjectAction extends Action {
@@ -30,7 +30,7 @@ public class GetAssignedProjectAction extends Action {
 			
 			IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 			String token = userSession.getAccount().getToken();
-			IAccountController accountService = new AccountRESTClientProxy(token);
+			IAccount accountService = new MicroserviceProxy(token);
 			response.setContentType("text/xml; charset=utf-8");
 //			response.getWriter().write(new AccountHelper().getAssignedProject(id));
 			response.getWriter().write(accountService.getAssignedProject(id));

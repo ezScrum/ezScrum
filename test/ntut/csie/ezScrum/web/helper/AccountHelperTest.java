@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
@@ -26,7 +26,7 @@ public class AccountHelperTest {
 	private CreateAccount mCA;
 	private int mProjectCount = 1;
 	private Configuration mConfig;
-	private IAccountController mAccountHelper;
+	private IAccount mAccountHelper;
 
 	@Before
 	public void setUp() throws Exception {

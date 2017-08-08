@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 
-public class ValidateUsernameCommand implements AccountRESTCommand{
+public class ValidateUsernameCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private String inputUsername;
 	public ValidateUsernameCommand(AccountRESTClient accountService, String inputUsername){

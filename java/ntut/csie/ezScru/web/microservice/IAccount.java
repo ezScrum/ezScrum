@@ -3,7 +3,7 @@ package ntut.csie.ezScru.web.microservice;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public interface IAccountController {
+public interface IAccount {
 	public AccountObject createAccount(AccountInfo user);
 	public AccountObject updateAccount(AccountInfo user);
 	public boolean deleteAccount(long id);

@@ -1,7 +1,7 @@
 package ntut.csie.ezScrum.pic.internal;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -28,7 +28,7 @@ public class ProjectInfoCenter {
 		AccountObject theAccount = null;
 //		AccountMapper accountMapper = new AccountMapper();
 //		theAccount = accountMapper.confirmAccount(id, password);
-		IAccountController accountMicroservice = new AccountRESTClientProxy();
+		IAccount accountMicroservice = new MicroserviceProxy();
 		theAccount = accountMicroservice.confirmAccount(id, password);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;

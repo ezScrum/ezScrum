@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.Assert;
-import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.ICommand;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.issue.sql.service.core.InitialSQL;
 import ntut.csie.ezScrum.issue.sql.service.tool.internal.MySQLControl;
@@ -18,7 +18,7 @@ public class AccountRESTClientProxyTest {
 	private Configuration mConfig;
 	String token = "";
 	
-	private IAccountController mAccountRESTClientProxy;
+	private IAccount mAccountRESTClientProxy;
 	@Before
 	public void setUp() {
 		mConfig = new Configuration();
@@ -30,7 +30,7 @@ public class AccountRESTClientProxyTest {
 		mControl = new MySQLControl(mConfig);
 		mControl.connect();
 		
-		mAccountRESTClientProxy = new AccountRESTClientProxy(token);
+		mAccountRESTClientProxy = new MicroserviceProxy(token);
 	}
 	
 	@After

@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -49,12 +49,12 @@ public class SwitchNotificationStatusAction extends Action{
 	}
 	
 	private String Subscribe(Long account_id ,String firebaseToken, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		MicroserviceProxy ap = new MicroserviceProxy(token);
 		return ap.subscribeNotification(account_id, firebaseToken);
 	}
 	
 	private String CancelSubscribe(Long account_id ,String firebaseToken, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		MicroserviceProxy ap = new MicroserviceProxy(token);
 		return ap.cancelSubscribeNotification(account_id, firebaseToken);
 	}
 	

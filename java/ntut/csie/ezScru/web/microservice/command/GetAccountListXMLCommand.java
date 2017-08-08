@@ -6,7 +6,7 @@ import org.codehaus.jettison.json.JSONException;
 
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 
-public class GetAccountListXMLCommand implements AccountRESTCommand{
+public class GetAccountListXMLCommand implements ICommand{
 	private AccountRESTClient accountService;
 
 	public GetAccountListXMLCommand(AccountRESTClient accountService){

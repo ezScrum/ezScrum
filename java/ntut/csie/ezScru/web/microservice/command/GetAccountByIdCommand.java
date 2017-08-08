@@ -7,7 +7,7 @@ import org.codehaus.jettison.json.JSONException;
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public class GetAccountByIdCommand implements AccountRESTCommand{
+public class GetAccountByIdCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private long id;
 	

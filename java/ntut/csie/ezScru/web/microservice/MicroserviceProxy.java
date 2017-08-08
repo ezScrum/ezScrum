@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.codehaus.jettison.json.JSONException;
 
-import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.ICommand;
 import ntut.csie.ezScru.web.microservice.command.AddAssignedRoleCommand;
 import ntut.csie.ezScru.web.microservice.command.CreateAccountCommand;
 import ntut.csie.ezScru.web.microservice.command.DeleteAccountCommand;
@@ -17,19 +17,19 @@ import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
-public class AccountRESTClientProxy implements IAccountController{
+public class MicroserviceProxy implements IAccount{
 	
 	String token;
 	private AccountHelper accountHelper;
 	private AccountRESTClient accountRESTClient;
-	private AccountRESTCommand mAccountRESTCommand;
-	private AccountServiceInvoker invoker = new AccountServiceInvoker();
+	private ICommand mAccountRESTCommand;
+	private Invoker invoker = new Invoker();
 	private ConnectionQueue notDoneActionQueue;
-	public AccountRESTClientProxy(){
+	public MicroserviceProxy(){
 		accountHelper = new AccountHelper();
 		accountRESTClient = new AccountRESTClient();
 	}
-	public AccountRESTClientProxy(String token){
+	public MicroserviceProxy(String token){
 		accountHelper = new AccountHelper();
 		accountRESTClient = new AccountRESTClient(token);
 		this.token = token;

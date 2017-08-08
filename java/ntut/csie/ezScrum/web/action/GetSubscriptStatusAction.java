@@ -13,7 +13,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
 import com.google.gson.Gson;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -55,7 +55,7 @@ public class GetSubscriptStatusAction extends Action{
 	}
 	
 	private String getNotificationStatus(Long account_id ,String firebaseToken, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		MicroserviceProxy ap = new MicroserviceProxy(token);
 		return ap.getNotificationSubscriptStatus(account_id, firebaseToken);
 	}
 }

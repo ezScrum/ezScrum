@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.ICommand;
 
 public class ConnectionQueue {
 	
-	private Queue <AccountRESTCommand> notDoneAction = new LinkedList<AccountRESTCommand>();
+	private Queue <ICommand> notDoneAction = new LinkedList<ICommand>();
 	private String state = "notFinish";
 	private AccountRESTClient accountRESTClient;
 	Thread thread = new Thread(){
@@ -17,7 +17,7 @@ public class ConnectionQueue {
 			while(state != "finish"){
 				if(connect()){
 					while(!notDoneAction.isEmpty()){
-						AccountRESTCommand a = notDoneAction.element();
+						ICommand a = notDoneAction.element();
 						try {
 							System.out.println("thread run");
 							a.Execute();
@@ -43,7 +43,7 @@ public class ConnectionQueue {
 		this.accountRESTClient = accountRESTClient;
 		state = "notFinish";
 	}
-	public void queue(AccountRESTCommand command){
+	public void queue(ICommand command){
 		notDoneAction.add(command);
 		if(thread.isAlive()){
 			state = "notFinish";

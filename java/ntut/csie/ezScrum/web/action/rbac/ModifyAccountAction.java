@@ -12,8 +12,8 @@ import org.apache.struts.action.ActionMapping;
 import org.codehaus.jettison.json.JSONException;
 
 import ch.ethz.ssh2.crypto.Base64;
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -29,7 +29,7 @@ public class ModifyAccountAction extends Action {
 
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 //		AccountHelper accountHelper = new AccountHelper();
-		IAccountController accountService = new AccountRESTClientProxy(session.getAccount().getToken());
+		IAccount accountService = new MicroserviceProxy(session.getAccount().getToken());
 		AccountObject newAccount = null;
 		AccountInfo accountInfo = new AccountInfo();
 

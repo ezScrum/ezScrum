@@ -4,6 +4,7 @@ Resource          ../common_resource.txt
 Resource          ezScrum_AccountManagement_Management.txt
 Resource          ../ezScrum_Login.txt
 Resource          ../Project/ezScrum_Project.txt
+Library           ../lib/AccountManagementServiceHandler.py
 
 *** Keywords ***
 Test Account Management - PreCondition
@@ -273,6 +274,22 @@ Test Account Manaement - Admin's email shouldn't be null Setup
     _InputLoginForm    ${userName}    ${userPassword}
 
 Test Account Manaement - Admin's email shouldn't be null Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
+    Exit ezScrum System
+
+Test Account Management - Microservice Setup
+    turnOn
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Add_Account.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Add_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+
+Test Account Management - Microservice Teardown
+    turn off
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System

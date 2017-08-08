@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -24,6 +24,7 @@ public class NotifyNotificationLogout extends Action{
 		String firebaseToken = account.getFirebaseToken();
 		String token = account.getToken();
 		String s = NotifyLogout(account.getId(), firebaseToken, token);
+		MicroserviceProxy ap = new MicroserviceProxy(token);
 		response.setContentType("text/html; charset=utf-8");
 		
 		try {

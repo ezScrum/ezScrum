@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.support.SessionManager;
@@ -37,7 +37,7 @@ public class RemoveUserAction extends Action {
 		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		String token = session.getAccount().getToken();
-		AccountRESTClientProxy accountService = new AccountRESTClientProxy(token);
+		MicroserviceProxy accountService = new MicroserviceProxy(token);
 //		AccountHelper accountHelper = new AccountHelper();
 		
 		if (accountId > 0 && projectId > -1 && role != null) {

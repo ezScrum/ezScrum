@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
@@ -81,6 +81,7 @@ public class ReopenIssueAction extends PermissionAction {
 		String title = sender.getUsername() +" ReOpen " + issueType +": " + id;
 		String body = "In project:" + project.getName();
 		
+		MicroserviceProxy ap = new MicroserviceProxy(sender.getToken());
 		NotificationObject notificationObject = new NotificationObject(title, body, eventSource);
 		notificationObject.addMessageFilter("From", "ezScrum");
 		notificationObject.addMessageFilter("Id", project.getName());

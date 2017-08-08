@@ -13,8 +13,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jettison.json.JSONException;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.SecurityRequestProcessor;
 
@@ -25,7 +25,7 @@ public class GetAccountListAction extends Action {
 			// 取得帳號列表
 			IUserSession userSession = (IUserSession) request.getSession().getAttribute("UserSession");
 			response.setContentType("text/xml; charset=utf-8");
-			IAccountController accountService = new AccountRESTClientProxy(userSession.getAccount().getToken());
+			IAccount accountService = new MicroserviceProxy(userSession.getAccount().getToken());
 //			response.getWriter().write(new AccountHelper().getAccountListXML());
 			response.getWriter().write(accountService.getAccountListXML());
 			LogFactory.getLog(SecurityRequestProcessor.class).debug("Current Time : " + new Date().toString());

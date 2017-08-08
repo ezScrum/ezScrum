@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -19,7 +19,7 @@ import ntut.csie.ezScrum.web.mapper.AccountMapper;
 import ntut.csie.ezScrum.web.support.TranslateUtil;
 import ntut.csie.jcis.account.core.LogonException;
 
-public class AccountHelper implements IAccountController{
+public class AccountHelper implements IAccount{
 	private final String SYSTEM = "system";
 	private AccountMapper mAccountMapper;
 	public AccountHelper() {

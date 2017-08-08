@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -25,7 +25,7 @@ public class GetUserDataAction extends Action {
 			// 取得使用者帳號列表
 			response.setContentType("text/xml; charset=utf-8");
 			String token = session.getAccount().getToken();
-			AccountRESTClientProxy accountService = new AccountRESTClientProxy(token);
+			MicroserviceProxy accountService = new MicroserviceProxy(token);
 //			AccountObject newAccount = accountService.getAccountByUsernamePassword(account.getUsername(), account.getPassword());
 //			newAccount.setPassword(account.getPassword());
 			response.getWriter().write(accountService.getAccountXML(account));

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 
-public class GetAssignedProjectCommand implements AccountRESTCommand{
+public class GetAssignedProjectCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private long accountId;
 	public GetAssignedProjectCommand(AccountRESTClient accountService, long accountId){

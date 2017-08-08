@@ -2,6 +2,6 @@ package ntut.csie.ezScru.web.microservice.command;
 
 import java.io.IOException;
 
-public interface AccountRESTCommand {
+public interface ICommand {
 	Object Execute() throws IOException;
 }

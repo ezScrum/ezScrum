@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.test.CreateData;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -104,7 +104,7 @@ public class AddUserToRole {
 	public void setEnable(CreateAccount CA, int index, Boolean isEnable) {
 		// ezScrum v1.8
 		AccountObject account = CA.getAccountList().get(index);
-		IAccountController helper = new AccountHelper();
+		IAccount helper = new AccountHelper();
 		AccountInfo user = new AccountInfo();
 		user.id = account.getId();
 		user.username = account.getUsername();
@@ -117,7 +117,7 @@ public class AddUserToRole {
 
 	private void updateAccount(long projectId, String role) {
 		// ezScrum v1.8
-		IAccountController helper = new AccountHelper();
+		IAccount helper = new AccountHelper();
 		try {
 			helper.addAssignedRole(mAccount.getId(), projectId, role);
 		} catch (Exception e) {

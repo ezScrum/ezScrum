@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ntut.csie.ezScru.web.microservice.command.AccountRESTCommand;
+import ntut.csie.ezScru.web.microservice.command.ICommand;
 
-public class AccountServiceInvoker {
-	private List<AccountRESTCommand> commandList = new ArrayList<AccountRESTCommand>();
-	public void addAction(AccountRESTCommand command){
+public class Invoker {
+	private List<ICommand> commandList = new ArrayList<ICommand>();
+	public void addAction(ICommand command){
 		commandList.add(command);
 	}
 	public Object doCommand() throws IOException{

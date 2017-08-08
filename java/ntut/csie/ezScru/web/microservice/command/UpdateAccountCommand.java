@@ -6,7 +6,7 @@ import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public class UpdateAccountCommand implements AccountRESTCommand{
+public class UpdateAccountCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private AccountInfo accountInfo;
 	public UpdateAccountCommand(AccountRESTClient accountService, AccountInfo accountInfo){

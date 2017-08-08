@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import ch.ethz.ssh2.crypto.Base64;
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -37,7 +37,7 @@ public class UpdateAccountAction extends Action {
 		}
 		AccountObject newAccount = null;
 		String token = session.getAccount().getToken();
-		AccountRESTClientProxy accountService = new AccountRESTClientProxy(token);
+		MicroserviceProxy accountService = new MicroserviceProxy(token);
 		newAccount = accountService.updateAccount(accountInfo);
 //		JSONObject accountJSON = new JSONObject(responseString);
 //		newAccount = new AccountObject(Long.valueOf(accountJSON.getString("id")), accountJSON.getString("username"));

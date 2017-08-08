@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.pic.internal.UserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
@@ -214,7 +214,7 @@ public class Configuration {
 	 * return mock up IUserSession
 	 */
 	public IUserSession getUserSession() {
-		IAccountController AccountHelper = new AccountHelper();
+		IAccount AccountHelper = new AccountHelper();
 		AccountObject theAccount = AccountHelper.getAccount(USER_ID);
 		IUserSession theUserSession = new UserSession(theAccount);
 		return theUserSession;

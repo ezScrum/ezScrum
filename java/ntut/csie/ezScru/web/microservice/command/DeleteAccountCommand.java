@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 
-public class DeleteAccountCommand implements AccountRESTCommand{
+public class DeleteAccountCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private long id;
 	public DeleteAccountCommand(AccountRESTClient accountService, long id){

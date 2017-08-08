@@ -10,8 +10,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.support.SessionManager;
 
@@ -27,7 +27,7 @@ public class DeleteAccountAction extends Action {
 		} catch (NumberFormatException e) {
 			accountId = 0;
 		}
-		IAccountController accountsService = new AccountRESTClientProxy(userSession.getAccount().getToken());
+		IAccount accountsService = new MicroserviceProxy(userSession.getAccount().getToken());
 		// 設置 Header 與編碼
 		response.setContentType("text/html");
 		response.setHeader("Cache-Control", "no-cache");

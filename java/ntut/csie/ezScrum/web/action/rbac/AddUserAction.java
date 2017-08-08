@@ -11,8 +11,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
-import ntut.csie.ezScru.web.microservice.IAccountController;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
+import ntut.csie.ezScru.web.microservice.IAccount;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
@@ -52,7 +52,7 @@ public class AddUserAction extends Action {
 
 		if (isAdmin || hasPermission) {
 			try {
-				IAccountController accountService = new AccountRESTClientProxy();
+				IAccount accountService = new MicroserviceProxy();
 				AccountObject account = accountService.addAssignedRole(id, projectId, scrumRole);
 				writer.write(accountService.getAccountXML(account));
 //				AccountHelper accountHelper = new AccountHelper();

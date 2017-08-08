@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
+import ntut.csie.ezScru.web.microservice.MicroserviceProxy;
 import ntut.csie.ezScrum.issue.sql.service.core.Configuration;
 import ntut.csie.ezScrum.pic.core.IUserSession;
 import ntut.csie.ezScrum.web.action.PermissionAction;
@@ -78,7 +78,7 @@ public class ResetTaskAction extends PermissionAction {
 		notificationObject.addMessageFilter("From", "ezScrum");
 		notificationObject.addMessageFilter("Id", project.getName());
 		notificationObject.addMessageFilter("event", "TaskBoard");
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(sender.getToken());
+		MicroserviceProxy ap = new MicroserviceProxy(sender.getToken());
 		return ap.sendNotification(sender.getId(), recipients_id, notificationObject);
 	}
 }

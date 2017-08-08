@@ -5,7 +5,7 @@ import java.io.IOException;
 import ntut.csie.ezScru.web.microservice.AccountRESTClient;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 
-public class AddAssignedRoleCommand implements AccountRESTCommand{
+public class AddAssignedRoleCommand implements ICommand{
 	private AccountRESTClient accountService;
 	private long accountId;
 	private long projectId;
