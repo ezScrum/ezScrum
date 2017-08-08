@@ -1,5 +1,7 @@
 package ntut.csie.ezScrum.web.action.backlog;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,9 +38,21 @@ public class AjaxAddStoryTagAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		
 		long storyId = Long.parseLong(request.getParameter("storyId"));
-		long tagId = Long.parseLong(request.getParameter("tagId"));
-		
-		StringBuilder result = new ProductBacklogHelper(project).getAddStoryTagResponseText(storyId, tagId);
+		long tagId;
+		StringBuilder result;
+		if (request.getParameterMap().containsKey("tagId")) {
+			tagId = Long.parseLong(request.getParameter("tagId"));
+			result = new ProductBacklogHelper(project)
+					.getAddStoryTagResponseText(storyId, tagId);
+			return result;
+		}
+		String[] tagsIdArray = request.getParameterValues("tagsId");
+		ArrayList<Long> tagsId = new ArrayList<Long> ();
+		for (int i = 0; i < tagsIdArray.length; i++){
+			tagsId.add(Long.parseLong(tagsIdArray[i]));
+		}
+		result = new ProductBacklogHelper(project)
+				.getAddStoryTagResponseText(storyId, tagsId);
 		
 		return result;
 	}
