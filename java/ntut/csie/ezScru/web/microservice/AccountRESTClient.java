@@ -24,6 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectRole;
 import ntut.csie.ezScrum.web.logic.ProjectLogic;
@@ -705,15 +706,16 @@ public class AccountRESTClient{
 		return response;
 	}
 	
-	public String sendNotification(ArrayList<Long> accounts_id, String title, String body, String eventSource) throws IOException,JSONException{
+	public String sendNotification(NotificationObject notificationObject) throws IOException,JSONException{
 		String requestURL = baseURL + "/accounts/sendNotification";
 		
-		JSONArray array = new JSONArray(accounts_id);
+		JSONArray array = new JSONArray(notificationObject.getRecipientsId());
 		JSONObject json = new JSONObject();
 		json.put("accounts_id", array.toString());
-		json.put("title", title);
-		json.put("body", body);
-		json.put("eventSource", eventSource);
+		json.put("title", notificationObject.getTitle());
+		json.put("body", notificationObject.getMessageBody());
+		json.put("eventSource", notificationObject.getEventSource());
+		json.put("filter", notificationObject.getMessageFilter().toString());
 		
 		URL url = new URL(requestURL);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -734,6 +736,37 @@ public class AccountRESTClient{
 		sb.append(reader.readLine());
 		is.close();
 		String response = sb.toString();
+		return response;
+	}
+	
+	public String updateProjectsScriptStatus(Long account_id, String projectsStatus) throws IOException,JSONException{
+		String requestURL = baseURL + "/accounts/updateSubscribeProject";
+		JSONObject projectJson = new JSONObject(projectsStatus);
+		JSONObject json = new JSONObject();
+		
+		json.put("account_id", account_id.toString());
+		json.put("projectsStatus", projectJson.toString());
+		
+		URL url = new URL(requestURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Authorization", token);
+		conn.setDoOutput(true);
+		
+		OutputStream wr = conn.getOutputStream();
+        wr.write(json.toString().getBytes("UTF-8"));
+		int responsecode = conn.getResponseCode();
+		
+		if(responsecode != 200)
+			throw new ConnectException("Connected fail");
+		InputStream is = conn.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		sb.append(reader.readLine());
+		is.close();
+		String response = sb.toString();
+		
 		return response;
 	}
 }

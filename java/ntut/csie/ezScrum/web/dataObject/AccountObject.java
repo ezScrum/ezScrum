@@ -8,6 +8,7 @@ import ntut.csie.ezScrum.dao.RoleDAO;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
+import ntut.csie.ezScrum.web.dataObject.ProjectsSubscriptStatusObject;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -26,6 +27,7 @@ public class AccountObject implements IBaseObject {
 	private String token = "";
 	private String firebaseToken = "";
 	private boolean isAdmin = false;
+	private ProjectsSubscriptStatusObject mProjectsSubscriptStatusObject = new ProjectsSubscriptStatusObject();
 
 	public AccountObject(long id, String username) {
 		mUsername = username;
@@ -344,4 +346,17 @@ public class AccountObject implements IBaseObject {
 		        .put(AccountEnum.UPDATE_TIME, mUpdateTime);
 		return account;
 	}
+	
+	/**
+	 * Projects' Subscript Status
+	 * 
+	 */
+	public void setProjectsSubscriptStatus(String projectsSubscriptStatus){
+		mProjectsSubscriptStatusObject.SetProjectsSubscriptStatus(projectsSubscriptStatus);
+	}
+	
+	public String getProjectsSubscriptStatus(){
+		return mProjectsSubscriptStatusObject.GetProjectsSubscriptStatus();
+	}
+	
 }

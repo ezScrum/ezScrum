@@ -15,6 +15,7 @@ import ntut.csie.ezScrum.web.action.PermissionAction;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.SessionManager;
 import ntut.csie.ezScrum.web.support.Translation;
@@ -57,7 +58,8 @@ public class CheckOutTaskAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		String messageResponse = SendNotification(account, recipients_id, taskId, handler, project.getName());
+		String eventSource = request.getRequestURL().toString();
+		String messageResponse = SendNotification(account, recipients_id, taskId, handler,eventSource, project);
 		
 		try {
 			if (changeDate != null && !changeDate.equals(""))		// 用來檢查ChangeDate的格式是否正確, 若錯誤會丟出ParseException
@@ -77,19 +79,15 @@ public class CheckOutTaskAction extends PermissionAction {
 		return result;
 	}
 	
-	private String SendNotification(AccountObject sender, ArrayList<Long> recipients_id, long taskId, String handler,String projectName){
-		Configuration configuration = new Configuration();
-		String systemUrl;
-		if(configuration.getServerUrl() == "127.0.0.1")
-			systemUrl = "localhost";
-		else
-			systemUrl = configuration.getServerUrl();
-		
+	private String SendNotification(AccountObject sender, ArrayList<Long> recipients_id, long taskId, String handler, String eventSource, ProjectObject project){
 		String title = handler +" check out Task: " + taskId;
-		String body = "In project:" + projectName;
-		String eventSource = "http://"+systemUrl+":8080/ezScrum/viewProject.do?projectName=" + projectName;
+		String body = "In project:" + project.getName();
 		
+		NotificationObject notificationObject = new NotificationObject(title, body, eventSource);
+		notificationObject.addMessageFilter("From", "ezScrum");
+		notificationObject.addMessageFilter("Id", project.getId());
+		notificationObject.addMessageFilter("event", "TaskBoard");
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(sender.getToken());
-		return ap.sendNotification(sender.getId(), recipients_id, title, body, eventSource);
+		return ap.sendNotification(sender.getId(), recipients_id, notificationObject);
 	}
 }

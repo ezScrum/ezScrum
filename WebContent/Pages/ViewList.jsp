@@ -137,17 +137,39 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
     },
 	listeners:{
 		beforerender:function() {
+			var menuItems = [];
+			var tbar = ProjectsGird.getTopToolbar();
 			if (${CreateProject}) {
-				var tbar = ProjectsGird.getTopToolbar();
-				var btn = tbar.add({
-					id:'createProjectBtn', 
-					text:'Create Project', 
-					icon:'images/add3.png',
-					handler: function() {
-						CreateProjectWindow.showWidget();
-					}
-				});
+				var CreateProjectItem = {
+						id:'createProjectBtn', 
+						text:'Create Project', 
+						icon:'images/add3.png',
+						handler: function() {
+							CreateProjectWindow.showWidget();
+						}
+				};
+				menuItems.push(CreateProjectItem);
 			}
+			var SelectProject ={
+					id: 'selectItemsToReceive',
+					text: 'Select Items to Receive',
+					icon: 'images/Notification_setting.png',
+					menu: {
+						items: [],
+						listeners: {
+							itemclick: function(baseItem, e) {
+								console.log(baseItem , e)
+								
+								
+							},
+							show: function(menu) {
+								Ext.getCmp('ProjectListContentLayout').showProjectStatusMenu();
+							}
+						}
+					}		
+			}
+			menuItems.push(SelectProject);
+			var btn = tbar.add(menuItems);
 		},
 		render: function() {
 			this.loadDataModel();
@@ -170,6 +192,42 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
 			}
 		});
+	},
+	loadProjectStatus : function(){
+		/*Ext.Ajax.request({
+			url:'getProjectsSubscriptStatus.do',
+			success : function(response){
+				showProjectStatusMenu(response);
+			}
+		});*/
+	},
+	showProjectStatusMenu : function(record) {		
+		projectStatusMenu = ProjectsGird.getTopToolbar().getComponent('selectItemsToReceive');		
+		projectStatusMenu.menu.removeAll();
+		
+		
+		for ( var j = 0; j < ProjectStore.getCount(); j++) {
+			//TODO For event.
+			var projectRecord = ProjectStore.getAt(j);
+			projectStatusMenu.menu.add({
+				projectId: projectRecord.data['Id'],
+				text: projectRecord.data['Name'],
+				xtype: 'menucheckitem',
+				hideOnClick: false
+			});
+		}
+		
+		// set click items
+		/*projectStatusMenu.menu.items.each(function() {
+			this.setChecked(false);
+			for ( var i = 0; i < myProject.length; i++) {
+				if (myProject[i] != "" && this.text == myProject[i].name) {
+					this.setChecked(true);
+				}
+			}
+		});*/
+
+		
 	}
 });
 

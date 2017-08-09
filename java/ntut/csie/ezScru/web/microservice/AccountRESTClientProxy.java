@@ -13,6 +13,7 @@ import ntut.csie.ezScru.web.microservice.command.RemoveAssignRoleCommand;
 import ntut.csie.ezScru.web.microservice.command.UpdateAccountCommand;
 import ntut.csie.ezScrum.web.dataInfo.AccountInfo;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
+import ntut.csie.ezScrum.web.dataObject.NotificationObject;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.jcis.account.core.LogonException;
 
@@ -264,7 +265,7 @@ public class AccountRESTClientProxy implements IAccountController{
 		}		
 	}
 	
-	public String sendNotification(Long senderId, ArrayList<Long> recipients_id, String title, String body, String eventSource){
+	public String sendNotification(Long senderId, ArrayList<Long> recipients_id, NotificationObject notificationObject){
 		try{
 			ArrayList<Long> recipientsExcludeSender = new ArrayList<Long>();
 			for(Long recipient_id : recipients_id){
@@ -272,12 +273,24 @@ public class AccountRESTClientProxy implements IAccountController{
 					continue;
 				recipientsExcludeSender.add(recipient_id);
 			}
-			return accountRESTClient.sendNotification(recipientsExcludeSender, title, body, eventSource);
+			notificationObject.setRecipientsId(recipientsExcludeSender);
+			return accountRESTClient.sendNotification(notificationObject);
 		}catch(IOException e){
+			System.out.println(e);
 			return "Connection Error : account management.";
 		} catch (JSONException e) {
 			return "";
 		}		
+	}
+	
+	public String updateProjectsScriptStatus(Long account_id, String projectsStatus){
+		try{
+			return accountRESTClient.updateProjectsScriptStatus(account_id, projectsStatus);
+		}catch(IOException e){
+			return "Connection Error : account management.";
+		} catch (JSONException e) {
+			return "";
+		}	
 	}
 	
 	public AccountObject getAccount(String username){

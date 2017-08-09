@@ -18,7 +18,6 @@ public class SwitchNotificationStatusAction extends Action{
 	
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response){
-		
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		Long account_id = account.getId();
@@ -27,10 +26,14 @@ public class SwitchNotificationStatusAction extends Action{
 		String event = request.getParameter("event");
 		String s = "";
 		if(event.contains("Subscribe")){
-			s = Subscribe(account.getToken(), account_id, firebaseToken);
+			s = Subscribe(account_id, firebaseToken, account.getToken());
 		}
 		else if(event.contains("Cancel")){
-			s = CancelSubcribe(account.getToken(), account_id, firebaseToken);
+			s = CancelSubscribe(account_id, firebaseToken, account.getToken());
+		}
+		else if(event.contains("updateProjectsSubscriptStatus")){
+			String projectsSubscriptStatus =  request.getParameter("ProjectsSubscriptStatus");
+			s = UpdateProjectsScriptStatus(account_id, projectsSubscriptStatus, account.getToken());
 		}
 		response.setContentType("text/html; charset=utf-8");
 		
@@ -43,15 +46,18 @@ public class SwitchNotificationStatusAction extends Action{
 		return null;
 	}
 	
-	private String Subscribe(String token, Long account_id, String firebaseToken){
+	private String Subscribe(Long account_id ,String firebaseToken, String token){
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		String s = ap.subscribeNotification(account_id, firebaseToken);
-		return s;
+		return ap.subscribeNotification(account_id, firebaseToken);
 	}
 	
-	private String CancelSubcribe(String token, Long account_id, String firebaseToken){
+	private String CancelSubscribe(Long account_id ,String firebaseToken, String token){
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		String s = ap.cancelSubscribeNotification(account_id, firebaseToken);
-		return s;
+		return ap.cancelSubscribeNotification(account_id, firebaseToken);
+	}
+	
+	private String UpdateProjectsScriptStatus(Long account_id, String projectsSubscriptStatus, String token){
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);		
+		return ap.updateProjectsScriptStatus(account_id, projectsSubscriptStatus);
 	}
 }

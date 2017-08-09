@@ -121,9 +121,6 @@ function SettingNotification(){
 							reject(err)
 						})
 					})
-					
-
-					
 				})
 				.catch(function(e){
 					console.log(e);

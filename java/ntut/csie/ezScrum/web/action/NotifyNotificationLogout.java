@@ -23,9 +23,7 @@ public class NotifyNotificationLogout extends Action{
 		AccountObject account = session.getAccount();
 		String firebaseToken = account.getFirebaseToken();
 		String token = account.getToken();
-		
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
-		String s = ap.notifyServiceLogout(account.getId(), firebaseToken);
+		String s = NotifyLogout(account.getId(), firebaseToken, token);
 		response.setContentType("text/html; charset=utf-8");
 		
 		try {
@@ -36,5 +34,8 @@ public class NotifyNotificationLogout extends Action{
 		}
 		return null;
 	}
-	
+	private String NotifyLogout(Long account_id, String firebaseToken, String token){
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		return ap.notifyServiceLogout(account_id, firebaseToken);
+	}
 }
