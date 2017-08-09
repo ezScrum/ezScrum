@@ -349,3 +349,10 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
+
+Test ProductBacklog - Create Story test Sumbit button
+    [Documentation]    Add Story(正常資料)。點選按鈕Add Story，對各個欄位輸入資料，Tag欄位勾選Tag後送出。
+    [Setup]    Test Create Story Setup
+    Create Story With Arguments for submit button    newStory    5    3    85    testTagName    Note: newStory to test Submit
+    ...    HowToDemo: newStory
+    [Teardown]    Test Create Story Teardown

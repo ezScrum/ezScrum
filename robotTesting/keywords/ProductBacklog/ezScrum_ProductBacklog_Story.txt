@@ -298,3 +298,22 @@ Check If Button Enabled
     Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Print Selected"]
     Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Manage Tag"]
     Element Class Should Be Enabled    xpath=//table[@cellspacing="0"]//button[text()="Tag"]
+
+Create Story With Arguments for submit button
+    [Arguments]    ${storyName}    ${storyValue}    ${storyEstimate}    ${storyImportance}    ${tag}    ${storyNotes}
+    ...    ${storyHowToDemo}
+    [Documentation]    點選 Add story，建立story。
+    Click Element    xpath=//button[text()="Add Story"]
+    Wait Until Page Contains    Add New Story
+    Focus AND Input Text    //textarea[@name="Name"]    ${storyName}
+    Focus AND Input Text    //input[@name="Value"]    ${storyValue}
+    Focus AND Input Text    //input[@name="Estimate"]    ${storyEstimate}
+    Focus AND Input Text    //input[@name="Importance"]    ${storyImportance}
+    Focus AND Input Text    //textarea[@name="Notes"]    ${storyNotes}
+    Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
+    ${xpathCreateStorySubmit}=    Find Current Window Element    Add New Story    Submit
+    Element Enable And Submit    ${xpathCreateStorySubmit}
+    Element Should Be Disabled    //textarea[@name="Notes"]
+    Element Should Be Disabled    //input[@name="Value"]
+    Element Should Be Disabled    //input[@name="Estimate"]
+    Element Should Be Disabled    //input[@name="Importance"]

@@ -157,19 +157,22 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 				formBind: true,
 				text: 'Submit',
 				scope: this,
-				disabled: true,
-				handler: function() {
+				disabled:true,
+				handler: function(thisButton, eventObject) {
 					if (this.isCreate) {
 						this.AddSubmit();
 					} else {
 						this.EditSubmit();
 					}
+					this.DisableAfterClick();
+					
 				}
 			}, {
 				text: 'Cancel',
 				scope: this,
 				handler: function() {
 					this.ownerCt.hide();
+					
 				}
 			}]
 		}
@@ -180,17 +183,26 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 	AddSubmit: function() {
 		var obj = this;
 		var form = this.getForm();
-
 		Ext.Ajax.request({
 			url: obj.addurl,
 			params: form.getValues(),
 			success: function(response) {
 				obj.onSuccess(response);
+				
+			
 			},
 			failure: function(response) { /* notify logon form, not finish yet */
 			}
 		});
 	},
+	
+	DisableAfterClick: function(){
+		var ids = this.getId();
+		Ext.getCmp(ids).buttons[1].disable();
+		Ext.getCmp(ids).disable();
+		
+	},
+	
 	EditSubmit: function() {
 		var obj = this;
 		var form = this.getForm();
@@ -378,6 +390,7 @@ ezScrum.window.StoryWindow = Ext.extend(ezScrum.layout.Window, {
 		// initial window info
 		this.setTitle('Add New Story');
 		this.show();
+		
 	},
 	showTheWindow_Add: function(panel, sprintID) {
 		// initial form info
@@ -390,6 +403,9 @@ ezScrum.window.StoryWindow = Ext.extend(ezScrum.layout.Window, {
 		// initial window info
 		this.setTitle('Add New Story');
 		this.show();
+		this.StoryForm.enable();
+		
+	
 	},
 	showTheWindow_Edit: function(panel, issuueID) {
 		// initial form info
@@ -402,6 +418,7 @@ ezScrum.window.StoryWindow = Ext.extend(ezScrum.layout.Window, {
 		// initial window info
 		this.setTitle('Edit Story');
 		this.show();
+		this.StoryForm.enable();
 	}
 });
 
