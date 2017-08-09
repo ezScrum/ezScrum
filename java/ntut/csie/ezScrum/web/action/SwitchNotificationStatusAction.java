@@ -59,7 +59,7 @@ public class SwitchNotificationStatusAction extends Action{
 	}
 	
 	private String UpdateProjectsScriptStatus(Long account_id, AccountObject account, String projectName, String statusType, boolean status){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(account.getToken());
+		MicroserviceProxy ap = new MicroserviceProxy(account.getToken());
 		String projectsSubscriptStatus = account.getProjectsSubscriptStatus();
 		account.updateProjectsSubscriptStatus(projectName, statusType, status);
 		String s = ap.updateProjectsScriptStatus(account_id, account.getProjectsSubscriptStatus());

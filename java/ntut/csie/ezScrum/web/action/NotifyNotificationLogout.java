@@ -24,7 +24,7 @@ public class NotifyNotificationLogout extends Action{
 		String firebaseToken = account.getFirebaseToken();
 		String token = account.getToken();
 		String s = NotifyLogout(account.getId(), firebaseToken, token);
-		MicroserviceProxy ap = new MicroserviceProxy(token);
+		
 		response.setContentType("text/html; charset=utf-8");
 		
 		try {
@@ -36,7 +36,7 @@ public class NotifyNotificationLogout extends Action{
 		return null;
 	}
 	private String NotifyLogout(Long account_id, String firebaseToken, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);
+		MicroserviceProxy ap = new MicroserviceProxy(token);
 		return ap.notifyServiceLogout(account_id, firebaseToken);
 	}
 }
