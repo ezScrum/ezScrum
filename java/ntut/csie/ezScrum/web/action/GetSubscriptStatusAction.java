@@ -9,7 +9,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONException;
 import com.google.gson.Gson;
 
 import ntut.csie.ezScru.web.microservice.AccountRESTClientProxy;
@@ -24,7 +25,16 @@ public class GetSubscriptStatusAction extends Action{
 		String firebaseToken = request.getParameter("firebaseToken");
 		session.getAccount().setFirebaseToken(firebaseToken);
 		String notificationStatus = getNotificationStatus(account.getId(), firebaseToken, account.getToken());
-		SubscriptInfoUI siui = new SubscriptInfoUI(notificationStatus);
+		String status;	
+		try{
+			JSONObject j = new JSONObject(notificationStatus);
+			status = j.getString("status");
+			account.setProjectsSubscriptStatus(j.getString("messagefilter"));
+		}catch(JSONException e){
+			status = "Fail";
+		}
+		
+		SubscriptInfoUI siui = new SubscriptInfoUI(status);
 		Gson gson = new Gson();
 		
 		response.setContentType("text/html; charset=utf-8");

@@ -31,9 +31,11 @@ public class SwitchNotificationStatusAction extends Action{
 		else if(event.contains("Cancel")){
 			s = CancelSubscribe(account_id, firebaseToken, account.getToken());
 		}
-		else if(event.contains("updateProjectsSubscriptStatus")){
-			String projectsSubscriptStatus =  request.getParameter("ProjectsSubscriptStatus");
-			s = UpdateProjectsScriptStatus(account_id, projectsSubscriptStatus, account.getToken());
+		else if(event.contains("updateProjectSubscriptStatus")){
+			String projectName =  request.getParameter("Id");
+			String statusType = request.getParameter("statusType");
+			boolean status = request.getParameter("status").equals("true");
+			s = UpdateProjectsScriptStatus(account_id, account, projectName, statusType, status);
 		}
 		response.setContentType("text/html; charset=utf-8");
 		
@@ -56,8 +58,14 @@ public class SwitchNotificationStatusAction extends Action{
 		return ap.cancelSubscribeNotification(account_id, firebaseToken);
 	}
 	
-	private String UpdateProjectsScriptStatus(Long account_id, String projectsSubscriptStatus, String token){
-		AccountRESTClientProxy ap = new AccountRESTClientProxy(token);		
-		return ap.updateProjectsScriptStatus(account_id, projectsSubscriptStatus);
+	private String UpdateProjectsScriptStatus(Long account_id, AccountObject account, String projectName, String statusType, boolean status){
+		AccountRESTClientProxy ap = new AccountRESTClientProxy(account.getToken());
+		String projectsSubscriptStatus = account.getProjectsSubscriptStatus();
+		account.updateProjectsSubscriptStatus(projectName, statusType, status);
+		String s = ap.updateProjectsScriptStatus(account_id, account.getProjectsSubscriptStatus());
+		if(!s.equals("Success")){
+			account.setProjectsSubscriptStatus(projectsSubscriptStatus);
+		}
+		return s;
 	}
 }

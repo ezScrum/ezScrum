@@ -85,7 +85,7 @@ public class CheckOutTaskAction extends PermissionAction {
 		
 		NotificationObject notificationObject = new NotificationObject(title, body, eventSource);
 		notificationObject.addMessageFilter("From", "ezScrum");
-		notificationObject.addMessageFilter("Id", project.getId());
+		notificationObject.addMessageFilter("Id", project.getName());
 		notificationObject.addMessageFilter("event", "TaskBoard");
 		AccountRESTClientProxy ap = new AccountRESTClientProxy(sender.getToken());
 		return ap.sendNotification(sender.getId(), recipients_id, notificationObject);

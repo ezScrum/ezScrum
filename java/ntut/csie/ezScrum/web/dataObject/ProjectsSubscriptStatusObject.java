@@ -2,7 +2,10 @@ package ntut.csie.ezScrum.web.dataObject;
 
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.web.logic.ProjectLogic;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -26,13 +29,42 @@ public class ProjectsSubscriptStatusObject {
 		}
 	}
 	
-	public String GetProjectStatusById(Long id){
+	public void SetProjectsSubscriptStatusInit(AccountObject account){
+		ProjectLogic mProjectLogic = new ProjectLogic();;
+		ArrayList<ProjectObject> projects = mProjectLogic.getProjects();
+		Map<String, Boolean> map = mProjectLogic.getProjectPermissionMap(account);
+		
+		try{
+			JSONArray projectsStatus = new JSONArray();
+			for(ProjectObject project : projects){
+				if (map.get(project.getName()) == Boolean.TRUE){
+					JSONObject projectStatus = new JSONObject();
+					JSONObject eventStatus = new JSONObject();
+					//TODO eventStatus
+					projectStatus.put("Id", project.getName());
+					projectStatus.put("Subscribe", true);
+					projectStatus.put("event", eventStatus);
+					projectsStatus.put(projectStatus);
+				}	
+			}
+			SubscriptStatus.put("ezScrum", projectsStatus);
+		}catch(JSONException e){
+			System.out.println(e);
+		}		
+	}
+	
+	public void updateProjectStatus(String projectName, String statusType, boolean status){
+			JSONObject ProjectStatus = GetProjectStatusByProjectName(projectName);
+			SetProjectStatus(ProjectStatus,statusType,status);
+	}
+	
+	public JSONObject GetProjectStatusByProjectName(String projectName){
 		try{
 			JSONArray projectsStatusArray = SubscriptStatus.getJSONArray("ezScrum");
 			for(int index = 0; index < projectsStatusArray.length();index++){
-				Long projectId = projectsStatusArray.getJSONObject(index).getLong("projectId");
-				if(projectId == id)
-					return projectsStatusArray.getJSONObject(index).toString();
+				String id = projectsStatusArray.getJSONObject(index).getString("Id");
+				if(id.equals(projectName))
+					return projectsStatusArray.getJSONObject(index);
 			}
 		}catch(JSONException e){
 			System.out.println(e);
@@ -40,22 +72,12 @@ public class ProjectsSubscriptStatusObject {
 		return null;
 	}
 	
-	public void SetProjectStatusById(Long id, String projectSubscriptStatus){
+	private void SetProjectStatus(JSONObject ProjectStatus, String type, boolean status){
 		try{
-			JSONObject projectStatus = new JSONObject(projectSubscriptStatus);
-			JSONArray projectsStatusArray = SubscriptStatus.getJSONArray("ezScrum");
-			ArrayList<JSONObject> list = new ArrayList<JSONObject>();
-			for(int index = 0; index < projectsStatusArray.length();index++){
-				Long projectId = projectsStatusArray.getJSONObject(index).getLong("projectId");
-				if(projectId == id){
-					list.add(projectStatus);
-				}
-				else{
-					list.add(projectsStatusArray.getJSONObject(index));
-				}
+			if(type.equals("Project")){
+				ProjectStatus.remove("Subscribe");
+				ProjectStatus.put("Subscribe",status);
 			}
-			SubscriptStatus.remove("ezScrum");
-			SubscriptStatus.put("ezScrum", (new JSONArray(list)).toString());
 		}catch(JSONException e){
 			System.out.println(e);
 		}		

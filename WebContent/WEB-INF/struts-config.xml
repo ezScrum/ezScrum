@@ -355,7 +355,7 @@
         <action path="/switchNotification" type="ntut.csie.ezScrum.web.action.SwitchNotificationStatusAction" />
 		<action path="/getSubscriptStatus" type="ntut.csie.ezScrum.web.action.GetSubscriptStatusAction" />
 		<action path="/notifyLogout" type="ntut.csie.ezScrum.web.action.NotifyNotificationLogout" />
-		
+		<action path="/getProjectsSubscriptStatus" type="ntut.csie.ezScrum.web.action.GetProjectSuscriptStatus" />
         <!--    *********************
                 *		other		*
                 *********************

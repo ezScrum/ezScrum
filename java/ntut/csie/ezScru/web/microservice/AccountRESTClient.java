@@ -740,7 +740,7 @@ public class AccountRESTClient{
 	}
 	
 	public String updateProjectsScriptStatus(Long account_id, String projectsStatus) throws IOException,JSONException{
-		String requestURL = baseURL + "/accounts/updateSubscribeProject";
+		String requestURL = baseURL + "/accounts/updateProjectSubscriptStatus";
 		JSONObject projectJson = new JSONObject(projectsStatus);
 		JSONObject json = new JSONObject();
 		

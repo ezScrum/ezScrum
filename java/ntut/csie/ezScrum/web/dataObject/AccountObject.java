@@ -352,11 +352,20 @@ public class AccountObject implements IBaseObject {
 	 * 
 	 */
 	public void setProjectsSubscriptStatus(String projectsSubscriptStatus){
-		mProjectsSubscriptStatusObject.SetProjectsSubscriptStatus(projectsSubscriptStatus);
+		if(projectsSubscriptStatus == null || projectsSubscriptStatus.isEmpty()){
+			mProjectsSubscriptStatusObject.SetProjectsSubscriptStatusInit(this);
+		}
+		else{
+			mProjectsSubscriptStatusObject.SetProjectsSubscriptStatus(projectsSubscriptStatus);
+		}
+			
+	}
+	
+	public void updateProjectsSubscriptStatus(String projectName, String statusType, boolean status){
+		mProjectsSubscriptStatusObject.updateProjectStatus(projectName, statusType, status);
 	}
 	
 	public String getProjectsSubscriptStatus(){
 		return mProjectsSubscriptStatusObject.GetProjectsSubscriptStatus();
-	}
-	
+	}	
 }

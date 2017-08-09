@@ -158,12 +158,25 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 						items: [],
 						listeners: {
 							itemclick: function(baseItem, e) {
-								console.log(baseItem , e)
-								
-								
+								Ext.Ajax.request({
+									url:'switchNotification.do',
+									params:{
+										event:"updateProjectSubscriptStatus",
+										Id: baseItem.projectName,
+										statusType: baseItem.statusType,
+										status: !baseItem.checked
+									},
+									success:function(data){
+										if(data.responseText != "Success"){
+											alert(data.responseText);
+											this.show;
+										}
+										
+									}
+								});								
 							},
 							show: function(menu) {
-								Ext.getCmp('ProjectListContentLayout').showProjectStatusMenu();
+								Ext.getCmp('ProjectListContentLayout').loadProjectStatus();
 							}
 						}
 					}		
@@ -194,38 +207,42 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 		});
 	},
 	loadProjectStatus : function(){
-		/*Ext.Ajax.request({
+		Ext.Ajax.request({
 			url:'getProjectsSubscriptStatus.do',
 			success : function(response){
-				showProjectStatusMenu(response);
+				console.log()
+				Ext.getCmp('ProjectListContentLayout').showProjectStatusMenu(response);
 			}
-		});*/
+		});
 	},
 	showProjectStatusMenu : function(record) {		
 		projectStatusMenu = ProjectsGird.getTopToolbar().getComponent('selectItemsToReceive');		
 		projectStatusMenu.menu.removeAll();
-		
+
 		
 		for ( var j = 0; j < ProjectStore.getCount(); j++) {
 			//TODO For event.
 			var projectRecord = ProjectStore.getAt(j);
-			projectStatusMenu.menu.add({
-				projectId: projectRecord.data['Id'],
+			projectStatusMenu.menu.add({				
+				projectName: projectRecord.data['ID'],
 				text: projectRecord.data['Name'],
+				statusType : "Project",
 				xtype: 'menucheckitem',
 				hideOnClick: false
 			});
 		}
 		
 		// set click items
-		/*projectStatusMenu.menu.items.each(function() {
+		var projectsStatus = JSON.parse(record.responseText).ezScrum;
+		projectStatusMenu.menu.items.each(function() {
 			this.setChecked(false);
-			for ( var i = 0; i < myProject.length; i++) {
-				if (myProject[i] != "" && this.text == myProject[i].name) {
-					this.setChecked(true);
+			for ( var i = 0; i < projectsStatus.length; i++) {
+				if (projectsStatus[i] != "" && this.statusType == "Project"
+						&& this.projectName == projectsStatus[i].Id) {
+					this.setChecked(projectsStatus[i].Subscribe);
 				}
 			}
-		});*/
+		});
 
 		
 	}
