@@ -431,3 +431,50 @@ Test Account Management - Not Stable Microservice
     Compare Field Content    //div[@id="userEditInformationTab"]//input[@name="name"]    TestAccountIDNameEdited
     Compare Field Content    //div[@id="userEditInformationTab"]//input[@name="mail"]    TestAccountIDEdited@scrum.tw
     [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Not Stable Microservice Change Password
+    [Setup]    Test Account Management - Not Stable Microservice Edit Account Setup
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    # change password first time
+    Click Element    xpath=//button[text()="Change Password"]
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountEdit1    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountEdit1    # Re-enter
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+    turn off
+    # change password second time
+    Click Element    xpath=//button[text()="Change Password"]
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountEdit2    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountEdit2    # Re-enter
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+    turn on
+    # change password third time
+    Click Element    xpath=//button[text()="Change Password"]
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountEdit3    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountEdit3    # Re-enter
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+    turn off
+    # change password fourth time
+    Click Element    xpath=//button[text()="Change Password"]
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountEdit4    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountEdit4    # Re-enter
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    turn on
+    Wait Until Page Contains    Success.
+    Click Element    xpath=//button[text()="Change Password"]
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountEdit5    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountEdit5    # Re-enter
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+    Logon ezScrum System
+    Login Page With Account In The Same Browser    ${tsAccountId}    TestAccountEdit5
+    [Teardown]    Test Account Management - Microservice Teardown
