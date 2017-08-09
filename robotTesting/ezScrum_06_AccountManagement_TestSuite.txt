@@ -299,7 +299,7 @@ Test Account Management - Admin's email shouldn't be null
     Wait until keyword succeeds    1min    5s    Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1
     [Teardown]    Test Account Manaement - Admin's email shouldn't be null Teardown
 
-Test Account Management - Microservice
+Test Account Management - Not Stable Microservice Add Account and Login with that Account
     [Setup]    Test Account Management - Microservice Setup
     _ClickManagmentElement    admin
     Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
@@ -308,14 +308,13 @@ Test Account Management - Microservice
     turn off
     Edit Account    ${tsAccountId}
     Wait Until Page Contains    Success.
-    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
     turn on
-    Sleep    5s
+    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
     Logon ezScrum System
     Login Page With Account In The Same Browser    ${tsAccountId}    ${tsAccountId}
     [Teardown]    Test Account Management - Microservice Teardown
 
-Test Account Management - Microservice Add Two Account
+Test Account Management - Not Stable Microservice Add Two Account
     [Setup]    Test Account Management - Microservice Setup
     _ClickManagmentElement    admin
     Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
@@ -336,4 +335,99 @@ Test Account Management - Microservice Add Two Account
     Input Password    password    ${newPassword}
     Submit Form    logonForm
     Title Should Be    ezScrum, SSLab NTUT
+    [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Not Stable Microservice Edit Second User
+    [Setup]    Test Account Management - Microservice Setup
+    _ClickManagmentElement    admin
+    Add Account By Parameter    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    turn off
+    ${newAccountId}=    Set Variable    newAccountID
+    ${newAccountName}=    Set Variable    newAccountName
+    ${newAccountMail}=    Set Variable    newAccount@scrum.tw
+    Add Account By Parameter    ${newAccountId}    ${newAccountName}    ${newAccountMail}
+    Wait Until Page Contains    Success.
+    turn on
+    Edit Account    ${newAccountId}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${newAccountId}    ${newAccountId}NameEdited    ${newAccountId}Edited@scrum.tw
+    Edit Account    ${tsAccountId}
+    Wait Until Page Contains    Success.
+    Check Account In Edit    ${tsAccountId}    ${tsAccountId}NameEdited    ${tsAccountId}Edited@scrum.tw
+    [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Not Stable Microservice Edit Account
+    [Setup]    Test Account Management - Not Stable Microservice Edit Account Setup
+    turn off
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Click Element    xpath=//button[text()="Edit Information"]
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="name"]    TestAccountNameEdited    # User Name
+    ${xpathEditInformationSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathEditInformationSaveButton}
+    Wait Until Page Contains    Success.
+    Disable Account    ${tsAccountId}
+    turn on
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Click Element    xpath=//button[text()="Edit Information"]
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="mail"]    TestAccountMailEdited@scrum.tw
+    ${xpathEditInformationSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathEditInformationSaveButton}
+    Wait Until Page Contains    Success.
+    _ClickManagmentElement    admin
+    Check Account In Edit    ${tsAccountId}    TestAccountNameEdited    TestAccountMailEdited@scrum.tw
+    [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Not Stable Microservice
+    [Setup]    Test Account Management - Microservice Setup
+    _ClickManagmentElement    admin
+    Set Selenium Speed    ${SELENIUM_SPEED}
+    # click "Add" Button
+    Click Element    xpath=//button[text()="Add Account"]
+    # fill Account Info
+    Focus AND Input Text    //input[@name='account']    ${tsAccountId}    # User ID
+    Focus AND Input Text    //input[@name='name']    ${tsAccountName}    # User Name
+    Focus AND Input Text    //input[@name="passwd"]    ${tsAccountId}    # Password
+    Focus AND Input Text    //input[@name="reenter"]    ${tsAccountId}    # Re-enter
+    Focus AND Input Text    //input[@name="mail"]    ${tsAccountMail}    # E-mail Address
+    # Save
+    turn off
+    ${xpathSaveButton}=    Find Current Window Element    Add New Account    Save
+    Element Enable And Submit    ${xpathSaveButton}
+    # check if added #show "OK' buuton
+    Wait Until Page Contains    Success.
+    turn on
+    Check Account In Edit    ${tsAccountId}    ${tsAccountName}    ${tsAccountMail}
+    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="TestAccountID")]
+    # click "Edit Information" Button
+    Click Element    xpath=//button[text()="Edit Information"]
+    # update Account Info
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="name"]    TestAccountIDNameEdited    # User Name
+    Focus AND Input Text    //span[text()="Edit Information"]/../../../../..//input[@name="mail"]    TestAccountIDEdited@scrum.tw    # E-mail Address
+    # Save
+    turn off
+    ${xpathEditInformationSaveButton}=    Find Current Window Element    Edit Information    Save
+    Element Enable And Submit    ${xpathEditInformationSaveButton}
+    Wait Until Page Contains    Success.
+    # click "Change Password" Button
+    Click Element    xpath=//button[text()="Change Password"]
+    # update Account Info
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="passwd"]    TestAccountID    # Password
+    Focus AND Input Text    //span[text()="Change Password"]/../../../../..//input[@name="reenter"]    TestAccountID    # Re-enter
+    # Save
+    turn on
+    ${xpathEditPasswordSaveButton}=    Find Current Window Element    Change Password    Save
+    Element Enable And Submit    ${xpathEditPasswordSaveButton}
+    Wait Until Page Contains    Success.
+    Comment    sleep    5s
+    Logon ezScrum System
+    Login Page With Account In The Same Browser    ${tsAccountId}    ${tsAccountId}
+    _ClickManagmentElement    ${tsAccountId}
+    Compare Field Content    //div[@id="userEditInformationTab"]//input[@name="account"]    ${tsAccountId}
+    Compare Field Content    //div[@id="userEditInformationTab"]//input[@name="name"]    TestAccountIDNameEdited
+    Compare Field Content    //div[@id="userEditInformationTab"]//input[@name="mail"]    TestAccountIDEdited@scrum.tw
     [Teardown]    Test Account Management - Microservice Teardown
