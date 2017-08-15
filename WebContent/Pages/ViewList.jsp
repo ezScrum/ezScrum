@@ -151,8 +151,8 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 				menuItems.push(CreateProjectItem);
 			}
 			var SelectProject ={
-					id: 'selectItemsToReceive',
-					text: 'Select Items to Receive',
+					id: 'settingAttentionProject',
+					text: 'Setting Attention Project',
 					icon: 'images/Notification_setting.png',
 					menu: {
 						items: [],
@@ -216,10 +216,9 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 		});
 	},
 	showProjectStatusMenu : function(record) {		
-		projectStatusMenu = ProjectsGird.getTopToolbar().getComponent('selectItemsToReceive');		
+		projectStatusMenu = ProjectsGird.getTopToolbar().getComponent('settingAttentionProject');		
 		projectStatusMenu.menu.removeAll();
 
-		
 		for ( var j = 0; j < ProjectStore.getCount(); j++) {
 			//TODO For event.
 			var projectRecord = ProjectStore.getAt(j);
@@ -243,8 +242,6 @@ ezScrumProjectList = Ext.extend(Ext.Viewport, {
 				}
 			}
 		});
-
-		
 	}
 });
 

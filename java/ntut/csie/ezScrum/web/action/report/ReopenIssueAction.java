@@ -60,17 +60,18 @@ public class ReopenIssueAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		String eventSource = request.getRequestURL().toString();
-		String messageResponse = SendNotification(account, recipients_id, id, issueType, eventSource, project);
+		String eventSource = request.getRequestURL().toString().replaceAll(request.getServletPath().toString(), "/viewProject.do?projectName=" + project.getName());
 		
 		if (issueType.equals("Story")) {
 			sprintBacklogHelper.reopenStory(id, name, notes, changeDate);
 			// return re open 的 issue的相關資訊
 			StoryObject story = sprintBacklogHelper.getStory(id);
+			String messageResponse = SendNotification(account, recipients_id, story.getSerialId(), issueType, eventSource, project);
 			result.append(Translation.translateTaskboardStoryToJson(story, messageResponse));
 		} else if (issueType.equals("Task")) {
 			sprintBacklogHelper.reopenTask(id, name, notes, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(id);
+			String messageResponse = SendNotification(account, recipients_id, task.getSerialId(), issueType, eventSource, project);
 			result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));
 		}
 

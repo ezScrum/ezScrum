@@ -121,13 +121,15 @@ function SettingNotification(){
 							reject(err)
 						})
 					})
+					.catch(function(){
+						SetNotifyImg("No Permission");
+					});
 				})
 				.catch(function(e){
 					console.log(e);
 				});
 				messaging.onMessage(function(payload){
 					var option = {
-							title: payload.notification.title,
 							body: payload.notification.body,
 							icon: "./images/scrum_16.png"
 					}

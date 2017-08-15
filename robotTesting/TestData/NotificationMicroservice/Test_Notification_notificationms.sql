@@ -15,19 +15,31 @@ CREATE DATABASE IF NOT EXISTS `notificationms` /*!40100 DEFAULT CHARACTER SET ut
 USE `notificationms`;
 
 
--- 導出  表 notificationms.subscriber 結構
-CREATE TABLE IF NOT EXISTS `subscriber` (
+-- 導出  表 notificationms.filter_model 結構
+CREATE TABLE IF NOT EXISTS `filter_model` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `filter` varchar(255) DEFAULT NULL,
+  `subscriber_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 正在導出表  notificationms.filter_model 的資料：~0 rows (大約)
+/*!40000 ALTER TABLE `filter_model` DISABLE KEYS */;
+/*!40000 ALTER TABLE `filter_model` ENABLE KEYS */;
+
+
+-- 導出  表 notificationms.subscriber_model 結構
+CREATE TABLE IF NOT EXISTS `subscriber_model` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  notificationms.subscriber 的資料：1 rows
-DELETE FROM `subscriber`;
-/*!40000 ALTER TABLE `subscriber` DISABLE KEYS */;
-INSERT INTO `subscriber` (`id`, `username`) VALUES
-	(1, 'user2');
-/*!40000 ALTER TABLE `subscriber` ENABLE KEYS */;
+-- 正在導出表  notificationms.subscriber_model 的資料：~0 rows (大約)
+/*!40000 ALTER TABLE `subscriber_model` DISABLE KEYS */;
+INSERT INTO `subscriber_model` (`id`, `username`) VALUES
+	(1, 'user1');
+/*!40000 ALTER TABLE `subscriber_model` ENABLE KEYS */;
 
 
 -- 導出  表 notificationms.token_model 結構
@@ -37,8 +49,7 @@ CREATE TABLE IF NOT EXISTS `token_model` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  notificationms.token_model 的資料：1 rows
-DELETE FROM `token_model`;
+-- 正在導出表  notificationms.token_model 的資料：~0 rows (大約)
 /*!40000 ALTER TABLE `token_model` DISABLE KEYS */;
 INSERT INTO `token_model` (`id`, `token`) VALUES
 	(1, 'TestToken');
@@ -54,8 +65,7 @@ CREATE TABLE IF NOT EXISTS `token_relation_model` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  notificationms.token_relation_model 的資料：1 rows
-DELETE FROM `token_relation_model`;
+-- 正在導出表  notificationms.token_relation_model 的資料：~0 rows (大約)
 /*!40000 ALTER TABLE `token_relation_model` DISABLE KEYS */;
 INSERT INTO `token_relation_model` (`id`, `logon`, `subscriberid`, `tokenid`) VALUES
 	(1, b'1', 1, 1);

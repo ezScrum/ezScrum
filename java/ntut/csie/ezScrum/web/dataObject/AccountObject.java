@@ -366,6 +366,9 @@ public class AccountObject implements IBaseObject {
 	}
 	
 	public String getProjectsSubscriptStatus(){
+		String s = mProjectsSubscriptStatusObject.GetProjectsSubscriptStatus();
+		if(s.equals("{}"))
+			mProjectsSubscriptStatusObject.SetProjectsSubscriptStatusInit(this);
 		return mProjectsSubscriptStatusObject.GetProjectsSubscriptStatus();
 	}	
 }

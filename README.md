@@ -59,6 +59,17 @@ How to start
         <SystemProperty name="jetty.host" default="<<IP_ADDRESS>>"/>
     </Set>
     ```
+6. Setting Firebase project in WebContent/firebase.json 
+
+	 ```
+    "apiKey": <Your_Api_Key>,
+	"authDomain":  <Your_Auth_Domain>,
+	"databaseURL":  <Your_Database_URL>,
+	"projectId":  <Your_Project_Id>,
+	"storageBucket":  <Your_Storage_Bucket>,
+	"messagingSenderId":  <Your_Messaging_SenderId>
+    ```
+
 
 	####OS: Windows
     (1) Set User Account Control (UAC) to lowest level.

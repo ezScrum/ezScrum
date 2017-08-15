@@ -13,7 +13,7 @@ Notification_Setup
     ${attachFilePath3}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification_notificationms.sql
     Load Database    ${DB_URL}    notificationms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath3}
     Maximize Browser Window
-    _InputLoginForm    ${userName}    ${userPassword}
+    _InputLoginForm    user1    user1
 
 Notification_Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

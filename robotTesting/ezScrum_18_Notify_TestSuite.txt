@@ -10,11 +10,26 @@ Resource          keywords/Notification/Notification_Setup_Teardown.txt
 Resource          keywords/TaskBoard/ezScrum_TaskBoard.txt
 
 *** Test Cases ***
-Test Notification - NotifyBell
+Test Notification
     [Setup]    Notification_Setup
-    Wait Until Element Is Visible    //img[@id="Notification_Subscript"]
-    ${notification_sre}=    Get Element Attribute    Notification_Subscript@src
-    Should Contain    ${notification_sre}    NotifyBell_NoUsed
+    Element Should Be Visible    xpath=//img[@id="Notification_Subscript"]
+    Click button    xpath=//button[text()="Setting Attention Project"]
+    ${TestNotification_attr}=    Get Element Attribute    //ul[@class="x-menu-list"]/li@class
+    ${TestNotification}=    get text    xpath=//ul[@class="x-menu-list"]/li/a/span
+    Should Contain    ${TestNotification_attr}    x-menu-item-checked
+    Should Be Equal As Strings    ${TestNotification}    Test Notification service
+    Click element    xpath=//ul[@class="x-menu-list"]/li/a/span
+    ${TestNotification_attr}=    Get Element Attribute    //ul[@class="x-menu-list"]/li@class
+    Should not Contain    ${TestNotification_attr}    x-menu-item-checked
+    Click button    xpath=//button[text()="Setting Attention Project"]
+    Click button    xpath=//button[text()="Setting Attention Project"]
+    ${TestNotification_attr}=    Get Element Attribute    //ul[@class="x-menu-list"]/li@class
+    Should not Contain    ${TestNotification_attr}    x-menu-item-checked
+    Click element    xpath=//ul[@class="x-menu-list"]/li/a/span
+    Click button    xpath=//button[text()="Setting Attention Project"]
+    Click button    xpath=//button[text()="Setting Attention Project"]
+    ${TestNotification_attr}=    Get Element Attribute    //ul[@class="x-menu-list"]/li@class
+    Should Contain    ${TestNotification_attr}    x-menu-item-checked
     [Teardown]    Notification_Teardown
 
 Test Notification - send message

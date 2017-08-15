@@ -57,11 +57,11 @@ public class ResetTaskAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		String eventSource = request.getRequestURL().toString();
-		String messageResponse = SendNotification(account, recipients_id, issueId, eventSource, project);
+		String eventSource = request.getRequestURL().toString().replaceAll(request.getServletPath().toString(), "/viewProject.do?projectName=" + project.getName());
 		
 		// return reset task的相關資訊
 		TaskObject task = sprintBacklogHelper.getTask(issueId);
+		String messageResponse = SendNotification(account, recipients_id, task.getSerialId(), eventSource, project);
 		// IIssue issue = sprintBacklogHelper.getStory(issueID);
 		StringBuilder result = new StringBuilder("");
 		result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));

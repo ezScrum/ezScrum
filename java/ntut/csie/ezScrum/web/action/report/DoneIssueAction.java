@@ -59,18 +59,18 @@ public class DoneIssueAction extends PermissionAction {
 		IUserSession session = (IUserSession) request.getSession().getAttribute("UserSession");
 		AccountObject account = session.getAccount();
 		ArrayList<Long> recipients_id = project.getProjectMembersId();
-		String eventSource = request.getRequestURL().toString();
-		String messageResponse = SendNotification(account, recipients_id, issueId, issueType, eventSource, project);
-		
-		
+		String eventSource = request.getRequestURL().toString().replaceAll(request.getServletPath().toString(), "/viewProject.do?projectName=" + project.getName());
+
 		if (issueType.equals("Story")) {
 			sprintBacklogHelper.closeStory(issueId, name, notes, changeDate);
 			// return done issue 相關相關資訊
 			StoryObject story = sprintBacklogHelper.getStory(issueId);
+			String messageResponse = SendNotification(account, recipients_id, story.getSerialId(), issueType, eventSource, project);
 			result.append(Translation.translateTaskboardStoryToJson(story, messageResponse));
 		} else if (issueType.equals("Task")) {
 			sprintBacklogHelper.closeTask(issueId, name, notes, actual, changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(issueId);
+			String messageResponse = SendNotification(account, recipients_id, task.getSerialId(), issueType, eventSource, project);
 			result.append(Translation.translateTaskboardTaskToJson(task, messageResponse));
 		}
 		
