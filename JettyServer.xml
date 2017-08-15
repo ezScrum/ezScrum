@@ -2,21 +2,24 @@
 <Configure id="Server" class="org.mortbay.jetty.Server">
     <Call name="addConnector">
         <Arg>
-            <New class="org.mortbay.jetty.nio.SelectChannelConnector">
-                <Set name="host">
-                    <SystemProperty name="jetty.host" default="localhost"/>
-                </Set>
-                <Set name="port">
-                    <SystemProperty name="jetty.port" default="8080"/>
-                </Set>
-                <Set name="maxIdleTime">30000</Set>
-                <Set name="Acceptors">2</Set>
-                <Set name="statsOn">false</Set>
-                <Set name="confidentialPort">8443</Set>
-                <Set name="lowResourcesConnections">5000</Set>
-                <Set name="lowResourcesMaxIdleTime">5000</Set>
+            <New class="org.mortbay.jetty.security.SslSocketConnector">      
+              <Set name="host">
+                 <SystemProperty name="jetty.host" default="localhost"/>
+              </Set>
+              <Set name="port"><SystemProperty name="jetty.ssl.port" default="443"/></Set>
+              <Set name="maxIdleTime">30000</Set>
+              <Set name="Acceptors">2</Set>
+              <Set name="statsOn">false</Set>
+                
+              <Set name="keystore"><SystemProperty name="jetty.home" default="" />etc/keystore</Set>
+              <Set name="Password">ezscrum</Set>
+              <Set name="keyPassword">ezscrum</Set>
+              <Set name="truststore"><SystemProperty name="jetty.home" default=""/>etc/keystore</Set>
+              <Set name="trustPassword">ezscrum</Set>
+              <Set name="allowRenegotiate">true</Set>
             </New>
         </Arg>
+        
     </Call>
     <Set name="ThreadPool">
         <New class="org.mortbay.thread.QueuedThreadPool">

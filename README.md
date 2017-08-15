@@ -44,7 +44,7 @@ How to start
     DatabaseName = <<DB_NAME>>
     ```
 
-5. Set IP address in ```JettyServer.xml```. Replace ``localhost`` to your IP address.
+5. Set IP address and SSL password in ```JettyServer.xml```. Replace ``localhost`` to your IP address.
 
     ```
     <Set name="host">
@@ -59,6 +59,14 @@ How to start
         <SystemProperty name="jetty.host" default="<<IP_ADDRESS>>"/>
     </Set>
     ```
+    
+    ```
+    <Set name="Password">"<<KeyStorePassword>>"</Set>
+	<Set name="keyPassword">"<<KeyStorePassword>>"</Set>
+    
+    <Set name="trustPassword">"<<CertifyPassword>>"</Set>
+    ```
+    
 6. Setting Firebase project in WebContent/firebase.json 
 
 	 ```
