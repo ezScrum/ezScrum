@@ -290,10 +290,10 @@ Test Account Management - Microservice Setup
     _InputLoginForm    ${userName}    ${userPassword}
 
 Test Account Management - Microservice Teardown
-    turn off
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    turn off
+    Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
 
 Test Account Management - Not Stable Microservice Edit Account Setup
     turnOn
@@ -306,3 +306,16 @@ Test Account Management - Not Stable Microservice Edit Account Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     _ClickManagmentElement    admin
+
+Test Account Management - Add two Account
+    turn on
+    Set Selenium Speed    0.3
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    AccountManagement    Add_Account.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    ${attachFilePath2}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Account Microservice    Add_Account.sql
+    Load Database    ${DB_URL}    account_ms    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath2}
+    Open Browser    http://localhost:8080/ezScrum/logon.do    gc
+    Maximize Browser Window
+    Input Text    name=userId    admin
+    Input Password    name=password    admin
+    Click Element    identifier=Next

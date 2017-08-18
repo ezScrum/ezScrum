@@ -10,7 +10,7 @@ def turnOn():
     #proc = subprocess.Popen('start', stdin = subprocess.PIPE, stdout = subprocess.PIPE,shell=True)
     #call(["java -jar acct-mgt-1.0.jar"])
     #if(num == 1):
-    p = subprocess.Popen(['C:/Program Files/Java/jdk1.8.0_121/bin/java.exe','-jar','acct-mgt-1.0.jar'])
+    p = subprocess.Popen(['java','-jar','acct-mgt-1.0.jar'])
         #return p
         #p.kill()
     #os.system("java -jar acct-mgt-1.0.jar")

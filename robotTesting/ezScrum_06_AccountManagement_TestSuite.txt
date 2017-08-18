@@ -14,6 +14,7 @@ Library           BuiltIn
 Library           keywords/lib/Selenium2Improved.py
 Library           keywords/lib/AccountManagementServiceHandler.py
 Library           Process
+Library           keywords/lib/GetAccount.py
 
 *** Variables ***
 ${tsAccountId}    TestAccountID
@@ -477,4 +478,25 @@ Test Account Management - Not Stable Microservice Change Password
     Wait Until Page Contains    Success.
     Logon ezScrum System
     Login Page With Account In The Same Browser    ${tsAccountId}    TestAccountEdit5
+    [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Not Stable Add Two Account To Check within Database
+    [Setup]    Test Account Management - Add two Account
+    TurnOff
+    setDBAccountPassword    root    root
+    ${obj1}=    Create Dictionary    email    Mark@test.com    username    Mark    nickname
+    ...    Mark
+    ${obj2}=    Create Dictionary    email    Jack@test.com    username    Jack    nickname
+    ...    Jackey
+    Addtwouser    ${obj1}    ${obj2}
+    ${check1}=    checkObjectInDatabase    ${obj1}
+    Should Not Be True    ${check1}
+    ${check2}=    checkObjectInDatabase    ${obj2}
+    Should Not Be True    ${check2}
+    Turn On
+    waitCheck    Jack
+    ${check1}=    checkObjectInDatabase    ${obj1}
+    Should Be True    ${check1}
+    ${check2}=    checkObjectInDatabase    ${obj2}
+    Should Be True    ${check2}
     [Teardown]    Test Account Management - Microservice Teardown

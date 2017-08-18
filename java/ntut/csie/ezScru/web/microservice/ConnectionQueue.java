@@ -14,7 +14,7 @@ public class ConnectionQueue {
 	Thread thread = new Thread(){
 		@Override
 		public void run(){
-			while(state != "finish"){
+			while(!state.equals("finish")){
 				if(connect()){
 					while(!notDoneAction.isEmpty()){
 						ICommand a = notDoneAction.element();

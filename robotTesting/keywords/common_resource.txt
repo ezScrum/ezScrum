@@ -136,7 +136,7 @@ Clean DB
 
 Compare Text In Specific Xpath
     [Arguments]    ${xpathToAssert}    ${expectedText}
-    ${textOfXpath}=     Get Text    xpath=${xpathToAssert}
+    ${textOfXpath}=    Get Text    xpath=${xpathToAssert}
     Should Be Equal    ${textOfXpath}    ${expectedText}
 
 Clean Database and Exit ezScrum
@@ -189,3 +189,28 @@ Clean Microservice DB
 Clean NotificationMs DB
     [Arguments]    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
     Run Keyword if    "${VERSION}"=="Web"    Clean NotificationMs Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME_}
+
+AddtwoUser
+    [Arguments]    ${obj1}    ${obj2}
+    Wait Until Element Is Visible    //td[text()="Management"]
+    Click Element    //td[text()="Management"]
+    Wait Until Element Is Enabled    //button[text()="Add Account"]
+    Click Button    //button[text()="Add Account"]
+    Input Text    name=account    ${obj1["username"]}
+    Input Text    name=name    ${obj1["nickname"]}
+    Input Text    name=passwd    Mark
+    Input Text    name=reenter    Mark
+    Input Text    name=mail    ${obj1["email"]}
+    Wait Until Element Is Enabled    //button[text()="Save"]
+    Click Button    //button[text()="Save"]
+    Wait Until Page Contains    Success.
+    Wait Until Element Is Enabled    //button[text()="Add Account"]
+    Click Button    //button[text()="Add Account"]
+    Input Text    name=account    ${obj2["username"]}
+    Input Text    name=name    ${obj2["nickname"]}
+    Input Text    name=passwd    Jack
+    Input Text    name=reenter    Jack
+    Input Text    name=mail    ${obj2["email"]}
+    Wait Until Element Is Enabled    //button[text()="Save"]
+    Click Button    //button[text()="Save"]
+    Wait Until Page Contains    Success.
