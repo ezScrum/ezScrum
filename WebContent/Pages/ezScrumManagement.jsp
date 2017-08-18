@@ -15,6 +15,7 @@
 <script type="text/javascript" src="javascript/ezScrumJSTool.js"></script>
 
 <script type="text/javascript" src="javascript/ux/PagingMemoryProxy.js"></script>
+<script type="text/javascript" src="javascript/ux/AccountPagingMemoryProxy.js"></script>
 
 <!-- extjs -->
 

@@ -1,3 +1,4 @@
+var pageSize = 10;
 var AssignRole_Window = new ezScrum.window.AssignRoleWindow({
 	listeners:{
 		UpdateSuccess:function(win, form, response, record){
@@ -21,7 +22,84 @@ var AccountGridProxyStore = new Ext.data.Store({
 		{name : 'Enable'}		
 	],
 	reader	: AccountReader,
-	proxy	: new Ext.ux.data.PagingMemoryProxy()
+	proxy	: new Ext.ux.data.AccountPagingMemoryProxy()
+});
+var accountSearchFieldStore = new Ext.data.SimpleStore({
+    fields: ['dataValue'],
+    data: [['Please select ...'], ['Email'], ['Name'], ['Roles'],['User ID']]
+});
+
+var accountSearchComboBox = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender: true,
+    editable: false,
+    mode: 'local',
+    store: accountSearchFieldStore,
+    fieldLabel: 'searchComboBOX',
+    blankText: accountSearchFieldStore.getAt(0).data['dataValue'],
+    emptyText: accountSearchFieldStore.getAt(0).data['dataValue'],
+    valueField: 'dataValue',
+    displayField: 'dataValue',
+    id: 'searchComboBoxID',
+    listeners: {
+        select: function() {
+            var record = this.getStore().getAt(this.selectedIndex);
+            var selectSearchFilter = record.data['dataValue'];
+            accountSearchField.setComboBoxValue(selectSearchFilter);
+        }
+    }
+});
+
+var accountSearchField = new Ext.form.TextField({
+    fieldLabel: 'Search',
+    enableKeyEvents: true,
+    comboBoxValue: '',
+    disabled: true,
+    initEvents: function() {
+        var keyPress = function(e) {
+            this.search(accountSearchComboBox.getValue(), this.getValue());
+        };
+        this.el.on("keyup", keyPress, this);
+    },
+    setComboBoxValue: function(value) {
+        this.comboBoxValue = value;
+        if (value != accountSearchFieldStore.getAt(0).data['dataValue']) { // 選回default
+            if (this.getValue().length > 0) {
+                this.search(value, this.getValue());
+            }
+            this.setDisabled(false);
+        } else {
+            this.reset();
+            this.setDisabled(true);
+        }
+    },
+    search: function(value, text) {
+        AccountGridProxyStore.proxy.setSearchComboBoxValue(value);
+        AccountGridProxyStore.proxy.setSearchText(text);
+        if (text.length > 0) {
+            AccountGridProxyStore.load({
+                params: {
+                    start: 0,
+                    limit: pageSize
+                }
+            });
+        } else {
+            AccountGridProxyStore.load({
+                params: {
+                    start: 0,
+                    limit: pageSize
+                }
+            });
+            AccountGridProxyStore.proxy.reload = true;
+        }
+    },
+    reset: function() {
+        this.setDisabled(true);
+        this.setValue('');
+        this.comboBoxValue = '';
+        this.search(accountSearchFieldStore.getAt(0).data['dataValue'], this.getValue());
+    }
 });
 
 ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
@@ -41,6 +119,13 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
     sm		: new Ext.grid.RowSelectionModel({
     	singleSelect: true
     }),
+	listeners : {
+		'afterrender' : function (grid) {
+            grid.getBottomToolbar().refresh.hideParent = true;
+            grid.getBottomToolbar().refresh.hide();
+
+        }
+	},
     initComponent : function() {
     	var config = {
 			tbar: [
@@ -48,10 +133,13 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
 			    {id: 'AccountManagement_editAccountInformaitonBtn', ref: '../AccountManagement_editAccountInformaitonBtn_refID', disabled:true, text:'Edit Information', scope: this, icon:'images/edit.png', handler: function() { Account_ModifyInformation_Window.showTheWindow_EditInformaiton(this, this.getSelectionModel().getSelected()); } },
 			    {id: 'AccountManagement_editAccountPasswordBtn', ref: '../AccountManagement_editAccountPasswordBtn_refID', disabled:true, text:'Change Password', scope: this, icon:'images/edit.png', handler: function() { Account_ModifyPassword_Window.showTheWindow_EditPassword(this, this.getSelectionModel().getSelected()); } },
 				{id: 'AccountManagement_deleteAccountBtn', ref: '../AccountManagement_deleteAccountBtn_refID', disabled:true, text:'Delete Account', icon:'images/delete.png', handler: this.checkDeletAccount },
-			    {id: 'AccountManagement_assignRoleBtn', ref: '../AccountManagement_assignRoleBtn_refID', disabled:true, text:'Assign Role', scope: this, icon:'images/userIcon.png', handler: function() { AssignRole_Window.loadAssignRole(this.getSelectionModel().getSelected().data['ID']); } }
+			    {id: 'AccountManagement_assignRoleBtn', ref: '../AccountManagement_assignRoleBtn_refID', disabled:true, text:'Assign Role', scope: this, icon:'images/userIcon.png', handler: function() { AssignRole_Window.loadAssignRole(this.getSelectionModel().getSelected().data['ID']); } },
+				'Search :',
+				accountSearchComboBox,
+				accountSearchField
 			],
 		    bbar : new Ext.PagingToolbar({
-				pageSize	: 15,
+				pageSize	: pageSize,
 				store		: AccountGridProxyStore,
 				displayInfo	: true,
 				displayMsg	: 'Displaying topics {0} - {1} of {2}',
@@ -110,7 +198,7 @@ ezScrum.AccountGrid = Ext.extend(Ext.grid.GridPanel, {
 			success : function(response) {
 				AccountGridProxyStore.loadData(response.responseXML);
 				AccountGridProxyStore.proxy.data = response;
-				AccountGridProxyStore.load({params:{start:0, limit:15}});
+				AccountGridProxyStore.load({params:{start:0, limit:pageSize}});
 				
 				ManagementMainLoadMaskHide();
 			},

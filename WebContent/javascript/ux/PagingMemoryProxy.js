@@ -50,7 +50,7 @@ Ext.ux.data.PagingMemoryProxy = Ext.extend(Ext.data.MemoryProxy, {
             result.records = this.storeData.records;
             result.success = this.storeData.success;
             result.totalRecords = this.storeData.totalRecords;
-        } 
+        }
         catch (e) {
             this.fireEvent('loadexception', this, options, null, e);
             callback.call(scope, null, options, false);
@@ -69,7 +69,7 @@ Ext.ux.data.PagingMemoryProxy = Ext.extend(Ext.data.MemoryProxy, {
         result.records = tempRecord;
         result.totalRecords = result.records.length;
 
-        
+
         // sorting
         if (params.sort !== undefined) {
             // use integer as params.sort to specify column, since arrays are not named
@@ -95,17 +95,17 @@ Ext.ux.data.PagingMemoryProxy = Ext.extend(Ext.data.MemoryProxy, {
     getFilter : function()
     {
     	if(this.filter == null)
-    		return function(record){return true}; 
+    		return function(record){return true};
     	var f = [], len, i;
         this.filter.filters.each(function (filter) {
             if (filter.active) {
                 f.push(filter);
             }
         });
-        
-        
+
+
         return function (record) {
-            
+
 			len = f.length;
             for (i = 0; i < len; i++) {
                 if (!f[i].validateRecord(record)) {
