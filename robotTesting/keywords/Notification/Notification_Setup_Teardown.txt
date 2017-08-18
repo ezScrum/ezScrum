@@ -8,9 +8,9 @@ Library           ../lib/AccountManagementServiceHandler.py
 *** Keywords ***
 Notification_Setup
     turnOn
-    sleep    8s
+    sleep    10s
     NotificationTurnOn
-    sleep    8s
+    sleep    10s
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
