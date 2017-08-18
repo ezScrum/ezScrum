@@ -2,9 +2,15 @@
 Library           ../lib/Selenium2Improved.py
 Resource          ../common_resource.txt
 Resource          ../ezScrum_Login.txt
+Library           ../lib/NotificationServiceHandler.py
+Library           ../lib/AccountManagementServiceHandler.py
 
 *** Keywords ***
 Notification_Setup
+    turnOn
+    sleep    8s
+    NotificationTurnOn
+    sleep    8s
     Open Browser    ${LOGIN_URL}    ${BROWSER}
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    NotificationMicroservice    Test_Notification.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
@@ -16,6 +22,8 @@ Notification_Setup
     _InputLoginForm    user1    user1
 
 Notification_Teardown
+    turnOff
+    NotificationTurnOff
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Clean Microservice DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    account_ms
     Clean NotificationMs DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    notificationms
