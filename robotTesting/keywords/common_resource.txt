@@ -182,3 +182,15 @@ Element Class Should Be Enabled
     [Arguments]    ${ElementLocator}
     ${ElementClass}=    Get Element Attribute    ${ElementLocator}@class
     Should Not Contain    ${ElementClass}    x-item-disabled
+
+Search Member Account
+    [Arguments]    ${option}    ${value}
+    Wait Until Element Is Visible    //input[@name="searchComboBoxID"]
+    Click Element    //input[@name="searchComboBoxID"]
+    Wait Until Element Is Visible    //div[@class="x-combo-list-inner"]//div[text()="${option}"]
+    Click Element    //div[@class="x-combo-list-inner"]//div[text()="${option}"]
+    Wait Until Element Is Enabled    //input[@name="ext-comp-1049"]
+    Input Text    //input[@name="ext-comp-1049"]    ${value}
+    Element Should Be Visible    //div[text()="${value}"]
+    Press Key    //input[@name="ext-comp-1049"]    \\01
+    Press Key    //input[@name="ext-comp-1049"]    \\08
