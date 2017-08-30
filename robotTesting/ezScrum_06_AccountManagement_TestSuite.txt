@@ -12,6 +12,7 @@ Resource          Global Define.txt
 Resource          ServerConfig.txt
 Library           BuiltIn
 Library           keywords/lib/Selenium2Improved.py
+Library           keywords/lib/GetAccount.py
 
 *** Variables ***
 ${tsAccountId}    TestAccountID
@@ -302,6 +303,13 @@ Test Account Management - Search Account
     Set Selenium Speed    0.3
     Wait Until Element Is Visible    //td[text()="Management"]
     Click Element    //td[text()="Management"]
+    setDBAccountPassword    root    root
+    InsertData    Max    Max    Max@gmail.com    Max
+    InsertData    www    www    www@gmail.com    www
+    InsertData    James    James    James@gmail.com    James
+    InsertData    Test22    Test22    Test22@gmail.com    Test22
+    InsertData    Jacky    Jacky    Jacky@gmail.com    Jacky
+    InsertData    new    new    new@mew.com    new
     Search Member Account    User ID    Max
     Search Member Account    Name    www
     Search Member Account    Email    James@gmail.com

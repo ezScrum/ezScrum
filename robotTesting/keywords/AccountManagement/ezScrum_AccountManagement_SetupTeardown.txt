@@ -253,3 +253,4 @@ Test Account Management - Search Account Setup
 
 Test Account Management - Search Account Teardown
     Exit ezScrum System
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
