@@ -86,7 +86,7 @@ Project With Different DB Name
     Wait Until Keyword Succeeds    ${CREATE_PROJECT_WAIT}    1    Alert Should Be Present    Create success. Redirect to view project summary.
 
 Check Project Is Create
-    Wait Until Page Contains Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="Modify Config"]
+    Wait Until Keyword Succeeds    1min    10s    Wait Until Page Contains Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="Modify Config"]
     Select Node Product    Modify Config
     Wait Until Page Contains Element    xpath=//input[@name="ProjectName"]
     Compare Field Content    //input[@name="ProjectName"]    ${PROJECT_NAME}
