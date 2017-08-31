@@ -34,7 +34,7 @@ New Tab With Alias
 Compare Field Content
     [Arguments]    ${xpath}    ${correctValue}
     ${testValue}=    Get Value    xpath=${xpath}
-     Should Be Equal As Strings    ${correctValue}    ${testValue}
+    Should Be Equal As Strings    ${correctValue}    ${testValue}
 
 Select Project
     [Arguments]    ${PROJECT_NAME}
@@ -194,3 +194,8 @@ Search Member Account
     Element Should Be Visible    //div[text()="${value}"]
     Press Key    //input[@name="ext-comp-1049"]    \\01
     Press Key    //input[@name="ext-comp-1049"]    \\08
+
+Compare Field Content As Strings
+    [Arguments]    ${xpath}    ${correctValue}
+    ${testValue}=    Get Text    xpath=${xpath}
+    Should Be Equal As Strings    ${correctValue}    ${testValue}

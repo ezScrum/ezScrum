@@ -43,7 +43,7 @@ Verify Story Information With Arguments
     ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
     Should Be Equal    ${testTagText.strip()}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
-    Should Be Equal    ${testStoryNameText}    ${storyName}
+    Should Be Equal As Strings    ${testStoryNameText}    ${storyName}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${storyValue}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-7" and (text()="${storyEstimate}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-8" and (text()="${storyImportance}")]    1
@@ -313,7 +313,7 @@ Create Story With Arguments for submit button
     Focus AND Input Text    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathCreateStorySubmit}=    Find Current Window Element    Add New Story    Submit
     Element Enable And Submit    ${xpathCreateStorySubmit}
-    Element Should Be Disabled    //textarea[@name="Notes"]
-    Element Should Be Disabled    //input[@name="Value"]
-    Element Should Be Disabled    //input[@name="Estimate"]
-    Element Should Be Disabled    //input[@name="Importance"]
+    Element Should Be Disabled    xpath =//textarea[@name="Notes"]
+    Element Should Be Disabled    xpath =//input[@name="Value"]
+    Element Should Be Disabled    xpath =//input[@name="Estimate"]
+    Element Should Be Disabled    xpath =//input[@name="Importance"]
