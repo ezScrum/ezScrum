@@ -178,6 +178,7 @@ Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
     #Compare after reload page
     Reload Page
     ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
+    Wait Until Element Is Visible    ${SprintBacklog}
     Click Element    ${SprintBacklog}
     Should Be Equal    ${NewTags_StoryId1}    Project02Tag01
     Should Be Equal    ${NewTags_StoryId2}    Project02Tag02, ProjectsMutualTag01
@@ -238,6 +239,7 @@ Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02 Check Proj.1
     Click Element    ${ProjectList}
     ${Project01}    Set Variable    xpath = //div[text()="Project01"]
     Click Element    ${Project01}
+    Wait Until Element Is Visible    ${SprintBacklog}
     Click Element    ${SprintBacklog}
     ${Project01_NewTag_StoryId3}    Get Text    xpath = //span[text()="3"]/../../../td[2]/div[1]
     ${Project01_NewTag_StoryId4}    Get Text    xpath = //span[text()="4"]/../../../td[2]/div[1]

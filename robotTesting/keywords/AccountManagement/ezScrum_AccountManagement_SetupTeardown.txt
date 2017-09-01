@@ -245,11 +245,9 @@ Test Account Manaement - Admin's email shouldn't be null Teardown
     Exit ezScrum System
 
 Test Account Management - Search Account Setup
-    Open Browser    http://localhost:8080/ezScrum/logon.do    gc
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
     Maximize Browser Window
-    Input Text    name=userId    admin
-    Input Text    name=password    admin
-    Click Element    name=Next
+    _InputLoginForm    ${userName}    ${userPassword}
 
 Test Account Management - Search Account Teardown
     Exit ezScrum System

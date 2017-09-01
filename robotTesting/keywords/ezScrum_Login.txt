@@ -54,7 +54,7 @@ Login Page Using New Tab With Alias
 
 _InputLoginForm
     [Arguments]    ${name}    ${password}
-    Set Selenium Speed    ${SELENIUM_SPEED}
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
     Input Text    userId    ${name}
     Input Password    password    ${password}
     Submit Form    logonForm
