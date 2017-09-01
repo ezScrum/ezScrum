@@ -25,23 +25,27 @@ Verify Story Information With Arguments
     Compare Field Content    //input[@name="Tags"]    ${correctTagText}
     Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
-    Element Enable And Submit    ${xpathEditStoryCancel}
+    Click Element    //span[text()="Edit Story #1"]/../div[@class ="x-tool x-tool-close"]
+    #Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    Wait Until Element is Visible    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
+    sleep    5s
+    Double Click Element    //div[@class="x-grid3-body"]/div/table[@class ="x-grid3-row-table"]
+    Double Click Element    //div[@class="x-grid3-body"]/div/table[@class ="x-grid3-row-table"]
+    #Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
-    Should Be Equal    ${testNameText}    Name:\n${storyName}
+    Should Be Equal As Strings    ${testNameText}    Name:\n${storyName}
     ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..
-    Should Be Equal    ${testNotesText}    Notes:\n${storyNotes}
+    Should Be Equal As Strings    ${testNotesText}    Notes:\n${storyNotes}
     ${testHowToDemoText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="How To Demo:"]/..
-    Should Be Equal    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
+    Should Be Equal As Strings    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
     #比對Tag時若為空的長度仍然有1，如果拿到長度為1時則把testTagText設為EMPTY
     ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
     #將兩個變數都轉為unicode才能比對
     ${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
     ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
-    Should Be Equal    ${testTagText.strip()}    ${correctTagText}
+    Should Be Equal As Strings    ${testTagText.strip()}    ${correctTagText}
     ${testStoryNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-3"]
     Should Be Equal As Strings    ${testStoryNameText}    ${storyName}
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../.././/div[@class="x-grid3-cell-inner x-grid3-col-6" and (text()="${storyValue}")]    1
