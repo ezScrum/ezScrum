@@ -295,6 +295,7 @@ Test ProductBacklog - Attach File
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
     Choose File    //input[@name="file"]    ${attachFilePath}
     ${xpathAttachFile}=    Find Current Window Element    Attach File    Submit
+    Wait Until Element is Visible    xpath=${xpathAttachFile}
     Click Element    xpath=${xpathAttachFile}
     Wait Until Page Contains    Attach File Success.
     Wait Until Element Is Visible    //tbody/tr/td[@class="x-grid3-col x-grid3-cell x-grid3-td-3 "]/div[@class="x-grid3-cell-inner x-grid3-col-3"]/img
