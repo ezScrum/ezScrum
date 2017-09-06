@@ -49,6 +49,7 @@
 	hyphens: manual;
 	-ms-hyphens:auto;
 	-moz-hyphens: auto;
+	display: inline-block;
 }
 
 .StroyCard_Notes {

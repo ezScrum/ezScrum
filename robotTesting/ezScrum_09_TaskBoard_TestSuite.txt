@@ -398,3 +398,40 @@ Test TaskBoard - Check Taskcard Position
     Select Node Product    TaskBoard
     Check if Done column has TaskCard    ${Story_ID}    ${Task_number}
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
+
+Test TaskBoard - Story and Description_Chrome
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
+    [Tags]    Unstable
+    [Setup]    Test TaskBoard - Task Done Setup
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    #Story Card text
+    ${stroy_description}=    Get Text    xpath =//td[@class ="StroyCard_Description"]
+    Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
+    ${subs_story}=    Get Substring    ${stroy_description}    0    47
+    Should Be Equal As Strings    ${subs_story}    Story for taskboard AT story for taskboard text
+    #Task Card text
+    ${task_description}=    Get Text    //td[@class = "TaskCard_Description"]/h1
+    Should Be Equal As Strings    ${task_description}    task 1 for test task with longer words such as photosynthesis and environment Another word would be environment
+    ${subs_task}=    Get Substring    ${task_description}    0    46
+    Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
+    Log    ${subs_task}
+    [Teardown]    Test TaskBoard - Task Done Teardown
+
+Test TaskBoard - Story and Description_IE
+    [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
+    [Tags]    Unstable
+    [Setup]    Test TaskBoard - Setup IE
+    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
+    Select Node Product    TaskBoard
+    #Story Card
+    ${stroy_description}    Get Text    xpath =//td[@class ="StroyCard_Description"]
+    Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
+    ${subs}=    Get Substring    ${stroy_description}    48    97
+    Should Be Equal As Strings    ${subs}    longer than testing engagement expectations envir
+    #Task Card text
+    ${task_description}=    Get Text    //td[@class = "TaskCard_Description"]/h1
+    Should Be Equal As Strings    ${task_description}    task 1 for test task with longer words such as photosynthesis and environment Another word would be environment
+    ${subs_task}=    Get Substring    ${task_description}    0    46
+    Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
+    [Teardown]    Test TaskBoard - Task Done Teardown

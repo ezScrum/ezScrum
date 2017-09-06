@@ -157,14 +157,14 @@ Test TaskBoard - Task Done Setup
     Comment    Set Test Variable    ${tcTaskID}
     #New Setup
     Open Browser    ${LOGIN_URL}    ${BROWSER}
-    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Done.sql
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Story_Length.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
     Select Node Product    Sprint Backlog
     # variables
-    Set Test Variable    ${tcStoryName}    story for taskboard AT
+    Set Test Variable    ${tcStoryName}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
     Set Test Variable    ${tcStoryValue}    1
     Set Test Variable    ${tcStoryEstimate}    2
     Set Test Variable    ${tcStoryImportance}    3
@@ -173,7 +173,7 @@ Test TaskBoard - Task Done Setup
     ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
     Set Test Variable    ${tcStoryID}
     # task information
-    Set Test Variable    ${tcTaskName}    task 1 for test task Done
+    Set Test Variable    ${tcTaskName}    task 1 for test task with longer words such as photosynthesis and environment Another word would be environment
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test task Done
     ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
@@ -472,3 +472,27 @@ Test TaskBoard - Check Sprint ID Setup
 Test TaskBoard - Check Sprint ID Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
+Test TaskBoard - Setup IE
+    Open Browser    ${LOGIN_URL}    internet explorer
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Task_Story_Length.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    Select Project    localtestProjectDisplayName
+    Select Node Product    Sprint Backlog
+    # variables
+    Set Test Variable    ${tcStoryName}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
+    Set Test Variable    ${tcStoryValue}    1
+    Set Test Variable    ${tcStoryEstimate}    2
+    Set Test Variable    ${tcStoryImportance}    3
+    Set Test Variable    ${tcStoryNotes}    notes for show taskboard AT
+    Set Test Variable    ${tcStoryHowToDemo}    demo display after show taskboard AT
+    ${tcStoryID}=    Get Story ID In Sprint Backlog    ${tcStoryName}
+    Set Test Variable    ${tcStoryID}
+    # task information
+    Set Test Variable    ${tcTaskName}    task 1 for test task with longer words such as photosynthesis and environment Another word would be environment
+    Set Test Variable    ${tcTaskEstimate}    3
+    Set Test Variable    ${tcTaskNotes}    notes for test task Done
+    ${tcTaskID}=    Get Task ID In Sprint Backlog    ${tcTaskName}
+    Set Test Variable    ${tcTaskID}
