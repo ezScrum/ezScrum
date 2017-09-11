@@ -142,6 +142,7 @@ _logout
 Change Account Password
     [Arguments]    ${accountId}    ${newPassword}
     Set Selenium Speed    ${SELENIUM_SPEED}
+    Wait Until Keyword Succeeds    1min    10s    Wait Until Element is Visible    xpath=//div[text()="TestAccountID"]/../../../..
     Mouse Down    xpath=//div[text()="TestAccountID"]/../../../..
     Mouse Up    xpath=//div[text()="TestAccountID"]/../../../..
     # click "Change Password" Button    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${accountId}")]
