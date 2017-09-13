@@ -206,22 +206,64 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 	EditSubmit: function() {
 		var obj = this;
 		var form = this.getForm();
+		var addTags = [];
+		var removeTags = [];
+		var storyid = this.EditRecord.data['sId'];
 		// update tag info
 		IssueTagMenu.items.each(function() {
-			obj.UpdateStoryTag(this.tagId, this.text, this.checked);
-		});
-		
-		
-		
-		Ext.Ajax.request({
-			url: obj.editurl,
-			params: form.getValues(),
-			success: function(response) {
-				obj.onEditSuccess(response);
-			},
-			failure: function(response) { /* notify logon form, not finish yet */
+			var tag = obj.UpdateStoryTag(this.tagId, this.text, this.checked);
+			
+			if(tag.status == "Unchanged"){
+				return true;
 			}
+			/*if(tag.status == "Add"){
+				addTags.push(tag.tagId);
+			}*/
+			
 		});
+		var editSuccess = function() {
+			Ext.Ajax.request({
+				url: obj.editurl,
+				params: form.getValues(),
+				success: function(response) {
+					obj.onEditSuccess(response);
+				},
+				failure: function(response) { /* notify logon form, not finish yet */
+				}
+			});
+		}
+		var removeThisTags = function(){
+			Ext.Ajax.request({
+			url: 'AjaxRemoveStoryTag.do',
+			success: function(response) {
+				editSuccess();
+			},
+			params: {
+				storyId: storyid,
+				tagsId: removeTags
+			},
+			async: false
+			});
+		}
+		if((addTags) && addTags.length > 0){
+			Ext.Ajax.request({
+			url: 'AjaxAddStoryTag.do',
+			success: function(response) {
+				removeThisTags();
+				editSuccess();
+			},
+			params: {
+				storyId: storyid,
+				tagsId: addTags
+			},
+			async: false
+			});
+		}else if((removeTags) && removeTags.length > 0){
+			removeThisTags();
+		}
+		else {
+			editSuccess();
+		}
 	},
 	onSuccess: function(response) {
 		var success = false;
@@ -326,8 +368,9 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 		}
 
 		if (tagExist == true && checked == true) {
+			return {"tagId" :tagId, "status": "Unchanged"};
 		} else if (tagExist == true && checked == false) {
-			Ext.Ajax.request({
+			/*Ext.Ajax.request({
 				url: 'AjaxRemoveStoryTag.do',
 				success: function(response) {
 				},
@@ -335,9 +378,10 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 					storyId: storyid,
 					tagId: tagId
 				}
-			});
+			});*/
+			return {"tagId" :tagId, "status": "Remove"};
 		} else if (tagExist == false && checked == true) {
-			Ext.Ajax.request({
+			/*Ext.Ajax.request({
 				url: 'AjaxAddStoryTag.do',
 				success: function(response) {
 				},
@@ -345,8 +389,10 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 					storyId: storyid,
 					tagId: tagId
 				}
-			});
+			});*/
+			return {"tagId" :tagId, "status": "Add"};
 		} else if (tagExist == false && checked == false) {
+			return {"tagId" :tagId, "status": "Unchanged"};
 		}
 	},
 	reset: function() {

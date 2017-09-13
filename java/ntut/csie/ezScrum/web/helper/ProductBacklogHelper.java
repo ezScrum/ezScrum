@@ -197,6 +197,16 @@ public class ProductBacklogHelper {
 		result.append(translateStoryToJson(story));
 		return result;
 	}
+	
+	public StringBuilder getAddStoryTagResponseText(long storyId, ArrayList<Long> tagsId) {
+		for (Long tagId:tagsId) {
+			addStoryTag(storyId, tagId);
+		}
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
+		StringBuilder result = new StringBuilder("");
+		result.append(translateStoryToJson(story));
+		return result;
+	}
 
 	/**
 	 * 移除 Story 上的 Tag，並回傳移除 Tag 之後的 Story 資訊(json format)
@@ -207,6 +217,16 @@ public class ProductBacklogHelper {
 	 */
 	public StringBuilder getRemoveStoryTagResponseText(long storyId, long tagId) {
 		removeStoryTag(storyId, tagId);
+		StoryObject story = mProductBacklogMapper.getStory(storyId);
+		StringBuilder result = new StringBuilder("");
+		result.append(translateStoryToJson(story));
+		return result;
+	}
+	
+	public StringBuilder getRemoveStoryTagResponseText(long storyId, ArrayList<Long> tagsId) {
+		for (Long tagId:tagsId) {
+			removeStoryTag(storyId, tagId);
+		}
 		StoryObject story = mProductBacklogMapper.getStory(storyId);
 		StringBuilder result = new StringBuilder("");
 		result.append(translateStoryToJson(story));

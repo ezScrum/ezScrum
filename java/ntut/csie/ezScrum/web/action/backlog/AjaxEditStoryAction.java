@@ -39,7 +39,7 @@ public class AjaxEditStoryAction extends PermissionAction {
 		ProjectObject project = SessionManager.getProject(request);
 		String s = request.getParameter("issueID");
 		// get parameter info
-		long serialStoryId = Long.parseLong(request.getParameter("issueID"));
+		long serialStoryId = Long.parseLong(s);
 		String name = request.getParameter("Name");
 		String importances = request.getParameter("Importance");
 		String estimate = request.getParameter("Estimate");
