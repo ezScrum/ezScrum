@@ -6,6 +6,6 @@ Library           RequestsLibrary
 Redmine Plugin Operation
     Create Session    ezScrum    ${LOGIN_URL}
     add plugin    ${LOGIN_URL}/addPlugin
-    ${resp}    GET    ezScrum    /getInstalledPluginList
+    ${resp}=    GET Request    ezScrum    /getInstalledPluginList
     Should Contain    ${resp.content}    redminePlugin
-    GET    ezScrum    /removePlugin?pluginName=redminePlugin
+    GET Request    ezScrum    /removePlugin?pluginName=redminePlugin
