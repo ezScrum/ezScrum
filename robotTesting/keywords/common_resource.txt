@@ -45,6 +45,7 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
+    Wait Until Keyword Succeeds    1min    30s    Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]
     Wait Until Element Is Visible    xpath=//span[text()="${nodeName}"]    15
     Click Element    xpath=//span[text()="${nodeName}"]
 
@@ -110,6 +111,7 @@ SwitchToItemLink
 DropDownMenu_Select
     [Arguments]    ${menuName}    ${itemName}
     # focus on Menu
+    Wait Until Keyword Succeeds    1min    30s    Wait Until Element is Visible    xpath=//input[@name="${menuName}"]
     Click Element    xpath=//input[@name="${menuName}"]
     # select Item
     Click Element    xpath=//div[@class="x-combo-list-inner"]/div[text() = "${itemName}"]

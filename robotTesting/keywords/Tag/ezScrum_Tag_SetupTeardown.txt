@@ -15,6 +15,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
+    Wait Until Keyword Succeeds    1min    15    Wait Until Element is Visible    xpath=//div[text()="Project01"]
     Click Element    xpath=//div[text()="Project01"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]

@@ -250,6 +250,7 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled 
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
+    Wait Until Keyword Succeeds    1min    30s    Wait Until Element is Visible    xpath=//div[text()="TestProject"]
     Click Element    xpath=//div[text()="TestProject"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]

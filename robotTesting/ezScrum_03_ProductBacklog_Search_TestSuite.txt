@@ -32,6 +32,7 @@ Test ProductBacklog - Search
     Reload Page
     Title Should Be    ezScrum, SSLab NTUT
     Select Node Product    Sprint Plan
+    Sleep    5s
     ${sprint1Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint1 in A"]/../../td[1]/div
     ${sprint2Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint2 in A"]/../../td[1]/div
     # search前先重新整理
