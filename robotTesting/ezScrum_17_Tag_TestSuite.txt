@@ -18,7 +18,6 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
     Click Element    //span[text()="Project01Tag01"]
     Click Element    //label[text()="Tags:"]
     Click Element    //button[text()="Submit"]
-    Sleep    5s
     #Compare Field Content    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
     Compare Field Content As Strings    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
     [Teardown]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
@@ -496,7 +495,7 @@ Test Tag - Product Backlog Tag Button Project02 repeat edit tag on same story
     ${Story01_Tag}=    get text    xpath=//div[text()="Story01"]/../../td[3]/div[1]
     reload page
     ${ProductBacklog}=    Set Variable    xpath=//span[text()="Product Backlog"]
-    Click Element    ${ProductBacklog}
+    Select Node Product    Product Backlog
     Should Be Equal    ${Story01_Tag}    ${Project02Tag03_Name},${ProjectMutualTag01_Name}
     [Teardown]    Test Tag - Edit Tag Teardown
 

@@ -321,6 +321,7 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
     Wait Until Page Contains Element    xpath=//div[text()="Project01"]
+    Wait Until Element Is Visible    xpath=//table[@id="ext-comp-1535"]    #Sometimes can't find table[@id="ext-comp-1535"]    so use Wait Until Element Is Visible
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
     Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
     Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
