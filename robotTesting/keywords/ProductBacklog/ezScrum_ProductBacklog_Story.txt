@@ -25,8 +25,7 @@ Verify Story Information With Arguments
     Compare Field Content    //input[@name="Tags"]    ${correctTagText}
     Compare Field Content    //textarea[@name="HowToDemo"]    ${storyHowToDemo}
     ${xpathEditStoryCancel}=    Find Current Window Element    Edit Story #${storyID}    Cancel
-    Comment    Click Element    //span[text()="Edit Story #1"]/../div[@class ="x-tool x-tool-close"]
-    Click Button    //button[text()="Cancel"]
+    Click Element    //span[text()="Edit Story #1"]/../div[@class ="x-tool x-tool-close"]
     #Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
     Wait Until Element is Visible    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
