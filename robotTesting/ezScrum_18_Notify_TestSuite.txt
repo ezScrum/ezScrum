@@ -8,6 +8,7 @@ Resource          keywords/Project/ezScrum_Project.txt
 Resource          Global Define.txt
 Resource          keywords/Notification/Notification_Setup_Teardown.txt
 Resource          keywords/TaskBoard/ezScrum_TaskBoard.txt
+Library           keywords/lib/CheckConnect.py
 
 *** Test Cases ***
 Test Notification
@@ -43,3 +44,10 @@ Test Notification - send message
     Wait Until Page Contains    Notification
     Wait Until Page Contains    Success
     [Teardown]    Notification_Teardown
+
+Test Notification - Check Service Start
+    ${port}=    Convert To Integer    5000
+    ${return}=    check_Connect    140.124.181.99    ${port}
+    Log    ${return}
+    ${result}=    Convert to String    ${return}
+    Should be Equal    ${result}    True

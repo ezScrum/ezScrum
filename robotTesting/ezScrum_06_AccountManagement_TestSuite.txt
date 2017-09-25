@@ -15,6 +15,7 @@ Library           keywords/lib/Selenium2Improved.py
 Library           keywords/lib/AccountManagementServiceHandler.py
 Library           Process
 Library           keywords/lib/GetAccount.py
+Library           keywords/lib/CheckConnect.py
 
 *** Variables ***
 ${tsAccountId}    TestAccountID
@@ -500,3 +501,10 @@ Test Account Management - Not Stable Add Two Account To Check within Database
     ${check2}=    checkObjectInDatabase    ${obj2}
     Should Be True    ${check2}
     [Teardown]    Test Account Management - Microservice Teardown
+
+Test Account Management - Check Service Start
+    ${port}=    Convert To Integer    8088
+    ${return}=    check_Connect    140.124.181.99    ${port}
+    Log    ${return}
+    ${result}=    Convert to String    ${return}
+    Should be Equal    ${result}    True
