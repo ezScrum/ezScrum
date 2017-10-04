@@ -110,6 +110,7 @@ Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    Tag    TagTestTwoProjects.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
+    Wait Until Page Contains Element    xpath=//input[@name="userId"]    1 min
     Input Text    xpath=//input[@name="userId"]    admin
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]

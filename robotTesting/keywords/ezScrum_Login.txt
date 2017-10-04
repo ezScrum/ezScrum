@@ -55,11 +55,12 @@ Login Page Using New Tab With Alias
 _InputLoginForm
     [Arguments]    ${name}    ${password}
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Input Text    userId    ${name}
-    Input Password    password    ${password}
+    Wait Until Page Contains Element    xpath=//input[@name="userId"]    1 min
+    Input Text    xpath=//input[@name="userId"]    ${name}
+    Input Password    xpath=//input[@name="password"]    ${password}
     Submit Form    logonForm
     # 待修正
-    Wait Until Page Contains Element    xpath=//img[@src="images/logout.gif"]
+    Wait Until Page Contains Element    xpath=//img[@src="images/logout.gif"]    1 min
     ${isValid} =    Get Matching Xpath Count    //tbody/tr/td[text()="ProjectList"]
     # GAE bug
     Run Keyword if    ${isValid} == 0    Click Element    xpath=//td[.='Management']

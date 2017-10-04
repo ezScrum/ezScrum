@@ -111,8 +111,7 @@ Delete Account
 
 Select Unplan
     [Arguments]    ${columnIndex}    ${name}
-    Mouse Down    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
-    Mouse Up    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
+    Click Element    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
 
 Edit Unplan
     [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time

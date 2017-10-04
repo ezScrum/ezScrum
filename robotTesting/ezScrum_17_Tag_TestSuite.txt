@@ -65,21 +65,21 @@ Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02
 
 Test Tag - Sprint Backlog Edit Story Edit Tags Only Submit in Proj.02 Check Proj.01
     [Setup]    Test Tag - Sprint Backlog Setup    Project01
+    Wait Until Element Is Visible    xpath = //span[text()="7"]/../../../td[2]/div[1]    1 min
     ${Project01_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${ProjectList}=    Set Variable    xpath = //td[text()="ProjectList"]
     Click Element    ${ProjectList}
     Select Project    Project02
-    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
-    ${SprintBacklog}=    Set Variable    xpath=//span[text()="Sprint Backlog"]
-    Click Element    ${SprintBacklog}
+    Select Node Product    Sprint Backlog
+    Wait Until Element Is Visible    xpath = //span[text()="7"]/../../../td[2]/div[1]    1 min
     ${Project02_OriginalTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     ${StoryID}=    Set Variable    xpath = //span[text()="7"]
     Double Click Element    ${StoryID}
     Click Element    xpath = //button[text()="Submit"]
     Click Element    ${ProjectList}
     Select Project    Project01
-    Wait Until Page Contains Element    xpath = //span[text()="Sprint Backlog"]
-    Click Element    ${SprintBacklog}
+    Select Node Product    Sprint Backlog
+    Wait Until Element Is Visible    xpath = //span[text()="7"]/../../../td[2]/div[1]    1 min
     ${Project01_NewTag}=    Get Text    xpath = //span[text()="7"]/../../../td[2]/div[1]
     Should Be Equal    ${Project01_OriginalTag}    ${Project01_NewTag}
     [Teardown]    Test Tag - Sprint Backlog Teardown
@@ -652,11 +652,8 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     #Select Project
-    Wait Until Keyword Succeeds    1min    30s    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
-    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
-    Click Element    xpath=//div[text()="Project01"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    Select Project    Project01
+    Select Node Product    Product Backlog
     #Select Story
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     #Add tag with Edit Story
@@ -669,8 +666,7 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     Compare Field Content As Strings    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project01Tag01
     #Add tag with Tag
     reload page
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    Select Node Product    Product Backlog
     #Select Story
     Wait Until Key word Succeeds    1min    30s    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
@@ -688,10 +684,8 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
     ...    and check the Tag
     [Setup]    Test Tag - ProductBacklog Edit Story and Tag Tags Setup
     #Select Project
-    Wait Until Page Contains Element    xpath=//div[text()="Project02"]
-    Click Element    xpath=//div[text()="Project02"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    Select Project    Project02
+    Select Node Product    Product Backlog
     #Select Story
     Wait Until Keyword Succeeds    1min    30    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
@@ -705,9 +699,9 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 02
     Compare Field Content As Strings    //div[text()="Story01"]/../..//div[@class="x-grid3-cell-inner x-grid3-col-2"]    Project02Tag01
     #Add tag with Tag
     reload page
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Product Backlog"]
+    Select Node Product    Product Backlog
     #Select Story
+    Wait Until Keyword Succeeds    1min    30    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Button    xpath=//button[text()="Tag"]
     Click Element    //span[text()="Project02Tag01"]
