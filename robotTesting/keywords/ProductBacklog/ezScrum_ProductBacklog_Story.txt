@@ -16,7 +16,10 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
-    Set Browser Implicit Wait    5
+    #暫時用Wait Until Something來修理testTag的CI
+    Comment    Set Browser Implicit Wait    5
+    Wait Until Element Is Visible    //textarea[@name="Name"]    1 min
+    Wait Until Element Is Enabled    //input[@name="Tags"]    1 min
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -29,10 +32,8 @@ Verify Story Information With Arguments
     #Element Enable And Submit    ${xpathEditStoryCancel}
     # 比對 +號 content
     Wait Until Element is Visible    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
-    sleep    5s
     Double Click Element    //div[@class="x-grid3-body"]/div/table[@class ="x-grid3-row-table"]
     Double Click Element    //div[@class="x-grid3-body"]/div/table[@class ="x-grid3-row-table"]
-    #Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and text()="${storyID}"]/../../td[1]/.//div[@class="x-grid3-row-expander"]
     ${testNameText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Name:"]/..
     Should Be Equal As Strings    ${testNameText}    Name:\n${storyName}
     ${testNotesText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../../../tr[2]/.//b[text()="Notes:"]/..

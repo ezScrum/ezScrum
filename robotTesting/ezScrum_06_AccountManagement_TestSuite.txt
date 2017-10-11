@@ -295,7 +295,8 @@ Test Account Management - Admin's email shouldn't be null
     Title Should Be    ezScrum, SSLab NTUT
     Wait Until Page Contains Element    xpath=//td[text()="Management"]    1 min
     Click element    xpath=//td[text()="Management"]
-    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]    1 min
+    Comment    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]    1 min
+    Wait Until Page Contains Element    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr    1 min
     Xpath Should Match X Times    //div[@id="Account_Management_Grid_Panel"]/div[2]/div[2]/div/div/div[2]/div/div/table/tbody/tr/td[3]//div[text()="example@ezScrum.tw"]    1
     [Teardown]    Test Account Manaement - Admin's email shouldn't be null Teardown
 

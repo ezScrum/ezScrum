@@ -56,6 +56,7 @@ Test Import - Find duplicated \ accounts and projects
     # 進入 Management 頁面
     Click Element    xpath=//td[text()="Management"]
     # account01
+    Wait Until Element Is Visible    //div[text()="account01"]/../../td[2]/div    1 min
     Page Should Contain    account01
     ${testAccount01}    Get Text    //div[text()="account01"]/../../td[2]/div
     Should Be Equal    ${testAccount01}    account01_oldInfo

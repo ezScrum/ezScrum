@@ -121,9 +121,10 @@ TableGrid3_SelectItem
     [Documentation]    點選 Table Grid 的第 n 個欄位
     ...    (必須要給此欄位所顯示的名稱才能定位)
     # //div[@class= "x-grid3-cell-inner x-grid3-col-0" and text()="lab1321a"]
-    Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
-    Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and text()="${itemName}"]
-    Click Element    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
+    ${xpathItemName}=    Set Variable    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
+    Mouse Down    ${xpathItemName}
+    Mouse Up    ${xpathItemName}
+    Click Element    ${xpathItemName}
 
 TableGrid3_GetItemCount
     [Arguments]    ${TableName}

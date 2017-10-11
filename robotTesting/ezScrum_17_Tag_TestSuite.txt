@@ -139,6 +139,7 @@ Test Tag - Sprint Backlog Edit Story Edit Tags in Proj.02
     [Setup]    Test Tag - Sprint Backlog Setup    Project02
     #add one tag to story 1
     ${StoryId_1}    Set Variable    xpath = //tr//span[text()="1"]
+    Wait Until Element Is Visible    ${StoryId_1}    1 min
     Double Click Element    ${StoryId_1}
     ${Tag_selectedFrame}    Set Variable    xpath = //input[@size="16"]
     Click Element    ${Tag_selectedFrame}

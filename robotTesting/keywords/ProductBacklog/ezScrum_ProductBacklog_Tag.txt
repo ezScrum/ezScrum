@@ -20,6 +20,7 @@ Create Tag With Arguments
     [Documentation]    打開Tab Manage視窗
     Click Element    xpath=//button[text()="Manage Tag"]
     Wait Until Element Is Visible    xpath=//button[text()="Add Tag"]    1 min
+    Wait Until Element Is Enabled    xpath=//button[text()="Add Tag"]    1 min
     Click Element    xpath=//button[text()="Add Tag"]
     Input Text    xpath=//input[@name="newTagName"]    ${tagName}
     ${xpathAddTag}=    Find Current Window Element    Add Tag    Submit

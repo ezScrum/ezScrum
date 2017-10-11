@@ -54,7 +54,6 @@ Assign Role Remove
     [Arguments]    ${accountId}    ${PROJECT_NAME}
     [Documentation]    一個專案只能指派一個 Role
     # select Account
-    Sleep    3s
     TableGrid3_SelectItem    0    ${accountId}
     # click "Assign Role" button xpath=//button[text()="Assign Role"]
     Click Button    Assign Role

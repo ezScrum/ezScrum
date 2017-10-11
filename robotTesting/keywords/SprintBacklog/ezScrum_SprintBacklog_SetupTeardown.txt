@@ -231,10 +231,8 @@ Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
-    Wait Until Element Is Visible    xpath=//div[text()="TestProject"]    1 min
-    Click Element    xpath=//div[text()="TestProject"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+    Select Project    TestProject
+    Select Node Product    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -251,10 +249,12 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled 
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
-    Wait Until Keyword Succeeds    1min    30s    Wait Until Element is Visible    xpath=//div[text()="TestProject"]
-    Click Element    xpath=//div[text()="TestProject"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+    Comment    Wait Until Keyword Succeeds    1min    30s    Wait Until Element is Visible    xpath=//div[text()="TestProject"]
+    Comment    Click Element    xpath=//div[text()="TestProject"]
+    Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
+    Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+    Select Project    TestProject
+    Select Node Product    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -271,9 +271,8 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled S
     Input Text    xpath=//input[@name="password"]    admin
     Click Button    xpath=//input[@id="Next"]
     #Select Project
-    Click Element    xpath=//div[text()="TestProject"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
+    Select Project    TestProject
+    Select Node Product    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

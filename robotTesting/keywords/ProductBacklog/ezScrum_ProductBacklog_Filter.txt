@@ -25,6 +25,7 @@ Test Product Backlog Filter Detailed
     [Documentation]    點選按鈕Filter點選Detailed。
     Click Element    xpath=//button[text()="Filter"]
     Click Element    xpath=//ul/li/a/span[text()="Detailed"]
+    Wait Until Element Is Visible    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div    1 min
     ${temp}=    Get Element Attribute    //div[@id="productBacklogGridPanel"]//div[@class="x-grid3-body"]/div@class
     Should Contain    ${temp}    DETAIL
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    0
