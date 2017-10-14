@@ -121,6 +121,7 @@ TableGrid3_SelectItem
     [Documentation]    點選 Table Grid 的第 n 個欄位
     ...    (必須要給此欄位所顯示的名稱才能定位)
     # //div[@class= "x-grid3-cell-inner x-grid3-col-0" and text()="lab1321a"]
+    Wait Until Keyword Succeeds    1min    5s    Wait Until Element is Visible    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
     ${xpathItemName}=    Set Variable    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
     Mouse Down    ${xpathItemName}
     Mouse Up    ${xpathItemName}
