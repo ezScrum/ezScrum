@@ -42,7 +42,7 @@ Verify Story Information With Arguments
     Should Be Equal As Strings    ${testHowToDemoText}    How To Demo:\n${storyHowToDemo}
     # 比對每一列的 story information
     #比對Tag時若為空的長度仍然有1，如果拿到長度為1時則把testTagText設為EMPTY
-    ${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
+    #${testTagText}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-2"]
     #將兩個變數都轉為unicode才能比對
     #${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
     #${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
