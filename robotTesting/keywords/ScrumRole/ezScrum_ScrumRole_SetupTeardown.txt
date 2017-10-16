@@ -82,7 +82,7 @@ Test ScrumRole Teardown for Guest
     [Documentation]    以Admin身分登入並刪除所建立的user
     Login Page    ${LOGIN_URL}
     # 假設 Project 已存在
-    Wait Until Page Contains    ${PROJECT_NAME}DisplayName
+    Wait Until Page Contains    ${PROJECT_NAME}DisplayName    1 min
     SwitchToPage    Management
     SwitchToItemLink    False    Account Management
     # 可直接刪除帳號 ?

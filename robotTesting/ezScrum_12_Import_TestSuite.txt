@@ -103,6 +103,7 @@ Test Import - Check Project by Other Administrator
     # 進入 Management 頁面
     Click Element    xpath=//td[text()="Management"]
     # 點選 Import 頁面
+    Wait Until Page Contains Element    xpath=//u[text()="Import"]    1 min
     Click Element    xpath=//u[text()="Import"]
     # 取得 JSON 完整路徑
     ${JOSN_PATH}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    import    golden_answer_project01_project02.json

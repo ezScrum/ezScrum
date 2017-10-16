@@ -73,6 +73,7 @@ Enter ezScrum System
     Title Should Be    ezScrum, SSLab NTUT
 
 Exit ezScrum System
+    Wait Until Element Is Visible    //img[@src="images/logout.gif"]    1 min
     Click Image    images/logout.gif
     Wait Until Page Contains    ezScrum Logon!
     Title Should Be    ezScrum Logon!
@@ -105,6 +106,7 @@ SwitchToItemLink
     ...    預設是ProjectList頁面
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'True'    span    u
     ${_tagName}=    Set Variable If    ${isProjectPage} == 'False'    u    span
+    Wait Until Page Contains Element    xpath=//li//${_tagName}[.="${itemName}"]    1 min
     Click Element    xpath=//li//${_tagName}[.="${itemName}"]
     # 加入同步機制比較妥當
 
@@ -123,6 +125,7 @@ TableGrid3_SelectItem
     # //div[@class= "x-grid3-cell-inner x-grid3-col-0" and text()="lab1321a"]
     Wait Until Keyword Succeeds    1min    5s    Wait Until Element is Visible    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
     ${xpathItemName}=    Set Variable    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-${columnIndex}" and .="${itemName}"]
+    Wait Until Element Is Visible    ${xpathItemName}    1 min
     Mouse Down    ${xpathItemName}
     Mouse Up    ${xpathItemName}
     Click Element    ${xpathItemName}
@@ -179,6 +182,7 @@ Element Class Should Be Disabled
     [Arguments]    ${ElementLocator}
     [Documentation]    Assert if an element is Disabled without using "Element Should Be Disabled" keyword.
     ...    The 'class' attribute of given element should contain "x-item-disabled".
+    Wait Until Page Contains Element    ${ElementLocator}    1 min
     ${ElementClass}=    Get Element Attribute    ${ElementLocator}@class
     Should Contain    ${ElementClass}    x-item-disabled
 

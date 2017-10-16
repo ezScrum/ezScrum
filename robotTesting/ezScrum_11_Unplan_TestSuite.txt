@@ -73,21 +73,25 @@ Test Unplan - Edit Unplan
 Test Unplan - Delete Unplan
     [Setup]    Test Unplan Delete Setup
     # There 3 Unplan Items Before Delete Unplan
-    ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    ${unplannedItemPanel}=    Set Variable    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    Wait Until Element Is Visible    ${unplannedItemPanel}    1 min
+    ${counts} =    Get Matching Xpath Count    ${unplannedItemPanel}
     Should Be Equal    3    ${counts}
     # Remains 2 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList1[1]}
     Delete Unplan
-    ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    Wait Until Element Is Visible    ${unplannedItemPanel}    1 min
+    ${counts} =    Get Matching Xpath Count    ${unplannedItemPanel}
     Should Be Equal    2    ${counts}
     # Remains 1 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList2[1]}
     Delete Unplan
-    ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    Wait Until Element Is Visible    ${unplannedItemPanel}    1 min
+    ${counts} =    Get Matching Xpath Count    ${unplannedItemPanel}
     Should Be Equal    1    ${counts}
     # Remains 0 Unplan Items after delete 1 Unplan Item
     Select Unplan    1    ${deleteUnplanList3[1]}
     Delete Unplan
-    ${counts} =    Get Matching Xpath Count    //div[@id='UnplannedItem_Panel']//table[@class='x-grid3-row-table']
+    ${counts} =    Get Matching Xpath Count    ${unplannedItemPanel}
     Should Be Equal    0    ${counts}
     [Teardown]    Test Unplan Delete Teardown

@@ -435,3 +435,10 @@ Test TaskBoard - Story and Description_IE
     ${subs_task}=    Get Substring    ${task_description}    0    46
     Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
     [Teardown]    Test TaskBoard - Task Done Teardown
+
+Test TaskBoard - Check Total
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Wait Until Element Is Visible    userId    1 min
+    Input Text    userId    admin
+    Input Text    password    admin
+    Close Browser

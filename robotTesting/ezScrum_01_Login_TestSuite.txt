@@ -17,3 +17,10 @@ Test Login - ezScrum Identify Invalid Value
     Login With Invalid Credentials Should Fail    admin    ${EMPTY}    Password is required
     Login With Invalid Credentials Should Fail    ${EMPTY}    ${EMPTY}    User Name is required\nPassword is required
     Close Browser
+
+Test Login - Check Total
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    Wait Until Element Is Visible    userId    1 min
+    Input Text    userId    admin
+    Input Text    password    admin
+    Close Browser
