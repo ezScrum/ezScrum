@@ -12,6 +12,7 @@ Resource          keywords/Tag/ezScrum_Tag_SetupTeardown.txt
 *** Test Cases ***
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
+    Wait Until Page Contains Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //button[text()="Edit Story"]
     Click Element    //label[text()="Tags:"]/..//img
@@ -24,6 +25,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01
 
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02
     [Setup]    Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
+    Wait Until Page Contains Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Element    //button[text()="Edit Story"]
     Click Element    //label[text()="Tags:"]/..//img
