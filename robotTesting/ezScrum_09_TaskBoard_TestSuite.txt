@@ -1,4 +1,4 @@
-﻿*** Settings ***
+*** Settings ***
 Documentation     CI 測試不穩定,需加入同步機制?
 Suite Setup       Test TaskBoard - Setup
 Suite Teardown    Test TaskBoard - Teardown
@@ -25,7 +25,6 @@ Library           keywords/lib/DatabaseHandler.py
 *** Test Cases ***
 Test TaskBoard - Sprint Information
     [Documentation]    驗證TaskBoard頁面，有關於Sprint Information的資料是否正確
-    [Tags]    Unstable
     [Setup]    Test TaskBoard - Sprint Information Setup
     Select Node Product    TaskBoard
     # Verify sprint information
