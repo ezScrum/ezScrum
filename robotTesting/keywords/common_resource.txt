@@ -45,7 +45,7 @@ Select Project
 
 Select Node Product
     [Arguments]    ${nodeName}
-    Wait Until Keyword Succeeds    1min    30s    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
+    Wait Until Keyword Succeeds    1min    5s    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]    15
     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
 

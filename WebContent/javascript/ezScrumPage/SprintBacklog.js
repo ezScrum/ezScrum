@@ -144,7 +144,7 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 				items: [
 					{id:'SprintBacklog_editStoryBtn', disabled:true, text:'Edit Story', icon:'images/edit.png', handler: function(){Ext.getCmp('SprintBacklog_Page_Event').editStory();}},
 					{id:'SprintBacklog_droptStoryBtn', disabled:true, text:'Drop Story', icon:'images/drop2.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').dropStory();}},
-//					{id:'SprintBacklog_showStoryHistoryBtn', disabled:true, text:'Story History', icon:'images/history.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showHistory();}},
+					{id:'SprintBacklog_showStoryHistoryBtn', disabled:true, text:'Story History', icon:'images/history.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showHistory();}},
 					{id:'SprintBacklog_addTaskBtn', disabled:true, text:'Add Task', icon:'images/add.gif', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').addTask();}},
 					{id:'SprintBacklog_addExistedTaskBtn', disabled:true, text:'Add Existing Task', icon:'images/add2.gif', handler: function(){Ext.getCmp('SprintBacklog_Page_Event').addExistedTask();}},
 					{id:'SprintBacklog_moveStoryBtn',disabled:true,text:'Move Story',icon:'images/arrow_right.png',handler:function(){Ext.getCmp('SprintBacklog_Page_Event').moveStory();}}
@@ -157,7 +157,7 @@ SprintBacklogPageLayout = Ext.extend(Ext.Panel,{
 				items: [
 					{id:'SprintBacklog_editTaskBtn', disabled:true, text:'Edit Task', icon:'images/edit.png', handler: function(){Ext.getCmp('SprintBacklog_Page_Event').editTask();}},
 					{id:'SprintBacklog_dropTaskBtn', disabled:true, text:'Drop Task', icon:'images/drop2.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').dropTask();}},
-//					{id:'SprintBacklog_showTaskHistoryBtn', disabled:true, text:'Task History', icon:'images/history.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showHistory();}}
+					{id:'SprintBacklog_showTaskHistoryBtn', disabled:true, text:'Task History', icon:'images/history.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').showHistory();}}
 //					,
 //					{id:'SprintBacklog_deleteTaskBtn', disabled:true, text:'Delete Task', icon:'images/delete.png', handler:function(){Ext.getCmp('SprintBacklog_Page_Event').deleteTask();}}
 						]
@@ -700,7 +700,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		// story Action
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_editStoryBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_droptStoryBtn').setDisabled(disable);
-		//Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(disable);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addTaskBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addExistedTaskBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_moveStoryBtn').setDisabled(disable);
@@ -708,7 +708,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		if ( ! this.getThisSprintEditable() ) {
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_editStoryBtn').setDisabled(false);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_droptStoryBtn').setDisabled(false);
-			//Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(false);
+			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(false);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addTaskBtn').setDisabled(true);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addExistedTaskBtn').setDisabled(true);
 			Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_moveStoryBtn').setDisabled(true);
@@ -718,7 +718,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		// story Action
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_editStoryBtn').setDisabled(true);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_droptStoryBtn').setDisabled(true);
-		//Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(true);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_showStoryHistoryBtn').setDisabled(true);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addTaskBtn').setDisabled(true);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_addExistedTaskBtn').setDisabled(true);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('storyAction').get('SprintBacklog_moveStoryBtn').setDisabled(true);
@@ -727,7 +727,7 @@ SprintBacklogPageEvent = Ext.extend(SprintBacklogPageLayout, {
 		// task Action
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('taskAction').get('SprintBacklog_editTaskBtn').setDisabled(disable);
 		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('taskAction').get('SprintBacklog_dropTaskBtn').setDisabled(disable);
-		//Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('taskAction').get('SprintBacklog_showTaskHistoryBtn').setDisabled(disable);
+		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('taskAction').get('SprintBacklog_showTaskHistoryBtn').setDisabled(disable);
 //		Ext.getCmp('SprintBacklog_Page_Event').getTopToolbar().get('taskAction').get('SprintBacklog_deleteTaskBtn').setDisabled(disable);
 	},
 	getThisSprintEditable : function() {

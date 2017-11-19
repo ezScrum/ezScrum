@@ -247,7 +247,7 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 				handler: function() {
 					Ext.getCmp('productBacklogMasterPanel').deleteStory();
 				}
-			}, /*{
+			}, {
 				itemId: 'ProductBacklog_showHistoryBtn',
 				disabled: true,
 				text: 'Show History',
@@ -255,7 +255,7 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 				handler: function() {
 					Ext.getCmp('productBacklogMasterPanel').showHistory()
 				}
-			},*/{
+			},{
                 itemId: 'ProductBacklog_printBtn',
                 text: 'Print Selected',
                 disabled: true,
@@ -565,19 +565,19 @@ ezScrum.ProductBacklogPage = Ext.extend(Ext.Panel, {
 		if(len > 1){
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').disable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').disable();
-            //Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
 		}else if(len === 0){
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').disable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').disable();
-			//Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
+			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').disable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').disable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').disable();
 		}else{
             Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_editStoryBtn').enable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_deleteStoryBtn').enable();
-            //Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').enable();
+            Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_showHistoryBtn').enable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_printBtn').enable();
 			Ext.getCmp('productBacklogToolbarId').getComponent('ProductBacklog_attachFileBtn').enable();
         }

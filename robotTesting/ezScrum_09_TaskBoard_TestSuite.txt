@@ -441,3 +441,127 @@ Test TaskBoard - Check Total
     Input Text    userId    admin
     Input Text    password    admin
     Close Browser
+
+Test TaskBoard - Show Task History
+    [Setup]    Test TaskBoard - Task Checked Out Setup
+    Select Node Product    TaskBoard
+    ${taskHistoryImg}=    Set Variable    //div[@id="Task:${tcTaskID}"]//table[@class="TaskCard_Header"]//td[3]//img[@src="images/history.png"]
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Not Contain    Not Check Out => Check Out
+    ${closeHistory}=    Set Variable    //button[text()="Close"]
+    Click Button    ${closeHistory}
+    Comment    ${storyHistoryImg}=    Set Variable    //div[@id="Story:${tcStoryID}"]//table[@class="StoryCard_Header"]//td[2]//img[@src="images/history.png"]
+    Comment    Wait Until Element Is Visible    ${storyHistoryImg}    1 min
+    Comment    Click Element    ${storyHistoryImg}
+    Comment    Page Should Not Contain    Not Check Out => Check Out
+    Comment    Click Button    ${closeHistory}
+    #TaskBoard: Check Task from "Not Check Out" to "Check Out"
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Contain    Not Check Out => Check Out
+    Click Button    ${closeHistory}
+    #TaskBoard: Check Task (Edit Remains from 3 to 2)
+    Wait Until Element Is Visible    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
+    Click Element    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
+    Input Text    //input[@name="Remains"]    2
+    Click Button    //span[text()="Edit Task \#${tcTaskID}"]/../../../../..//button[text()="Submit"]
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Contain    3 => 2
+    Click Button    ${closeHistory}
+    Comment    #TaskBoard: Check Story (Edit Importance from 3 to 90)
+    Comment    Wait Until Element Is Visible    //h2[text()="[Story] \ #${tcStoryID}"]/../..//img[@src="images/edit.png"]    1 min
+    Comment    Click Element    //h2[text()="[Story] \ #${tcStoryID}"]/../..//img[@src="images/edit.png"]
+    Comment    Input Text    //input[@name="Importance"]    90
+    Comment    Click Button    //span[text()="Edit Story \#${tcStoryID}"]/../../../../..//button[text()="Submit"]
+    Comment    Click Element    ${storyHistoryImg}
+    Comment    Page Should Contain    3 => 90
+    Comment    Click Button    ${closeHistory}
+    #Sprint Backlog: Check Task from "Not Check Out" to "Check Out"
+    Select Node Product    Sprint Backlog
+    ${task}=    Set Variable    //div[text()="${tcTaskName}"]
+    Wait Until Element Is Visible    ${task}    1 min
+    Click Element    ${task}
+    ${taskHistory}=    Set Variable    //button[text()="Task History"]
+    Wait Until Element Is Enabled    ${taskHistory}    1 min
+    Click Button    ${taskHistory}
+    Page Should Contain    Not Check Out => Check Out
+    Page Should Contain    3 => 2
+    Click Button    ${closeHistory}
+    #TaskBoard: Check Task from "Check Out" to "Done"
+    Select Node Product    TaskBoard
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Contain    Check Out => Done
+    Click Button    //button[text()="Close"]
+    Comment    #TaskBoard: Check Story from "Not Checked Out" to "Done"
+    Comment    Story Done With Arguments    ${tcStoryID}
+    Comment    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Comment    Click Element    ${storyHistoryImg}
+    Comment    Page Should Contain    Not Check Out => Done
+    Comment    Click Button    ${closeHistory}
+    #Sprint Backlog: Check Task from "Check Out" to "Done"
+    Select Node Product    Sprint Backlog
+    Wait Until Element Is Visible    ${task}    1 min
+    Click Element    ${task}
+    ${taskHistory}=    Set Variable    //button[text()="Task History"]
+    Wait Until Element Is Enabled    ${taskHistory}    1 min
+    Click Button    ${taskHistory}
+    Page Should Contain    Check Out => Done
+    Click Button    ${closeHistory}
+    Comment    #Sprint Backlog: Check Story from "Not Checked Out" to "Done"
+    Comment    ${story}=    Set Variable    //div[text()="${tcStoryName}"]
+    Comment    Wait Until Element Is Visible    ${story}    1 min
+    Comment    Click Element    ${story}
+    Comment    ${storyHistory}=    Set Variable    //button[text()="Story History"]
+    Comment    Wait Until Element Is Enabled    ${storyHistory}    1 min
+    Comment    Click Button    ${storyHistory}
+    Comment    Page Should Contain    Not Check Out => Done
+    Comment    Click Button    ${closeHistory}
+    Comment    #TaskBoard: Check Story from "Done" to "Not Checked Out"
+    Select Node Product    TaskBoard
+    Comment    Story ReOpen With Arguments    ${tcStoryID}
+    Comment    Wait Until Element Is Visible    ${storyHistoryImg}    1 min
+    Comment    Click Element    ${storyHistoryImg}
+    Comment    Page Should Contain    Done => Not Check Out
+    Comment    Click Button    ${closeHistory}
+    #TaskBoard: Check Task from "Done" to "Check Out"
+    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Contain    Done => Check Out
+    Click Button    ${closeHistory}
+    Comment    #Sprint Backlog: Check Story from "Done" to "Not Check Out"
+    Select Node Product    Sprint Backlog
+    Comment    Wait Until Element Is Visible    ${story}    1 min
+    Comment    Click Element    ${story}
+    Comment    Wait Until Element Is Enabled    ${storyHistory}    1 min
+    Comment    Click Button    ${storyHistory}
+    Comment    Page Should Contain    Done => Not Check Out
+    Comment    Click Button    ${closeHistory}
+    #Sprint Backlog: Check Task from "Done" to "Check Out"
+    Wait Until Element Is Visible    ${task}    1 min
+    Click Element    ${task}
+    Wait Until Element Is Enabled    ${taskHistory}    1 min
+    Click Button    ${taskHistory}
+    Page Should Contain    Done => Check Out
+    Click Button    ${closeHistory}
+    #TaskBoard: Check Task from "Check Out" to "Not Check Out"
+    Select Node Product    TaskBoard
+    Task ReChecked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
+    Click Element    ${taskHistoryImg}
+    Page Should Contain    Check Out => Not Check Out
+    Click Button    ${closeHistory}
+    #Sprint Backlog: Check Task from "Check Out" to "Not Check Out"
+    Select Node Product    Sprint Backlog
+    Wait Until Element Is Visible    ${task}    1 min
+    Click Element    ${task}
+    Wait Until Element Is Enabled    ${taskHistory}    1 min
+    Click Button    ${taskHistory}
+    Page Should Contain    Check Out => Not Check Out
+    Click Button    ${closeHistory}
+    [Teardown]    Test TaskBoard - Task Checked Out Teardown

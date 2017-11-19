@@ -123,8 +123,8 @@ Test TaskBoard - Task Checked Out Setup
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
+    Set Selenium Speed    0.5
     Select Project    localtestProjectDisplayName
-    Sleep    5s
     Select Node Product    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT

@@ -29,6 +29,7 @@ Task ReOpen With Arguments
     Comment    Wait Until Page Contains    Re Opened Issue
     Comment    ${_XpathReOpenTask}=    Find Current Window Element    Re Opened Issue    Re Open
     Comment    Element Enable And Submit    ${_XpathReOpenTask}
+    Wait Until Element Is Visible    xpath=//button[text()="Re Open"]    1 min
     Click Element    xpath=//button[text()="Re Open"]
     Wait Until Page Contains    Success.
 
