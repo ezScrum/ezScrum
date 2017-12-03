@@ -562,12 +562,26 @@ Test TaskBoard - Show Task History
 
 Test TaskBoard - Check Task Remain Hours
     [Setup]    Test TaskBoard - Task Checked Out Setup
+    #Check the input of estimate is required while adding the new story in sprint backlog
+    Click Button    //button[text()="Add Story"]
+    Input Text    //textarea[@name="Name"]    Story for Estimate
+    ${value}=    Set Variable    //input[@name="Value"]
+    ${estimate}=    Set Variable    //input[@name="Estimate"]
+    Input Text    ${value}    3
+    ${addStorySubmit}=    Find Current Window Element    Add New Story    Submit
+    Focus    ${estimate}
+    Double Click Element    ${value}
+    Clear Element Text    ${value}
+    Element Class Should Be Disabled    ${addStorySubmit}/..
+    Input Text    ${estimate}    3
+    Element Class Should Be Enabled    ${addStorySubmit}/..
+    Click Element    ${addStorySubmit}
     #Check the input of remains is readonly in the not checked out state
     Select Node Product    TaskBoard
     ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
     ${remains}=    Set Variable    //input[@name="Remains"]
-    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
     ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal    ${remainsClass}    true
     ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
@@ -575,7 +589,7 @@ Test TaskBoard - Check Task Remain Hours
     #Check the input of remains can't input zero in the checked out state
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
     ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal As Strings    ${remainsClass}    None
     Input Text    ${remains}    0
@@ -590,7 +604,7 @@ Test TaskBoard - Check Task Remain Hours
     ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
     Compare Text In Specific Xpath    ${taskCardValue}    0 hr
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
     ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal    ${remainsClass}    true
     Compare Field Content    ${remains}    0
@@ -601,7 +615,7 @@ Test TaskBoard - Check Task Remain Hours
     Wait Until Keyword Succeeds    1 min    5    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
     Compare Text In Specific Xpath    ${taskCardValue}    3 hr
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
     Compare Field Content    ${remains}    3
     Click Element    ${editTaskCancel}
     [Teardown]    Test TaskBoard - Task Checked Out Teardown
