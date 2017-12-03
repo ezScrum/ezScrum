@@ -589,8 +589,8 @@ Test TaskBoard - Check Task Remain Hours
     Click Element    ${editTaskSubmit}
     Wait Until Keyword Succeeds    10    1    Alert Should Be Present    The value of remains can not be zero.
     Compare Field Content    ${remains}    3
-    ${btnSubmitCount}=    Get Matching XPath Count    ${editTaskSubmit}
-    Run Keyword If    ${btnSubmitCount} > 0    Click Element    ${editTaskSubmit}
+    ${isSubmitVisible}=    Run Keyword And Return Status    Element Should Be Visible    ${editTaskSubmit}
+    Run Keyword If    ${isSubmitVisible}    Click Element    ${editTaskSubmit}
     #Check the input of remains is readonly and zero in the done state
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
