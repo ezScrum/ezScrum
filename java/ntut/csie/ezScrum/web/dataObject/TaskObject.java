@@ -333,6 +333,19 @@ public class TaskObject implements IBaseObject {
 		}
 		return createTime;
 	}
+	
+	public int getLastRemainHours(){
+		int lastRemainHours = 0;
+		ArrayList<HistoryObject> histories = getHistories();
+		for(int i = histories.size()-1; i >= 0; i--){
+			HistoryObject history = histories.get(i);
+			if (history.getHistoryType() == HistoryObject.TYPE_REMAIMS) {
+				lastRemainHours = Integer.parseInt(history.getOldValue());
+				break;
+			}
+		}
+		return lastRemainHours;
+	}
 
 	public long getUpdateTime() {
 		return mUpdateTime;

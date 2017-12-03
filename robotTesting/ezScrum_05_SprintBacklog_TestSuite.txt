@@ -141,14 +141,15 @@ Test Sprint Backlog - Edit Task
     # edit task
     ${updateTaskName}=    Set Variable    update task 1 name
     ${updateTaskEstimate}=    Set Variable    5
-    ${updateTaskRemains}=    Set Variable    5
+    # We have made the input of remain readonly in not checked out state
+    Comment    ${updateTaskRemains}=    Set Variable    5
     ${updateTaskActual}=    Set Variable    5
     ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
     ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
-    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskRemains}
-    ...    ${updateTaskActual}    ${updateTaskNotes}
+    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskActual}
+    ...    ${updateTaskNotes}
     # verify task information in Sprint Backlog
-    Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${updateTaskRemains}
+    Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${oriTaskEstimate}
     ...    ${updateTaskActual}    ${oriTaskNotes}
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 

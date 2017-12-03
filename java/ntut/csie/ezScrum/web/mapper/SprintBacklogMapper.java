@@ -330,7 +330,7 @@ public class SprintBacklogMapper {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
 			task.setName(name).setNotes(notes)
-					.setStatus(TaskObject.STATUS_CHECK)
+					.setStatus(TaskObject.STATUS_CHECK).setRemains(task.getLastRemainHours())
 					.setPartnersId(task.getPartnersId())
 					.save(specificDate.getTime());
 		}

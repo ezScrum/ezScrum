@@ -160,6 +160,7 @@ function createTaskCard(task, storyID) {
         taskId			: task.Id,
         issueType		: 'Task',
         status			: task.Status,
+        remainHours		: task.RemainHours,
         ddGroup			: storyID,
         parentId		: storyID,
         afterDragDrop	: function(target, e, targetID) {
@@ -201,10 +202,18 @@ function createTaskCard(task, storyID) {
             	  // 如果移動到New狀態的話，就清空Handler, Partners
             	  this.realObject.setHandlerPartners('','');
               }
+              else if(this.status == 'assigned'){
+            	  // 如果移動到Assigned狀態的話，更新Remain Hours為Last Remain Hours
+            	  this.realObject.setRemainHours(this.remainHours);
+              }
               else if(this.status =='closed') {
             	  // 如果移動到Done的話，更新Remain Hours為0
             	  this.realObject.setRemainHours(0);
               }
+              Ext.getCmp('TaskBoard_Card_Panel').loadData();
+              var sprintID = Ext.getCmp('TaskBoardSprintDesc').getCombo_SprintID();
+              Ext.getCmp('TaskBoard_Page').reloadSprintInfoForm(sprintID);
+              Ext.getCmp('TaskBoard_Page').reloadBurndownChartForm(sprintID);
               this.target.add(taskCard);
         },
         updateName : function(name) {

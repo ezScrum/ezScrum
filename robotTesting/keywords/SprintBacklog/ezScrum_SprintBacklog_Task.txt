@@ -29,13 +29,14 @@ Add Existing Task With Arguments
     Wait Until Page Contains    Success.
 
 Edit Task With Arguments
-    [Arguments]    ${taskID}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskNewName}    ${taskRemains}
-    ...    ${taskActual}    ${taskNotes}
+    [Arguments]    ${taskID}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskNewName}    ${taskActual}
+    ...    ${taskNotes}
     Click Element    xpath=//div[text()="${taskName}"]
     Click Element    xpath=//table[@id="SprintBacklog_editTaskBtn"]//button[text()="Edit Task"]
     Wait Until Page Contains    Edit Task #${taskID}
     Focus AND Input Text    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]    ${taskNewName}
-    Focus AND Input Text    //input[@name="Remains"]    ${taskRemains}
+    # We have made the input of remains readonly in the not checked out state, so just can modify remains in the check out state.
+    Comment    Focus AND Input Text    //input[@name="Remains"]    ${taskRemains}
     Focus AND Input Text    //input[@name="Actual"]    ${taskActual}
     ${xpathEditTask}=    Find Current Window Element    Edit Task #${taskID}    Submit
     Element Enable And Submit    ${xpathEditTask}

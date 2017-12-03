@@ -132,6 +132,7 @@ ezScrum.StoryForm = Ext.extend(Ext.form.FormPanel, {
 			}, {
 				fieldLabel: 'Estimate',
 				name: 'Estimate',
+				allowBlank: false,
 				vtype: 'Float'
 			}, {
 				fieldLabel: 'Importance',

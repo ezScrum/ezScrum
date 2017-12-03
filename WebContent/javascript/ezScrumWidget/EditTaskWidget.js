@@ -146,7 +146,16 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		        }, {
 		        	fieldLabel: 'Remains',
 		            name: 'Remains',
-		            vtype:'Float'
+		            vtype:'Float',
+		            listeners: {
+		                blur: function(ev) {
+		                     if (ev.getValue() == 0 && this.state == 'assigned' ){ 
+		                    	 alert('The value of remains can not be zero.');
+		                    	 this.setValue(this.startValue);
+		                     } 
+		                }
+		            },
+		            state : ''
 		        },  {
 		        	fieldLabel: 'Actual',
 		            name: 'Actual',
@@ -210,7 +219,6 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 			if(rs.success) {
 				var record = rs.records[0];
 				if(record) {
-					
 					this.HandlerCombo.originalValue = record.data['Handler'];
 					this.HandlerCombo.reset();
 					
@@ -224,7 +232,16 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 						Notes	: record.data['Notes'],
 						Remains	: record.data['Remains']
 					});
-					
+					var status = record.data['Status'];
+					var remainsForm = this.getForm().findField('Remains');
+					remainsForm.state = status;
+			        if(status == 'new'){
+			        	remainsForm.setReadOnly(true);
+			        }else if(status == 'assigned'){
+			        	remainsForm.setReadOnly(false)
+			        }else if(status == 'closed'){
+			        	remainsForm.setReadOnly(true);
+			        }
 					// append issueID to window title
 					EditTaskWindow.setTitle('Edit Task #' + record.data['Id']);
 				}

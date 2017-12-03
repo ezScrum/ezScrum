@@ -64,6 +64,7 @@ public class GetEditTaskInfoAction extends PermissionAction {
 		result.append("<EditTask><Task>");
 		result.append("<Id>").append(task.getSerialId()).append("</Id>");
 		result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>");
+		result.append("<Status>").append(task.getStatusString()).append("</Status>");
 		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
 		result.append("<Actual>").append(task.getActual()).append("</Actual>");
 		result.append("<Handler>").append(TranslateSpecialChar.TranslateXMLChar(handlerUsername)).append("</Handler>");

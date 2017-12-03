@@ -320,36 +320,47 @@ Test ProductBacklog - Select Story To Check Button Enabled Or Disabled
     [Documentation]    Check buttons enabled or disabled after selecting non-story/one-story/two-storys/canceling selceting storys
     [Setup]    Test ProductBacklog Button Enable or Disable Setup
     #Select no story
-    Wait Until Page Contains Element    xpath=//div[text()="Project01"]
-    Wait Until Element Is Visible    xpath=//table[@id="ext-comp-1535"]    #Sometimes can't find table[@id="ext-comp-1535"]    so use Wait Until Element Is Visible
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1539"]    #Tag
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    ${project01}=    Set Variable    xpath=//div[text()="Project01"]
+    ${project02}=    Set Variable    xpath=//div[text()="Project02"]
+    #Every button has a table, and they are in their table.
+    ${btnEditStory}=    Set Variable    xpath=//button[text()="Edit Story"]/../../../../..
+    ${btnDeleteStory}=    Set Variable    xpath=//button[text()="Delete Story"]/../../../../..
+    ${btnShowStory}=    Set Variable    xpath=//button[text()="Show History"]/../../../../..
+    ${btnPrintSelected}=    Set Variable    xpath=//button[text()="Print Selected"]/../../../../..
+    ${btnManageTag}=    Set Variable    xpath=//button[text()="Manage Tag"]/../../../../..
+    ${btnTag}=    Set Variable    xpath=//button[text()="Tag"]/../../../../..
+    ${btnAttachFile}=    Set Variable    xpath=//button[text()="Attach File"]/../../../../..
+    Wait Until Page Contains Element    ${project01}
+    #Check buttons in their table which is disabled
+    Element Class Should Be Disabled    ${btnEditStory}    #Edit Story
+    Element Class Should Be Disabled    ${btnDeleteStory}    #Delete Story
+    Element Class Should Be Disabled    ${btnShowStory}    #Show History
+    Element Class Should Be Disabled    ${btnPrintSelected}    #Printed Story
+    Element Class Should Be Disabled    ${btnTag}    #Tag
+    Element Class Should Be Disabled    ${btnAttachFile}    #Attach File
     #Select one Story
-    Click Element    xpath=//div[text()="Project01"]
-    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1538"]    #Manage Tag
-    Element Class Should Be Enabled    xpath=//table[@id="ext-comp-1539"]    #Tag
+    Click Element    ${project01}
+    #Check buttons in their table which is enabled
+    Element Class Should Be Enabled    ${btnEditStory}    #Edit Story
+    Element Class Should Be Enabled    ${btnDeleteStory}    #Delete Story
+    Element Class Should Be Enabled    ${btnShowStory}    #Show History
+    Element Class Should Be Enabled    ${btnPrintSelected}    #Printed Story
+    Element Class Should Be Enabled    ${btnManageTag}    #Manage Tag
+    Element Class Should Be Enabled    ${btnTag}    #Tag
     #Select two story
-    Click Element    xpath=//tbody//div[text()="Project01"]
-    press_shift_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Comment    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1538"]    #Show History
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    Click Element    ${project01}
+    press_shift_and_click_element    ${project02}
+    Element Class Should Be Disabled    ${btnEditStory}    #Edit Story
+    Element Class Should Be Disabled    ${btnShowStory}    #Show History
+    Element Class Should Be Disabled    ${btnAttachFile}    #Attach File
     #Cancel selecting story
-    press_control_and_click_element    xpath=//tbody//div[text()="Project01"]
-    press_control_and_click_element    xpath=//tbody//div[text()="Project02"]
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1535"]    #Edit Story
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1536"]    #Delete Story
-    Comment    Element Class Should Be Disabled    //table[@id="ext-comp-1538"]    #Show History
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1537"]    #Printed Story
-    Element Class Should Be Disabled    xpath=//table[@id="ext-comp-1541"]    #Attach File
+    press_control_and_click_element    ${project01}
+    press_control_and_click_element    ${project02}
+    Element Class Should Be Disabled    ${btnEditStory}    #Edit Story
+    Element Class Should Be Disabled    ${btnDeleteStory}    #Delete Story
+    Element Class Should Be Disabled    ${btnShowStory}    #Show History
+    Element Class Should Be Disabled    ${btnPrintSelected}    #Printed Story
+    Element Class Should Be Disabled    ${btnAttachFile}    #Attach File
     [Teardown]    Test ProductBacklog Button Enable or Disable Teardown
 
 Test ProductBacklog - Create Story test Sumbit button

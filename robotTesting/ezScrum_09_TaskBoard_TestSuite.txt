@@ -116,7 +116,7 @@ Test TaskBoard - Task ReOpen
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
     ${_TempTaskHandler}=    Get Text    xpath=//div[@id="${tcStoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//span[@class="TaskCard_Handler"]
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
-    Should Be Equal    ${_TempTaskEstimate}    0 hr    # x hr
+    Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
     Select Node Product    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
@@ -140,7 +140,7 @@ Test TaskBoard - Task ReChecked Out
     ${_TempTaskDescription}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Description"]
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
-    Should Be Equal    ${_TempTaskEstimate}    0 hr    # x hr
+    Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Select Node Product    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
@@ -564,4 +564,49 @@ Test TaskBoard - Show Task History
     Click Button    ${taskHistory}
     Page Should Contain    Check Out => Not Check Out
     Click Button    ${closeHistory}
+    [Teardown]    Test TaskBoard - Task Checked Out Teardown
+
+Test TaskBoard - Check Task Remain Hours
+    [Setup]    Test TaskBoard - Task Checked Out Setup
+    #Check the input of remains is readonly in the not checked out state
+    Select Node Product    TaskBoard
+    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
+    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
+    ${remains}=    Set Variable    //input[@name="Remains"]
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
+    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
+    Should Be Equal    ${remainsClass}    true
+    ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
+    Click Element    ${editTaskCancel}
+    #Check the input of remains can't input zero in the checked out state
+    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
+    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
+    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
+    Log    ${remainsClass}
+    Should Be Equal As Strings    ${remainsClass}    None
+    Input Text    ${remains}    0
+    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
+    Click Element    ${editTaskSubmit}
+    Wait Until Keyword Succeeds    10    1    Alert Should Be Present    The value of remains can not be zero.
+    Compare Field Content    ${remains}    3
+    Click Element    ${editTaskSubmit}
+    #Check the input of remains is readonly and zero in the done state
+    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
+    Compare Text In Specific Xpath    ${taskCardValue}    0 hr
+    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
+    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
+    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
+    Should Be Equal    ${remainsClass}    true
+    Compare Field Content    ${remains}    0
+    Click Element    ${editTaskCancel}
+    Reload Page
+    #Check the input of remains is not zero in the checked out state
+    Select Node Product    TaskBoard
+    Wait Until Keyword Succeeds    1 min    5    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
+    Compare Text In Specific Xpath    ${taskCardValue}    3 hr
+    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
+    Wait Until Keyword Succeeds    15    1    Compare Field Content    ${remains}    3
+    Click Element    ${editTaskCancel}
     [Teardown]    Test TaskBoard - Task Checked Out Teardown

@@ -25,8 +25,8 @@ Test Serial Number - Check ID In Sprint Plan
     Create Sprint Without StartDate    second sprint3    2    4    100    100
     Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    3    #6    #should be 3
     Select Node Product    Product Backlog
-    Add A New Story With Story Name And Value    story1    10
-    Add A New Story With Story Name And Value    story2    10
+    Add A New Story With Story Name And Value    story1    13
+    Add A New Story With Story Name And Value    story2    8
     Select Sprint Backlog Page And Add All Existing Story
     Reload Page
     Select Node Product    Sprint Plan

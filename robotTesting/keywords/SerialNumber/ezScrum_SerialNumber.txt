@@ -23,6 +23,7 @@ Add A New Story With Story Name And Value
     Wait Until Page Contains    Add New Story
     Focus AND Input Text    //textarea[@name="Name"]    ${name}
     Focus AND Input Text    //input[@name="Value"]    ${value}
+    Focus AND Input Text    //input[@name="Estimate"]    ${value}
     ${xpathCreateStorySubmit}=    Find Current Window Element    Add New Story    Submit
     Element Enable And Submit    ${xpathCreateStorySubmit}
     Wait Until Page Contains    Success.
