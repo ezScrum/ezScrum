@@ -573,31 +573,31 @@ Test TaskBoard - Check Task Remain Hours
     ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
     ${remains}=    Set Variable    //input[@name="Remains"]
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
+    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal    ${remainsClass}    true
     ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
     Click Element    ${editTaskCancel}
     #Check the input of remains can't input zero in the checked out state
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
-    Log    ${remainsClass}
+    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal As Strings    ${remainsClass}    None
     Input Text    ${remains}    0
     ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
     Click Element    ${editTaskSubmit}
     Wait Until Keyword Succeeds    10    1    Alert Should Be Present    The value of remains can not be zero.
     Compare Field Content    ${remains}    3
-    Click Element    ${editTaskSubmit}
+    ${btnSubmitCount}=    Get Matching XPath Count    ${editTaskSubmit}
+    Run Keyword If    ${btnSubmitCount} > 0    Click Element    ${editTaskSubmit}
     #Check the input of remains is readonly and zero in the done state
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
     Compare Text In Specific Xpath    ${taskCardValue}    0 hr
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=     Get Element Attribute    ${remains} @readonly
+    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal    ${remainsClass}    true
     Compare Field Content    ${remains}    0
     Click Element    ${editTaskCancel}
@@ -607,6 +607,7 @@ Test TaskBoard - Check Task Remain Hours
     Wait Until Keyword Succeeds    1 min    5    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
     Compare Text In Specific Xpath    ${taskCardValue}    3 hr
     Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Compare Field Content    ${remains}    3
+    Wait Until Keyword Succeeds    15    1    Focus    ${remains}
+    Compare Field Content    ${remains}    3
     Click Element    ${editTaskCancel}
     [Teardown]    Test TaskBoard - Task Checked Out Teardown
