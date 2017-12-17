@@ -37,19 +37,19 @@ Test Product Backlog Filter Detailed
 
 Test Product Backlog Filter Done
     [Documentation]    點選按鈕Filter點選Done。由於目前尚未測試task與story的狀態(Not Checked Out, Checked Out, Done), 所以當filter設定為done時, 是檢查0個story
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     Create Sprint    sprint1 sprint goal    2    4    100    100
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Add Existing Story    newStoryDone
     Set Test Variable    ${tcStoryName}    newStoryDone
     ${tcStoryID}=    Get Story ID In Sprint Backlog    newStoryDone
     # 將Story拉到Done
-    Select Node Product    TaskBoard
-    Select Node Product    Product Backlog
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
+    Select Project Management Item    Product Backlog
+    Select Project Management Item    TaskBoard
     Story Done With Arguments    ${tcStoryID}
     # 確認是否有被選到
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Click Element    xpath=//button[text()="Filter"]
     Click Element    xpath=//ul/li/a/span[text()="Done"]
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryNormal")]    0
@@ -57,7 +57,7 @@ Test Product Backlog Filter Done
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDetailed")]    0
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="newStoryDone")]    1
     Clean All Sprint
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Click Element    xpath=//button[text()="Done"]
     Click Element    xpath=//ul/li/a/span[text()="Default"]
 

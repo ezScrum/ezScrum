@@ -190,7 +190,9 @@ function createTaskCard(task, storyID) {
             }
             // 如果是移動到new的狀態，那麼就是re check out
             else if(target.status == 'new' && status =='assigned') {
-            	Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReCheckOutTask,this.taskId,this);
+            	if(!task.IsRemainHoursChanged){
+            		Ext.getCmp('TaskBoard_Card_Panel').checkIsCurrentSprint(showReCheckOutTask,this.taskId,this);
+            	}
             }
         	this.target = target;
         },

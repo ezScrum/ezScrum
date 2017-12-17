@@ -11,7 +11,7 @@ Test Product Backlog v2.0 Suite Setup
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     log    111
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     log    222
     Click Element    xpath=//*[@id="ext-gen39"]/div/li[2]/ul/li[1]/div/a
     Click Element    xpath=//button[text()="New ProductBacklog V2"]

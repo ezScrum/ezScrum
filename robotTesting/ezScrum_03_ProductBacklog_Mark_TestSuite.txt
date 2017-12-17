@@ -35,7 +35,7 @@ Test ProductBacklog - Mark And UnMark Story Tag
     Verify Story Information With Arguments    ${storyID}    newStory    5    3    1    Note: newStory
     ...    HowToDemo: newStory
     Reload Page
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     # UnMark
     Mark And UnMark Tag With Arguments    UnMark    newStory    markAndUnMarkTag
     ${storyID}=    Get Story ID

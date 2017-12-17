@@ -74,7 +74,7 @@ Count Tag Amount With Arguments
     [Return]    ${tagAmount}
 
 Clean All Tag
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     # call out Management menu
     Click Element    xpath=//button[text()="Manage Tag"]
     # get Tag count

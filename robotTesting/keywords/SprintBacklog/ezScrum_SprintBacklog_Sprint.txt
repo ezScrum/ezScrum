@@ -6,7 +6,7 @@ Resource          ../common_resource.txt
 *** Keywords ***
 Edit Sprint In Sprint Backlog
     [Arguments]    ${sprintGoal}    ${sprintInterval}    ${sprintMembers}    ${sprintAvaliableDays}    ${sprintFocusFactor}
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Click Element    xpath=//div[@id="sprintAction"]/div[2]/div/div/div/div/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td/em
     Focus AND Input Text    //textarea[@name="Goal"]    ${sprintGoal}
     Click Image    xpath=//input[@name="StartDate"]/../img

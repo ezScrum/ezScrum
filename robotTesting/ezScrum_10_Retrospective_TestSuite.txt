@@ -68,7 +68,7 @@ Test Retrospective - Delete Retrospective
 Test Retrospective - Edit Retrospective Check SprintID Issue
     [Setup]    Test Retrospective Edit Multiple Setup
     sleep    1s
-    Select Node Product    Retrospective
+    Select Project Management Item    Retrospective
     #edit 1
     Click Element    //div[@id="Retrospective_Page_Layout"]//table/tbody/tr/td[1]/div[text()=3]/../..
     Click Element    xpath=//button[.='Edit Retrospective']

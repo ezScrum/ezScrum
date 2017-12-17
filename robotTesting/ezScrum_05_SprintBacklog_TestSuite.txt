@@ -58,16 +58,16 @@ Test Sprint Backlog - Drop Story
     ${oriStoryName}=    Set Variable    add story for test drop story
     ${storyID}=    Get Story ID In Sprint Backlog    ${oriStoryName}
     # 驗證未 drop story 前的sprint
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
     Comment    Should Be Equal    ${storySprint}    1
     # drop story
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Drop Story    ${oriStoryName}
     # 驗證 sprint backlog
     Page Should Not Contain Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyID}")]/../../td[1]/a/span
     # 驗證 product backlog
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
     Should Be Equal    ${storySprint}    None
     [Teardown]    Test Sprint Backlog - Drop Story Teardown
@@ -75,7 +75,7 @@ Test Sprint Backlog - Drop Story
 Test Sprint Backlog - Add Existing Story
     [Setup]    Test Sprint Backlog - Add Existing Story Setup
     Sleep    3s
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     ${storyName}=    Set Variable    Test Story 01
     ${value}=    Set Variable    3
     ${estimate}=    Set Variable    5
@@ -105,7 +105,7 @@ Test Sprint Backlog - Edit Sprint
     ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
     Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #${sprintId} - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
     # verify sprint information in Sprint Plan
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintId}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${sprintInterval}")]    1
@@ -215,7 +215,7 @@ Test Sprint Backlog - Show Task History
 Test Sprint Backlog - Printable Task
     [Setup]    Test Sprint Backlog - Printable Task Setup    Printable_Task1.sql
     Click Element    xpath=//div[text()="Project01"]
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Click Element    xpath=//button[text()="Printable Tasks"]
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[1]/table/tbody/tr/td[2]    1
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[2]    2

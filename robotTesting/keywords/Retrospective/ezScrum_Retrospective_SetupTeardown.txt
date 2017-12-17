@@ -43,7 +43,7 @@ Test Retrospective Add Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     #    SwitchToItemLink    True    Sprint Plan
     ${_sprintGoal} =    Set Variable    test sprint Goal
     ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
@@ -51,7 +51,7 @@ Test Retrospective Add Setup
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
     #    SwitchToItemLink    True    Retrospective
-    Select Node Product    Retrospective
+    Select Project Management Item    Retrospective
 
 Test Retrospective Add Teardown
     Comment    Clean All Retrospective
@@ -69,12 +69,12 @@ Test Retrospective Edit Setup
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     Comment    # 新增 Sprint
-    Comment    Select Node Product    Sprint Plan
+    Comment    Select Project Management Item    Sprint Plan
     Comment    ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Comment    Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Comment    Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     Comment    # 切換到 Retrospective 頁面
-    Comment    Select Node Product    Retrospective
+    Comment    Select Project Management Item    Retrospective
     Comment    Add Retrospective    @{tsRetrospectiveList}
     Comment    ${_newID} =    Get Retrospective ID    True    0
     Comment    Set List Value    ${tsRetrospectiveList}    0    ${_newID}
@@ -84,7 +84,7 @@ Test Retrospective Edit Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     #    SwitchToItemLink    True    Sprint Plan
     ${_sprintGoal} =    Set Variable    test sprint Goal
     ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
@@ -92,7 +92,7 @@ Test Retrospective Edit Setup
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
     #    SwitchToItemLink    True    Retrospective
-    Select Node Product    Retrospective
+    Select Project Management Item    Retrospective
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
 
@@ -112,12 +112,12 @@ Test Retrospective Delete Setup
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
     Comment    # 新增 Sprint
-    Comment    Select Node Product    Sprint Plan
+    Comment    Select Project Management Item    Sprint Plan
     Comment    ${_sprintID} =    New Sprint    @{tsSprintInfo}
     Comment    Set List Value    ${tsSprintInfo}    0    ${_sprintID}
     Comment    Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     Comment    # 切換到 Retrospective 頁面
-    Comment    Select Node Product    Retrospective
+    Comment    Select Project Management Item    Retrospective
     Comment    Add Retrospective    @{tsRetrospectiveList}
     Comment    ${_newID} =    Get Retrospective ID    True    0
     Comment    Set List Value    ${tsRetrospectiveList}    0    ${_newID}
@@ -127,7 +127,7 @@ Test Retrospective Delete Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     #    SwitchToItemLink    True    Sprint Plan
     ${_sprintGoal} =    Set Variable    test sprint Goal
     ${sprintID}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="${_sprintGoal}"]/../../td[1]/div
@@ -135,7 +135,7 @@ Test Retrospective Delete Setup
     Set List Value    ${tsRetrospectiveList}    2    ${_sprintID}
     # 切換到 Retrospective 頁面
     #    SwitchToItemLink    True    Retrospective
-    Select Node Product    Retrospective
+    Select Project Management Item    Retrospective
     ${_newID} =    Get Retrospective ID    True    0
     Set List Value    ${tsRetrospectiveList}    0    ${_newID}
 

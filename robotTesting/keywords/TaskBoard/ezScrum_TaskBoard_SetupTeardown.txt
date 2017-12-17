@@ -21,11 +21,11 @@ Test TaskBoard - Precondition
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     # new sprint
     Create Sprint    TaskBoard AT    2    4    100    100
     # new story
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
     Set Test Variable    ${tcStoryEstimate}    2
@@ -54,7 +54,7 @@ Test TaskBoard - New Precondition
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -87,7 +87,7 @@ Test TaskBoard - Sprint Information Setup
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
     Sleep    5s
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -125,7 +125,7 @@ Test TaskBoard - Task Checked Out Setup
     _InputLoginForm    ${userName}    ${userPassword}
     Set Selenium Speed    0.5
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -162,7 +162,7 @@ Test TaskBoard - Task Done Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
     Set Test Variable    ${tcStoryValue}    1
@@ -199,7 +199,7 @@ Test TaskBoard - Task ReOpen Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -236,7 +236,7 @@ Test TaskBoard - Task ReChecked Out Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -273,7 +273,7 @@ Test TaskBoard - Story Done Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -293,7 +293,7 @@ Test TaskBoard - Story Done Setup
 Test TaskBoard - Story Done Teardown
     Comment    Set Selenium Speed    ${SELENIUM_SPEED}
     Comment    # Test TaskBoard - Postcondition
-    Comment    Select Node Product    Product Backlog
+    Comment    Select Project Management Item    Product Backlog
     Comment    # Delete Story
     Comment    Delete Closed Story With StoryID    ${tcStoryID}
     Comment    # clean tag
@@ -320,7 +320,7 @@ Test TaskBoard - Story ReOpen Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -358,7 +358,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
     Wait Until Page Contains    Sprint Backlog
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    story for taskboard AT
     Set Test Variable    ${tcStoryValue}    1
@@ -398,7 +398,7 @@ Test TaskBoard - Task Done with Partner Setup
     Maximize Browser Window
     _InputLoginForm    Acount01    Acount01
     Select Project    Project01
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
 
 Test TaskBoard - Task Done with Partner Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -423,7 +423,7 @@ Test TaskBoard - Check Task Consistency After Dragging Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    SecondCreateProject
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
 
 Test TaskBoard - Check Task Consistency After Dragging Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -437,7 +437,7 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    SecondCreateProject
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -450,9 +450,7 @@ Test TaskBoard - Check TaskBoard ID And Name Setup
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    Project02
-    ${TaskBoard}=    Set Variable    //div[@id="left_panel"]//span[text()="TaskBoard"]
-    Wait Until Page Contains Element    ${TaskBoard}
-    Click Element    ${TaskBoard}
+    Select Project Management Item    TaskBoard
 
 Test TaskBoard - Check TaskBoard ID And Name Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -480,7 +478,7 @@ Test TaskBoard - Setup IE
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
     Select Project    localtestProjectDisplayName
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     # variables
     Set Test Variable    ${tcStoryName}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
     Set Test Variable    ${tcStoryValue}    1

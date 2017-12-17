@@ -269,6 +269,7 @@ public class TaskBoardHelper {
 		String Id;
 		String Name;
 		String Estimate;
+		Boolean IsRemainHoursChanged;
 		String RemainHours;
 		String HandlerUserName;
 		String Notes;
@@ -283,6 +284,7 @@ public class TaskBoardHelper {
 			Id = Long.toString(task.getSerialId());
 			Name = HandleSpecialChar(task.getName());
 			Estimate = String.valueOf(task.getEstimate());
+			IsRemainHoursChanged = task.isRemainHoursChanged();
 			RemainHours = String.valueOf(task.getRemains());
 			Actual = String.valueOf(task.getActual());
 			HandlerUserName = task.getHandler() == null ? "" : task.getHandler().getUsername();

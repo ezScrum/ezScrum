@@ -27,7 +27,7 @@ Test TaskBoard - Sprint Information
     [Documentation]    驗證TaskBoard頁面，有關於Sprint Information的資料是否正確
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Sprint Information Setup
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     # Verify sprint information
     Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
     Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
@@ -62,7 +62,7 @@ Test TaskBoard - Task Checked Out
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task Checked Out Setup
     Comment    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -72,7 +72,7 @@ Test TaskBoard - Task Checked Out
     Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
@@ -84,7 +84,7 @@ Test TaskBoard - Task Done
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
@@ -95,7 +95,7 @@ Test TaskBoard - Task Done
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    0 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
@@ -107,7 +107,7 @@ Test TaskBoard - Task ReOpen
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
@@ -119,7 +119,7 @@ Test TaskBoard - Task ReOpen
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
@@ -131,10 +131,11 @@ Test TaskBoard - Task ReChecked Out
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task ReChecked Out Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
-    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
-    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
+    #2017/12/16: We make task card can't move from Checked Out to Not Checked Out when the remains of task card has been changed.
+    Comment    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
+    Comment    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
     Task ReChecked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -142,7 +143,7 @@ Test TaskBoard - Task ReChecked Out
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    0
@@ -154,7 +155,7 @@ Test TaskBoard - Story Done
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Story Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}
@@ -163,7 +164,7 @@ Test TaskBoard - Story Done
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="closed"]    1
     [Teardown]    Test TaskBoard - Story Done Teardown
 
@@ -172,7 +173,7 @@ Test TaskBoard - Story ReOpen
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Story ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}
@@ -182,7 +183,7 @@ Test TaskBoard - Story ReOpen
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
     [Teardown]    Test TaskBoard - Story ReOpen Teardown
@@ -193,7 +194,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_closed"]/div
     Comment    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
@@ -209,7 +210,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
@@ -220,7 +221,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
     Wait Until Page Contains    warning!
@@ -232,7 +233,7 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
@@ -240,7 +241,7 @@ Test TaskBoard - Attach File on Story
     [Setup]    Test TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
     Click Element    //div[text()="TestProject01"]
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     #Attach file to Story
     Click Element    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/table/tbody/tr/td[2]/a[@title='Upload File']/img
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
@@ -256,7 +257,7 @@ Test TaskBoard - Attach File on Task
     [Setup]    Test TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
     Click Element    //div[text()="TestProject01"]
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     #Attach file to Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
     Click Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
@@ -271,7 +272,7 @@ Test TaskBoard - Attach File on Task
 
 Test TaskBoard - Task Done with partner
     [Setup]    Test TaskBoard - Task Done with Partner Setup
-    Comment    Select Node Product    TaskBoard
+    Comment    Select Project Management Item    TaskBoard
     Comment    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
     Comment    Compare Field Content    //input[@name="Name"]    Task02
     Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
@@ -293,9 +294,9 @@ Test TaskBoard - Task Done with partner
 
 Test TaskBoard - Check Task Checked Out
     [Setup]    Test TaskBoard - Task Checked Out Setup
-    Select Node Product    TaskBoard
-    Select Node Product    Sprint Backlog
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
+    Select Project Management Item    Sprint Backlog
+    Select Project Management Item    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -305,8 +306,8 @@ Test TaskBoard - Check Task Checked Out
     Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Node Product    Sprint Backlog
-    Select Node Product    TaskBoard
+    Select Project Management Item    Sprint Backlog
+    Select Project Management Item    TaskBoard
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
@@ -343,7 +344,7 @@ Test TaskBoard - Check Sprint ID
 
 Tset TaskBoard - ReleaseID Check
     [Setup]    Test TaskBoard - Initial Release ID Check Setup
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Compare Field Content    //input[@name="ReleaseID"]    None
     [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
 
@@ -369,7 +370,8 @@ Test TaskBoard - Check Task ID On The Window After Dragging
     Move Task From Not Check Out To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Move Task From Check Out To Done Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     Move Task From Done To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
+    #2017/12/16: We make task card can't move from Checked Out to Not Checked Out when the remains of task card has been changed.
+    Comment    Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area
@@ -395,7 +397,7 @@ Test TaskBoard - Check Taskcard Position
     ${Task_number}=    Set Variable    9
     Move Task From Check Out To Done    ${Story_ID}    ${Task_number}
     Reload Page
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     Check if Done column has TaskCard    ${Story_ID}    ${Task_number}
     [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
 
@@ -404,7 +406,7 @@ Test TaskBoard - Story and Description_Chrome
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Task Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     #Story Card text
     ${stroy_description}=    Get Text    xpath =//td[@class ="StroyCard_Description"]
     Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
@@ -423,7 +425,7 @@ Test TaskBoard - Story and Description_IE
     [Tags]    Unstable
     [Setup]    Test TaskBoard - Setup IE
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Node Product    TaskBoard
+    Select Project Management Item    TaskBoard
     #Story Card
     ${stroy_description}    Get Text    xpath =//td[@class ="StroyCard_Description"]
     Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
@@ -436,186 +438,16 @@ Test TaskBoard - Story and Description_IE
     Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
     [Teardown]    Test TaskBoard - Task Done Teardown
 
-Test TaskBoard - Show Task History
-    [Setup]    Test TaskBoard - Task Checked Out Setup
-    Select Node Product    TaskBoard
-    ${taskHistoryImg}=    Set Variable    //div[@id="Task:${tcTaskID}"]//table[@class="TaskCard_Header"]//td[3]//img[@src="images/history.png"]
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Not Contain    Not Check Out => Check Out
-    ${closeHistory}=    Set Variable    //button[text()="Close"]
-    Click Button    ${closeHistory}
-    Comment    ${storyHistoryImg}=    Set Variable    //div[@id="Story:${tcStoryID}"]//table[@class="StoryCard_Header"]//td[2]//img[@src="images/history.png"]
-    Comment    Wait Until Element Is Visible    ${storyHistoryImg}    1 min
-    Comment    Click Element    ${storyHistoryImg}
-    Comment    Page Should Not Contain    Not Check Out => Check Out
-    Comment    Click Button    ${closeHistory}
-    #TaskBoard: Check Task from "Not Check Out" to "Check Out"
-    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Contain    Not Check Out => Check Out
-    Click Button    ${closeHistory}
-    #TaskBoard: Check Task (Edit Remains from 3 to 2)
-    Wait Until Element Is Visible    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
-    Click Element    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
-    Input Text    //input[@name="Remains"]    2
-    Click Button    //span[text()="Edit Task \#${tcTaskID}"]/../../../../..//button[text()="Submit"]
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Contain    3 => 2
-    Click Button    ${closeHistory}
-    Comment    #TaskBoard: Check Story (Edit Importance from 3 to 90)
-    Comment    Wait Until Element Is Visible    //h2[text()="[Story] \ #${tcStoryID}"]/../..//img[@src="images/edit.png"]    1 min
-    Comment    Click Element    //h2[text()="[Story] \ #${tcStoryID}"]/../..//img[@src="images/edit.png"]
-    Comment    Input Text    //input[@name="Importance"]    90
-    Comment    Click Button    //span[text()="Edit Story \#${tcStoryID}"]/../../../../..//button[text()="Submit"]
-    Comment    Click Element    ${storyHistoryImg}
-    Comment    Page Should Contain    3 => 90
-    Comment    Click Button    ${closeHistory}
-    #Sprint Backlog: Check Task from "Not Check Out" to "Check Out"
-    Select Node Product    Sprint Backlog
-    ${task}=    Set Variable    //div[text()="${tcTaskName}"]
-    Wait Until Element Is Visible    ${task}    1 min
-    Click Element    ${task}
-    ${taskHistory}=    Set Variable    //button[text()="Task History"]
-    Wait Until Element Is Enabled    ${taskHistory}    1 min
-    Click Button    ${taskHistory}
-    Page Should Contain    Not Check Out => Check Out
-    Page Should Contain    3 => 2
-    Click Button    ${closeHistory}
-    #TaskBoard: Check Task from "Check Out" to "Done"
-    Select Node Product    TaskBoard
-    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Contain    Check Out => Done
-    Click Button    //button[text()="Close"]
-    Comment    #TaskBoard: Check Story from "Not Checked Out" to "Done"
-    Comment    Story Done With Arguments    ${tcStoryID}
-    Comment    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Comment    Click Element    ${storyHistoryImg}
-    Comment    Page Should Contain    Not Check Out => Done
-    Comment    Click Button    ${closeHistory}
-    #Sprint Backlog: Check Task from "Check Out" to "Done"
-    Select Node Product    Sprint Backlog
-    Wait Until Element Is Visible    ${task}    1 min
-    Click Element    ${task}
-    ${taskHistory}=    Set Variable    //button[text()="Task History"]
-    Wait Until Element Is Enabled    ${taskHistory}    1 min
-    Click Button    ${taskHistory}
-    Page Should Contain    Check Out => Done
-    Click Button    ${closeHistory}
-    Comment    #Sprint Backlog: Check Story from "Not Checked Out" to "Done"
-    Comment    ${story}=    Set Variable    //div[text()="${tcStoryName}"]
-    Comment    Wait Until Element Is Visible    ${story}    1 min
-    Comment    Click Element    ${story}
-    Comment    ${storyHistory}=    Set Variable    //button[text()="Story History"]
-    Comment    Wait Until Element Is Enabled    ${storyHistory}    1 min
-    Comment    Click Button    ${storyHistory}
-    Comment    Page Should Contain    Not Check Out => Done
-    Comment    Click Button    ${closeHistory}
-    Comment    #TaskBoard: Check Story from "Done" to "Not Checked Out"
-    Select Node Product    TaskBoard
-    Comment    Story ReOpen With Arguments    ${tcStoryID}
-    Comment    Wait Until Element Is Visible    ${storyHistoryImg}    1 min
-    Comment    Click Element    ${storyHistoryImg}
-    Comment    Page Should Contain    Done => Not Check Out
-    Comment    Click Button    ${closeHistory}
-    #TaskBoard: Check Task from "Done" to "Check Out"
-    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Contain    Done => Check Out
-    Click Button    ${closeHistory}
-    Comment    #Sprint Backlog: Check Story from "Done" to "Not Check Out"
-    Select Node Product    Sprint Backlog
-    Comment    Wait Until Element Is Visible    ${story}    1 min
-    Comment    Click Element    ${story}
-    Comment    Wait Until Element Is Enabled    ${storyHistory}    1 min
-    Comment    Click Button    ${storyHistory}
-    Comment    Page Should Contain    Done => Not Check Out
-    Comment    Click Button    ${closeHistory}
-    #Sprint Backlog: Check Task from "Done" to "Check Out"
-    Wait Until Element Is Visible    ${task}    1 min
-    Click Element    ${task}
-    Wait Until Element Is Enabled    ${taskHistory}    1 min
-    Click Button    ${taskHistory}
-    Page Should Contain    Done => Check Out
-    Click Button    ${closeHistory}
-    #TaskBoard: Check Task from "Check Out" to "Not Check Out"
-    Select Node Product    TaskBoard
-    Task ReChecked Out With Arguments    ${tcStoryID}    ${tcTaskID}
-    Wait Until Element Is Visible    ${taskHistoryImg}    1 min
-    Click Element    ${taskHistoryImg}
-    Page Should Contain    Check Out => Not Check Out
-    Click Button    ${closeHistory}
-    #Sprint Backlog: Check Task from "Check Out" to "Not Check Out"
-    Select Node Product    Sprint Backlog
-    Wait Until Element Is Visible    ${task}    1 min
-    Click Element    ${task}
-    Wait Until Element Is Enabled    ${taskHistory}    1 min
-    Click Button    ${taskHistory}
-    Page Should Contain    Check Out => Not Check Out
-    Click Button    ${closeHistory}
-    [Teardown]    Test TaskBoard - Task Checked Out Teardown
-
 Test TaskBoard - Check Task Remain Hours
     [Setup]    Test TaskBoard - Task Checked Out Setup
-    #Check the input of estimate is required while adding the new story in sprint backlog
-    Click Button    //button[text()="Add Story"]
-    Input Text    //textarea[@name="Name"]    Story for Estimate
-    ${value}=    Set Variable    //input[@name="Value"]
-    ${estimate}=    Set Variable    //input[@name="Estimate"]
-    Input Text    ${value}    3
-    ${addStorySubmit}=    Find Current Window Element    Add New Story    Submit
-    Focus    ${estimate}
-    Double Click Element    ${value}
-    Clear Element Text    ${value}
-    Element Class Should Be Disabled    ${addStorySubmit}/..
-    Input Text    ${estimate}    3
-    Element Class Should Be Enabled    ${addStorySubmit}/..
-    Click Element    ${addStorySubmit}
-    #Check the input of remains is readonly in the not checked out state
-    Select Node Product    TaskBoard
-    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    ${remains}=    Set Variable    //input[@name="Remains"]
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
-    Should Be Equal    ${remainsClass}    true
-    ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
-    Click Element    ${editTaskCancel}
-    #Check the input of remains can't input zero in the checked out state
-    Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
-    Should Be Equal As Strings    ${remainsClass}    None
-    Input Text    ${remains}    0
-    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
-    Click Element    ${editTaskSubmit}
-    Wait Until Keyword Succeeds    10    1    Alert Should Be Present    The value of remains can not be zero.
-    Compare Field Content    ${remains}    3
-    ${isSubmitVisible}=    Run Keyword And Return Status    Element Should Be Visible    ${editTaskSubmit}
-    Run Keyword If    ${isSubmitVisible}    Click Element    ${editTaskSubmit}
-    #Check the input of remains is readonly and zero in the done state
-    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
-    ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
-    Compare Text In Specific Xpath    ${taskCardValue}    0 hr
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    ${remainsClass}=    Get Element Attribute    ${remains} @readonly
-    Should Be Equal    ${remainsClass}    true
-    Compare Field Content    ${remains}    0
-    Click Element    ${editTaskCancel}
-    Reload Page
-    #Check the input of remains is not zero in the checked out state
-    Select Node Product    TaskBoard
-    Wait Until Keyword Succeeds    1 min    5    Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
-    Compare Text In Specific Xpath    ${taskCardValue}    3 hr
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Wait Until Keyword Succeeds    15    1    Double Click Element    ${remains}
-    Compare Field Content    ${remains}    3
-    Click Element    ${editTaskCancel}
+    Estimate Should Be Required In Sprint Backlog
+    Select Project Management Item    TaskBoard
+    TaskCard Remains Should Be Readonly
+    Move Task    Not Checked Out    Checked Out    ${tcStoryID}    ${tcTaskID}
+    TaskCard Remains Should Not Be Zero In Checked Out State
+    Move Task    Checked Out    Done    ${tcStoryID}    ${tcTaskID}
+    TaskCard Remains Should Be Readonly
+    Move Task    Done    Checked Out    ${tcStoryID}    ${tcTaskID}
+    TaskCard ReOpen Remains Should Be Last Remains    3
+    Check If Remains Changed Then TaskCard Can Not ReCheckOut    ${tcStoryID}    ${tcTaskID}
     [Teardown]    Test TaskBoard - Task Checked Out Teardown

@@ -334,6 +334,16 @@ public class TaskObject implements IBaseObject {
 		return createTime;
 	}
 	
+	public boolean isRemainHoursChanged(){
+		ArrayList<HistoryObject> histories = getHistories();
+		for(HistoryObject history : histories){
+			if(history.getHistoryType() == HistoryObject.TYPE_REMAIMS){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int getLastRemainHours(){
 		int lastRemainHours = 0;
 		ArrayList<HistoryObject> histories = getHistories();

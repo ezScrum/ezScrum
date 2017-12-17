@@ -13,8 +13,8 @@ Test TaskBoard_AttachFile - Setup
     Login Page    ${LOGIN_URL}
 
 Test TaskBoard_AttachFile - Teardown on Story
-    Select Node Product    Retrospective
-    Select Node Product    TaskBoard
+    Select Project Management Item    Retrospective
+    Select Project Management Item    TaskBoard
     #Delete Attached file in Story
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
     Click Element    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
@@ -24,8 +24,8 @@ Test TaskBoard_AttachFile - Teardown on Story
     Exit ezScrum System
 
 Test TaskBoard_AttachFile - Teardown on Task
-    Select Node Product    Retrospective
-    Select Node Product    TaskBoard
+    Select Project Management Item    Retrospective
+    Select Project Management Item    TaskBoard
     #Delete Attached file in Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]
     Click Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]

@@ -18,7 +18,7 @@ Test Product Backlog Suite Setup
     Comment    ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Comment    Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Comment    Select Node Product    Product Backlog
+    Comment    Select Project Management Item    Product Backlog
     Comment    Clean All Tag
     Comment    Clean All Story
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -42,7 +42,7 @@ Test ProductBacklog With Change Line Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Product Backlog Create Story Identify Invalid Value Setup
     #setup
@@ -53,7 +53,7 @@ Test Product Backlog Create Story Identify Invalid Value Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Product Backlog Create Story Identify Invalid Value Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -68,7 +68,7 @@ Test Edit Story Identify Invalid Value Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Comment    Create Story With Arguments    new Edit Story With Invalid Value    0    0    0    ${EMPTY}
     ...    "Note: newStoryNormal"    "HowToDemo: newStoryNormal"
 
@@ -86,7 +86,7 @@ Test Create Story Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Create Story Teardown
     Comment    Delete Story With Arguments    newStory
@@ -103,7 +103,7 @@ Test Create Story With Invalid Value Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Create Story With Invalid Value Teardown
     [Arguments]    ${storyID}
@@ -121,7 +121,7 @@ Test Edit Story Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Comment    Create Tag With Arguments    testTagName
     Comment    Create Story With Arguments    oriStory    5    3    1    testTagName
     ...    Note: newStory    HowToDemo: newStory
@@ -142,7 +142,7 @@ Test Story History Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Comment    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
     ...    "Note: newStoryNote"    "HowToDemo: newStoryHowToDemo"
     Comment    Create Story With Arguments| newStory | 5 | 3 | 1 | ${EMPTY} | "Note: newStoryNote" | "HowToDemo: newStoryHowToDemo"
@@ -160,7 +160,7 @@ Test Remove Story Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Comment    Create Tag With Arguments    testTagName
     Comment    Create Story With Arguments    newStory    5    3    1    testTagName
     ...    Note: newStory    HowToDemo: newStory
@@ -180,7 +180,7 @@ Test Create Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Create Tag Teardown
     [Documentation]    刪除兩種Tag: 正常字串 & 特殊字元
@@ -204,7 +204,7 @@ Test Duplicate Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Duplicate Tag Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -220,7 +220,7 @@ Test Delete Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     # open Tag Manage window
     Click Element    xpath=//button[text()="Manage Tag"]
     Comment    # add Tag
@@ -252,7 +252,7 @@ Test Product Backlog Filter Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Product Backlog Filter Teardown
     # 刪除測試資料
@@ -282,7 +282,7 @@ Test Product Backlog Search Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     # 新增story
     Create Story With Arguments    newStoryFirst    1    1    1    ${EMPTY}    newStoryFirstNote
     ...    newStoryFirstHowToDemo
@@ -295,13 +295,13 @@ Test Product Backlog Search Setup
     Create Story With Arguments    newStoryFifth    8    8    8    ${EMPTY}    newStoryFifthNote
     ...    newStoryFifthHowToDemo
     # 新增Sprint
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     ${sprintStartDate}=    Get Start Date    NOW
     Create Sprint with Date    sprint1 in A    ${sprintStartDate}    2    4    100    100
     ${sprintStartDate}=    Get Start Date    NOW +14d
     Create Sprint with Date    sprint2 in A    ${sprintStartDate}    2    4    100    100
     # 將story加到sprint
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Click Element    xpath=//div[@id="sprintAction"]//button[text()="Add Existing Stories"]
     Wait Until Page Contains Element    xpath=//div[@id="AddExistedStory_Window"]//span[text()="Select Existed Stories"]
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFourth")]
@@ -315,7 +315,7 @@ Test Product Backlog Search Setup
     Mouse Up    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="newStoryFifth")]
     Click Element    xpath=//button[text()="Add Existed Stories"]
     # 新增Release
-    Select Node Product    Release Plan
+    Select Project Management Item    Release Plan
     ${sprintStartDate}=    Get Start Date    NOW
     ${sprintEndDate}=    Get Start Date    NOW +28d
     @{tsReleasePlan}=    Create List    testReleasePlan    ${sprintStartDate}    ${sprintEndDate}    test Release Plan Description
@@ -326,7 +326,7 @@ Test Product Backlog Search Teardown
     ...    再將所建立的story刪除
     Comment    Reload Page
     Comment    Title Should Be    ezScrum, SSLab NTUT
-    Comment    Select Node Product    Product Backlog
+    Comment    Select Project Management Item    Product Backlog
     Comment    Page Should Contain Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
     Comment    Clean All Story
     Comment    Clean All Sprint
@@ -343,7 +343,7 @@ Test Mark And UnMark Story Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     Comment    Create Tag With Arguments    markAndUnMarkTag
     Comment    Create Story With Arguments    newStory    5    3    1    ${EMPTY}
     ...    Note: newStory    HowToDemo: newStory
@@ -363,7 +363,7 @@ Test Attach File Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test Attach File Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -379,7 +379,7 @@ Test ProductBacklog Button Enable or Disable Setup
     #Select project
     Select Project    localtestProjectDisplayName
     Wait Until Page Contains Element    xpath=//li//span[text()="Product Backlog"]    60
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
 
 Test ProductBacklog Button Enable or Disable Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

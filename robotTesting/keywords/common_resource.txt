@@ -43,7 +43,7 @@ Select Project
     Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
     Click Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
 
-Select Node Product
+Select Project Management Item
     [Arguments]    ${nodeName}
     Wait Until Keyword Succeeds    1min    5s    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
     Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]    15
@@ -73,8 +73,7 @@ Enter ezScrum System
     Title Should Be    ezScrum, SSLab NTUT
 
 Exit ezScrum System
-    Wait Until Element Is Visible    //img[@src="images/logout.gif"]    1 min
-    Click Image    images/logout.gif
+    Wait Until Keyword Succeeds    15    1    Click Image    images/logout.gif
     Wait Until Page Contains    ezScrum Logon!
     Title Should Be    ezScrum Logon!
     Close Browser

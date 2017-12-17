@@ -21,7 +21,7 @@ Library           Collections
 Test Scrum Report - Schedule Report
     [Setup]    Test Scrum Report - Schedule Report Setup
     Click Element    xpath=//div[text()="Project01"]
-    Select Node Product    Scrum Report
+    Select Project Management Item    Scrum Report
     Click Element    xpath=//span[text()="Schedule Report"]
     Select Frame    xpath=//iframe[@id="scheduleReport"]
     Click Element    xpath=//select[@id='ShowSprint']

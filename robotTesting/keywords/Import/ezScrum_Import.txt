@@ -36,7 +36,7 @@ Test Import Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
 
 Assert ProductBacklog story
-    Select Node Product    Product Backlog
+    Select Project Management Item    Product Backlog
     #測試是否有Story01, Story02
     Page Should Contain Element    //div[@id="productBacklogGridPanel"]//div[text()="Story01"]
     Page Should Contain Element    //div[@id="productBacklogGridPanel"]//div[text()="Story02"]
@@ -57,13 +57,13 @@ Assert ProductBacklog story
     Compare Text In Specific Xpath    //div[text()="Story01"]/../../../tr[@class="x-grid3-row-body-tr"]/td/div/p[8]    Attach Files:\ndocx測試.docx [Delete]
 
 Assert ReleasePlan
-    Select Node Product    Release Plan
+    Select Project Management Item    Release Plan
     Wait Until Page Contains    Release & Sprint List
     Compare Text In Specific Xpath    //span[text()="Release & Sprint List"]/../../div[2]/div/div/div[2]/table/tbody/tr/td[2]/div    Release01
     Compare Text In Specific Xpath    //span[text()="Release & Sprint List"]/../../div[2]/div/div/div[2]/table/tbody/tr/td[5]/div    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
 
 Assert SprintPlan
-    Select Node Product    Sprint Plan
+    Select Project Management Item    Sprint Plan
     Wait Until Page Contains    Sprint Plan List
     #測 Sprint01 的資料
     Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]/div    Sprint01
@@ -75,7 +75,7 @@ Assert SprintPlan
     Compare Text In Specific Xpath    //div[@id="SprintPlan_Page"]/div/div/div/div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[10]/div    17:00@Lab1321
 
 Assert SprintBacklog
-    Select Node Product    Sprint Backlog
+    Select Project Management Item    Sprint Backlog
     Wait Until Page Contains    Story & Task List
     Click element    //div[@id="SprintBacklog_Page"]/div/div/div/div[2]/div/div/table/tbody/tr/td//table/tbody/tr[2]/td[2]/em/button
     #Assert Story01
@@ -90,7 +90,7 @@ Assert SprintBacklog
     Compare Text In Specific Xpath    //span[text()="Story & Task List"]/../../div/div/div/div[2]/table/tbody/tr[2]/td/table/tbody/tr/td[8]/div    closed
 
 Assert Retrospective
-    Select Node Product    Retrospective
+    Select Project Management Item    Retrospective
     Wait Until Page Contains    Retrospective List
     click element    xpath=//span[text()="Retrospective List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     wait until page contains    Sprint #1
@@ -121,7 +121,7 @@ Assert Retrospective
     Compare Text In Specific Xpath    //span[text()="Retrospective List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr/td[6]/div    assigned
 
 Assert Unplanned
-    Select Node Product    Unplanned
+    Select Project Management Item    Unplanned
     Wait Until Page Contains    Unplanned Item List
     Click Element    xpath=//span[text()="Unplanned Item List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     Wait Until Page Contains    ALL
