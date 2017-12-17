@@ -99,6 +99,15 @@ Test ProductBacklog - Edit Story
     ...    EditStoryHowToDemo
     [Teardown]    Test Edit Story Teardown    ${storyID}
 
+Test ProductBacklog - Edit Story__Fail
+    [Documentation]    Add Story(正常資料)。點選Story，點選按鈕Edit Story，修改各個欄位資料，Tag欄位勾選/取消勾選Tag後送出。
+    [Setup]    Test Edit Story Setup
+    Edit Story With Arguments    oriStory    testTagName
+    ${storyID}=    Get Story ID
+    Verify Story Information With Arguments__Fail    ${storyID}    EditStoryName    3    5    8    EditStoryNotes
+    ...    EditStoryHowToDemo
+    [Teardown]    Test Edit Story Teardown    ${storyID}
+
 Test ProductBacklog - Story History
     [Documentation]    點選一Story，點選按鈕Show History，確認History列表，有顯示的資訊皆為正確的後關閉視窗。
     [Setup]    Test Story History Setup
