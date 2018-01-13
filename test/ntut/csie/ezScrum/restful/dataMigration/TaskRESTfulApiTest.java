@@ -137,7 +137,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String handler = account.getUsername();
 		int estimate = 3;
 		int remain = 2;
-		int actual = 3;
+		//int actual = 3;
 		String notes = "TEST_CREATE_TASK";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -152,7 +152,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, handler);
 		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
 		taskJSON.put(TaskJSONEnum.REMAIN, remain);
-		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, actual);
 		taskJSON.put(TaskJSONEnum.NOTES, notes);
 		taskJSON.put(TaskJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -180,7 +180,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals(handler, task.getHandler().getUsername());
 		assertEquals(estimate, task.getEstimate());
 		assertEquals(remain, task.getRemains());
-		assertEquals(actual, task.getActual());
+		//assertEquals(actual, task.getActual());
 		assertEquals(notes, task.getNotes());
 		assertEquals(status, task.getStatusString());
 	}
@@ -195,7 +195,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String handler = account.getUsername();
 		int estimate = 3;
 		int remain = 2;
-		int actual = 3;
+		//int actual = 3;
 		String notes = "TEST_CREATE_TASK";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -210,7 +210,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, handler);
 		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
 		taskJSON.put(TaskJSONEnum.REMAIN, remain);
-		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, actual);
 		taskJSON.put(TaskJSONEnum.NOTES, notes);
 		taskJSON.put(TaskJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -245,7 +245,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String handler = account.getUsername();
 		int estimate = 3;
 		int remain = 2;
-		int actual = 3;
+		//int actual = 3;
 		String notes = "TEST_CREATE_TASK";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -260,7 +260,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, handler);
 		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
 		taskJSON.put(TaskJSONEnum.REMAIN, remain);
-		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, actual);
 		taskJSON.put(TaskJSONEnum.NOTES, notes);
 		taskJSON.put(TaskJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -295,7 +295,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		String handler = account.getUsername();
 		int estimate = 3;
 		int remain = 2;
-		int actual = 3;
+		//int actual = 3;
 		String notes = "TEST_CREATE_TASK";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -310,7 +310,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, handler);
 		taskJSON.put(TaskJSONEnum.ESTIMATE, estimate);
 		taskJSON.put(TaskJSONEnum.REMAIN, remain);
-		taskJSON.put(TaskJSONEnum.ACTUAL, actual);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, actual);
 		taskJSON.put(TaskJSONEnum.NOTES, notes);
 		taskJSON.put(TaskJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();

@@ -109,7 +109,7 @@ CREATE TABLE `task` (
   `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `remain` INT NOT NULL DEFAULT 0,
-  `actual` INT NOT NULL DEFAULT 0,
+  /*`actual` INT NOT NULL DEFAULT 0,*/
   `notes` TEXT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,

@@ -88,7 +88,7 @@ public class SprintBacklogMapper {
 		task.setName(taskInfo.name).setNotes(taskInfo.notes)
 				.setStoryId(taskInfo.storyId).setHandlerId(taskInfo.handlerId)
 				.setEstimate(taskInfo.estimate).setRemains(taskInfo.estimate)
-				.setActual(0).setCreateTime(taskInfo.specificTime).save();
+				/*.setActual(0)*/.setCreateTime(taskInfo.specificTime).save();
 
 		for (long partnerId : taskInfo.partnersId) {
 			task.addPartner(partnerId);
@@ -144,7 +144,7 @@ public class SprintBacklogMapper {
 		if (task != null) {
 			task.setName(taskInfo.name).setHandlerId(taskInfo.handlerId)
 			.setEstimate(taskInfo.estimate)
-			.setRemains(taskInfo.remains).setActual(taskInfo.actual)
+			.setRemains(taskInfo.remains)/*.setActual(taskInfo.actual)*/
 			.setNotes(taskInfo.notes)
 			.setPartnersId(taskInfo.partnersId).save();
 		}
@@ -306,11 +306,11 @@ public class SprintBacklogMapper {
 	 * @param notes
 	 * @param specificDate
 	 */
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long id, String name, String notes, /*int actual,*/
 			Date specificDate) {
 		TaskObject task = TaskObject.get(id);
 		if (task != null) {
-			task.setName(name).setNotes(notes).setActual(actual)
+			task.setName(name).setNotes(notes)/*.setActual(actual)*/
 					.setStatus(TaskObject.STATUS_DONE).setRemains(0)
 					.setUpdateTime(specificDate.getTime())
 					.setPartnersId(task.getPartnersId())

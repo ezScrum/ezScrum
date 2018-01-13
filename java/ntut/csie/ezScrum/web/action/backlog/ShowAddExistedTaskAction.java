@@ -62,7 +62,7 @@ public class ShowAddExistedTaskAction extends PermissionAction {
 				  .append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>")
 				  .append("<Status>").append(task.getStatusString()).append("</Status>")
 				  .append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
-				  .append("<Actual>").append(task.getActual()).append("</Actual>")
+				  //.append("<Actual>").append(task.getActual()).append("</Actual>")
 				  .append("<Handler>").append(handlerUsername).append("</Handler>")
 				  .append("<Partners>").append(task.getPartnersUsername()).append("</Partners>")
 				  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(task.getNotes())).append("</Notes>")

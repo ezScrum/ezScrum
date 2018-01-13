@@ -172,7 +172,7 @@ public class ConvertSprintBacklog {
 		taskJsonString.put(SprintBacklogUtil.TAG_PARTNERS, partnersArray);
 		taskJsonString.put(SprintBacklogUtil.TAG_ESTIMATE, task.getEstimate());
 		taskJsonString.put(SprintBacklogUtil.TAG_REMAINS, task.getRemains());
-		taskJsonString.put(SprintBacklogUtil.TAG_ACTUAL, task.getActual());
+		//taskJsonString.put(SprintBacklogUtil.TAG_ACTUAL, task.getActual());
 		taskJsonString.put(SprintBacklogUtil.TAG_NOTES, task.getNotes());
 		return taskJsonString.toString();
 	}
@@ -325,14 +325,14 @@ public class ConvertSprintBacklog {
 		String Status;
 		String Partners;
 		String Link;
-		String Actual;
+		//String Actual;
 
 		public TaskBoard_Task(TaskObject task) {
 			Id = String.valueOf(task.getId());
 			Name = task.getName();
 			Estimate = String.valueOf(task.getEstimate());
 			RemainHours = String.valueOf(task.getRemains());
-			Actual = String.valueOf(task.getActual());
+			//Actual = String.valueOf(task.getActual());
 			Handler = (task.getHandler() == null ? "" : task.getHandler().getUsername());
 			Partners = task.getPartnersUsername();
 			Status = task.getStatusString();

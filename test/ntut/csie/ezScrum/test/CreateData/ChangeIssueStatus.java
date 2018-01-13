@@ -63,12 +63,12 @@ public class ChangeIssueStatus {
 			long id = task.getId();
 			String name = task.getName();
 			String notes = task.getNotes();
-			int actual = task.getActual();
+			//int actual = task.getActual();
 			SimpleDateFormat format = new SimpleDateFormat(DateUtil._16DIGIT_DATE_TIME);
 			if (mSetDoneDate != null) {
-				sprintBacklogLogic.closeTask(id, name, notes, actual, format.format(mSetDoneDate));
+				sprintBacklogLogic.closeTask(id, name, notes, /*actual,*/ format.format(mSetDoneDate));
 			} else {
-				sprintBacklogLogic.closeTask(id, name, notes, actual, format.format(new Date()));
+				sprintBacklogLogic.closeTask(id, name, notes, /*actual,*/ format.format(new Date()));
 			}
 			System.out.println("移動 Task " + id + " 到 Done 成功");
 		}

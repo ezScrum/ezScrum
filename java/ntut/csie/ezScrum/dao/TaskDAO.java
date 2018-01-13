@@ -41,7 +41,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
 		valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
 		valueSet.addInsertValue(TaskEnum.REMAIN, task.getRemains());
-		valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
+		//valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
 		valueSet.addInsertValue(TaskEnum.NOTES, task.getNotes());
 		valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
 		valueSet.addInsertValue(TaskEnum.PROJECT_ID, task.getProjectId());
@@ -110,7 +110,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 		valueSet.addInsertValue(TaskEnum.HANDLER_ID, task.getHandlerId());
 		valueSet.addInsertValue(TaskEnum.ESTIMATE, task.getEstimate());
 		valueSet.addInsertValue(TaskEnum.REMAIN, task.getRemains());
-		valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
+		//valueSet.addInsertValue(TaskEnum.ACTUAL, task.getActual());
 		valueSet.addInsertValue(TaskEnum.NOTES, task.getNotes());
 		valueSet.addInsertValue(TaskEnum.STATUS, task.getStatus());
 		valueSet.addInsertValue(TaskEnum.STORY_ID, task.getStoryId());
@@ -288,7 +288,7 @@ public class TaskDAO extends AbstractDAO<TaskObject, TaskObject> {
 				.setHandlerId(result.getLong(TaskEnum.HANDLER_ID))
 				.setEstimate(result.getInt(TaskEnum.ESTIMATE))
 				.setRemains(result.getInt(TaskEnum.REMAIN))
-				.setActual(result.getInt(TaskEnum.ACTUAL))
+				//.setActual(result.getInt(TaskEnum.ACTUAL))
 				.setStatus(result.getInt(TaskEnum.STATUS))
 				.setNotes(result.getString(TaskEnum.NOTES))
 				.setStoryId(result.getLong(TaskEnum.STORY_ID))

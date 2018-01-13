@@ -35,7 +35,7 @@ public class TaskObject implements IBaseObject {
 	private String mNotes = "";
 	private int mEstimate = 0;
 	private int mRemains = 0;
-	private int mActual = 0;
+	//private int mActual = 0;
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
@@ -78,10 +78,10 @@ public class TaskObject implements IBaseObject {
 		return this;
 	}
 
-	public TaskObject setActual(int actual) {
+	/*public TaskObject setActual(int actual) {
 		mActual = actual;
 		return this;
-	}
+	}*/
 
 	public TaskObject setNotes(String notes) {
 		mNotes = notes;
@@ -162,9 +162,9 @@ public class TaskObject implements IBaseObject {
 		return mRemains;
 	}
 
-	public int getActual() {
+	/*public int getActual() {
 		return mActual;
-	}
+	}*/
 
 	public String getNotes() {
 		return mNotes;
@@ -424,7 +424,7 @@ public class TaskObject implements IBaseObject {
 		}
 		
 		taskJson.put(TaskEnum.NAME, mName).put(TaskEnum.ESTIMATE, mEstimate)
-				.put(TaskEnum.ACTUAL, mActual).put(TaskEnum.STORY_ID, mStoryId)
+				/*.put(TaskEnum.ACTUAL, mActual)*/.put(TaskEnum.STORY_ID, mStoryId)
 				.put(TaskEnum.PROJECT_ID, mProjectId)
 				.put(TaskEnum.NOTES, mNotes).put(TaskEnum.REMAIN, mRemains)
 				.put(TaskEnum.STATUS, mStatus)
@@ -507,7 +507,7 @@ public class TaskObject implements IBaseObject {
 		setStoryId(task.getStoryId());
 		setEstimate(task.getEstimate());
 		setRemains(task.getRemains());
-		setActual(task.getActual());
+		//setActual(task.getActual());
 		setHandlerId(task.getHandlerId());
 		setPartnersId(task.getPartnersId());
 		setStatus(task.getStatus());
@@ -551,9 +551,9 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
 					mEstimate, mUpdateTime);
 		}
-		if (mActual != oldTask.getActual()) {
+		/*if (mActual != oldTask.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual, mUpdateTime);
-		}
+		}*/
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
 					mRemains, mUpdateTime);
@@ -596,10 +596,10 @@ public class TaskObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldTask.getEstimate(),
 					mEstimate, mUpdateTime);
 		}
-		if (mActual != oldTask.getActual()) {
+		/*if (mActual != oldTask.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldTask.getActual(), mActual,
 					mUpdateTime);
-		}
+		}*/
 		if (mRemains != oldTask.getRemains()) {
 			addHistory(HistoryObject.TYPE_REMAIMS, oldTask.getRemains(),
 					mRemains, mUpdateTime);

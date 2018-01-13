@@ -116,7 +116,7 @@ public class ReopenIssueActionTest extends MockStrutsTestCase {
 
 		// ================ 執行 action ==============================
 		sprintBacklogMapper.closeTask(task.getId(), "", task.getNotes(),
-				task.getActual(), Calendar.getInstance().getTime()); // 先設定Task為closed的狀態
+				/*task.getActual(),*/ Calendar.getInstance().getTime()); // 先設定Task為closed的狀態
 																		// 在測試
 		actionPerform();
 		// 驗證回傳 path

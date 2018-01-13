@@ -16,7 +16,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Setup
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    Project01
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
 
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 01 Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -32,7 +32,7 @@ Test Tag - Sprint Backlog Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    ${Project}
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Tag - Sprint Backlog Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -48,7 +48,7 @@ Test Tag - ProductBacklog Setup
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    TestProject
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Tag - ProductBacklog Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -65,7 +65,7 @@ Test Tag - Add Mutiple Tags with Tag Button Setup
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    Project02
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
 
 Test Tag - Add Mutiple Tags with Tag Button Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -81,7 +81,7 @@ Test Tag - Edit Tag Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    ${Project}
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
 
 Test Tag - Edit Tag Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -98,7 +98,7 @@ Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Setup
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    Project02
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
 
 Test Tag - ProductBacklog Add Tag with Edit Story in Proj. 02 Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

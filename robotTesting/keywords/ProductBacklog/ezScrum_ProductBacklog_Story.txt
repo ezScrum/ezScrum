@@ -16,10 +16,8 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
-    #暫時用Wait Until Something來修理testTag的CI
     Comment    Set Browser Implicit Wait    5
     Wait Until Element Is Visible    //textarea[@name="Name"]    1 min
-    Wait Until Element Is Enabled    //input[@name="Tags"]    1 min
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -47,7 +45,7 @@ Verify Story Information With Arguments
     ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
     ${passed}=    Run Keyword And Return Status    Should Be Equal As Strings    ${testTagText}    ${correctTagText}
     Run Keyword If    ${passed}    Log    Passed
-    Run Keyword Unless    ${passed}    Log     Failed
+    Run Keyword Unless    ${passed}    Log    Failed
     #將兩個變數都轉為unicode才能比對
     #${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
     #${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
@@ -149,7 +147,7 @@ Verify Invalid Value Textarea
     Xpath Should Match X Times    //div[@class="x-window-bwrap"]//form[@method="POST"]/../div//table/tbody/tr/td[2]//table//table//table//button[text()="Submit"]/../../../../../../table[contains(@class, "x-item-disabled")]    1
 
 Clean All Story
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     # get Story count
     ${_storyCount} =    Get Matching Xpath Count    //div[@id="productBacklogGridPanel"]//table[@class="x-grid3-row-table"]
     # delete all story
@@ -178,7 +176,7 @@ CreateStoryInA
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_A    ${PROJECT_NAME}DisplayName_A    ${PROJECT_COMMENT}_A    ${PROJECT_MANAGER}_A
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_A
     # new story in project A
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${_StoryName}=    Set Variable    story in project A
     ${_StoryValue}=    Set Variable    1
     ${_StoryEstimate} =    Set Variable    2
@@ -203,7 +201,7 @@ CreateStoryInB
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_B    ${PROJECT_NAME}DisplayName_B    ${PROJECT_COMMENT}_B    ${PROJECT_MANAGER}_B
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_B
     # new story in project B
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${_StoryName}=    Set Variable    story in project B
     ${_StoryValue}=    Set Variable    5
     ${_StoryImportance}=    Set Variable    8
@@ -228,7 +226,7 @@ CreateStoryWithTagInA
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_A    ${PROJECT_NAME}DisplayName_A    ${PROJECT_COMMENT}_A    ${PROJECT_MANAGER}_A
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_A
     # new story in project A
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${_tagName} =    Set Variable    tag in project A
     Create Tag With Arguments    ${_tagName}
     ${_StoryName}=    Set Variable    story in project A
@@ -256,7 +254,7 @@ CreateStoryWithTagInB
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project with Arguments    ${PROJECT_NAME}_B    ${PROJECT_NAME}DisplayName_B    ${PROJECT_COMMENT}_B    ${PROJECT_MANAGER}_B
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName_B
     # new story in project B
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${_tagName} =    Set Variable    tag in project B
     Create Tag With Arguments    ${_tagName}
     ${_StoryName}=    Set Variable    story in project B

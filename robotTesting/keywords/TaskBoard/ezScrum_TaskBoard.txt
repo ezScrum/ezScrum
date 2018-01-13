@@ -76,14 +76,15 @@ Verify Story Information With Arguments In TaskBoard
 
 Verify Task Information With Arguments In TaskBoard
     [Arguments]    ${_TaskID}    ${_TaskName}    ${_TaskHandler}    ${_TaskPartners}    ${_TaskEstimate}    ${_TaskRemains}
-    ...    ${_TaskActual}    ${_TaskNotes}
+    ...    ${_TaskNotes}    # We remove ${_TaskActual} between ${_TaskRemains} and \ ${_TaskNotes}. Original Arugments are ${_TaskID} | ${_TaskName} | ${_TaskHandler} | ${_TaskPartners} | ${_TaskEstimate} | ${_TaskRemains} | ${_TaskActual} | ${_TaskNotes}
     Click Element    xpath=//div[@id="TaskBoard_Page"]//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]/../..//a[@title="Edit the Task"]
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]    ${_TaskName}
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="HandlerComboBox_ForEditTask"]    ${_TaskHandler}
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]    ${_TaskPartners}
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimate"]    ${_TaskEstimate}
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]    ${_TaskRemains}
-    Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]    ${_TaskActual}
+    #We remove actual hours of task, because it is not useful.
+    Comment    Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]    ${_TaskActual}
     Compare Field Content    //span[text()="Edit Task #${_TaskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]    ${_TaskNotes}
     ${_XpathEditStoryCancel}=    Find Current Window Element    Edit Task #${_TaskID}    Cancel
     Element Enable And Submit    ${_XpathEditStoryCancel}
@@ -152,46 +153,25 @@ Move Task From Check Out To Not Check Out Check ID Before Click Done
     Compare Text In Specific Xpath    ${windowTital}    Reset Checked Out Task #${Task_ID}
     Click Element    xpath=//button[text()="Reset Check Out"]
 
-Estimate Should Be Required In Sprint Backlog
-    [Documentation]    Check the input of estimate is required while adding the new story in Sprint Backlog.
-    Wait Until Keyword Succeeds    15    1    Click Button    //button[text()="Add Story"]
-    Input Text    //textarea[@name="Name"]    Story for Estimate
-    ${value}=    Set Variable    //input[@name="Value"]
-    ${estimate}=    Set Variable    //input[@name="Estimate"]
-    Input Text    ${value}    3
-    ${addStorySubmit}=    Find Current Window Element    Add New Story    Submit
-    Focus    ${estimate}
-    Double Click Element    ${value}
-    Clear Element Text    ${value}
-    Element Class Should Be Disabled    ${addStorySubmit}/..
-    Input Text    ${estimate}    3
-    Element Class Should Be Enabled    ${addStorySubmit}/..
-    Click Element    ${addStorySubmit}
-
-TaskCard Remains Should Be Readonly
+Check TaskCard Remain Hours Can Not Be Edited
     [Documentation]    Check the input of remains is readonly in *Not Checked Out State* or *Done State*.
-    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
     ${remains}=    Set Variable    //input[@name="Remains"]
-    Double Click Element    ${remains}
+    Wait Until Element Is Visible    ${remains}    15
     ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal    ${remainsClass}    true
     ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
     Click Element    ${editTaskCancel}
 
-TaskCard Remains Should Not Be Zero In Checked Out State
+TaskCard Remain Hours Should Not Be Zero In Checked Out State
     [Documentation]    Check the input of remains can't input zero in *Checked Out State*.
-    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
     ${remains}=    Set Variable    //input[@name="Remains"]
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
     Double Click Element    ${remains}
     ${remainsClass}=    Get Element Attribute    ${remains} @readonly
     Should Be Equal As Strings    ${remainsClass}    None
-    Input Text    ${remains}    0
-    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
-    Click Element    ${editTaskSubmit}
+    Edit Task    Remains    0
     Wait Until Keyword Succeeds    15    1    Alert Should Be Present    The value of remains can not be zero.
     Compare Field Content    ${remains}    3
+    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
     ${isSubmitVisible}=    Run Keyword And Return Status    Element Should Be Visible    ${editTaskSubmit}
     Run Keyword If    ${isSubmitVisible}    Click Element    ${editTaskSubmit}
 
@@ -207,19 +187,42 @@ Move Task
     Wait Until Keyword Succeeds    15    1    Click Button    //button[text()=${ButtonText}]
     Wait Until Page Contains    Success.
 
-TaskCard ReOpen Remains Should Be Last Remains
+Task Remain Hours Should Be Reverted To Last Remain Hours Value When Move From Done To Checked Out
     [Arguments]    ${_LastRemains}
-    ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
-    Compare Text In Specific Xpath    ${taskCardValue}    ${_LastRemains} hr
-    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
     ${remains}=    Set Variable    //input[@name="Remains"]
-    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
-    Double Click Element    ${remains}
     Compare Field Content    ${remains}    ${_LastRemains}
     ${editTaskCancel}=    Find Current Window Element    Edit Task #${tcTaskID}    Cancel
     Click Element    ${editTaskCancel}
+    ${taskCardValue}=    Set Variable    //td[@class="TaskCard_Value"]
+    Compare Text In Specific Xpath    ${taskCardValue}    ${_LastRemains} hr
 
-Check If Remains Changed Then TaskCard Can Not ReCheckOut
+Check If Remains Changed Then TaskCard Can Not Move From Checked Out To Not Checked Out
     [Arguments]    ${_StoryID}    ${_TaskID}
     Wait Until Keyword Succeeds    15    1    Drag And Drop    xpath=//div[@id="${_StoryID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${_TaskID}"]    target=${_StoryID}_new
     Element Should Not Be Visible    xpath=//button[text()="Reset Check Out"]
+
+Edit Task
+    [Arguments]    ${Column}    ${Value}
+    Input Text    //input[@name="${Column}"]    ${Value}
+    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
+    Click Element    ${editTaskSubmit}
+
+Click TaskCard Edit Button
+    [Arguments]    ${tcTaskID}
+    ${taskEditImg}=    Set Variable    //h2[text()="[Task] \ #${tcTaskID}"]/../..//img[@src="images/edit.png"]
+    Wait Until Keyword Succeeds    15    1    Click Element    ${taskEditImg}
+
+Check Task Actual Hours Has Been Removed When Move From Checked Out To Done
+    [Arguments]    ${Story_ID}    ${Task_ID}
+    Drag and Drop    xpath=//div[@id="${Story_ID}_assigned"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${Task_ID}"]    target=${Story_ID}_closed
+    ${actual hours}=    Set Variable    //input[@name="Actual"]
+    Page Should Not Contain Element    ${actual hours}
+    ${done}=    Find Current Window Element    Done Task #${Task_ID}    Done
+    Wait Until Keyword Succeeds    15    1    Click Element    ${done}
+
+Check Task Actual Hours Has Been Removed When Edit Task
+    Click TaskCard Edit Button    ${tcTaskID}
+    ${actual hours}=    Set Variable    //input[@name="Actual"]
+    Page Should Not Contain Element    ${actual hours}
+    ${editTaskSubmit}=    Find Current Window Element    Edit Task #${tcTaskID}    Submit
+    Click Element    ${editTaskSubmit}

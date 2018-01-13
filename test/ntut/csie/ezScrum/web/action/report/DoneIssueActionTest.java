@@ -98,7 +98,7 @@ public class DoneIssueActionTest extends MockStrutsTestCase {
 		addRequestParameter("Name", task.getName());
 		addRequestParameter("Notes", task.getNotes());
 		addRequestParameter("ChangeDate", "2015/02/06-12:00:00");
-		addRequestParameter("Actualhour", String.valueOf(task.getActual()));
+		//addRequestParameter("Actualhour", String.valueOf(task.getActual()));
 		addRequestParameter("IssueType", "Task");
 
 		// ================ set session info ========================

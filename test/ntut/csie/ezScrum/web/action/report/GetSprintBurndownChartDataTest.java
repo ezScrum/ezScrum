@@ -261,7 +261,7 @@ public class GetSprintBurndownChartDataTest extends MockStrutsTestCase {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Object[] idealPointArray = ideal.keySet().toArray();
 		// 將task拉到done
-		sprintBacklogLogic.closeTask(ATTS.getTasksId().get(0), ATTS.getTasks().get(0).getName(), "", 0, "");
+		sprintBacklogLogic.closeTask(ATTS.getTasksId().get(0), ATTS.getTasks().get(0).getName(), "", /*0,*/ "");
 
 		// ================ set request info ========================
 		request.setHeader("Referer", "?projectName=" + mProject.getName());

@@ -121,7 +121,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 					.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
 					.append("<Name>").append(expectedTaskName).append("</Name>")
 					.append("<Estimate>").append(expectedTaskEstimation).append("</Estimate>")
-					.append("<Actual>0</Actual>")
+					/*.append("<Actual>0</Actual>")*/
 					.append("<Notes>").append(expectedTaskNote).append("</Notes>")
 				.append("</Task>")
 			.append("</AddNewTask>");
@@ -180,7 +180,7 @@ public class AjaxAddSprintTaskActionTest extends MockStrutsTestCase {
 					.append("<Link>/ezScrum/showIssueInformation.do?issueID=1</Link>")
 					.append("<Name>").append(expectedTaskName).append("</Name>")
 					.append("<Estimate>0</Estimate>")
-					.append("<Actual>0</Actual>")
+					/*.append("<Actual>0</Actual>")*/
 					.append("<Notes>").append(expectedTaskNote).append("</Notes>")
 				.append("</Task>")
 			.append("</AddNewTask>");

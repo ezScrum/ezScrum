@@ -58,16 +58,16 @@ Test Sprint Backlog - Drop Story
     ${oriStoryName}=    Set Variable    add story for test drop story
     ${storyID}=    Get Story ID In Sprint Backlog    ${oriStoryName}
     # 驗證未 drop story 前的sprint
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
     Comment    Should Be Equal    ${storySprint}    1
     # drop story
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Drop Story    ${oriStoryName}
     # 驗證 sprint backlog
     Page Should Not Contain Element    xpath=//div[@class="x-treegrid-text" and (text()="${storyID}")]/../../td[1]/a/span
     # 驗證 product backlog
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     ${storySprint}=    Get Text    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${storyID}")]/../.././/div[@class="x-grid3-cell-inner x-grid3-col-5"]
     Should Be Equal    ${storySprint}    None
     [Teardown]    Test Sprint Backlog - Drop Story Teardown
@@ -75,7 +75,7 @@ Test Sprint Backlog - Drop Story
 Test Sprint Backlog - Add Existing Story
     [Setup]    Test Sprint Backlog - Add Existing Story Setup
     Sleep    3s
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     ${storyName}=    Set Variable    Test Story 01
     ${value}=    Set Variable    3
     ${estimate}=    Set Variable    5
@@ -105,7 +105,7 @@ Test Sprint Backlog - Edit Sprint
     ${sprintInformation}=    Get Text    xpath=//div[@id="SprintBacklog_Page_Event"]/div[1]
     Should Be Equal As Strings    ${sprintInformation}    Release #None ; Sprint #${sprintId} - ${sprintGoal} | Story Point : 0 ; Task Hours : 0 ; Total Hours to Commit : 58
     # verify sprint information in Sprint Plan
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-0" and (text()="${sprintId}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-1" and (text()="${sprintGoal}")]    1
     Xpath Should Match X Times    //div[@class="x-grid3-cell-inner x-grid3-col-3" and (text()="${sprintInterval}")]    1
@@ -126,7 +126,7 @@ Test Sprint Backlog - Add Task
     Add Task With Arguments    ${storyID}    ${taskName}    ${taskEstimate}    ${taskNotes}
     # verify task information in Sprint Backlog
     Verify Task Information With Arguments    ${storyName}    ${taskName}    ${EMPTY}    ${EMPTY}    ${taskEstimate}    ${taskRemains}
-    ...    0    ${taskNotes}
+    ...    ${taskNotes}
     [Teardown]    Test Sprint Backlog - Add Task Teardown
 
 Test Sprint Backlog - Edit Task
@@ -146,11 +146,10 @@ Test Sprint Backlog - Edit Task
     ${updateTaskActual}=    Set Variable    5
     ${updateTaskNotes}=    Set Variable    notes for update task 1 notes
     ${taskID}=    Get Task ID In Sprint Backlog    ${oriTaskName}
-    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskActual}
-    ...    ${updateTaskNotes}
+    Edit Task With Arguments    ${taskID}    ${oriTaskName}    ${EMPTY}    ${EMPTY}    ${updateTaskName}    ${updateTaskNotes}
     # verify task information in Sprint Backlog
     Verify Task Information With Arguments    ${storyName}    ${updateTaskName}    ${EMPTY}    ${EMPTY}    ${oriTaskEstimate}    ${oriTaskEstimate}
-    ...    ${updateTaskActual}    ${oriTaskNotes}
+    ...    ${oriTaskNotes}
     [Teardown]    Test Sprint Backlog - Edit Task Teardown
 
 Test Sprint Backlog - Drop Task
@@ -215,7 +214,7 @@ Test Sprint Backlog - Show Task History
 Test Sprint Backlog - Printable Task
     [Setup]    Test Sprint Backlog - Printable Task Setup    Printable_Task1.sql
     Click Element    xpath=//div[text()="Project01"]
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Click Element    xpath=//button[text()="Printable Tasks"]
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[1]/table/tbody/tr/td[2]    1
     Compare Text In Specific Xpath    //div[text()="Id"]/../../../../../../../../div[2]/div/div[2]/table/tbody/tr/td[2]    2
@@ -257,3 +256,15 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled
     Wait Until Page Contains Element    //button[text()="Printable Tasks"]
     Element Class Should Be Enabled    xpath=//table[@id="SprintBacklog_showPrintableTaskBtn"]
     [Teardown]    Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled Teardown
+
+Test Sprint Backlog - Check Actual Hours has been Removed in Task
+    [Setup]    Sprint Backlog - Check Task Actual Hours Has Been Removed When Edit Task
+    Click Element    xpath=//div[text()="${taskName}"]
+    Click Element    xpath=//table[@id="SprintBacklog_editTaskBtn"]//button[text()="Edit Task"]
+    ${taskID}=    Get Task ID In Sprint Backlog    ${taskName}
+    Wait Until Page Contains    Edit Task #${taskID}
+    ${actualHours}=    Set Variable    //input[@name="Actual"]
+    Page Should Not Contain    ${actualHours}
+    ${xpathEditTask}=    Find Current Window Element    Edit Task #${taskID}    Submit
+    Element Enable And Submit    ${xpathEditTask}
+    [Teardown]    ezScrum Suite Teardown

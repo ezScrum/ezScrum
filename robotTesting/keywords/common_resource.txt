@@ -10,6 +10,8 @@ ezScrum Suite Setup
     #    Wait Until Keyword Succeeds    1min    5s    _DeployEZScrumServerCheck    200
 
 ezScrum Suite Teardown
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+     Exit ezScrum System
 
 _SeleniumServerCheck
     [Arguments]    ${status}
@@ -43,11 +45,9 @@ Select Project
     Wait Until Page Contains Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
     Click Element    //div[@id="Projects_GirdPanel"]//table/tbody/tr/td[1]/div[text()="${PROJECT_NAME}"]/../../../../..
 
-Select Project Management Item
-    [Arguments]    ${nodeName}
-    Wait Until Keyword Succeeds    1min    5s    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
-    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]    15
-    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${nodeName}"]
+Go To Page
+    [Arguments]    ${pageName}
+    Wait Until Keyword Succeeds    1min    5s     Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="${pageName}"]
 
 Element Enable And Submit
     [Arguments]    ${xpathElement}

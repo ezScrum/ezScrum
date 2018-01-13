@@ -7,7 +7,7 @@ Resource          ../../Global Define.txt
 *** Keywords ***
 Add A New Release Plan
     [Arguments]    ${Sprint_start}    ${Sprint_end}
-    Select Project Management Item    Release Plan
+    Go To Page    Release Plan
     Click Element    xpath=//button[text()="New Release Plan"]
     Wait Until Page Contains    Create Release
     Focus AND Input Text    //div[@id="ReleaseDetailForm"]//input[@name="Name"]    first release    # Name
@@ -55,7 +55,7 @@ Add A New Restrospective
     Wait Until Page Contains    Success.
 
 Select Sprint Backlog Page And Add All Existing Story
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Click Element    xpath=//button[text()="Add Existing Stories"]
     Wait Until Page Contains    Add Existing Stories
     Mouse Down    xpath=//div[@class='x-grid3-hd-checker']

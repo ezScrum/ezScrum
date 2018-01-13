@@ -13,7 +13,7 @@ Test Action - ShowEditUnplanItemAction Setup
     Wait Until Page Contains    ${PROJECT_NAME}
     Select Project    ${PROJECT_NAME}
     # Switch to Unplanned Page
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
     Click Element    xpath=//span[text()="Unplanned Item List"]/../../div[2]/div/div/table/tbody/tr/td[2]/table/tbody/tr/td/table/tbody/tr/td/div/img
     Wait Until Page Contains    ALL
     Click Element    //div[@class="x-combo-list-item x-combo-selected"]/../div[text()="Sprint #1"]

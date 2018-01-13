@@ -453,7 +453,7 @@ public class TranslationTest {
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
-			taskInfo.actual = 13;
+			//taskInfo.actual = 13;
 			taskInfo.remains = 13;
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;
@@ -518,7 +518,7 @@ public class TranslationTest {
 			taskInfo.name = "TEST_TASK_NAME_" + i;
 			taskInfo.notes = "TEST_TASK_NOTES";
 			taskInfo.estimate = 13;
-			taskInfo.actual = 13;
+			//taskInfo.actual = 13;
 			taskInfo.remains = 13;
 			taskInfo.projectId = project.getId();
 			taskInfo.status = TaskObject.STATUS_UNCHECK;

@@ -4,7 +4,7 @@ Library           ../lib/Selenium2Improved.py
 
 *** Keywords ***
 Clean All Unplan
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
     # get Unplan count
     ${_count} =    Get Matching Xpath Count    //div[@id="UnplannedItem_Page"]//table[@class="x-grid3-row-table"]
     # delete all Unplan
@@ -148,4 +148,4 @@ Temp Solution
     # 假設 Project 已存在
     Wait Until Page Contains Element    createProjectBtn
     Select Project    ${PROJECT_NAME}DisplayName
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned

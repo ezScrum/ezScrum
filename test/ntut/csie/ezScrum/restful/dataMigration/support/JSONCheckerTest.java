@@ -224,7 +224,7 @@ public class JSONCheckerTest {
 		assertFalse(JSONChecker.checkTaskJSON(taskJSON.toString()).isEmpty());
 		taskJSON.put(TaskJSONEnum.REMAIN, 2);
 		assertFalse(JSONChecker.checkTaskJSON(taskJSON.toString()).isEmpty());
-		taskJSON.put(TaskJSONEnum.ACTUAL, 3);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 3);
 		assertFalse(JSONChecker.checkTaskJSON(taskJSON.toString()).isEmpty());
 		taskJSON.put(TaskJSONEnum.NOTES, "notes");
 		assertFalse(JSONChecker.checkTaskJSON(taskJSON.toString()).isEmpty());

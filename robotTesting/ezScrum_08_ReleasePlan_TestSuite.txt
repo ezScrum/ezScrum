@@ -48,7 +48,7 @@ Test Release Plan - Delete Release
 Test Release Plan - Contain Sprints
     [Documentation]    建立四個sprint後, 建立一個包含這些sprint的release, 檢查是否有被納入
     [Setup]    Test Release Plan - Contain Sprints Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     ${sprintStartDate}=    Get Start Date    NOW
     Create Sprint with Date    sprint1 sprint goal    ${sprintStartDate}    2    4    100    100
     ${sprintStartDate}=    Get Start Date    NOW +14d
@@ -57,7 +57,7 @@ Test Release Plan - Contain Sprints
     Create Sprint with Date    sprint3 sprint goal    ${sprintStartDate}    2    4    100    100
     ${sprintStartDate}=    Get Start Date    NOW +42d
     Create Sprint with Date    sprint4 sprint goal    ${sprintStartDate}    2    4    100    100
-    Select Project Management Item    Release Plan
+    Go To Page    Release Plan
     ${startDateFormat}=    Get Start Date    NOW
     ${endDateFormat}=    Get Start Date    NOW +56d
     Set List Value    ${tsReleasePlan}    1    ${startDateFormat}
@@ -88,7 +88,7 @@ Test Release Plan - Edit Sprint
 
 Test Release Plan - Show Printable Release
     [Setup]    Test Release Plan - Show Printable Release Setup
-    Select Project Management Item    Release Plan
+    Go To Page    Release Plan
     Click Element    xpath=//div[text()="Release One"]
     Click Element    xpath=//button[text()="Show Printable Release"]
     Select Window    Release Plan #1

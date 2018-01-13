@@ -401,7 +401,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		taskInfo.id = taskId;
 		taskInfo.name = "崩潰啦";
 		taskInfo.estimate = 13;
-		taskInfo.actual = 2;
+		//taskInfo.actual = 2;
 		taskInfo.remains = 8;
 		taskInfo.handlerId = 1;
 		taskInfo.notes = "煩死啦";
@@ -431,10 +431,10 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		JSONObject historyObj = new JSONObject(actualResponseText);
 		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
 		        "Append to Story #1", "\"TEST_TASK_1\" => \"崩潰啦\"",
-		        "\"TEST_TASK_NOTES_1\" => \"煩死啦\"", "1 => 13", "0 => 2",
+		        "\"TEST_TASK_NOTES_1\" => \"煩死啦\"", "1 => 13", /*"0 => 2",*/
 		        "1 => 8", "admin");
 		ArrayList<String> expectedHistoryType = genArrayList("", "", "Name", "Note",
-		        "Estimate", "Actual Hour", "Remains", "Handler");
+		        "Estimate", /*"Actual Hour",*/ "Remains", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
 		        historyObj.getJSONArray("IssueHistories"));
@@ -466,7 +466,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        task.getNotes(), "");
 		// task Check Out -> Done
 		sprintBacklogHelper.closeTask(taskId, task.getName(), task.getNotes(),
-		        task.getActual(), "");
+		        /*task.getActual(),*/ "");
 		// task Done -> Check Out
 		sprintBacklogHelper.reopenTask(taskId, task.getName(), task.getNotes(),
 		        "");
@@ -501,7 +501,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		        "Handler", "Remains", "Status", "Status", "Status", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
-		        historyObj.getJSONArray("IssueHistories"));
+		        historyObj.getJSONArray("IssueHistories"));System.out.println(expectedHistoryType);System.out.println(expectedHistoryType);
 	}
 
 	/**
@@ -542,7 +542,7 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		taskInfo.name = task.getName();
 		taskInfo.notes = task.getNotes();
 		taskInfo.estimate = task.getEstimate();
-		taskInfo.actual = task.getActual();
+		//taskInfo.actual = task.getActual();
 		taskInfo.remains = task.getRemains();
 		sprintBacklogHelper.updateTask(taskInfo, AUTR.getNowAccount()
 		        .getUsername(), "");

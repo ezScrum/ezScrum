@@ -73,7 +73,7 @@ Verify Sprint Goal With NewLine
     ${xpathAddNewSprint}=    Find Current Window Element    Add New Sprint    Submit
     Element Enable And Submit    ${xpathAddNewSprint}
     # 進入sprint backlog驗證此sprint資訊是否正確
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Click Element    xpath=//table[@id="SprintBacklog_editSprintBtn"]/.//button[text()="Edit Sprint"]
     ${sprintID}=    Get Value    xpath=//input[@name="Id"]
     ${sprintGoal}=    Get Value    xpath=//textarea[@name="Goal"]
@@ -90,7 +90,7 @@ Verify Sprint Goal With NewLine
     Element Enable And Submit    ${xpathEditSprintCancel}
 
 Clean All Sprint
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     # get Sprint count
     ${_count} =    Get Matching Xpath Count    //div[@id="SprintPlan_Page"]//table[@class="x-grid3-row-table"]
     # delete all Sprint

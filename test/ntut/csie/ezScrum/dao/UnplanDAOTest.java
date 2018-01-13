@@ -210,7 +210,7 @@ public class UnplanDAOTest {
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
-			unplans.add(UnplanDAO.convert(resultSet));
+			unplans.add(UnplanDAO.convert(resultSet));System.out.println("TestDelete is running.");
 		}
 		assertEquals(2, unplans.size());
 		closeResultSet(resultSet);

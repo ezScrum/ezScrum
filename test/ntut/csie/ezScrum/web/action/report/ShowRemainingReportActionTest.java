@@ -164,7 +164,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", /*0,*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
@@ -215,7 +215,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", 0, DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), "", /*0,*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
@@ -271,7 +271,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), /*ATTS.getTasks().get(0).getActual(),*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================ set session info ========================
@@ -317,7 +317,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), /*ATTS.getTasks().get(0).getActual(),*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
@@ -423,7 +423,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), /*ATTS.getTasks().get(0).getActual(),*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================
@@ -479,7 +479,7 @@ public class ShowRemainingReportActionTest extends MockStrutsTestCase {
 		long sprintId = CS.getSprintsId().get(0);
 		// 將第一個Sprint第一個Story的 : 1個task設為done, 1個task設為checkout
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(mProject, sprintId);
-		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), ATTS.getTasks().get(0).getActual(), DONE_TIME);
+		sprintBacklogLogic.closeTask(ATTS.getTasks().get(0).getId(), ATTS.getTasks().get(0).getName(), ATTS.getTasks().get(0).getNotes(), /*ATTS.getTasks().get(0).getActual(),*/ DONE_TIME);
 		sprintBacklogLogic.checkOutTask(ATTS.getTasks().get(1).getId(), ATTS.getTasks().get(1).getName(), mConfig.USER_ID, "", ATTS.getTasks().get(1).getNotes(), null);
 
 		// ================== set parameter info ====================

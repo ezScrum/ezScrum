@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     CI 測試不穩定,需加入同步機制?
-Suite Setup       Test TaskBoard - Setup
-Suite Teardown    Test TaskBoard - Teardown
+Suite Setup       TaskBoard - Setup
+Suite Teardown    TaskBoard - Teardown
 Force Tags        TaskBoard
 Resource          keywords/common_resource.txt
 Resource          keywords/ezScrum_Login.txt
@@ -26,8 +26,8 @@ Library           keywords/lib/DatabaseHandler.py
 Test TaskBoard - Sprint Information
     [Documentation]    驗證TaskBoard頁面，有關於Sprint Information的資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Sprint Information Setup
-    Select Project Management Item    TaskBoard
+    [Setup]    TaskBoard - Sprint Information Setup
+    Go To Page    TaskBoard
     # Verify sprint information
     Compare Field Content    //div[@id="TaskBoard_Page"]//input[@name="SprintGoal"]    TaskBoard AT
     Compare Field Content    //div[@id="TaskBoard_Page"]//label[text()="Handler:"]/..//input[@type="text"]    ALL
@@ -54,15 +54,15 @@ Test TaskBoard - Sprint Information
     Set Test Variable    ${tcTaskEstimate}    3
     Set Test Variable    ${tcTaskNotes}    notes for test Sprint Information
     Verify Task Information With Arguments In TaskBoard    ${tcTaskID}    ${tcTaskName}    ${EMPTY}    ${EMPTY}    ${tcTaskEstimate}    ${tcTaskEstimate}
-    ...    0    ${tcTaskNotes}
-    [Teardown]    Test TaskBoard - Sprint Information Teardown
+    ...    ${tcTaskNotes}
+    [Teardown]    TaskBoard - Sprint Information Teardown
 
 Test TaskBoard - Task Checked Out
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Not Checked Out 拖拉至 Checked Out 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Task Checked Out Setup
+    [Setup]    TaskBoard - Task Checked Out Setup
     Comment    Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -72,19 +72,19 @@ Test TaskBoard - Task Checked Out
     Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
-    [Teardown]    Test TaskBoard - Task Checked Out Teardown
+    [Teardown]    TaskBoard - Task Checked Out Teardown
 
 Test TaskBoard - Task Done
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Task Done Setup
+    [Setup]    TaskBoard - Task Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
@@ -95,19 +95,19 @@ Test TaskBoard - Task Done
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    0 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="closed"]    1
-    [Teardown]    Test TaskBoard - Task Done Teardown
+    [Teardown]    TaskBoard - Task Done Teardown
 
 Test TaskBoard - Task ReOpen
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Done 拖拉至 Not Checked Out 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Task ReOpen Setup
+    [Setup]    TaskBoard - Task ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Task ReOpen With Arguments    ${tcStoryID}    ${tcTaskID}
@@ -119,19 +119,19 @@ Test TaskBoard - Task ReOpen
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
-    [Teardown]    Test TaskBoard - Task ReOpen Teardown
+    [Teardown]    TaskBoard - Task ReOpen Teardown
 
 Test TaskBoard - Task ReChecked Out
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out \ 拖拉至 Not Checked Out 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Task ReChecked Out Setup
+    [Setup]    TaskBoard - Task ReChecked Out Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     #2017/12/16: We make task card can't move from Checked Out to Not Checked Out when the remains of task card has been changed.
     Comment    Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
@@ -143,19 +143,19 @@ Test TaskBoard - Task ReChecked Out
     ${_TempTaskEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="TaskCard_Header"]//td[2]/h2[text()="[Task]\ \ #${tcTaskID}"]/../../../../../../../..//td[@class="TaskCard_Value"]
     Should Be Equal As Strings    ${_TempTaskDescription}    ${tcTaskName}
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    0
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="new"]    1
-    [Teardown]    Test TaskBoard - Task ReChecked Out Teardown
+    [Teardown]    TaskBoard - Task ReChecked Out Teardown
 
 Test TaskBoard - Story Done
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Done 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Story Done Setup
+    [Setup]    TaskBoard - Story Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}
@@ -164,16 +164,16 @@ Test TaskBoard - Story Done
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_closed"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="closed"]    1
-    [Teardown]    Test TaskBoard - Story Done Teardown
+    [Teardown]    TaskBoard - Story Done Teardown
 
 Test TaskBoard - Story ReOpen
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Done 拖拉至 Not Checked Out 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Story ReOpen Setup
+    [Setup]    TaskBoard - Story ReOpen Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Task Done With Arguments    ${tcStoryID}    ${tcTaskID}
     Story Done With Arguments    ${tcStoryID}
@@ -183,18 +183,18 @@ Test TaskBoard - Story ReOpen
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
-    [Teardown]    Test TaskBoard - Story ReOpen Teardown
+    [Teardown]    TaskBoard - Story ReOpen Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Checked Out Stage
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
     ...    但是 tasks 是放置 Stage of Not Checked Out，驗證是否跳出警告視窗。
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
+    [Setup]    TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..
     Wait Until Page Contains Element    xpath=//div[@id="${tcStoryID}_closed"]/div
     Comment    Assign Id To Element    xpath=//div[@id="${tcStoryID}_closed"]/div    doneStageID
@@ -210,18 +210,18 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Not Check
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
     #//td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../..//td[8]/div[text()="new"]
-    [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
+    [Teardown]    TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked Out Stage
     [Documentation]    驗證TaskBoard頁面，有關於 Story 從 Not Checked Out 拖拉至 Checked Out 後，
     ...    但是 tasks 是放置 Stage of Checked Out，驗證是否跳出警告視窗。
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Story Done But All the tasks of Story are not Done Setup
+    [Setup]    TaskBoard - Story Done But All the tasks of Story are not Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     Drag And Drop    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..    target=${tcStoryID}_closed
     Wait Until Page Contains    warning!
@@ -233,15 +233,15 @@ Test TaskBoard - Story Done But All the tasks of Story are not Done in Checked O
     ${_TempStoryEstimate}=    Get Text    xpath=//div[@id="${tcStoryID}_new"]//table[@class="StoryCard_Header"]//td[1]/h2[text()="[Story]\ \ #${tcStoryID}"]/../../../../../../../..//td[@class="StoryCard_Value"]
     Should Be Equal As Strings    ${_TempStoryDescription}    ${tcStoryName}
     Should Be Equal    ${_TempStoryEstimate}    ${tcStoryEstimate} Point    # x Point
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Xpath Should Match X Times    //div[text()="story for taskboard AT"]/../../td[8]/div[text()="new"]    1
-    [Teardown]    Test TaskBoard - Story Done But All the tasks of Story are not Done Teardown
+    [Teardown]    TaskBoard - Story Done But All the tasks of Story are not Done Teardown
 
 Test TaskBoard - Attach File on Story
-    [Setup]    Test TaskBoard_AttachFile - Setup
+    [Setup]    TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
     Click Element    //div[text()="TestProject01"]
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     #Attach file to Story
     Click Element    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/table/tbody/tr/td[2]/a[@title='Upload File']/img
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Story01AttachFile.txt
@@ -251,13 +251,13 @@ Test TaskBoard - Attach File on Story
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()='story01']/../../../tr/td/p/a[@target='_blank']
     ${fileName1} =    Get Text    xpath=//table[@class="StoryCard_Table"]/tbody/tr[3]/td/p[2]/a[1]
     Should Be Equal    ${fileName1}    Story01AttachFile.txt
-    [Teardown]    Test TaskBoard_AttachFile - Teardown on Story
+    [Teardown]    TaskBoard_AttachFile - Teardown on Story
 
 Test TaskBoard - Attach File on Task
-    [Setup]    Test TaskBoard_AttachFile - Setup
+    [Setup]    TaskBoard_AttachFile - Setup
     Page Should Contain    TestProject01
     Click Element    //div[text()="TestProject01"]
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     #Attach file to Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
     Click Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/table/tbody/tr/td[3]/a[@title='Upload File']
@@ -268,11 +268,11 @@ Test TaskBoard - Attach File on Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
     ${fileName2} =    Get Text    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[@target='_blank']
     Should Be Equal    Task02AttachFile.txt    ${fileName2}
-    [Teardown]    Test TaskBoard_AttachFile - Teardown on Task
+    [Teardown]    TaskBoard_AttachFile - Teardown on Task
 
 Test TaskBoard - Task Done with partner
-    [Setup]    Test TaskBoard - Task Done with Partner Setup
-    Comment    Select Project Management Item    TaskBoard
+    [Setup]    TaskBoard - Task Done with Partner Setup
+    Comment    Go To Page    TaskBoard
     Comment    Click Element    xpath=//div[@id="1_assigned"]//table[@class="TaskCard_Header"]//td[3]/a[1]/img
     Comment    Compare Field Content    //input[@name="Name"]    Task02
     Comment    Compare Field Content    //input[@name="HandlerComboBox_ForEditTask"]    Acount01
@@ -290,13 +290,13 @@ Test TaskBoard - Task Done with partner
     Comment    Compare Field Content    //input[@name="Estimate"]    5
     Comment    Compare Field Content    //input[@name="Remains"]    0
     Comment    Click Element    xpath=//button[text()="Cancel"]
-    [Teardown]    Test TaskBoard - Task Done with Partner Teardown
+    [Teardown]    TaskBoard - Task Done with Partner Teardown
 
 Test TaskBoard - Check Task Checked Out
-    [Setup]    Test TaskBoard - Task Checked Out Setup
-    Select Project Management Item    TaskBoard
-    Select Project Management Item    Sprint Backlog
-    Select Project Management Item    TaskBoard
+    [Setup]    TaskBoard - Task Checked Out Setup
+    Go To Page    TaskBoard
+    Go To Page    Sprint Backlog
+    Go To Page    TaskBoard
     Task Checked Out With Arguments    ${tcStoryID}    ${tcTaskID}
     # Verify taskcard information
     ${_TaskHandler}=    Set Variable    admin
@@ -306,17 +306,17 @@ Test TaskBoard - Check Task Checked Out
     Should Be Equal As Strings    ${_TempTaskDescription}    task 1 for test task Checked Out
     Should Be Equal    ${_TempTaskEstimate}    3 hr    # x hr
     Should Be Equal As Strings    ${_TempTaskHandler}    ${_TaskHandler}
-    Select Project Management Item    Sprint Backlog
-    Select Project Management Item    TaskBoard
+    Go To Page    Sprint Backlog
+    Go To Page    TaskBoard
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[3]/div[text()="${tcTaskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[6]/div[text()="${tcTaskEstimate}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[7]/div[text()="${_TaskHandler}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${tcStoryID}"]/../../../../tr[2]//div[text()="${tcTaskName}"]/../../td[8]/div[text()="assigned"]    1
-    [Teardown]    Test TaskBoard - Task Checked Out Teardown
+    [Teardown]    TaskBoard - Task Checked Out Teardown
 
 Test TaskBoard - Check Sprint ID
     [Documentation]    Check if sprint_ID is right, after get to other node and get back to TaskBoard.
-    [Setup]    Test TaskBoard - Check Sprint ID Setup
+    [Setup]    TaskBoard - Check Sprint ID Setup
     Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Sprint Goal:"]/../div/input[@name="SprintGoal"]    Sprint01
     Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
     Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
@@ -340,16 +340,16 @@ Test TaskBoard - Check Sprint ID
     Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Story (Points):"]/../div/input[@name="CurrentStoryPoint"]    20
     Compare Field Content    //span[text()="Sprint Information"]/../../../../../div[2]//label[text()="Remain Task (Hours):"]/../div/input[@name="CurrentTaskPoint"]    22
     Compare Field Content    //label[text()="Sprint ID:"]/../div[1]/div/input    Sprint #1
-    [Teardown]    Test TaskBoard - Check Sprint ID Teardown
+    [Teardown]    TaskBoard - Check Sprint ID Teardown
 
 Tset TaskBoard - ReleaseID Check
-    [Setup]    Test TaskBoard - Initial Release ID Check Setup
-    Select Project Management Item    TaskBoard
+    [Setup]    TaskBoard - Initial Release ID Check Setup
+    Go To Page    TaskBoard
     Compare Field Content    //input[@name="ReleaseID"]    None
-    [Teardown]    Test TaskBoard - Initial Release ID Check Teardown
+    [Teardown]    TaskBoard - Initial Release ID Check Teardown
 
 Test TaskBoard - Check Task Consistency After Dragging
-    [Setup]    Test TaskBoard - Check Task Consistency After Dragging Setup
+    [Setup]    TaskBoard - Check Task Consistency After Dragging Setup
     ${storyID}=    Set Variable    3
     ${taskID}=    Set Variable    9
     Wait Until Page Contains Element    xpath=//div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
@@ -357,11 +357,11 @@ Test TaskBoard - Check Task Consistency After Dragging
     ${TaskCardHandler}=    Get Text    //div[@id="Task:${taskID}"]//span[@class="TaskCard_Handler"]
     Task Done With Arguments    ${storyID}    ${taskID}
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
-    [Teardown]    Test TaskBoard - Check Task Consistency After Dragging Teardown
+    [Teardown]    TaskBoard - Check Task Consistency After Dragging Teardown
 
 Test TaskBoard - Check Task ID On The Window After Dragging
     [Documentation]    Try to move TaskBoard between "not Check Out", "Check Out", "Done", and check their ID and Name doesn't change in the windows
-    [Setup]    Test TaskBoard - Check TaskBoard ID And Name Setup
+    [Setup]    TaskBoard - Check TaskBoard ID And Name Setup
     ${Story_ID}=    Set Variable    1
     ${Task_ID}=    Set Variable    4
     ${Task_NotCheckOut}=    Set Variable    xpath=//div[@id="${Story_ID}_new"]//h2[text()="[Task] \ #${Task_ID}"]
@@ -372,10 +372,10 @@ Test TaskBoard - Check Task ID On The Window After Dragging
     Move Task From Done To Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
     #2017/12/16: We make task card can't move from Checked Out to Not Checked Out when the remains of task card has been changed.
     Comment    Move Task From Check Out To Not Check Out Check ID Before Click Done    ${Story_ID}    ${Task_ID}    ${initialTaskName}
-    [Teardown]    Test TaskBoard - Check TaskBoard ID And Name Teardown
+    [Teardown]    TaskBoard - Check TaskBoard ID And Name Teardown
 
 Test TaskBoard - Check Task Consistency After Editing in Done Area
-    [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    [Setup]    TaskBoard - Check Task Consistency After Editing in Done Area Setup
     ${storyID}=    Set Variable    3
     ${taskID}=    Set Variable    9
     Wait Until Page Contains Element    //div[@id="Task:${taskID}"]//table[@class="TaskCard_Header"]
@@ -387,26 +387,26 @@ Test TaskBoard - Check Task Consistency After Editing in Done Area
     Element Enable And Submit    ${_XpathEditTaskSubmit}
     Page Should Contain Element    //div[@id="${storyID}_closed"]//div[@id="Task:${taskID}"]
     Check TaskCard Contents    ${taskID}    ${TaskCardContent}    ${TaskCardHandler}    0 hr
-    [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
+    [Teardown]    TaskBoard - Check Task Consistency After Editing in Done Area Teardown
 
 Test TaskBoard - Check Taskcard Position
     [Documentation]    Check if taskcard position right after moving it from check out \ to done and reloading
-    [Setup]    Test TaskBoard - Check Task Consistency After Editing in Done Area Setup
+    [Setup]    TaskBoard - Check Task Consistency After Editing in Done Area Setup
     Wait until Page Contains Element    xpath=//iframe[@class="chartjs-hidden-iframe"]
     ${Story_ID}=    Set Variable    3
     ${Task_number}=    Set Variable    9
     Move Task From Check Out To Done    ${Story_ID}    ${Task_number}
     Reload Page
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     Check if Done column has TaskCard    ${Story_ID}    ${Task_number}
-    [Teardown]    Test TaskBoard - Check Task Consistency After Editing in Done Area Teardown
+    [Teardown]    TaskBoard - Check Task Consistency After Editing in Done Area Teardown
 
 Test TaskBoard - Story and Description_Chrome
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Task Done Setup
+    [Setup]    TaskBoard - Task Done Setup
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     #Story Card text
     ${stroy_description}=    Get Text    xpath =//td[@class ="StroyCard_Description"]
     Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
@@ -418,14 +418,14 @@ Test TaskBoard - Story and Description_Chrome
     ${subs_task}=    Get Substring    ${task_description}    0    46
     Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
     Log    ${subs_task}
-    [Teardown]    Test TaskBoard - Task Done Teardown
+    [Teardown]    TaskBoard - Task Done Teardown
 
 Test TaskBoard - Story and Description_IE
     [Documentation]    驗證TaskBoard頁面，有關於 Task 從 Checked Out 拖拉至 Done 後，資料是否正確
     [Tags]    Unstable
-    [Setup]    Test TaskBoard - Setup IE
+    [Setup]    TaskBoard - Setup IE
     Set Selenium Speed    ${SELENIUM_SPEED_SLOW}
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
     #Story Card
     ${stroy_description}    Get Text    xpath =//td[@class ="StroyCard_Description"]
     Should Be Equal As Strings    ${stroy_description}    Story for taskboard AT story for taskboard text longer than testing engagement expectations environment
@@ -436,18 +436,38 @@ Test TaskBoard - Story and Description_IE
     Should Be Equal As Strings    ${task_description}    task 1 for test task with longer words such as photosynthesis and environment Another word would be environment
     ${subs_task}=    Get Substring    ${task_description}    0    46
     Should Be Equal As Strings    ${subs_task}    task 1 for test task with longer words such as
-    [Teardown]    Test TaskBoard - Task Done Teardown
+    [Teardown]    TaskBoard - Task Done Teardown
 
 Test TaskBoard - Check Task Remain Hours
-    [Setup]    Test TaskBoard - Task Checked Out Setup
-    Estimate Should Be Required In Sprint Backlog
-    Select Project Management Item    TaskBoard
-    TaskCard Remains Should Be Readonly
+    [Setup]    TaskBoard - Check Task Remain Hours Setup
+    Click TaskCard Edit Button    ${tcTaskID}
+    Check TaskCard Remain Hours Can Not Be Edited
     Move Task    Not Checked Out    Checked Out    ${tcStoryID}    ${tcTaskID}
-    TaskCard Remains Should Not Be Zero In Checked Out State
+    Click TaskCard Edit Button    ${tcTaskID}
+    TaskCard Remain Hours Should Not Be Zero In Checked Out State
     Move Task    Checked Out    Done    ${tcStoryID}    ${tcTaskID}
-    TaskCard Remains Should Be Readonly
+    Click TaskCard Edit Button    ${tcTaskID}
+    Check TaskCard Remain Hours Can Not Be Edited
     Move Task    Done    Checked Out    ${tcStoryID}    ${tcTaskID}
-    TaskCard ReOpen Remains Should Be Last Remains    3
-    Check If Remains Changed Then TaskCard Can Not ReCheckOut    ${tcStoryID}    ${tcTaskID}
-    [Teardown]    Test TaskBoard - Task Checked Out Teardown
+    Click TaskCard Edit Button    ${tcTaskID}
+    Task Remain Hours Should Be Reverted To Last Remain Hours Value When Move From Done To Checked Out    3
+    [Teardown]    ezScrum Suite Teardown
+
+Test TaskBoard - Task Remain Hours Changed Cannot Move to Not Checked Out
+    [Setup]    TaskBoard - Task Remain Hours Changed cannot Move to Not Checked Out Setup
+    Move Task    Not Checked Out    Checked Out    ${tcStoryID}    ${tcTaskID}
+    Move Task    Checked Out    Not Checked Out    ${tcStoryID}    ${tcTaskID}
+    Move Task    Not Checked Out    Checked Out    ${tcStoryID}    ${tcTaskID}
+    Click TaskCard Edit Button    ${tcTaskID}
+    Edit Task    Remains    2
+    Check If Remains Changed Then TaskCard Can Not Move From Checked Out To Not Checked Out    ${tcStoryID}    ${tcTaskID}
+    [Teardown]    ezScrum Suite Teardown
+
+Test TaskBoard - Check Actual Hours has been Removed in Task
+    [Setup]    TaskBoard - Check Actual Hours has been Removed in Task Setup
+    Check Task Actual Hours Has Been Removed When Edit Task
+    Move Task    Not Checked Out    Checked Out    ${tcStoryID}    ${tcTaskID}
+    Check Task Actual Hours Has Been Removed When Edit Task
+    Check Task Actual Hours Has Been Removed When Move From Checked Out To Done    ${tcStoryID}    ${tcTaskID}
+    Check Task Actual Hours Has Been Removed When Edit Task
+    [Teardown]    ezScrum Suite Teardown

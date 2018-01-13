@@ -306,7 +306,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -414,7 +414,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -446,7 +446,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -659,7 +659,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(taskJSON.getString(TaskJSONEnum.HANDLER), task.getHandler().getUsername());
 		assertEquals(taskJSON.getInt(TaskJSONEnum.ESTIMATE), task.getEstimate());
 		assertEquals(taskJSON.getInt(TaskJSONEnum.REMAIN), task.getRemains());
-		assertEquals(taskJSON.getInt(TaskJSONEnum.ACTUAL), task.getActual());
+		//assertEquals(taskJSON.getInt(TaskJSONEnum.ACTUAL), task.getActual());
 		assertEquals(taskJSON.getString(TaskJSONEnum.NOTES), task.getNotes());
 		assertEquals(taskJSON.getString(TaskJSONEnum.STATUS), task.getStatusString());
 		
@@ -762,7 +762,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(taskInDroppedStoryJSON.getString(TaskJSONEnum.HANDLER), taskInDroppedStory.getHandler().getUsername());
 		assertEquals(taskInDroppedStoryJSON.getInt(TaskJSONEnum.ESTIMATE), taskInDroppedStory.getEstimate());
 		assertEquals(taskInDroppedStoryJSON.getInt(TaskJSONEnum.REMAIN), taskInDroppedStory.getRemains());
-		assertEquals(taskInDroppedStoryJSON.getInt(TaskJSONEnum.ACTUAL), taskInDroppedStory.getActual());
+		//assertEquals(taskInDroppedStoryJSON.getInt(TaskJSONEnum.ACTUAL), taskInDroppedStory.getActual());
 		assertEquals(taskInDroppedStoryJSON.getString(TaskJSONEnum.NOTES), taskInDroppedStory.getNotes());
 		assertEquals(taskInDroppedStoryJSON.getString(TaskJSONEnum.STATUS), taskInDroppedStory.getStatusString());
 		
@@ -794,7 +794,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertNull(droppedTask.getHandler());
 		assertEquals(droppedTaskJSON.getInt(TaskJSONEnum.ESTIMATE), droppedTask.getEstimate());
 		assertEquals(droppedTaskJSON.getInt(TaskJSONEnum.REMAIN), droppedTask.getRemains());
-		assertEquals(droppedTaskJSON.getInt(TaskJSONEnum.ACTUAL), droppedTask.getActual());
+		//assertEquals(droppedTaskJSON.getInt(TaskJSONEnum.ACTUAL), droppedTask.getActual());
 		assertEquals(droppedTaskJSON.getString(TaskJSONEnum.NOTES), droppedTask.getNotes());
 		assertEquals(droppedTaskJSON.getString(TaskJSONEnum.STATUS), droppedTask.getStatusString());
 		
@@ -989,7 +989,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -1097,7 +1097,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -1129,7 +1129,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -1431,7 +1431,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -1539,7 +1539,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -1571,7 +1571,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -1800,7 +1800,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -1908,7 +1908,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -1940,7 +1940,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -2169,7 +2169,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -2277,7 +2277,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -2309,7 +2309,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -2524,7 +2524,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -2632,7 +2632,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -2664,7 +2664,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -2898,7 +2898,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -3006,7 +3006,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -3038,7 +3038,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task
@@ -3272,7 +3272,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		taskJSON.put(TaskJSONEnum.REMAIN, 0);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_NOTES");
 		taskJSON.put(TaskJSONEnum.STATUS, "closed");
 		taskInStoryJSONArray.put(taskJSON);
@@ -3380,7 +3380,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		taskInDroppedStoryJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.ESTIMATE, 5);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.REMAIN, 3);
-		taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//taskInDroppedStoryJSON.put(TaskJSONEnum.ACTUAL, 0);
 		taskInDroppedStoryJSON.put(TaskJSONEnum.NOTES, "TEST_TASK_IN_DROPPED_STORY_NOTES");
 		taskInDroppedStoryJSON.put(TaskJSONEnum.STATUS, "assigned");
 		taskInDroppedStoryJSONArray.put(taskInDroppedStoryJSON);
@@ -3412,7 +3412,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
 		droppedTaskJSON.put(TaskJSONEnum.REMAIN, 8);
-		droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
+		//droppedTaskJSON.put(TaskJSONEnum.ACTUAL, 0);
 		droppedTaskJSON.put(TaskJSONEnum.NOTES, "TEST_DROPPED_TASK_NOTES");
 		droppedTaskJSON.put(TaskJSONEnum.STATUS, "new");
 		// Partners in Task

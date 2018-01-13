@@ -42,7 +42,7 @@ public class DoneIssueAction extends PermissionAction {
 		String name = request.getParameter("Name");
 		String notes = request.getParameter("Notes");
 		String changeDate = request.getParameter("ChangeDate");
-		int actual = Integer.parseInt(request.getParameter("Actualhour"));
+		//int actual = Integer.parseInt(request.getParameter("Actualhour"));
 		String issueType = request.getParameter("IssueType");
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project);
@@ -54,7 +54,7 @@ public class DoneIssueAction extends PermissionAction {
 			StoryObject story = sprintBacklogHelper.getStory(issueId);
 			result.append(Translation.translateTaskboardStoryToJson(story));
 		} else if (issueType.equals("Task")) {
-			sprintBacklogHelper.closeTask(issueId, name, notes, actual, changeDate);
+			sprintBacklogHelper.closeTask(issueId, name, notes, /*actual,*/ changeDate);
 			TaskObject task = sprintBacklogHelper.getTask(issueId);
 			result.append(Translation.translateTaskboardTaskToJson(task));
 		}

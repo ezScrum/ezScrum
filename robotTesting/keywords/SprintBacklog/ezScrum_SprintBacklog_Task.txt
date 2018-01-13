@@ -29,15 +29,16 @@ Add Existing Task With Arguments
     Wait Until Page Contains    Success.
 
 Edit Task With Arguments
-    [Arguments]    ${taskID}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskNewName}    ${taskActual}
-    ...    ${taskNotes}
+    [Arguments]    ${taskID}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskNewName}    ${taskNotes}
+    ...    # We remove ${taskActual} between ${taskNewName} and ${taskNotes}. Original Arugments are ${taskID} | ${taskName} | ${taskHandler} | ${taskPartners} | ${taskNewName} | ${taskActual} | ${taskNotes}
     Click Element    xpath=//div[text()="${taskName}"]
     Click Element    xpath=//table[@id="SprintBacklog_editTaskBtn"]//button[text()="Edit Task"]
     Wait Until Page Contains    Edit Task #${taskID}
     Focus AND Input Text    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Name"]    ${taskNewName}
     # We have made the input of remains readonly in the not checked out state, so just can modify remains in the check out state.
     Comment    Focus AND Input Text    //input[@name="Remains"]    ${taskRemains}
-    Focus AND Input Text    //input[@name="Actual"]    ${taskActual}
+    #We remove actual hours of task, because it is not useful.
+    Comment    Focus AND Input Text    //input[@name="Actual"]    ${taskActual}
     ${xpathEditTask}=    Find Current Window Element    Edit Task #${taskID}    Submit
     Element Enable And Submit    ${xpathEditTask}
     Wait Until Page Contains    Edit Task Success.
@@ -60,7 +61,7 @@ Show Task History With Arguments
 
 Verify Task Information With Arguments
     [Arguments]    ${storyName}    ${taskName}    ${taskHandler}    ${taskPartners}    ${taskEstimate}    ${taskRemains}
-    ...    ${taskActual}    ${taskNotes}
+    ...    ${taskNotes}    #We remove ${taskActual} between ${taskRemains} and ${taskNotes}. \ Original Arguments are ${storyName} | ${taskName} | ${taskHandler} | ${taskPartners} | ${taskEstimate} | ${taskRemains} | ${taskActual} | ${taskNotes}
     ${storyID}=    Get Story ID In Sprint Backlog    ${storyName}
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../../tr[2]//div[text()="${taskName}"]/../../td[3]/div[text()="${taskName}"]    1
     Xpath Should Match X Times    //td[@class="x-treegrid-col"]/a/span[text()="${storyID}"]/../../../../tr[2]//div[text()="${taskName}"]/../../td[6]/div[text()="${taskEstimate}"]    1
@@ -73,7 +74,8 @@ Verify Task Information With Arguments
     Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Partners"]    ${taskPartners}
     Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Estimate"]    ${taskEstimate}
     Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Remains"]    ${taskRemains}
-    Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]    ${taskActual}
+    #We remove actual hours of task, because it is not useful.
+    Comment    Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//input[@name="Actual"]    ${taskActual}
     Compare Field Content    //span[text()="Edit Task #${taskID}"]/../../../../../div[@class="x-window-bwrap"]//textarea[@name="Notes"]    ${taskNotes}
     ${xpathEditTask}=    Find Current Window Element    Edit Task #${taskID}    Cancel
     Element Enable And Submit    ${xpathEditTask}

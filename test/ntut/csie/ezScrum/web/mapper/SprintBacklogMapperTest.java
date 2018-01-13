@@ -270,7 +270,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(0);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -281,7 +281,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(1);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -292,7 +292,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(2);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -303,7 +303,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(3);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -314,7 +314,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(4);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -325,7 +325,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(5);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -336,7 +336,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(6);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -347,7 +347,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(7);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -358,7 +358,7 @@ public class SprintBacklogMapperTest {
 		expectTask = mATTS.getTasks().get(8);
 		assertEquals(expectTask.getName(), task.getName());
 		assertEquals(expectTask.getNotes(), task.getNotes());
-		assertEquals(expectTask.getActual(), task.getActual());
+		//assertEquals(expectTask.getActual(), task.getActual());
 		assertEquals(expectTask.getEstimate(), task.getEstimate());
 		assertEquals(expectTask.getStoryId(), task.getStoryId());
 		assertEquals(expectTask.getProjectId(), task.getProjectId());
@@ -381,7 +381,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(-1, oldTask.getHandlerId());
 		assertEquals(8, oldTask.getEstimate());
 		assertEquals(8, oldTask.getRemains());
-		assertEquals(0, oldTask.getActual());
+		//assertEquals(0, oldTask.getActual());
 		assertEquals("TEST_TASK_NOTES_1", oldTask.getNotes());
 		assertEquals(0, oldTask.getPartnersId().size());
 		// create task info
@@ -392,7 +392,7 @@ public class SprintBacklogMapperTest {
 		taskInfo.handlerId = 1;
 		taskInfo.estimate = 5;
 		taskInfo.remains = 3;
-		taskInfo.actual = 6;
+		//taskInfo.actual = 6;
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		ArrayList<Long> partnersId = new ArrayList<Long>();
 		partnersId.add(account1.getId());
@@ -408,7 +408,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(1, newTask.getHandlerId());
 		assertEquals(5, newTask.getEstimate());
 		assertEquals(3, newTask.getRemains());
-		assertEquals(6, newTask.getActual());
+		//assertEquals(6, newTask.getActual());
 		assertEquals("NEW_TEST_TASK_NOTES", newTask.getNotes());
 		assertEquals(2, newTask.getPartnersId().size());
 		assertEquals(account1.getId(), newTask.getPartnersId().get(0));
@@ -422,7 +422,7 @@ public class SprintBacklogMapperTest {
 		taskInfo.name = "NEW_TEST_TASK_NAME";
 		taskInfo.handlerId = 1;
 		taskInfo.estimate = 5;
-		taskInfo.actual = 6;
+		//taskInfo.actual = 6;
 		taskInfo.notes = "NEW_TEST_TASK_NOTES";
 		taskInfo.partnersId.add(1L);
 
@@ -433,7 +433,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(taskInfo.notes, actualTask.getNotes());
 		assertEquals(taskInfo.estimate, actualTask.getEstimate());
 		assertEquals(taskInfo.estimate, actualTask.getRemains());
-		assertEquals(0, actualTask.getActual());
+		//assertEquals(0, actualTask.getActual());
 		assertEquals(taskInfo.handlerId, actualTask.getHandlerId());
 		assertEquals(taskInfo.partnersId.get(0), actualTask.getPartnersId().get(0));
 	}
@@ -558,15 +558,15 @@ public class SprintBacklogMapperTest {
 		String TEST_NOTE = "NEW_TEST_TASK_NOTE_";
 		int TEST_EST = 5;
 		int TEST_HANDLER = 1;
-		int TEST_ACTUAL = 3;
+		//int TEST_ACTUAL = 3;
 
 		TaskObject expectTask1 = new TaskObject(projectId);
 		expectTask1.setName(TEST_NAME + 1).setNotes(TEST_NOTE + 1).setEstimate(TEST_EST).setHandlerId(TEST_HANDLER)
-				.setActual(TEST_ACTUAL).save();
+				/*.setActual(TEST_ACTUAL)*/.save();
 
 		TaskObject expectTask2 = new TaskObject(projectId);
 		expectTask2.setName(TEST_NAME + 2).setNotes(TEST_NOTE + 2).setEstimate(TEST_EST + 2).setHandlerId(TEST_HANDLER)
-				.setActual(TEST_ACTUAL + 2).save();
+				/*.setActual(TEST_ACTUAL + 2)*/.save();
 
 		// assert size
 		ArrayList<TaskObject> tasks = mSprintBacklogMapper.getDroppedTasks(projectId);
@@ -577,7 +577,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(expectTask1.getName(), actualTask.getName());
 		assertEquals(expectTask1.getNotes(), actualTask.getNotes());
 		assertEquals(expectTask1.getEstimate(), actualTask.getEstimate());
-		assertEquals(expectTask1.getActual(), actualTask.getActual());
+		//assertEquals(expectTask1.getActual(), actualTask.getActual());
 		assertEquals(expectTask1.getHandlerId(), actualTask.getHandlerId());
 
 		// assert second task
@@ -585,7 +585,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(expectTask2.getName(), actualTask.getName());
 		assertEquals(expectTask2.getNotes(), actualTask.getNotes());
 		assertEquals(expectTask2.getEstimate(), actualTask.getEstimate());
-		assertEquals(expectTask2.getActual(), actualTask.getActual());
+		//assertEquals(expectTask2.getActual(), actualTask.getActual());
 		assertEquals(expectTask2.getHandlerId(), actualTask.getHandlerId());
 	}
 
@@ -598,15 +598,15 @@ public class SprintBacklogMapperTest {
 		String TEST_NOTE = "NEW_TEST_TASK_NOTE_";
 		int TEST_EST = 5;
 		int TEST_HANDLER = 1;
-		int TEST_ACTUAL = 3;
+		//int TEST_ACTUAL = 3;
 
 		TaskObject expectTask1 = new TaskObject(projectId);
 		expectTask1.setName(TEST_NAME + 1).setNotes(TEST_NOTE + 1).setEstimate(TEST_EST).setHandlerId(TEST_HANDLER)
-				.setActual(TEST_ACTUAL).save();
+				/*.setActual(TEST_ACTUAL)*/.save();
 
 		TaskObject expectTask2 = new TaskObject(projectId);
 		expectTask2.setName(TEST_NAME + 2).setNotes(TEST_NOTE + 2).setEstimate(TEST_EST + 2).setHandlerId(TEST_HANDLER)
-				.setActual(TEST_ACTUAL + 2).save();
+				/*.setActual(TEST_ACTUAL + 2)*/.save();
 
 		long[] deleteId = new long[2];
 		deleteId[0] = expectTask1.getId();
@@ -675,7 +675,7 @@ public class SprintBacklogMapperTest {
 	public void testCloseTask() {
 		String closeName = "CLOSE_NAME";
 		String closeNote = "CLOSE_NOTE";
-		int actual = 3;
+		//int actual = 3;
 		Date specificDate = new Date(System.currentTimeMillis());
 
 		// assert status, default status should be UNCHECK
@@ -683,7 +683,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, actual, specificDate);
+		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, /*actual,*/ specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(closeName, closedTask.getName());
@@ -699,7 +699,7 @@ public class SprintBacklogMapperTest {
 		account1.save();
 		String closeName = "CLOSE_NAME";
 		String closeNote = "CLOSE_NOTE";
-		int actual = 3;
+		//int actual = 3;
 
 		Date specificDate = new Date(System.currentTimeMillis());
 
@@ -709,7 +709,7 @@ public class SprintBacklogMapperTest {
 		assertEquals(TaskObject.STATUS_UNCHECK, task.getStatus());
 		assertEquals(8, task.getRemains());
 
-		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, actual, specificDate);
+		mSprintBacklogMapper.closeTask(task.getId(), closeName, closeNote, /*actual,*/ specificDate);
 
 		TaskObject closedTask = TaskObject.get(task.getId());
 		assertEquals(closeName, closedTask.getName());

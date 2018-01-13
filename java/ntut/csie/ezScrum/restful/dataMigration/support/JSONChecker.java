@@ -156,7 +156,7 @@ public class JSONChecker {
 			taskJSON.getString(TaskJSONEnum.HANDLER);
 			taskJSON.getInt(TaskJSONEnum.ESTIMATE);
 			taskJSON.getInt(TaskJSONEnum.REMAIN);
-			taskJSON.getInt(TaskJSONEnum.ACTUAL);
+			//taskJSON.getInt(TaskJSONEnum.ACTUAL);
 			taskJSON.getString(TaskJSONEnum.NOTES);
 			taskJSON.getString(TaskJSONEnum.STATUS);
 			JSONArray partnerJSONArray = taskJSON.getJSONArray(TaskJSONEnum.PARTNERS);

@@ -66,7 +66,7 @@ public class TaskWebService extends ProjectWebService {
 		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
 		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
 		taskInfo.notes = taskJSon.getString("notes");
-		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		//taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
 		taskInfo.storyId = storyId;
 		taskInfo.projectId = mProject.getId();
 		
@@ -106,7 +106,7 @@ public class TaskWebService extends ProjectWebService {
 		taskInfo.estimate = Integer.parseInt(taskJSon.getString("estimate"));
 		taskInfo.remains = Integer.parseInt(taskJSon.getString("remains"));
 		taskInfo.notes = taskJSon.getString("notes");
-		taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
+		//taskInfo.actual = Integer.parseInt(taskJSon.getString("actual"));
 		
 		mSprintBacklogHelper.updateTask(taskInfo, taskJSon.getString("handler"), taskJSon.getString("partner"));
 		return "true";

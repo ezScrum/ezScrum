@@ -78,7 +78,7 @@ public class TaskDAOTest {
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
 			        .setRemains(i * 2)
-			        .setActual(i * 2);
+			        /*.setActual(i * 2)*/;
 			long taskId = TaskDAO.getInstance().create(task);
 			assertNotSame(-1, taskId);
 		}
@@ -105,7 +105,7 @@ public class TaskDAOTest {
 			assertEquals(-1, tasks.get(i).getStoryId());
 			assertEquals(i * 2, tasks.get(i).getEstimate());
 			assertEquals(i * 2, tasks.get(i).getRemains());
-			assertEquals(i * 2, tasks.get(i).getActual());
+			//assertEquals(i * 2, tasks.get(i).getActual());
 			assertNotNull(tasks.get(i).getCreateTime());
 			assertNotNull(tasks.get(i).getUpdateTime());
 		}
@@ -120,7 +120,7 @@ public class TaskDAOTest {
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
 			        .setRemains(i * 2)
-			        .setActual(i * 2);
+			        /*.setActual(i * 2)*/;
 			long taskId = TaskDAO.getInstance().create(task);
 			assertNotSame(-1, taskId);
 		}
@@ -141,7 +141,7 @@ public class TaskDAOTest {
 			assertEquals(-1, tasks.get(i).getStoryId());
 			assertEquals(i * 2, tasks.get(i).getEstimate());
 			assertEquals(i * 2, tasks.get(i).getRemains());
-			assertEquals(i * 2, tasks.get(i).getActual());
+			//assertEquals(i * 2, tasks.get(i).getActual());
 			assertNotNull(tasks.get(i).getCreateTime());
 			assertNotNull(tasks.get(i).getUpdateTime());
 		}
@@ -154,7 +154,7 @@ public class TaskDAOTest {
 		        .setNotes("TEST_NOTE_1")
 		        .setEstimate(1)
 		        .setRemains(2)
-		        .setActual(3);
+		        /*.setActual(3)*/;
 		long taskId = TaskDAO.getInstance().create(task);
 		assertNotSame(-1, taskId);
 
@@ -163,7 +163,7 @@ public class TaskDAOTest {
 		        .setNotes("含淚寫測試")
 		        .setEstimate(8)
 		        .setRemains(8)
-		        .setActual(8);
+		        /*.setActual(8)*/;
 		boolean result = TaskDAO.getInstance().update(task);
 		assertEquals(true, result);
 
@@ -176,7 +176,7 @@ public class TaskDAOTest {
 		assertEquals(theTask.getStoryId(), task.getStoryId());
 		assertEquals(theTask.getEstimate(), task.getEstimate());
 		assertEquals(theTask.getRemains(), task.getRemains());
-		assertEquals(theTask.getActual(), task.getActual());
+		//assertEquals(theTask.getActual(), task.getActual());
 	}
 
 	@Test
@@ -188,7 +188,7 @@ public class TaskDAOTest {
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
 		        .setRemains(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			long taskId = TaskDAO.getInstance().create(task);
 			assertNotSame(-1, taskId);
 		}
@@ -227,7 +227,7 @@ public class TaskDAOTest {
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
 		        .setRemains(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			if (i == 1) {
 				task.setStoryId(2);
 			} else {
@@ -251,7 +251,7 @@ public class TaskDAOTest {
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
 		        .setRemains(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			if (i == 1) {
 				task.setStoryId(2);
 			}
@@ -447,7 +447,7 @@ public class TaskDAOTest {
 		long TEST_SERIAL_NUMBER = 99;
 		long TEST_ESTIMATE = 0;
 		long TEST_REMAINS = 1;
-		long TEST_ACTUAL = 3;
+		//long TEST_ACTUAL = 3;
 		long TEST_STATUS = 1;
 		long TEST_HANDLER = 5;
 		long TEST_PROJECT_ID = 4;
@@ -461,7 +461,7 @@ public class TaskDAOTest {
 		valueSet.addInsertValue(TaskEnum.HANDLER_ID, TEST_HANDLER);
 		valueSet.addInsertValue(TaskEnum.ESTIMATE, TEST_ESTIMATE);
 		valueSet.addInsertValue(TaskEnum.REMAIN, TEST_REMAINS);
-		valueSet.addInsertValue(TaskEnum.ACTUAL, TEST_ACTUAL);
+		//valueSet.addInsertValue(TaskEnum.ACTUAL, TEST_ACTUAL);
 		valueSet.addInsertValue(TaskEnum.NOTES, TEST_NOTES);
 		valueSet.addInsertValue(TaskEnum.STATUS, TEST_STATUS);
 		valueSet.addInsertValue(TaskEnum.PROJECT_ID, TEST_PROJECT_ID);
@@ -490,7 +490,7 @@ public class TaskDAOTest {
 		assertEquals(TEST_STORY_ID, actual.getStoryId());
 		assertEquals(TEST_ESTIMATE, actual.getEstimate());
 		assertEquals(TEST_REMAINS, actual.getRemains());
-		assertEquals(TEST_ACTUAL, actual.getActual());
+		//assertEquals(TEST_ACTUAL, actual.getActual());
 		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
 		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
 	}
@@ -501,7 +501,7 @@ public class TaskDAOTest {
 		TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
 		task.setName("TEST_NAME")
 		        .setEstimate(10)
-		        .setActual(0)
+		        //.setActual(0)
 		        .save();
 		// check task status before test
 		Date firstDate = DateUtil.dayFillter("2016/01/13", DateUtil._8DIGIT_DATE_1);

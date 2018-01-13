@@ -177,9 +177,9 @@ public class SprintBacklogHelper {
 				notes, changeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long id, String name, String notes, /*int actual,*/
 			String changeDate) {
-		mSprintBacklogLogic.closeTask(id, name, notes, actual, changeDate);
+		mSprintBacklogLogic.closeTask(id, name, notes, /*actual,*/ changeDate);
 	}
 
 	public void reopenTask(long taskId, String name, String notes,
