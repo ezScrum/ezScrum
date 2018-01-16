@@ -111,6 +111,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 				.append("<Task>")
 					.append("<Id>").append(taskId).append("</Id>")
 					.append("<Name>").append(task.getName()).append("</Name>")
+					.append("<Status>").append(task.getStatusString()).append("</Status>")
 					.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
 					//.append("<Actual>").append(task.getActual()).append("</Actual>")
 					.append("<Handler></Handler>")
@@ -121,6 +122,6 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 			.append("</EditTask>");
 
 		String actualResponseText = response.getWriterBuffer().toString();
-		assertEquals(expectedResponseText.toString(), actualResponseText);System.out.println(expectedResponseText.toString());System.out.println(actualResponseText);
+		assertEquals(expectedResponseText.toString(), actualResponseText);
 	}
 }
