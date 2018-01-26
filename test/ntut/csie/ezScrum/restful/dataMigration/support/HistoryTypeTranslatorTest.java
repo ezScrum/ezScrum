@@ -13,7 +13,7 @@ public class HistoryTypeTranslatorTest {
 		assertEquals(HistoryObject.TYPE_NAME, HistoryTypeTranslator.getHistoryType("NAME"));
 		assertEquals(HistoryObject.TYPE_ESTIMATE, HistoryTypeTranslator.getHistoryType("ESTIMATE"));
 		assertEquals(HistoryObject.TYPE_REMAIMS, HistoryTypeTranslator.getHistoryType("REMAINS"));
-		assertEquals(HistoryObject.TYPE_ACTUAL, HistoryTypeTranslator.getHistoryType("ACTUAL"));
+		//assertEquals(HistoryObject.TYPE_ACTUAL, HistoryTypeTranslator.getHistoryType("ACTUAL"));
 		assertEquals(HistoryObject.TYPE_IMPORTANCE, HistoryTypeTranslator.getHistoryType("IMPORTANCE"));
 		assertEquals(HistoryObject.TYPE_VALUE, HistoryTypeTranslator.getHistoryType("VALUE"));
 		assertEquals(HistoryObject.TYPE_ATTACH_FILE, HistoryTypeTranslator.getHistoryType("ATTACH_FILE"));

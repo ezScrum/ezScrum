@@ -348,7 +348,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -358,8 +358,8 @@ CREATE TABLE IF NOT EXISTS `task` (
 -- 正在導出表  ezscrum_180.task 的資料：1 rows
 DELETE FROM `task`;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 'task 1 for test task Checked Out', -1, 1, 3, 3, 0, 'notes for test task Checked Out', 1467785475696, 1467785475696);
+INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, /*`actual`,*/ `notes`, `create_time`, `update_time`) VALUES
+	(1, 1, 1, 1, 'task 1 for test task Checked Out', -1, 1, 3, 3, /*0,*/ 'notes for test task Checked Out', 1467785475696, 1467785475696);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 
@@ -390,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,

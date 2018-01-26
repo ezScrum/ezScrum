@@ -176,7 +176,7 @@ public class JSONChecker {
 			unplanJSON.getString(UnplanJSONEnum.NAME);
 			unplanJSON.getString(UnplanJSONEnum.HANDLER);
 			unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
-			unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			//unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
 			unplanJSON.getString(UnplanJSONEnum.NOTES);
 			unplanJSON.getString(UnplanJSONEnum.STATUS);
 			JSONArray partnerJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.PARTNERS);

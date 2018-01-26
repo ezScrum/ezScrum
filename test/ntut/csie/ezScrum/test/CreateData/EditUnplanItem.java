@@ -38,7 +38,7 @@ public class EditUnplanItem {
 			unplanInfo.notes = TEST_NOTE;
 			unplanInfo.status = unplan.getStatus();
 			unplanInfo.estimate = unplan.getEstimate();
-			unplanInfo.actual = unplan.getActual();
+			//unplanInfo.actual = unplan.getActual();
 			unplanInfo.handlerId = unplan.getHandlerId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
@@ -59,7 +59,7 @@ public class EditUnplanItem {
 			unplanInfo.notes = TEST_NOTE;
 			unplanInfo.status = UnplanObject.STATUS_CHECK;
 			unplanInfo.estimate = unplan.getEstimate();
-			unplanInfo.actual = unplan.getActual();
+			//unplanInfo.actual = unplan.getActual();
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();
@@ -80,7 +80,7 @@ public class EditUnplanItem {
 			unplanInfo.notes = TEST_NOTE;
 			unplanInfo.status = UnplanObject.STATUS_DONE;
 			unplanInfo.estimate = unplan.getEstimate();
-			unplanInfo.actual = unplan.getActual();
+			//unplanInfo.actual = unplan.getActual();
 			unplanInfo.handlerId = mCA.getAccountList().get(0).getId();
 			unplanInfo.partnersId = unplan.getPartnersId();
 			unplanInfo.specificTime = System.currentTimeMillis();

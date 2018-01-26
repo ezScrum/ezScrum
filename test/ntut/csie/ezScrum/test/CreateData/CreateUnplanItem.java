@@ -54,7 +54,7 @@ public class CreateUnplanItem {
 					
 					UnplanObject unplan = new UnplanObject(sprintId, projectId);
 					unplan.setName(name).setNotes(notes).setEstimate(TEST_EST)
-					.setActual(0).setHandlerId(TEST_HANDLER).setPartnersId(TEST_PARTNER)
+					/*.setActual(0)*/.setHandlerId(TEST_HANDLER).setPartnersId(TEST_PARTNER)
 					.setCreateTime(mSpecificTime).save();
 					
 					mUnplanItems.add(unplan);

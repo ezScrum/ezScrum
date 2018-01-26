@@ -191,7 +191,7 @@ CREATE TABLE `unplan` (
   `name` VARCHAR(255) NOT NULL,
   `handler_id` BIGINT NOT NULL,
   `estimate` INT NOT NULL,
-  `actual` INT NOT NULL,
+  /*`actual` INT NOT NULL,*/
   `notes` TEXT NOT NULL,
   `status` TINYINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,

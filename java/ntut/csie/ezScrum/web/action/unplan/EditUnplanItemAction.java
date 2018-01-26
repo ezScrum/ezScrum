@@ -46,7 +46,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		String sprintName = request.getParameter("SprintID");
 		long serialSprintId = Long.parseLong(sprintName.substring(sprintName.indexOf("#") + 1));
 		int estimate = Integer.parseInt(request.getParameter("Estimate"));
-		int actual = Integer.parseInt(request.getParameter("ActualHour"));
+		//int actual = Integer.parseInt(request.getParameter("ActualHour"));
 		String handlerUsername = request.getParameter("Handler");
 		String partnersUsername = request.getParameter("Partners");
 		String specificTimeString = request.getParameter("SpecificTime");
@@ -66,7 +66,7 @@ public class EditUnplanItemAction extends PermissionAction {
 		unplanInfo.name = name;
 		unplanInfo.notes = notes;
 		unplanInfo.estimate = estimate;
-		unplanInfo.actual = actual;
+		//unplanInfo.actual = actual;
 		unplanInfo.statusString = statusString;
 		unplanInfo.projectId = project.getId();
 		unplanInfo.sprintId = sprint.getId();
@@ -87,7 +87,7 @@ public class EditUnplanItemAction extends PermissionAction {
 			  .append("<SprintID>").append(sprintAfterEditUnplan.getSerialId()).append("</SprintID>")
 			  .append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>")
 			  .append("<Status>").append(unplan.getStatusString()).append("</Status>")
-			  .append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")
+			  //.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")
 			  .append("<Handler>").append(unplan.getHandlerName()).append("</Handler>")
 			  .append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>")
 			  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>")

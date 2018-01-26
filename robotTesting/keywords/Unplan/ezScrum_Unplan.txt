@@ -114,7 +114,7 @@ Select Unplan
     Click Element    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-${columnIndex}' and (text()='${name}')]
 
 Edit Unplan
-    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
+    [Arguments]    @{unplanInfo}    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 status, 8 specific time
     ${id} =    Set Variable    ${unplanInfo[0]}
     ${name} =    Set Variable    ${unplanInfo[1]}
     ${sprintId} =    Set Variable    ${unplanInfo[2]}
@@ -122,8 +122,8 @@ Edit Unplan
     ${partners} =    Set Variable    ${unplanInfo[4]}
     ${estimate} =    Set Variable    ${unplanInfo[5]}
     ${notes} =    Set Variable    ${unplanInfo[6]}
-    ${actual} =    Set Variable    ${unplanInfo[7]}
-    ${status} =    Set Variable    ${unplanInfo[8]}
+    Comment    ${actual} =    Set Variable    ${unplanInfo[7]}
+    ${status} =    Set Variable    ${unplanInfo[7]}
     # action
     Click Element    xpath=//button[.='Edit Unplanned Item']
     # fill info
@@ -133,7 +133,7 @@ Edit Unplan
     DropDownMenu_Select    Status    ${status}
     Focus AND Input Text    //input[@name='Partners']    ${partners}
     Focus AND Input Text    //input[@name='Estimate']    ${estimate}
-    Focus AND Input Text    //input[@name='ActualHour']    ${actual}
+    Comment    Focus AND Input Text    //input[@name='ActualHour']    ${actual}
     Focus AND Input Text    //textarea[@name='Notes']    ${notes}
     # save
     ${_xpathEdit} =    Find Current Window Element    Edit Unplanned Item #${id}    Submit

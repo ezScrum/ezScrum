@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -367,10 +367,10 @@ CREATE TABLE IF NOT EXISTS `task` (
 -- 正在導出表  ezscrum_180.task 的資料：6 rows
 DELETE FROM `task`;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 'Task01', -1, 1, 13, 13, 0, '', 1466136201419, 1466136201419),
-	(2, 2, 1, 1, 'Task02', -1, 1, 5, 5, 0, '', 1466136211580, 1466136211580),
-	(3, 3, 1, 2, 'Task03', -1, 1, 5, 5, 0, '', 1466136234657, 1466136234657);
+INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, /*`actual`,*/ `notes`, `create_time`, `update_time`) VALUES
+	(1, 1, 1, 1, 'Task01', -1, 1, 13, 13, /*0,*/ '', 1466136201419, 1466136201419),
+	(2, 2, 1, 1, 'Task02', -1, 1, 5, 5, /*0,*/ '', 1466136211580, 1466136211580),
+	(3, 3, 1, 2, 'Task03', -1, 1, 5, 5, /*0,*/ '', 1466136234657, 1466136234657);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 
@@ -401,7 +401,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,

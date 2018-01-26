@@ -83,7 +83,7 @@ public class UnplanDAOTest {
 			unplan.setName("TEST_UNPLAN_" + i + 1)
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
-			        .setActual(i * 2);
+			        /*.setActual(i * 2)*/;
 			long unplanId = UnplanDAO.getInstance().create(unplan);
 			assertNotSame(-1, unplanId);
 		}
@@ -109,7 +109,7 @@ public class UnplanDAOTest {
 			assertEquals(sProjectId, unplans.get(i).getProjectId());
 			assertEquals(sSprintId, unplans.get(i).getSprintId());
 			assertEquals(i * 2, unplans.get(i).getEstimate());
-			assertEquals(i * 2, unplans.get(i).getActual());
+			//assertEquals(i * 2, unplans.get(i).getActual());
 			assertNotNull(unplans.get(i).getCreateTime());
 			assertNotNull(unplans.get(i).getUpdateTime());
 		}
@@ -123,7 +123,7 @@ public class UnplanDAOTest {
 			unplan.setName("TEST_UNPLAN_" + i + 1)
 			        .setNotes("TEST_NOTE_" + i + 1)
 			        .setEstimate(i * 2)
-			        .setActual(i * 2);
+			        /*.setActual(i * 2)*/;
 			long unplanId = UnplanDAO.getInstance().create(unplan);
 			assertNotSame(-1, unplanId);
 		}
@@ -143,7 +143,7 @@ public class UnplanDAOTest {
 			assertEquals(sProjectId, unplans.get(i).getProjectId());
 			assertEquals(sSprintId, unplans.get(i).getSprintId());
 			assertEquals(i * 2, unplans.get(i).getEstimate());
-			assertEquals(i * 2, unplans.get(i).getActual());
+			//assertEquals(i * 2, unplans.get(i).getActual());
 			assertNotNull(unplans.get(i).getCreateTime());
 			assertNotNull(unplans.get(i).getUpdateTime());
 		}
@@ -155,7 +155,7 @@ public class UnplanDAOTest {
 		unplan.setName("TEST_UNPLAN_1")
 		        .setNotes("TEST_NOTE_1")
 		        .setEstimate(1)
-		        .setActual(3);
+		        /*.setActual(3)*/;
 		long unplanId = UnplanDAO.getInstance().create(unplan);
 		assertNotSame(-1, unplanId);
 
@@ -163,7 +163,7 @@ public class UnplanDAOTest {
 		unplan.setName("崩潰惹")
 		        .setNotes("含淚寫測試")
 		        .setEstimate(8)
-		        .setActual(8);
+		        /*.setActual(8)*/;
 		boolean result = UnplanDAO.getInstance().update(unplan);
 		assertEquals(true, result);
 
@@ -175,7 +175,7 @@ public class UnplanDAOTest {
 		assertEquals(theUnplan.getProjectId(), unplan.getProjectId());
 		assertEquals(theUnplan.getSprintId(), unplan.getSprintId());
 		assertEquals(theUnplan.getEstimate(), unplan.getEstimate());
-		assertEquals(theUnplan.getActual(), unplan.getActual());
+		//assertEquals(theUnplan.getActual(), unplan.getActual());
 	}
 
 	@Test
@@ -186,7 +186,7 @@ public class UnplanDAOTest {
 			unplan.setName("TEST_UNPLAN_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			long unplanId = UnplanDAO.getInstance().create(unplan);
 			assertNotSame(-1, unplanId);
 		}
@@ -210,7 +210,7 @@ public class UnplanDAOTest {
 		String query = valueSet.getSelectQuery();
 		ResultSet resultSet = mControl.executeQuery(query);
 		while (resultSet.next()) {
-			unplans.add(UnplanDAO.convert(resultSet));System.out.println("TestDelete is running.");
+			unplans.add(UnplanDAO.convert(resultSet));
 		}
 		assertEquals(2, unplans.size());
 		closeResultSet(resultSet);
@@ -224,7 +224,7 @@ public class UnplanDAOTest {
 			unplan.setName("TEST_UNPLAN_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			if (i == 1) {
 				unplan.setSprintId(2);
 			}
@@ -251,7 +251,7 @@ public class UnplanDAOTest {
 			unplan.setName("TEST_UNPLAN_" + i + 1)
 		        .setNotes("TEST_NOTE_" + i + 1)
 		        .setEstimate(i * 2)
-		        .setActual(i * 2);
+		        /*.setActual(i * 2)*/;
 			long unplanId = UnplanDAO.getInstance().create(unplan);
 			assertNotSame(-1, unplanId);
 		}
@@ -443,7 +443,7 @@ public class UnplanDAOTest {
 		String TEST_NOTES = "TEST_NOTES";
 		long TEST_SERIAL_NUMBER = 99;
 		long TEST_ESTIMATE = 0;
-		long TEST_ACTUAL = 3;
+		//long TEST_ACTUAL = 3;
 		long TEST_STATUS = 1;
 		long TEST_HANDLER = 5;
 		long TEST_PROJECT_ID = 4;
@@ -456,7 +456,7 @@ public class UnplanDAOTest {
 		valueSet.addInsertValue(UnplanEnum.NAME, TEST_NAME);
 		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, TEST_HANDLER);
 		valueSet.addInsertValue(UnplanEnum.ESTIMATE, TEST_ESTIMATE);
-		valueSet.addInsertValue(UnplanEnum.ACTUAL, TEST_ACTUAL);
+		//valueSet.addInsertValue(UnplanEnum.ACTUAL, TEST_ACTUAL);
 		valueSet.addInsertValue(UnplanEnum.NOTES, TEST_NOTES);
 		valueSet.addInsertValue(UnplanEnum.STATUS, TEST_STATUS);
 		valueSet.addInsertValue(UnplanEnum.PROJECT_ID, TEST_PROJECT_ID);
@@ -484,7 +484,7 @@ public class UnplanDAOTest {
 		assertEquals(TEST_PROJECT_ID, actual.getProjectId());
 		assertEquals(TEST_SPRINT_ID, actual.getSprintId());
 		assertEquals(TEST_ESTIMATE, actual.getEstimate());
-		assertEquals(TEST_ACTUAL, actual.getActual());
+		//assertEquals(TEST_ACTUAL, actual.getActual());
 		assertEquals(TEST_CREATE_TIME, actual.getCreateTime());
 		assertEquals(TEST_CREATE_TIME, actual.getUpdateTime());
 	}

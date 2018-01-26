@@ -361,7 +361,7 @@ public class JSONDecoderTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "name");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "account1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 1);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "notes");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		JSONArray partnerJSONArray = new JSONArray();
@@ -374,7 +374,7 @@ public class JSONDecoderTest {
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NAME), unplan.getName());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.HANDLER), unplan.getHandler().getUsername());
 		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ESTIMATE), unplan.getEstimate());
-		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
+		//assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NOTES), unplan.getNotes());
 		assertEquals(UnplanObject.STATUS_CHECK, unplan.getStatus());
 		assertEquals(projectId, unplan.getProjectId());

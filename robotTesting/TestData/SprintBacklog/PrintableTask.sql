@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -474,14 +474,14 @@ CREATE TABLE IF NOT EXISTS `task` (
 -- 正在導出表  ezscrum_180.task 的資料：7 rows
 DELETE FROM `task`;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 'Task01', 5, 3, 3, 0, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860058880, 1464860058880),
-	(2, 2, 1, 2, 'Task03', -1, 1, 5, 5, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059280, 1464860059280),
-	(3, 3, 1, 2, 'Task04', -1, 1, 13, 13, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059293, 1464860059293),
-	(4, 4, 1, -1, 'Task02', -1, 1, 13, 13, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059308, 1464860059308),
-	(5, 5, 1, 3, 'Task01', -1, 1, 8, 8, 0, '', 1464918868167, 1464918868167),
-	(6, 6, 1, 3, 'Task02', -1, 1, 13, 13, 0, '', 1464918876826, 1464918876826),
-	(7, 7, 1, 3, 'Task03', -1, 1, 5, 5, 0, '', 1464918885682, 1464918885682);
+INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, /*`actual`,*/ `notes`, `create_time`, `update_time`) VALUES
+	(1, 1, 1, 1, 'Task01', 5, 3, 3, 0, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860058880, 1464860058880),
+	(2, 2, 1, 2, 'Task03', -1, 1, 5, 5, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059280, 1464860059280),
+	(3, 3, 1, 2, 'Task04', -1, 1, 13, 13, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059293, 1464860059293),
+	(4, 4, 1, -1, 'Task02', -1, 1, 13, 13, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1464860059308, 1464860059308),
+	(5, 5, 1, 3, 'Task01', -1, 1, 8, 8, /*0,*/ '', 1464918868167, 1464918868167),
+	(6, 6, 1, 3, 'Task02', -1, 1, 13, 13, /*0,*/ '', 1464918876826, 1464918876826),
+	(7, 7, 1, 3, 'Task03', -1, 1, 5, 5, /*0,*/ '', 1464918885682, 1464918885682);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 
@@ -512,7 +512,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,
@@ -525,10 +525,10 @@ CREATE TABLE IF NOT EXISTS `unplan` (
 -- 正在導出表  ezscrum_180.unplan 的資料：3 rows
 DELETE FROM `unplan`;
 /*!40000 ALTER TABLE `unplan` DISABLE KEYS */;
-INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, `actual`, `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'Unplan01', 5, 3, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 2, 1, 1, 1464860058990, 1464860058990),
-	(2, 2, 'Unplan02', -1, 8, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1, 1, 1, 1464860059003, 1464860059003),
-	(3, 3, 'Unplan03', 4, 8, 0, '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 3, 1, 2, 1464860059085, 1464860059085);
+INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, /*`actual`,*/ `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
+	(1, 1, 'Unplan01', 5, 3, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 2, 1, 1, 1464860058990, 1464860058990),
+	(2, 2, 'Unplan02', -1, 8, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 1, 1, 1, 1464860059003, 1464860059003),
+	(3, 3, 'Unplan03', 4, 8, /*0,*/ '\\n\\t\\r\\b\\f\n\\n\n\\t\n\\r\n\\b\n\\f', 3, 1, 2, 1464860059085, 1464860059085);
 /*!40000 ALTER TABLE `unplan` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

@@ -356,7 +356,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -705,7 +705,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NAME), unplan.getName());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.HANDLER), unplan.getHandler().getUsername());
 		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ESTIMATE), unplan.getEstimate());
-		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
+		//assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NOTES), unplan.getNotes());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.STATUS), unplan.getStatusString());
 		
@@ -1039,7 +1039,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -1481,7 +1481,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -1850,7 +1850,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -2219,7 +2219,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -2574,7 +2574,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -2948,7 +2948,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());
@@ -3322,7 +3322,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "TEST_UNPLAN_NAME");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "TEST_ACCOUNT_1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 3);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 0);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "TEST_UNPLAN_NOTES");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		unplanJSON.put(UnplanJSONEnum.PARTNERS, new JSONArray());

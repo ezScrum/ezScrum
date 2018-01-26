@@ -98,7 +98,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + 1;
 		unplanInfo.statusString = "new";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -107,7 +107,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -161,7 +161,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "new";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -170,7 +170,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -210,7 +210,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "assigned";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 		
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -219,7 +219,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -273,7 +273,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "new";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -282,7 +282,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -322,7 +322,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "assigned";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -331,7 +331,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -385,7 +385,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "new";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -394,7 +394,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -434,7 +434,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "assigned";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -443,7 +443,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -483,7 +483,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "assigned";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -492,7 +492,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -532,7 +532,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		unplanInfo.notes = "NEW_UNPLAN_NOTES_" + unplanInfo.id;
 		unplanInfo.statusString = "assigned";
 		unplanInfo.estimate = 99;
-		unplanInfo.actual = 9;
+		//unplanInfo.actual = 9;
 
 		// ================== set parameter info ====================
 		addRequestParameter("issueID", String.valueOf(unplanInfo.id));
@@ -541,7 +541,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		addRequestParameter("Notes", unplanInfo.notes);
 		addRequestParameter("Status", unplanInfo.statusString);
 		addRequestParameter("Estimate", String.valueOf(unplanInfo.estimate));
-		addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
+		//addRequestParameter("ActualHour", String.valueOf(unplanInfo.actual));
 		addRequestParameter("Handler", handlerUsername);
 		addRequestParameter("Partners", partnersUsername);
 		addRequestParameter("SpecificTime", specificTime);
@@ -577,7 +577,7 @@ public class EditUnplanItemActionTest extends MockStrutsTestCase {
 		result.append("<SprintID>").append(unplanInfo.sprintId).append("</SprintID>");
 		result.append("<Estimate>").append(unplanInfo.estimate).append("</Estimate>");
 		result.append("<Status>").append(unplanInfo.statusString).append("</Status>");
-		result.append("<ActualHour>").append(unplanInfo.actual).append("</ActualHour>");
+		//result.append("<ActualHour>").append(unplanInfo.actual).append("</ActualHour>");
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(partnerUsername).append("</Partners>");
 		result.append("<Notes>").append(unplanInfo.notes).append("</Notes>");

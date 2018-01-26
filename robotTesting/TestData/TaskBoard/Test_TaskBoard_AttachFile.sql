@@ -498,7 +498,7 @@ CREATE TABLE `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -512,9 +512,9 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,1,1,1,'task01',-1,1,5,5,0,'this is a note',1452664290546,1452664290546);
-INSERT INTO `task` VALUES (2,2,1,1,'task02',1,2,3,3,0,'this is another note',1452664331066,1452664342575);
-INSERT INTO `task` VALUES (3,3,1,1,'task03',1,3,8,0,0,'',1452664366177,1452664372557);
+INSERT INTO `task` VALUES (1,1,1,1,'task01',-1,1,5,5,/*0,*/'this is a note',1452664290546,1452664290546);
+INSERT INTO `task` VALUES (2,2,1,1,'task02',1,2,3,3,/*0,*/'this is another note',1452664331066,1452664342575);
+INSERT INTO `task` VALUES (3,3,1,1,'task03',1,3,8,0,/*0,*/'',1452664366177,1452664372557);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -559,7 +559,7 @@ CREATE TABLE `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,

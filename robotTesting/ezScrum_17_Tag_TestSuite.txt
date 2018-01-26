@@ -662,7 +662,7 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     Select Project    Project01
     Go To Page    Product Backlog
     #Select Story
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Wait Until Keyword Succeeds    15s    1s    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     #Add tag with Edit Story
     Click Element    //button[text()="Edit Story"]
     Click Element    //label[text()="Tags:"]/..//img
@@ -676,8 +676,7 @@ Test Tag - ProductBacklog Tags in Edit Story and Tag in Proj. 01
     reload page
     Go To Page    Product Backlog
     #Select Story
-    Wait Until Key word Succeeds    1min    30s    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
-    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
+    Wait Until Keyword Succeeds    15s    1s    Click Element    //div[@id="ProductBacklog_Page"]//div[text()="Story01"]/../../..
     Click Button    xpath=//button[text()="Tag"]
     Wait until page contains element    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img
     Click image    //ul[@class="x-menu-list"]/li[1]/a[@class="x-menu-item x-menu-check-item"]/img

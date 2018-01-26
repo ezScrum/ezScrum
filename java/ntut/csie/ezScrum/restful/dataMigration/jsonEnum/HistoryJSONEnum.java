@@ -16,7 +16,7 @@ public class HistoryJSONEnum {
 		NAME(HistoryObject.TYPE_NAME),
 		ESTIMATE(HistoryObject.TYPE_ESTIMATE),
 		REMAINS(HistoryObject.TYPE_REMAIMS),
-		ACTUAL(HistoryObject.TYPE_ACTUAL),
+		//ACTUAL(HistoryObject.TYPE_ACTUAL),
 		IMPORTANCE(HistoryObject.TYPE_IMPORTANCE),
 		VALUE(HistoryObject.TYPE_VALUE),
 		ATTACH_FILE(HistoryObject.TYPE_ATTACH_FILE),

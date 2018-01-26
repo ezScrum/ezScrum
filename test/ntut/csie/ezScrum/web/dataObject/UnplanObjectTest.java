@@ -172,7 +172,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// check status before add partner
 		ArrayList<Long> partnersId = UnplanDAO.getInstance().getPartnersId(TEST_UNPLAN_ID);
@@ -190,7 +190,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		unplan.addPartner(1);
 		// check status before test
@@ -210,7 +210,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// add a partner
 		UnplanDAO.getInstance().addPartner(TEST_UNPLAN_ID, 1);
@@ -230,7 +230,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// add two partners
 		UnplanDAO.getInstance().addPartner(TEST_UNPLAN_ID, 1);
@@ -252,7 +252,7 @@ public class UnplanObjectTest {
 	public void testGetHandler_UnassignHandler() {
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// testGetHandler
 		assertEquals(null, unplan.getHandler());
@@ -269,7 +269,7 @@ public class UnplanObjectTest {
 		account.save();
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0)
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/
 			.setHandlerId(account.getId());
 		unplan.save();
 		// testGetHandler
@@ -281,7 +281,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// check status before get partners id
 		ArrayList<Long> partnersId = unplan.getPartnersId();
@@ -300,7 +300,7 @@ public class UnplanObjectTest {
 		long TEST_UNPLAN_ID = 1;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// check status before get partners id
 		ArrayList<Long> partnersId = unplan.getPartnersId();
@@ -324,7 +324,7 @@ public class UnplanObjectTest {
 		boolean ENABLE = true;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// before add a partner
 		assertEquals(0, unplan.getPartners().size());
@@ -348,7 +348,7 @@ public class UnplanObjectTest {
 		boolean ENABLE = true;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// before add partners
 		assertEquals(0, unplan.getPartners().size());
@@ -377,7 +377,7 @@ public class UnplanObjectTest {
 		boolean ENABLE = true;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// before add a partner get partners username
 		assertEquals("", unplan.getPartnersUsername());
@@ -400,7 +400,7 @@ public class UnplanObjectTest {
 		boolean ENABLE = true;
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
-		unplan.setName("TEST_NAME").setEstimate(10).setActual(0);
+		unplan.setName("TEST_NAME").setEstimate(10)/*.setActual(0)*/;
 		unplan.save();
 		// before add partners
 		assertEquals("", unplan.getPartnersUsername());
@@ -424,21 +424,21 @@ public class UnplanObjectTest {
 		String TEST_NAME = "TEST_NAME", TEST_NAME_NEW = "TEST_NAME_NEW";
 		String TEST_NOTE = "TEST_NOTE", TEST_NOTE_NEW = "TEST_NOTE_NEW";
 		int TEST_ESTIMATE = 1, TEST_ESTIMATE_NEW = 2;
-		int TEST_ACTUAL = 3, TEST_ACTUAL_NEW = 4;
+		//int TEST_ACTUAL = 3, TEST_ACTUAL_NEW = 4;
 		int TEST_STATUS = UnplanObject.STATUS_UNCHECK, TEST_STATUS_NEW = UnplanObject.STATUS_DONE;
 		long TEST_HANDLER_ID = 1;
 		long TEST_SPRINT_ID = 2;
 
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
-				.setActual(TEST_ACTUAL).setStatus(TEST_STATUS).save();
+				/*.setActual(TEST_ACTUAL)*/.setStatus(TEST_STATUS).save();
 
 		unplan.setName(TEST_NAME_NEW).setNotes(TEST_NOTE_NEW)
-				.setEstimate(TEST_ESTIMATE_NEW).setActual(TEST_ACTUAL_NEW)
+				.setEstimate(TEST_ESTIMATE_NEW)/*.setActual(TEST_ACTUAL_NEW)*/
 				.setStatus(TEST_STATUS_NEW).setHandlerId(TEST_HANDLER_ID)
 				.setSprintId(TEST_SPRINT_ID).save();
 
-		assertEquals(8, unplan.getHistories().size());
+		assertEquals(7, unplan.getHistories().size());
 	}
 
 	@Test
@@ -462,13 +462,13 @@ public class UnplanObjectTest {
 		String TEST_NAME = "TEST_NAME";
 		String TEST_NOTE = "TEST_NOTE";
 		int TEST_ESTIMATE = 0;
-		int TEST_ACTUAL = 1;
+		//int TEST_ACTUAL = 1;
 		long TEST_PROJECT = 1;
 		long TEST_SPRINT_ID = 5;
 
 		UnplanObject unplan = new UnplanObject(TEST_SPRINT_ID, TEST_PROJECT);
 		unplan.setName(TEST_NAME).setNotes(TEST_NOTE).setEstimate(TEST_ESTIMATE)
-				.setActual(TEST_ACTUAL).setStatus(TaskObject.STATUS_DONE)
+				/*.setActual(TEST_ACTUAL)*/.setStatus(TaskObject.STATUS_DONE)
 				.setHandlerId(handler.getId()).setSprintId(TEST_SPRINT_ID).save();
 		ArrayList<Long> partners = new ArrayList<Long>();
 		partners.add(partner.getId());
@@ -479,7 +479,7 @@ public class UnplanObjectTest {
 		assertEquals(TEST_NAME, json.getString(UnplanEnum.NAME));
 		assertEquals(TEST_NOTE, json.getString(UnplanEnum.NOTES));
 		assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ESTIMATE));
-		assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ACTUAL));
+		//assertEquals(TEST_ESTIMATE, json.getInt(UnplanEnum.ACTUAL));
 		assertEquals(TEST_PROJECT, json.getInt(UnplanEnum.PROJECT_ID));
 		assertEquals(TEST_SPRINT_ID, json.getInt(UnplanEnum.SPRINT_ID));
 
@@ -503,14 +503,14 @@ public class UnplanObjectTest {
 	public void testSave_CreateANewUnplan() {
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-			.setActual(0).save();
+			/*.setActual(0)*/.save();
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(10, unplan.getActual());
+		//assertEquals(10, unplan.getActual());
 		assertEquals(sSprintId, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 	}
@@ -522,26 +522,26 @@ public class UnplanObjectTest {
 	public void testSave_UpdateUnplan() {
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-			.setActual(0).save();
+			/*.setActual(0)*/.save();
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(10, unplan.getActual());
+		//assertEquals(10, unplan.getActual());
 		assertEquals(sSprintId, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 
 		unplan.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(3)
-			.setActual(1).setSprintId(3).save();
+			/*.setActual(1)*/.setSprintId(3).save();
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME2", unplan.getName());
 		assertEquals("TEST_NOTES2", unplan.getNotes());
 		assertEquals(3, unplan.getEstimate());
-		assertEquals(1, unplan.getActual());
+		//assertEquals(1, unplan.getActual());
 		assertEquals(3, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 	}
@@ -550,14 +550,14 @@ public class UnplanObjectTest {
 	public void testDelete() {
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-			.setActual(0).save();
+			/*.setActual(0)*/.save();
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(10, unplan.getActual());
+		//assertEquals(10, unplan.getActual());
 
 		boolean deleteSuccess = unplan.delete();
 
@@ -571,24 +571,24 @@ public class UnplanObjectTest {
 	public void testReload() {
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-			.setActual(0).save();
+			/*.setActual(0)*/.save();
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME", unplan.getName());
 		assertEquals("TEST_NOTES", unplan.getNotes());
 		assertEquals(10, unplan.getEstimate());
-		assertEquals(10, unplan.getActual());
+		//assertEquals(10, unplan.getActual());
 
 		unplan.setName("TEST_NAME2").setNotes("TEST_NOTES2").setEstimate(5)
-			.setActual(1);
+			/*.setActual(1)*/;
 
 		assertEquals(1, unplan.getId());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals("TEST_NAME2", unplan.getName());
 		assertEquals("TEST_NOTES2", unplan.getNotes());
 		assertEquals(5, unplan.getEstimate());
-		assertEquals(1, unplan.getActual());
+		//assertEquals(1, unplan.getActual());
 
 		try {
 			unplan.reload();
@@ -598,7 +598,7 @@ public class UnplanObjectTest {
 			assertEquals("TEST_NAME", unplan.getName());
 			assertEquals("TEST_NOTES", unplan.getNotes());
 			assertEquals(10, unplan.getEstimate());
-			assertEquals(10, unplan.getActual());
+			//assertEquals(10, unplan.getActual());
 		} catch (Exception e) {
 		}
 	}
@@ -611,7 +611,7 @@ public class UnplanObjectTest {
 		// create a unplan
 		UnplanObject unplan = new UnplanObject(sSprintId, sProjectId);
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-			.setActual(0).save();
+			/*.setActual(0)*/.save();
 		
 		// check unplan status before test
 		assertEquals("new", unplan.getStatusString());

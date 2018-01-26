@@ -154,7 +154,7 @@ Test Sprint Plan - Check Recommended Start Date
 
 Test Sprint Plan - Interval Check
     [Setup]    Test Interval Check Setup
-    Select Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint With Typing Zero In Interval    test sprint    1    100    100
     #It does nothing if Submit Button is disabled
     Click Element    xpath=//button[text()="Submit"]

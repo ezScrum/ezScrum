@@ -8,7 +8,7 @@ public class UnplanEnum {
 	public static final String HANDLER = "handler";
 	public static final String HANDLER_ID = "handler_id";
     public static final String ESTIMATE = "estimate";
-    public static final String ACTUAL = "actual";
+    //public static final String ACTUAL = "actual";
     public static final String NOTES = "notes";
     public static final String STATUS = "status";
     public static final String PROJECT_ID = "project_id";

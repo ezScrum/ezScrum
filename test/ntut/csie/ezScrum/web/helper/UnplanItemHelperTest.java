@@ -164,7 +164,7 @@ public class UnplanItemHelperTest {
 			result.append("<SprintID>").append(unplan.getSprintId()).append("</SprintID>");
 			result.append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>");
 			result.append("<Status>").append(unplan.getStatusString()).append("</Status>");
-			result.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>");
+			//result.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>");
 			result.append("<Handler>").append(unplan.getHandlerName()).append("</Handler>");
 			result.append("<Partners>").append(unplan.getPartnersUsername()).append("</Partners>");
 			result.append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>");

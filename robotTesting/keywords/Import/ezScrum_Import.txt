@@ -132,14 +132,14 @@ Assert Unplanned
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[3]    1
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[4]    3
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[5]    assigned
-    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[7]    account3
-    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[9]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[6]    account3
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[1]/table/tbody/tr/td[8]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
     #Compare Unplan02
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[2]    Unplan02
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[3]    1
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[4]    8
     Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[5]    new
-    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[9]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
+    Compare Text In Specific Xpath    //span[text()="Unplanned Item List"]/../../div[2]/div[2]/div/div/div/div/div/div[2]/div/div[2]/table/tbody/tr/td[8]    \\n\\t\\r\\b\\f \\n \\t \\r \\b \\f
 
 Test Import Same name Setup
     # 登入ezScrum

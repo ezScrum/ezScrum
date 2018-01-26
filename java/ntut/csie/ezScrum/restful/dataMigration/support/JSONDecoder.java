@@ -288,7 +288,7 @@ public class JSONDecoder {
 			String name = unplanJSON.getString(UnplanJSONEnum.NAME);
 			String handler = unplanJSON.getString(UnplanJSONEnum.HANDLER);
 			int estimate = unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
-			int actual = unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			//int actual = unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
 			String notes = unplanJSON.getString(UnplanJSONEnum.NOTES);
 			String status = unplanJSON.getString(UnplanJSONEnum.STATUS);
 			ArrayList<Long> partnersId = new ArrayList<Long>();
@@ -306,7 +306,7 @@ public class JSONDecoder {
 			unplan = new UnplanObject(sprintId, projectId);
 			unplan.setName(name)
 			        .setEstimate(estimate)
-			        .setActual(actual)
+			        /*.setActual(actual)*/
 			        .setNotes(notes)
 			        .setStatus(StatusTranslator.getStatusByStatusString(status));
 			if (!handler.isEmpty()) {

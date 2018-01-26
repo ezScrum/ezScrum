@@ -40,7 +40,7 @@ public class UnplanDAO extends AbstractDAO<UnplanObject, UnplanObject> {
 		valueSet.addInsertValue(UnplanEnum.NAME, unplan.getName());
 		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplan.getHandlerId());
 		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplan.getEstimate());
-		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
+		//valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
 		valueSet.addInsertValue(UnplanEnum.NOTES, unplan.getNotes());
 		valueSet.addInsertValue(UnplanEnum.STATUS, unplan.getStatus());
 		valueSet.addInsertValue(UnplanEnum.PROJECT_ID, unplan.getProjectId());
@@ -112,7 +112,7 @@ public class UnplanDAO extends AbstractDAO<UnplanObject, UnplanObject> {
 		valueSet.addInsertValue(UnplanEnum.NAME, unplan.getName());
 		valueSet.addInsertValue(UnplanEnum.HANDLER_ID, unplan.getHandlerId());
 		valueSet.addInsertValue(UnplanEnum.ESTIMATE, unplan.getEstimate());
-		valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
+		//valueSet.addInsertValue(UnplanEnum.ACTUAL, unplan.getActual());
 		valueSet.addInsertValue(UnplanEnum.NOTES, unplan.getNotes());
 		valueSet.addInsertValue(UnplanEnum.STATUS, unplan.getStatus());
 		valueSet.addInsertValue(UnplanEnum.SPRINT_ID, unplan.getSprintId());
@@ -265,7 +265,7 @@ public class UnplanDAO extends AbstractDAO<UnplanObject, UnplanObject> {
 		unplan.setName(result.getString(UnplanEnum.NAME))
 				.setHandlerId(result.getLong(UnplanEnum.HANDLER_ID))
 				.setEstimate(result.getInt(UnplanEnum.ESTIMATE))
-				.setActual(result.getInt(UnplanEnum.ACTUAL))
+				//.setActual(result.getInt(UnplanEnum.ACTUAL))
 				.setStatus(result.getInt(UnplanEnum.STATUS))
 				.setNotes(result.getString(UnplanEnum.NOTES))
 				.setSprintId(result.getLong(UnplanEnum.SPRINT_ID))

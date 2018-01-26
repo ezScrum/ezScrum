@@ -244,7 +244,7 @@ public class JSONCheckerTest {
 		assertFalse(JSONChecker.checkUnplanJSON(unplanJSON.toString()).isEmpty());
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 1);
 		assertFalse(JSONChecker.checkUnplanJSON(unplanJSON.toString()).isEmpty());
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
 		assertFalse(JSONChecker.checkUnplanJSON(unplanJSON.toString()).isEmpty());
 		unplanJSON.put(UnplanJSONEnum.NOTES, "notes");
 		assertFalse(JSONChecker.checkUnplanJSON(unplanJSON.toString()).isEmpty());

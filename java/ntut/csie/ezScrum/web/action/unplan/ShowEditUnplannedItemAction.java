@@ -40,7 +40,7 @@ public class ShowEditUnplannedItemAction extends Action {
 		  .append("<SprintID>").append(sprint.getSerialId()).append("</SprintID>")
 		  .append("<Estimate>").append(unplan.getEstimate()).append("</Estimate>")
 		  .append("<Status>").append(unplan.getStatusString()).append("</Status>")
-		  .append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")
+		  //.append("<ActualHour>").append(unplan.getActual()).append("</ActualHour>")
 		  .append("<Handler>").append(unplan.getHandlerName()).append("</Handler>")
 		  .append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getPartnersUsername())).append("</Partners>")
 		  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplan.getNotes())).append("</Notes>")

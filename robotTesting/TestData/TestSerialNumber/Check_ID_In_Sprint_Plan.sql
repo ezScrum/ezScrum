@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -378,10 +378,10 @@ CREATE TABLE IF NOT EXISTS `task` (
 
 -- 正在導出表  ezscrum_180.task 的資料：3 rows
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 1, 'task1', -1, 1, 10, 10, 0, 'note', 1454379716424, 1454379716424),
-	(2, 2, 1, 2, 'task2', -1, 1, 10, 10, 0, 'note', 1454379730518, 1454379730518),
-	(3, 3, 1, 3, 'task3', -1, 1, 10, 10, 0, 'note', 1454379746750, 1454379746750);
+INSERT INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, /*`actual`,*/ `notes`, `create_time`, `update_time`) VALUES
+	(1, 1, 1, 1, 'task1', -1, 1, 10, 10, /*0,*/ 'note', 1454379716424, 1454379716424),
+	(2, 2, 1, 2, 'task2', -1, 1, 10, 10, /*0,*/ 'note', 1454379730518, 1454379730518),
+	(3, 3, 1, 3, 'task3', -1, 1, 10, 10, /*0,*/ 'note', 1454379746750, 1454379746750);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,
@@ -423,10 +423,10 @@ CREATE TABLE IF NOT EXISTS `unplan` (
 
 -- 正在導出表  ezscrum_180.unplan 的資料：3 rows
 /*!40000 ALTER TABLE `unplan` DISABLE KEYS */;
-INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, `actual`, `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'unplanned1', -1, 0, 0, '', 1, 1, 1, 1454379911137, 1454379911137),
-	(2, 2, 'unplanned2', -1, 0, 0, '', 1, 1, 1, 1454379920011, 1454379920011),
-	(3, 3, 'unplanned3', -1, 0, 0, '', 1, 1, 1, 1454379928966, 1454379928966);
+INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, /*`actual`,*/ `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
+	(1, 1, 'unplanned1', -1, 0, /*0,*/ '', 1, 1, 1, 1454379911137, 1454379911137),
+	(2, 2, 'unplanned2', -1, 0, /*0,*/ '', 1, 1, 1, 1454379920011, 1454379920011),
+	(3, 3, 'unplanned3', -1, 0, /*0,*/ '', 1, 1, 1, 1454379928966, 1454379928966);
 /*!40000 ALTER TABLE `unplan` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
