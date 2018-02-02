@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -19,6 +20,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ExportJSONEnum;
+import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.ResponseJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.SprintJSONEnum;
@@ -27,7 +29,9 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
+import ntut.csie.ezScrum.restful.dataMigration.support.HistoryTypeTranslator;
 import ntut.csie.ezScrum.restful.dataMigration.support.ResponseFactory;
+import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -157,6 +161,9 @@ public class IntegratedRESTfulApi {
 
 				//// Create Sprints
 				JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
+				HashMap<Long, Long> sprintIdMap = new HashMap<Long, Long>();
+				HashMap<Long, Long> storyIdMap = new HashMap<Long, Long>();
+				HashMap<Long, Long> taskIdMap = new HashMap<Long, Long>();
 				for (int j = 0; j < sprintJSONArray.length(); j++) {
 					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
 					response = mClient.target(mBaseUrl)
@@ -172,6 +179,8 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
 					long sprintId = contentJSON.getLong(SprintEnum.ID);
+					System.out.println("Sprint: "+sprintJSON.getLong(StoryJSONEnum.ID)+" "+sprintId);
+					sprintIdMap.put(sprintJSON.getLong(StoryJSONEnum.ID), sprintId);
 					// Put new SprintId into JSON
 					sprintJSON.put(SprintJSONEnum.ID, sprintId);
 
@@ -193,6 +202,8 @@ public class IntegratedRESTfulApi {
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
 						long storyId = contentJSON.getLong(StoryEnum.ID);
+						System.out.println("Story: "+storyJSON.getLong(StoryEnum.ID)+" "+storyId);
+						storyIdMap.put(storyJSON.getLong(StoryEnum.ID), storyId);
 						// Put new StoryId into JSON
 						storyJSON.put(SprintJSONEnum.ID, storyId);
 
@@ -247,6 +258,8 @@ public class IntegratedRESTfulApi {
 							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
 							long taskId = contentJSON.getLong(TaskEnum.ID);
+							System.out.println("Task: "+taskJSON.getLong(TaskJSONEnum.ID)+" "+taskId);
+							taskIdMap.put(taskJSON.getLong(TaskJSONEnum.ID), taskId);
 							// Put new TaskId into JSON
 							taskJSON.put(TaskJSONEnum.ID, taskId);
 
@@ -338,6 +351,8 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
 					long storyId = contentJSON.getLong(StoryEnum.ID);
+					System.out.println("Dropped story: "+droppedStoryJSON.getLong(StoryJSONEnum.ID)+" "+storyId);
+					storyIdMap.put(droppedStoryJSON.getLong(StoryJSONEnum.ID), storyId);
 					// Put new StoryId into JSON
 					droppedStoryJSON.put(StoryJSONEnum.ID, storyId);
 
@@ -427,6 +442,8 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
 					long taskId = contentJSON.getLong(TaskEnum.ID);
+					System.out.println("Dropped task: "+taskJSON.getLong(TaskJSONEnum.ID)+" "+taskId);
+					taskIdMap.put(taskJSON.getLong(TaskJSONEnum.ID), taskId);
 					// Put new TaskId into JSON
 					taskJSON.put(TaskJSONEnum.ID, taskId);
 
@@ -448,8 +465,10 @@ public class IntegratedRESTfulApi {
 
 				//// Create Histories
 				// Create Histories in Dropped Story
+				System.out.println("Dropped Story History");
 				for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
 					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
+					System.out.println(droppedStoryJSON.toString());
 					long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
 					// Delete old Histories
 					response = mClient.target(mBaseUrl)
@@ -465,9 +484,30 @@ public class IntegratedRESTfulApi {
 					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
+						System.out.println(historyJSON.toString());
+						String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+						long sprintId=0, taskId=0;
+						if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							sprintId = sprintIdMap.get(newValue);
+						}
+						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							sprintId = sprintIdMap.get(newValue);
+						}
+						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_ADD){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							taskId = taskIdMap.get(newValue);
+						}
+						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_DROP){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							taskId = taskIdMap.get(newValue);
+						}
 						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + droppedStoryId +
+						                "/sprints" + sprintId +
+						                "/tasks/" + taskId +
 						                "/histories")
 						        .request()
 						        .header(SecurityModule.USERNAME_HEADER, username)
@@ -478,8 +518,10 @@ public class IntegratedRESTfulApi {
 
 					// Create Histories in Task
 					JSONArray taskJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TASKS);
+					System.out.println("It is create task history in dropped story");
 					for (int k = 0; k < taskJSONArray.length(); k++) {
 						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+						System.out.println(taskJSON.toString());
 						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 						// Delete old Histories
 						response = mClient.target(mBaseUrl)
@@ -493,9 +535,11 @@ public class IntegratedRESTfulApi {
 						        .delete();
 						response.close();
 						// Add Histories to Story
+						System.out.println("It is create story history in dropped story");
 						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
+							System.out.println(historyJSON.toString());
 							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/stories/" + droppedStoryId +
@@ -511,8 +555,10 @@ public class IntegratedRESTfulApi {
 				}
 
 				// Create Histories in Dropped Task
+				System.out.println("Dropped Task History");
 				for (int j = 0; j < droppedTaskJSONArray.length(); j++) {
 					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
+					System.out.println(taskJSON.toString());
 					long droppedTaskId = taskJSON.getLong(TaskJSONEnum.ID);
 					// Delete old Histories
 					response = mClient.target(mBaseUrl)
@@ -524,13 +570,26 @@ public class IntegratedRESTfulApi {
 					        .header(SecurityModule.PASSWORD_HEADER, password)
 					        .delete();
 					response.close();
-					// Add Histories to Story
+					// Add Histories to Task
+					System.out.println("It is create task history in dropped task");
 					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
+						System.out.println(historyJSON.toString());
+						String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+						long storyId=0;
+						if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							storyId = storyIdMap.get(newValue);
+						}
+						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
+							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+							storyId = storyIdMap.get(newValue);
+						}
 						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/tasks/" + droppedTaskId +
+						                "/stories/" + storyId +
 						                "/histories")
 						        .request()
 						        .header(SecurityModule.USERNAME_HEADER, username)
@@ -541,12 +600,14 @@ public class IntegratedRESTfulApi {
 				}
 
 				// Create Histories in Story
+				System.out.println("Story history");
 				for (int j = 0; j < sprintJSONArray.length(); j++) {
 					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
 					long sprintId = sprintJSON.getLong(SprintJSONEnum.ID);
 					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
 					for (int k = 0; k < storyJSONArray.length(); k++) {
 						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
+						System.out.println(storyJSON.toString());
 						long storyId = storyJSON.getLong(StoryJSONEnum.ID);
 						// Delete old Histories
 						response = mClient.target(mBaseUrl)
@@ -563,6 +624,7 @@ public class IntegratedRESTfulApi {
 						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
+							System.out.println(historyJSON.toString());
 							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
@@ -577,8 +639,10 @@ public class IntegratedRESTfulApi {
 
 						// Create Histories in Task
 						JSONArray taskJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TASKS);
+						System.out.println("Task History");
 						for (int l = 0; l < taskJSONArray.length(); l++) {
 							JSONObject taskJSON = taskJSONArray.getJSONObject(l);
+							System.out.println(taskJSON.toString());
 							long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 							// Delete old Histories
 							response = mClient.target(mBaseUrl)
@@ -596,6 +660,7 @@ public class IntegratedRESTfulApi {
 							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 							for (int m = 0; m < historyInTaskJSONArray.length(); m++) {
 								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(m);
+								System.out.println(historyJSON.toString());
 								response = mClient.target(mBaseUrl)
 								        .path("projects/" + projectId +
 								                "/sprints/" + sprintId +

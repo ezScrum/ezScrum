@@ -63,10 +63,11 @@ public class DroppedTaskRESTfulApi {
 	}
 	
 	@POST
-	@Path("/{taskId}/histories")
+	@Path("/{taskId}/stories/{storyId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInDroppedTask(@PathParam("projectId") long projectId,
 	                                 		   @PathParam("taskId") long taskId,
+	                                 		   @PathParam("storyId")long storyId,
 	                                 		   @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
 	    									   @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 		   String entity) {
@@ -87,7 +88,7 @@ public class DroppedTaskRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
 		// Get HistoryObject
-		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity);
+		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity, storyId);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}

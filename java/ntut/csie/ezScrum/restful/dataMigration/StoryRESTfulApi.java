@@ -122,7 +122,7 @@ public class StoryRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
 		// Get HistoryObject
-		HistoryObject history = JSONDecoder.toHistory(story.getId(), IssueTypeEnum.TYPE_STORY, entity);
+		HistoryObject history = JSONDecoder.toHistory(story.getId(), IssueTypeEnum.TYPE_STORY, entity, sprintId);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
