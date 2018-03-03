@@ -357,12 +357,13 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/appended_to_remove_or_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/stories/" + story.getId() + 
 		                "/tasks/" + task.getId() + 
+		                "/appended_to_remove_or_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
@@ -400,12 +401,13 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/appended_to_remove_or_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/stories/" + story.getId() + 
 		                "/tasks/" + task.getId() + 
+		                "/appended_to_remove_or_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
@@ -443,12 +445,13 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/appended_to_remove_or_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/stories/" + story.getId() + 
 		                "/tasks/" + task.getId() + 
+		                "/appended_to_remove_or_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)
@@ -486,12 +489,13 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/appended_to_remove_or_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/stories/" + story.getId() + 
 		                "/tasks/" + task.getId() + 
+		                "/appended_to_remove_or_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, wrongAdminUsername)

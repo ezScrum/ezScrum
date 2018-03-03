@@ -40,6 +40,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
@@ -194,7 +195,9 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testCreateHistoryInDroppedStory() throws JSONException {
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = new SprintObject(project.getId());
 		StoryObject story = new StoryObject(project.getId());
+		TaskObject task = new TaskObject(project.getId());
 		story.save();
 		
 		// Check story's histories before create history
@@ -208,10 +211,12 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, "closed")
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
@@ -723,7 +728,9 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String invalidPassword = "wrongAdminPassword";
 		
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = new SprintObject(project.getId());
 		StoryObject story = new StoryObject(project.getId());
+		TaskObject task = new TaskObject(project.getId());
 		story.save();
 		
 		// Check story's histories before create history
@@ -737,10 +744,12 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, "closed")
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -763,7 +772,9 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String invalidPassword = "";
 		
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = new SprintObject(project.getId());
 		StoryObject story = new StoryObject(project.getId());
+		TaskObject task = new TaskObject(project.getId());
 		story.save();
 		
 		// Check story's histories before create history
@@ -777,10 +788,12 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, "closed")
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -803,7 +816,9 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		String invalidPassword = null;
 		
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject sprint = new SprintObject(project.getId());
 		StoryObject story = new StoryObject(project.getId());
+		TaskObject task = new TaskObject(project.getId());
 		story.save();
 		
 		// Check story's histories before create history
@@ -817,10 +832,12 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, "closed")
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)

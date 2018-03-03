@@ -495,10 +495,10 @@ public class ShowIssueHistoryTest extends MockStrutsTestCase {
 		JSONObject historyObj = new JSONObject(actualResponseText);
 		ArrayList<String> expectedDescription = genArrayList("Create Task #1",
 		        "Append to Story #1", "Not Check Out => Check Out", "admin",
-		        "1 => 0", "Check Out => Done", "Done => Check Out",
+		        "1 => 0", "Check Out => Done", "0 => 1", "Done => Check Out",
 		        "Check Out => Not Check Out", "Remove handler admin");
 		ArrayList<String> expectedHistoryType = genArrayList("", "", "Status",
-		        "Handler", "Remains", "Status", "Status", "Status", "Handler");
+		        "Handler", "Remains", "Status", "Remains", "Status", "Status", "Handler");
 
 		assertData(expectedHistoryType, expectedDescription,
 		        historyObj.getJSONArray("IssueHistories"));

@@ -394,7 +394,41 @@ public class JSONDecoder {
 			           .setNewValue(newValue);
 			}
 		} catch (JSONException e) {
-			System.out.println("JSONException: "+e);
+			history = null;
+		}
+		return history;
+	}
+	
+	public static HistoryObject toHistory(long issueId, int issueType, String historyJSONString, long oldSprintId, long newSprintId) {
+		HistoryObject history = null;
+		try {
+			JSONObject historyJSON = new JSONObject(historyJSONString);
+
+			// Get Story Information
+			String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+			String oldValue = historyJSON.getString(HistoryJSONEnum.OLD_VALUE);
+			String newValue = historyJSON.getString(HistoryJSONEnum.NEW_VALUE);
+			long createTime = historyJSON.getLong(HistoryJSONEnum.CREATE_TIME);
+
+			// Create HistoryObject
+			history = new HistoryObject();
+			history.setIssueId(issueId)
+			       .setIssueType(issueType)
+			       .setHistoryType(HistoryTypeTranslator.getHistoryType(type))
+			       .setCreateTime(createTime);
+			if (HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_STATUS) {
+				history.setOldValue(String.valueOf(StatusTranslator.getStatusByStatusString(oldValue)))
+				       .setNewValue(String.valueOf(StatusTranslator.getStatusByStatusString(newValue)));
+			}
+			else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_SPRINT_ID){
+				history.setOldValue(String.valueOf(oldSprintId));
+				history.setNewValue(String.valueOf(newSprintId));
+			}
+			else {
+				history.setOldValue(oldValue)
+			           .setNewValue(newValue);
+			}
+		} catch (JSONException e) {
 			history = null;
 		}
 		return history;

@@ -59,11 +59,13 @@ public class UnplanRESTfulApi {
 	}
 
 	@POST
-	@Path("/{unplanId}/histories")
+	@Path("/{unplanId}/old_sprints/{oldSprintId}/new_sprints/{newSprintId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInUnplan(@PathParam("projectId") long projectId,
 	                                 	  @PathParam("sprintId") long sprintId,
 	                                 	  @PathParam("unplanId") long unplanId,
+	                                 	  @PathParam("oldSprintId") long oldSprintId,
+	                                 	  @PathParam("newSprintId") long newSprintId,
 	                                 	  @HeaderParam(SecurityModule.USERNAME_HEADER) String username,
 	    	        					  @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 	  String entity) {
@@ -85,7 +87,7 @@ public class UnplanRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
 		// Get HistoryObject
-		HistoryObject history = JSONDecoder.toHistory(unplanId, IssueTypeEnum.TYPE_UNPLAN, entity);
+		HistoryObject history = JSONDecoder.toHistory(unplanId, IssueTypeEnum.TYPE_UNPLAN, entity, oldSprintId, newSprintId);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}

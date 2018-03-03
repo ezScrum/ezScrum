@@ -67,12 +67,13 @@ public class TaskRESTfulApi {
 	}
 	
 	@POST
-	@Path("/{taskId}/histories")
+	@Path("/{taskId}/appended_to_remove_or_from_stories/{appendedToOrRemovedFromStoryId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInTask(@PathParam("projectId") long projectId,
 	                                 	@PathParam("sprintId") long sprintId,
 	                                 	@PathParam("storyId") long storyId,
 	                                 	@PathParam("taskId") long taskId,
+	                                 	@PathParam("appendedToOrRemovedFromStoryId") long appendedToOrRemovedFromStoryId,
 	                                 	@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
 	  					                @HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 	                                 	String entity) {
@@ -97,7 +98,7 @@ public class TaskRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
 		// Get HistoryObject
-		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity, storyId);
+		HistoryObject history = JSONDecoder.toHistory(taskId, IssueTypeEnum.TYPE_TASK, entity, appendedToOrRemovedFromStoryId);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}

@@ -271,6 +271,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"Id\":\"").append(taskId).append("\",")
 		        .append("\"Name\":\"").append(task.getName()).append("\",")
 		        .append("\"Estimate\":\"").append(task.getEstimate()).append("\",")
+		        .append("\"IsRemainHoursChanged\":").append(task.isRemainHoursChanged()).append(",")
 		        .append("\"RemainHours\":\"").append(task.getRemains()).append("\",")
 		        .append("\"HandlerUserName\":\"\",")
 		        .append("\"Notes\":\"").append(task.getNotes()).append("\",")

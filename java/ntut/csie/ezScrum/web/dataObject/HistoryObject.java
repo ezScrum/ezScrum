@@ -284,7 +284,11 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
 			long sprintId = Long.parseLong(mNewValue);
 			SprintObject sprint = SprintObject.get(sprintId);
-			return "Append to Sprint #" + sprint.getSerialId();
+			if(sprint == null) {
+				return "";
+			} else {
+				return "Append to Sprint #" + sprint.getSerialId();
+			}
 		}
 		return "";
 	}
@@ -297,7 +301,11 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 		} else if (mIssueType == IssueTypeEnum.TYPE_STORY) {
 			long sprintId = Long.parseLong(mNewValue);
 			SprintObject sprint = SprintObject.get(sprintId);
-			return "Remove from Sprint #" + sprint.getSerialId();
+			if(sprint == null) {
+				return "";
+			} else {
+				return "Remove from Sprint #" + sprint.getSerialId();
+			}
 		}
 		return "";
 	}

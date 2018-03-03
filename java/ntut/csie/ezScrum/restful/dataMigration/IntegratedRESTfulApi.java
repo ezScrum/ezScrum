@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.dataMigration;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -88,6 +89,10 @@ public class IntegratedRESTfulApi {
 
 		// Create Projects
 		JSONArray projectJSONArray = null;
+		ArrayList<Long> projectIdList = new ArrayList<Long>();
+		HashMap<Long, Long> sprintIdMap = new HashMap<Long, Long>();
+		HashMap<Long, Long> storyIdMap = new HashMap<Long, Long>();
+		HashMap<Long, Long> taskIdMap = new HashMap<Long, Long>();
 		try {
 			projectJSONArray = importDataJSON.getJSONArray(ExportJSONEnum.PROJECTS);
 			//// Create Project
@@ -120,6 +125,7 @@ public class IntegratedRESTfulApi {
 				JSONObject responseJSON = new JSONObject(responseString);
 				JSONObject contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 				long projectId = contentJSON.getLong(ProjectEnum.ID);
+				projectIdList.add(projectId);
 
 				// Update ScrumRoles
 				JSONObject scrumRolesJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
@@ -161,9 +167,6 @@ public class IntegratedRESTfulApi {
 
 				//// Create Sprints
 				JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
-				HashMap<Long, Long> sprintIdMap = new HashMap<Long, Long>();
-				HashMap<Long, Long> storyIdMap = new HashMap<Long, Long>();
-				HashMap<Long, Long> taskIdMap = new HashMap<Long, Long>();
 				for (int j = 0; j < sprintJSONArray.length(); j++) {
 					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
 					response = mClient.target(mBaseUrl)
@@ -179,8 +182,7 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new SprintId
 					long sprintId = contentJSON.getLong(SprintEnum.ID);
-					System.out.println("Sprint: "+sprintJSON.getLong(StoryJSONEnum.ID)+" "+sprintId);
-					sprintIdMap.put(sprintJSON.getLong(StoryJSONEnum.ID), sprintId);
+					sprintIdMap.put(sprintJSON.getLong(SprintJSONEnum.ID), sprintId);
 					// Put new SprintId into JSON
 					sprintJSON.put(SprintJSONEnum.ID, sprintId);
 
@@ -202,10 +204,9 @@ public class IntegratedRESTfulApi {
 						contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 						// Get new StoryId
 						long storyId = contentJSON.getLong(StoryEnum.ID);
-						System.out.println("Story: "+storyJSON.getLong(StoryEnum.ID)+" "+storyId);
 						storyIdMap.put(storyJSON.getLong(StoryEnum.ID), storyId);
 						// Put new StoryId into JSON
-						storyJSON.put(SprintJSONEnum.ID, storyId);
+						storyJSON.put(StoryJSONEnum.ID, storyId);
 
 						// Add Tag to Story
 						JSONArray tagInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TAGS);
@@ -258,7 +259,6 @@ public class IntegratedRESTfulApi {
 							contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 							// Get new TaskId
 							long taskId = contentJSON.getLong(TaskEnum.ID);
-							System.out.println("Task: "+taskJSON.getLong(TaskJSONEnum.ID)+" "+taskId);
 							taskIdMap.put(taskJSON.getLong(TaskJSONEnum.ID), taskId);
 							// Put new TaskId into JSON
 							taskJSON.put(TaskJSONEnum.ID, taskId);
@@ -351,7 +351,6 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new StoryId
 					long storyId = contentJSON.getLong(StoryEnum.ID);
-					System.out.println("Dropped story: "+droppedStoryJSON.getLong(StoryJSONEnum.ID)+" "+storyId);
 					storyIdMap.put(droppedStoryJSON.getLong(StoryJSONEnum.ID), storyId);
 					// Put new StoryId into JSON
 					droppedStoryJSON.put(StoryJSONEnum.ID, storyId);
@@ -442,7 +441,6 @@ public class IntegratedRESTfulApi {
 					contentJSON = responseJSON.getJSONObject(ResponseJSONEnum.JSON_KEY_CONTENT);
 					// Get new TaskId
 					long taskId = contentJSON.getLong(TaskEnum.ID);
-					System.out.println("Dropped task: "+taskJSON.getLong(TaskJSONEnum.ID)+" "+taskId);
 					taskIdMap.put(taskJSON.getLong(TaskJSONEnum.ID), taskId);
 					// Put new TaskId into JSON
 					taskJSON.put(TaskJSONEnum.ID, taskId);
@@ -462,13 +460,17 @@ public class IntegratedRESTfulApi {
 						response.close();
 					}
 				}
+			}
 
-				//// Create Histories
+			//// Create Histories
+			for (int i = 0; i < projectJSONArray.length(); i++){
+				JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+				long projectId = projectIdList.get(i);
+				Response response;
 				// Create Histories in Dropped Story
-				System.out.println("Dropped Story History");
+				JSONArray droppedStoryJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_STORIES);
 				for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
 					JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
-					System.out.println(droppedStoryJSON.toString());
 					long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
 					// Delete old Histories
 					response = mClient.target(mBaseUrl)
@@ -484,30 +486,37 @@ public class IntegratedRESTfulApi {
 					JSONArray historyInStoryJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInStoryJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(k);
-						System.out.println(historyJSON.toString());
 						String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
-						long sprintId=0, taskId=0;
+						long appendedToOrRemovedFromSprintId = 0, addedOrDroppedTaskId = 0;
 						if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							sprintId = sprintIdMap.get(newValue);
+							if(sprintIdMap.containsKey(newValue)){
+								appendedToOrRemovedFromSprintId = sprintIdMap.get(newValue);
+							}else{
+								continue;
+							}
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							sprintId = sprintIdMap.get(newValue);
+							if(sprintIdMap.containsKey(newValue)){
+								appendedToOrRemovedFromSprintId = sprintIdMap.get(newValue);
+							}else{
+								continue;
+							}
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_ADD){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							taskId = taskIdMap.get(newValue);
+							addedOrDroppedTaskId = taskIdMap.get(newValue);
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_DROP){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							taskId = taskIdMap.get(newValue);
+							addedOrDroppedTaskId = taskIdMap.get(newValue);
 						}
 						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/stories/" + droppedStoryId +
-						                "/sprints" + sprintId +
-						                "/tasks/" + taskId +
+						                "/appended_to_or_removed_from_sprints/" + appendedToOrRemovedFromSprintId +
+						                "/added_or_dropped_tasks/" + addedOrDroppedTaskId +
 						                "/histories")
 						        .request()
 						        .header(SecurityModule.USERNAME_HEADER, username)
@@ -518,10 +527,8 @@ public class IntegratedRESTfulApi {
 
 					// Create Histories in Task
 					JSONArray taskJSONArray = droppedStoryJSON.getJSONArray(StoryJSONEnum.TASKS);
-					System.out.println("It is create task history in dropped story");
 					for (int k = 0; k < taskJSONArray.length(); k++) {
 						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
-						System.out.println(taskJSON.toString());
 						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 						// Delete old Histories
 						response = mClient.target(mBaseUrl)
@@ -535,11 +542,9 @@ public class IntegratedRESTfulApi {
 						        .delete();
 						response.close();
 						// Add Histories to Story
-						System.out.println("It is create story history in dropped story");
 						JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInTaskJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(l);
-							System.out.println(historyJSON.toString());
 							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/stories/" + droppedStoryId +
@@ -555,10 +560,9 @@ public class IntegratedRESTfulApi {
 				}
 
 				// Create Histories in Dropped Task
-				System.out.println("Dropped Task History");
+				JSONArray droppedTaskJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.DROPPED_TASKS);
 				for (int j = 0; j < droppedTaskJSONArray.length(); j++) {
 					JSONObject taskJSON = droppedTaskJSONArray.getJSONObject(j);
-					System.out.println(taskJSON.toString());
 					long droppedTaskId = taskJSON.getLong(TaskJSONEnum.ID);
 					// Delete old Histories
 					response = mClient.target(mBaseUrl)
@@ -571,25 +575,23 @@ public class IntegratedRESTfulApi {
 					        .delete();
 					response.close();
 					// Add Histories to Task
-					System.out.println("It is create task history in dropped task");
 					JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 					for (int k = 0; k < historyInTaskJSONArray.length(); k++) {
 						JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(k);
-						System.out.println(historyJSON.toString());
 						String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
-						long storyId=0;
+						long appendedToOrRemovedFromStoryId = 0;
 						if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							storyId = storyIdMap.get(newValue);
+							appendedToOrRemovedFromStoryId = storyIdMap.get(newValue);
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							storyId = storyIdMap.get(newValue);
+							appendedToOrRemovedFromStoryId = storyIdMap.get(newValue);
 						}
 						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +
 						                "/tasks/" + droppedTaskId +
-						                "/stories/" + storyId +
+						                "/appended_to_or_removed_from_stories/" + appendedToOrRemovedFromStoryId +
 						                "/histories")
 						        .request()
 						        .header(SecurityModule.USERNAME_HEADER, username)
@@ -600,14 +602,13 @@ public class IntegratedRESTfulApi {
 				}
 
 				// Create Histories in Story
-				System.out.println("Story history");
+				JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
 				for (int j = 0; j < sprintJSONArray.length(); j++) {
 					JSONObject sprintJSON = sprintJSONArray.getJSONObject(j);
 					long sprintId = sprintJSON.getLong(SprintJSONEnum.ID);
 					JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
 					for (int k = 0; k < storyJSONArray.length(); k++) {
 						JSONObject storyJSON = storyJSONArray.getJSONObject(k);
-						System.out.println(storyJSON.toString());
 						long storyId = storyJSON.getLong(StoryJSONEnum.ID);
 						// Delete old Histories
 						response = mClient.target(mBaseUrl)
@@ -624,11 +625,38 @@ public class IntegratedRESTfulApi {
 						JSONArray historyInStoryJSONArray = storyJSON.getJSONArray(StoryJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInStoryJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInStoryJSONArray.getJSONObject(l);
-							System.out.println(historyJSON.toString());
+							long appendedToOrRemovedFromSprintId = 0, addedOrDroppedTaskId = 0;
+							String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+							if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
+								long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+								if(sprintIdMap.containsKey(newValue)){
+									appendedToOrRemovedFromSprintId = sprintIdMap.get(newValue);
+								}else{
+									continue;
+								}
+							}
+							else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
+								long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+								if(sprintIdMap.containsKey(newValue)){
+									appendedToOrRemovedFromSprintId = sprintIdMap.get(newValue);
+								}else{
+									continue;
+								}
+							}
+							else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_ADD){
+								long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+								addedOrDroppedTaskId = taskIdMap.get(newValue);
+							}
+							else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_DROP){
+								long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+								addedOrDroppedTaskId = taskIdMap.get(newValue);
+							}
 							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/stories/" + storyId +
+							                "/appended_to_or_removed_from_sprints/" + appendedToOrRemovedFromSprintId +
+							                "/added_or_dropped_tasks/" + addedOrDroppedTaskId + 
 							                "/histories")
 							        .request()
 							        .header(SecurityModule.USERNAME_HEADER, username)
@@ -639,10 +667,8 @@ public class IntegratedRESTfulApi {
 
 						// Create Histories in Task
 						JSONArray taskJSONArray = storyJSON.getJSONArray(StoryJSONEnum.TASKS);
-						System.out.println("Task History");
 						for (int l = 0; l < taskJSONArray.length(); l++) {
 							JSONObject taskJSON = taskJSONArray.getJSONObject(l);
-							System.out.println(taskJSON.toString());
 							long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 							// Delete old Histories
 							response = mClient.target(mBaseUrl)
@@ -660,12 +686,22 @@ public class IntegratedRESTfulApi {
 							JSONArray historyInTaskJSONArray = taskJSON.getJSONArray(TaskJSONEnum.HISTORIES);
 							for (int m = 0; m < historyInTaskJSONArray.length(); m++) {
 								JSONObject historyJSON = historyInTaskJSONArray.getJSONObject(m);
-								System.out.println(historyJSON.toString());
+								long appendedToOrRemovedFromStoryId = 0;
+								String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+								if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_APPEND){
+									long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+									appendedToOrRemovedFromStoryId = storyIdMap.get(newValue);
+								}
+								else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_REMOVE){
+									long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+									appendedToOrRemovedFromStoryId = storyIdMap.get(newValue);
+								}
 								response = mClient.target(mBaseUrl)
 								        .path("projects/" + projectId +
 								                "/sprints/" + sprintId +
 								                "/stories/" + storyId +
 								                "/tasks/" + taskId +
+								                "/appended_to_remove_or_from_stories/" + appendedToOrRemovedFromStoryId +
 								                "/histories")
 								        .request()
 								        .header(SecurityModule.USERNAME_HEADER, username)
@@ -696,10 +732,24 @@ public class IntegratedRESTfulApi {
 						JSONArray historyInUnplanJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.HISTORIES);
 						for (int l = 0; l < historyInUnplanJSONArray.length(); l++) {
 							JSONObject historyJSON = historyInUnplanJSONArray.getJSONObject(l);
+							long oldSprintId = 0, newSprintId = 0;
+							String type = historyJSON.getString(HistoryJSONEnum.HISTORY_TYPE);
+							if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_SPRINT_ID){
+								long oldValue = historyJSON.getLong(HistoryJSONEnum.OLD_VALUE);
+								long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
+								if(sprintIdMap.containsKey(oldValue)){
+									oldSprintId = sprintIdMap.get(oldValue);
+								}else{
+									continue;
+								}
+								newSprintId = sprintIdMap.get(newValue);
+							}
 							response = mClient.target(mBaseUrl)
 							        .path("projects/" + projectId +
 							                "/sprints/" + sprintId +
 							                "/unplans/" + unplanId +
+							                "/old_sprints/" + oldSprintId +
+							                "/new_sprints/" + newSprintId +
 							                "/histories")
 							        .request()
 							        .header(SecurityModule.USERNAME_HEADER, username)
@@ -722,4 +772,5 @@ public class IntegratedRESTfulApi {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("_yyyyMMddHHmmss");
 		return projectName + simpleDateFormat.format(calendar.getTime());
 	}
+	
 }

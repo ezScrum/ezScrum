@@ -172,6 +172,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testCreateHistoryInUnplan() throws JSONException {
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject oldSprint = new SprintObject(project.getId());
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
@@ -188,11 +189,13 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/old_sprints/{oldSprintId}/new_sprints/{newSprintId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/unplans/" + unplan.getId() +
+		                "/old_sprints/" + oldSprint.getId() +
+		                "/new_sprints/" + sprint.getId() +
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
@@ -403,6 +406,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String invalidUsername = "test";
 		String invalidPassword = "test";
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject oldSprint = new SprintObject(project.getId());
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
@@ -419,11 +423,13 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/old_sprints/{oldSprintId}/new_sprints/{newSprintId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/unplans/" + unplan.getId() +
+		                "/old_sprints/" + oldSprint.getId() +
+		                "/new_sprints/" + sprint.getId() +
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -445,6 +451,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String invalidUsername = null;
 		String invalidPassword = null;
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject oldSprint = new SprintObject(project.getId());
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
@@ -461,11 +468,13 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/old_sprints/{oldSprintId}/new_sprints/{newSprintId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/unplans/" + unplan.getId() +
+		                "/old_sprints/" + oldSprint.getId() +
+		                "/new_sprints/" + sprint.getId() +
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -487,6 +496,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String invalidUsername = "";
 		String invalidPassword = "";
 		ProjectObject project = mCP.getAllProjects().get(0);
+		SprintObject oldSprint = new SprintObject(project.getId());
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
@@ -503,11 +513,13 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/unplans/{unplanId}/old_sprints/{oldSprintId}/new_sprints/{newSprintId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		                "/sprints/" + sprint.getId() +
 		                "/unplans/" + unplan.getId() +
+		                "/old_sprints/" + oldSprint.getId() +
+		                "/new_sprints/" + sprint.getId() +
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)

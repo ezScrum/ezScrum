@@ -35,6 +35,7 @@ import ntut.csie.ezScrum.restful.dataMigration.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.dataMigration.security.SecurityModule;
 import ntut.csie.ezScrum.restful.dataMigration.support.BaseUrlDistributor;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -43,6 +44,7 @@ import ntut.csie.ezScrum.web.dataObject.ProjectObject;
 import ntut.csie.ezScrum.web.dataObject.SprintObject;
 import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TagObject;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.HistoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -53,6 +55,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -87,6 +90,10 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Add Story To Sprint
 		mASTS = new AddStoryToSprint(1, 8, mCS, mCP, CreateProductBacklog.COLUMN_TYPE_EST);
 		mASTS.exe();
+		
+		// Add Task To Story
+		mATTS = new AddTaskToStory(1, 8, mASTS, mCP);
+		mATTS.exe();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -215,6 +222,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 		StoryObject story = mASTS.getStories().get(0);
+		TaskObject task = mATTS.getTasks().get(0);
 		
 		JSONObject historyJSON = new JSONObject();
 		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
@@ -222,11 +230,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		              "/sprints/" + sprint.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
@@ -581,6 +591,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 		StoryObject story = mASTS.getStories().get(0);
+		TaskObject task = mATTS.getTasks().get(0);
 		
 		JSONObject historyJSON = new JSONObject();
 		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
@@ -588,11 +599,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		              "/sprints/" + sprint.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -623,6 +636,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 		StoryObject story = mASTS.getStories().get(0);
+		TaskObject task = mATTS.getTasks().get(0);
 		
 		JSONObject historyJSON = new JSONObject();
 		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
@@ -630,11 +644,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		              "/sprints/" + sprint.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
@@ -665,6 +681,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		ProjectObject project = mCP.getAllProjects().get(0);
 		SprintObject sprint = mCS.getSprints().get(0);
 		StoryObject story = mASTS.getStories().get(0);
+		TaskObject task = mATTS.getTasks().get(0);
 		
 		JSONObject historyJSON = new JSONObject();
 		historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, type)
@@ -672,11 +689,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		           .put(HistoryJSONEnum.NEW_VALUE, newValue)
 		           .put(HistoryJSONEnum.CREATE_TIME, createTime);
 
-		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/histories' API
+		// Call '/projects/{projectId}/sprints/{sprintId}/stories/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
 		              "/sprints/" + sprint.getId() +
-		              "/stories/" + story.getId() + 
+		              "/stories/" + story.getId() +
+		              "/appended_to_or_removed_from_sprints/" + sprint.getId() +
+		              "/added_or_dropped_tasks/" + task.getId() + 
 		              "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)

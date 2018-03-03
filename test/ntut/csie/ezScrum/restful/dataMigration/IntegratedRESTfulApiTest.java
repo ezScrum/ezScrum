@@ -250,6 +250,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Sprint
 		JSONArray sprintJSONArray = new JSONArray();
 		JSONObject sprintJSON = new JSONObject();
+		sprintJSON.put(SprintJSONEnum.ID, 1);
 		sprintJSON.put(SprintJSONEnum.GOAL, "TEST_SPRINT_GOAL");
 		sprintJSON.put(SprintJSONEnum.INTERVAL, 2);
 		sprintJSON.put(SprintJSONEnum.TEAM_SIZE, 4);
@@ -266,6 +267,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Story
 		JSONArray storyJSONArray = new JSONArray();
 		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.ID, 1);
 		storyJSON.put(StoryJSONEnum.NAME, "TEST_STORY_1");
 		storyJSON.put(StoryJSONEnum.STATUS, "new");
 		storyJSON.put(StoryJSONEnum.ESTIMATE, 3);
@@ -302,6 +304,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Tasks
 		JSONArray taskInStoryJSONArray = new JSONArray();
 		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.ID, 1);
 		taskJSON.put(TaskJSONEnum.NAME, "TEST_TASK_1");
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
@@ -374,6 +377,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Dropped Stories in Project
 		JSONArray droppedStoryJSONArray = new JSONArray();
 		JSONObject droppedStoryJSON = new JSONObject();
+		droppedStoryJSON.put(StoryJSONEnum.ID, 1);
 		droppedStoryJSON.put(StoryJSONEnum.NAME, "TEST_DROPPED_STORY");
 		droppedStoryJSON.put(StoryJSONEnum.STATUS, "new");
 		droppedStoryJSON.put(StoryJSONEnum.ESTIMATE, 8);
@@ -442,6 +446,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Dropped Tasks in Project
 		JSONArray droppedTaskJSONArray = new JSONArray();
 		JSONObject droppedTaskJSON = new JSONObject();
+		droppedTaskJSON.put(TaskJSONEnum.ID, 1);
 		droppedTaskJSON.put(TaskJSONEnum.NAME, "TEST_DROPPED_TASK");
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);
@@ -933,6 +938,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Sprint
 		JSONArray sprintJSONArray = new JSONArray();
 		JSONObject sprintJSON = new JSONObject();
+		sprintJSON.put(SprintJSONEnum.ID, 1);
 		sprintJSON.put(SprintJSONEnum.GOAL, "TEST_SPRINT_GOAL");
 		sprintJSON.put(SprintJSONEnum.INTERVAL, 2);
 		sprintJSON.put(SprintJSONEnum.TEAM_SIZE, 4);
@@ -949,6 +955,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Story
 		JSONArray storyJSONArray = new JSONArray();
 		JSONObject storyJSON = new JSONObject();
+		storyJSON.put(StoryJSONEnum.ID, 1);
 		storyJSON.put(StoryJSONEnum.NAME, "TEST_STORY_1");
 		storyJSON.put(StoryJSONEnum.STATUS, "new");
 		storyJSON.put(StoryJSONEnum.ESTIMATE, 3);
@@ -985,6 +992,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Tasks
 		JSONArray taskInStoryJSONArray = new JSONArray();
 		JSONObject taskJSON = new JSONObject();
+		taskJSON.put(TaskJSONEnum.ID, 1);
 		taskJSON.put(TaskJSONEnum.NAME, "TEST_TASK_1");
 		taskJSON.put(TaskJSONEnum.HANDLER, "TEST_ACCOUNT_2");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 8);
@@ -1057,6 +1065,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Dropped Stories in Project
 		JSONArray droppedStoryJSONArray = new JSONArray();
 		JSONObject droppedStoryJSON = new JSONObject();
+		droppedStoryJSON.put(StoryJSONEnum.ID, 1);
 		droppedStoryJSON.put(StoryJSONEnum.NAME, "TEST_DROPPED_STORY");
 		droppedStoryJSON.put(StoryJSONEnum.STATUS, "new");
 		droppedStoryJSON.put(StoryJSONEnum.ESTIMATE, 8);
@@ -1125,6 +1134,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Dropped Tasks in Project
 		JSONArray droppedTaskJSONArray = new JSONArray();
 		JSONObject droppedTaskJSON = new JSONObject();
+		droppedTaskJSON.put(TaskJSONEnum.ID, 1);
 		droppedTaskJSON.put(TaskJSONEnum.NAME, "TEST_DROPPED_TASK");
 		droppedTaskJSON.put(TaskJSONEnum.HANDLER, "");
 		droppedTaskJSON.put(TaskJSONEnum.ESTIMATE, 8);

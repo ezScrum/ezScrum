@@ -39,6 +39,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.web.dataObject.AccountObject;
 import ntut.csie.ezScrum.web.dataObject.HistoryObject;
 import ntut.csie.ezScrum.web.dataObject.ProjectObject;
+import ntut.csie.ezScrum.web.dataObject.StoryObject;
 import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.databaseEnum.IssueTypeEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RoleEnum;
@@ -174,6 +175,9 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Create Test Data - Project
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
+		// Create Test Data - Story
+		StoryObject story = new StoryObject(project.getId());
+		
 		// Create Test Data - Dropped Task
 		TaskObject task = new TaskObject(project.getId());
 		task.setName("TEST_NAME").save(); // no append to story
@@ -189,10 +193,11 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/tasks/{taskId}/appended_to_or_removed_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		                "/tasks/" + task.getId() + 
+		                "/tasks/" + task.getId() +
+		                "/appended_to_or_removed_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, SecurityModule.ADMIN_MD5_USERNAME)
@@ -456,6 +461,9 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Create Test Data - Project
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
+		// Create Test Data - Story
+		StoryObject story = new StoryObject(project.getId());
+		
 		// Create Test Data - Dropped Task
 		TaskObject task = new TaskObject(project.getId());
 		task.setName("TEST_NAME").save(); // no append to story
@@ -471,10 +479,11 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/tasks/{taskId}/appended_to_or_removed_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		                "/tasks/" + task.getId() + 
+		                "/tasks/" + task.getId() +
+		                "/appended_to_or_removed_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, invalidUsername)
@@ -499,6 +508,9 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Create Test Data - Project
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
+		// Create Test Data - Story
+		StoryObject story = new StoryObject(project.getId());
+		
 		// Create Test Data - Dropped Task
 		TaskObject task = new TaskObject(project.getId());
 		task.setName("TEST_NAME").save(); // no append to story
@@ -514,10 +526,11 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/tasks/{taskId}/appended_to_or_removed_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		                "/tasks/" + task.getId() + 
+		                "/tasks/" + task.getId() +
+		                "/appended_to_or_removed_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, nullUsername)
@@ -542,6 +555,9 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Create Test Data - Project
 		ProjectObject project = mCP.getAllProjects().get(0);
 		
+		// Create Test Data - Story
+		StoryObject story = new StoryObject(project.getId());
+		
 		// Create Test Data - Dropped Task
 		TaskObject task = new TaskObject(project.getId());
 		task.setName("TEST_NAME").save(); // no append to story
@@ -557,10 +573,11 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		historyJSON.put(HistoryJSONEnum.NEW_VALUE, "assigned");
 		historyJSON.put(HistoryJSONEnum.CREATE_TIME, createTime);
 		
-		// Call '/projects/{projectId}/tasks/{taskId}/histories' API
+		// Call '/projects/{projectId}/tasks/{taskId}/appended_to_or_removed_from_stories/{appendedToOrRemovedFromStoryId}/histories' API
 		Response response = mClient.target(BASE_URL)
 		        .path("projects/" + project.getId() +
-		                "/tasks/" + task.getId() + 
+		                "/tasks/" + task.getId() +
+		                "/appended_to_or_removed_from_stories/" + story.getId() + 
 		                "/histories")
 		        .request()
 		        .header(SecurityModule.USERNAME_HEADER, emptyUsername)

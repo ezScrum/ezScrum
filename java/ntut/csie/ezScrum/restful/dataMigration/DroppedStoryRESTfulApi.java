@@ -92,11 +92,12 @@ public class DroppedStoryRESTfulApi {
 	}
 
 	@POST
-	@Path("/{storyId}/sprints/{sprintId}/tasks/{taskId}/histories")
+	@Path("/{storyId}/appended_to_or_removed_from_sprints/{appendedToOrRemovedFromSprintId}/added_or_dropped_tasks/{addedOrDroppedTaskId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createHistoryInDroppedStory(@PathParam("projectId") long projectId,
 			        							@PathParam("storyId") long storyId,
-			        							@PathParam("taskId") long taskId,
+			        							@PathParam("appendedToOrRemovedFromSprintId") long appendedToOrRemovedFromSprintId,
+			        							@PathParam("addedOrDroppedTaskId") long addedOrDroppedTaskId,
 			        							@HeaderParam(SecurityModule.USERNAME_HEADER) String username,
 												@HeaderParam(SecurityModule.PASSWORD_HEADER) String password,
 			        							String entity) {
@@ -117,7 +118,14 @@ public class DroppedStoryRESTfulApi {
 			return ResponseFactory.getResponse(Response.Status.BAD_REQUEST, message, "");
 		}
 		// Get HistoryObject
-		HistoryObject history = JSONDecoder.toHistory(droppedStory.getId(), IssueTypeEnum.TYPE_STORY, entity, taskId);
+		long relationshipId = 0;
+		if(appendedToOrRemovedFromSprintId != 0){
+			relationshipId = appendedToOrRemovedFromSprintId;
+		}
+		else if(addedOrDroppedTaskId != 0){
+			relationshipId = addedOrDroppedTaskId;
+		}
+		HistoryObject history = JSONDecoder.toHistory(droppedStory.getId(), IssueTypeEnum.TYPE_STORY, entity, relationshipId);
 		history.save();
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, history.toString());
 	}
