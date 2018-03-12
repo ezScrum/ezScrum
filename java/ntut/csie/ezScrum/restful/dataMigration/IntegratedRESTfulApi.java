@@ -506,11 +506,19 @@ public class IntegratedRESTfulApi {
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_ADD){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							addedOrDroppedTaskId = taskIdMap.get(newValue);
+							if(taskIdMap.containsKey(newValue)){
+								addedOrDroppedTaskId = taskIdMap.get(newValue);
+							}else{
+								continue;
+							}
 						}
 						else if(HistoryTypeTranslator.getHistoryType(type) == HistoryObject.TYPE_DROP){
 							long newValue = historyJSON.getLong(HistoryJSONEnum.NEW_VALUE);
-							addedOrDroppedTaskId = taskIdMap.get(newValue);
+							if(taskIdMap.containsKey(newValue)){
+								addedOrDroppedTaskId = taskIdMap.get(newValue);
+							}else{
+								continue;
+							}
 						}
 						response = mClient.target(mBaseUrl)
 						        .path("projects/" + projectId +

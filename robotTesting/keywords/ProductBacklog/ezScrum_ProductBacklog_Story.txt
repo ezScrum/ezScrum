@@ -16,10 +16,8 @@ Verify Story Information With Arguments
     [Documentation]    驗證story是否正確（包括點選 edit story、+號、每一列的資料）
     # 比對 edit story widget content
     Click Element    xpath=//button[text()="Edit Story"]
-    #暫時用Wait Until Something來修理testTag的CI
     Comment    Set Browser Implicit Wait    5
     Wait Until Element Is Visible    //textarea[@name="Name"]    1 min
-    Wait Until Element Is Enabled    //input[@name="Tags"]    1 min
     Compare Field Content    //textarea[@name="Name"]    ${storyName}
     Compare Field Content    //input[@name="Value"]    ${storyValue}
     Compare Field Content    //input[@name="Estimate"]    ${storyEstimate}
@@ -47,7 +45,7 @@ Verify Story Information With Arguments
     ${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
     ${passed}=    Run Keyword And Return Status    Should Be Equal As Strings    ${testTagText}    ${correctTagText}
     Run Keyword If    ${passed}    Log    Passed
-    Run Keyword Unless    ${passed}    Log     Failed
+    Run Keyword Unless    ${passed}    Log    Failed
     #將兩個變數都轉為unicode才能比對
     #${correctTagText}=    Decode Bytes To String    ${correctTagText}    UTF-8
     #${testTagText}=    Decode Bytes To String    ${testTagText}    UTF-8
