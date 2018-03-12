@@ -54,7 +54,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		String partners = request.getParameter("Partners");
 		int estimate = Integer.parseInt(request.getParameter("Estimate"));
 		int remains = Integer.parseInt(request.getParameter("Remains"));
-		int actual = Integer.parseInt(request.getParameter("Actual"));
+		//int actual = Integer.parseInt(request.getParameter("Actual"));
 		String notes = request.getParameter("Notes");
 		
 		// Get Task
@@ -69,7 +69,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		taskInfo.estimate = estimate;
 		taskInfo.remains = remains;
 		taskInfo.notes = notes;
-		taskInfo.actual = actual;
+		//taskInfo.actual = actual;
 		
 		// Get Sprint
 		SprintObject sprint = SprintObject.get(project.getId(), serialSprintId);
@@ -89,7 +89,7 @@ public class AjaxEditTaskAction extends PermissionAction {
 		result.append("<Link>").append("LINK").append("</Link>");
 		result.append("<Name>").append(TranslateSpecialChar.TranslateXMLChar(task.getName())).append("</Name>");
 		result.append("<Estimate>").append(task.getEstimate()).append("</Estimate>");
-		result.append("<Actual>").append(task.getActual()).append("</Actual>");
+		//result.append("<Actual>").append(task.getActual()).append("</Actual>");
 		result.append("<Handler>").append(handlerUsername).append("</Handler>");
 		result.append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(task.getPartnersUsername())).append("</Partners>");
 		result.append("<Remains>").append(task.getRemains()).append("</Remains>");

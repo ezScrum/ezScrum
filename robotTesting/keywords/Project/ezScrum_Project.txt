@@ -87,7 +87,7 @@ Project With Different DB Name
 
 Check Project Is Create
     Wait Until Keyword Succeeds    1min    10s    Wait Until Page Contains Element    xpath=//ul[@class="x-tree-root-ct x-tree-no-lines"]/div//li/ul/li/div//span[text()="Modify Config"]
-    Select Project Management Item    Modify Config
+    Go To Page    Modify Config
     Wait Until Page Contains Element    xpath=//input[@name="ProjectName"]
     Compare Field Content    //input[@name="ProjectName"]    ${PROJECT_NAME}
     Compare Field Content    //input[@name="ProjectDisplayName"]    ${PROJECT_NAME}DisplayName
@@ -115,14 +115,14 @@ Check ProjectID Is Existed
     [Return]    ${_IsExisted}
 
 Clean ProductBacklog
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     # 清除所有的story, 此keyword放置keywords/ProductBacklog/ezScrum_ProductBacklog_Story.txt
     Clean All Story
     # 清除所有的tag, 此keyword放置keywords/ProductBacklog/ezScrum_ProductBacklog_Tag.txt
     Clean All Tag
 
 Clean SprintPlan
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     # get Sprint count
     ${_count} =    Get Matching Xpath Count    //div[@id="SprintPlan_Page"]//table[@class="x-grid3-row-table"]
     # delete all Sprint

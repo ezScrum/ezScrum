@@ -168,12 +168,12 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task1 = new TaskObject(mProject.getId());
 		task1.setStoryId(story1.getId()).setName("Test_Task_Name1")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task1.save();
 		TaskObject task2 = new TaskObject(mProject.getId());
 		task2.setStoryId(story1.getId()).setName("Test_Task_Name2")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task2.save();
 		
 		Response response = mClient.target(BASE_URL)
@@ -301,17 +301,17 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task1 = new TaskObject(mProject.getId());
 		task1.setStoryId(story.getId()).setName("Test_Task_Name1")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task1.save();
 		TaskObject task2 = new TaskObject(mProject.getId());
 		task2.setStoryId(story.getId()).setName("Test_Task_Name2")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task2.save();
 		TaskObject task3 = new TaskObject(mProject.getId());
 		task3.setStoryId(story.getId()).setName("Test_Task_Name3")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task3.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String storyId = String.valueOf(story.getId());
@@ -346,17 +346,17 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task1 = new TaskObject(mProject.getId());
 		task1.setStoryId(story.getId()).setName("Test_Task_Name1")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task1.save();
 		TaskObject task2 = new TaskObject(mProject.getId());
 		task2.setStoryId(story.getId()).setName("Test_Task_Name2")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task2.save();
 		TaskObject task3 = new TaskObject(mProject.getId());
 		task3.setStoryId(story.getId()).setName("Test_Task_Name3")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task3.save();
 		tasksId.add(task1.getId());
 		tasksId.add(task2.getId());
@@ -386,7 +386,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task = new TaskObject(mProject.getId());
 		task.setStoryId(story.getId()).setName("Test_Task_Name")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
@@ -440,7 +440,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task = new TaskObject(mProject.getId());
 		task.setStoryId(story.getId()).setName("Test_Task_Name")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task.save();
 		SprintObject invalidSprint = new SprintObject(mProject.getId());
 		invalidSprint.save();
@@ -468,7 +468,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		TaskObject task = new TaskObject(mProject.getId());
 		task.setStoryId(story.getId()).setName("Test_Task_Name")
 				.setStatus(TaskObject.STATUS_UNCHECK).setEstimate(13)
-				.setRemains(8).setActual(10).setNotes("Test_Task_Notes");
+				.setRemains(8)/*.setActual(10)*/.setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());
 		String taskId = String.valueOf(task.getId());
@@ -491,8 +491,8 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 				wholeJson.getLong(SprintBacklogUtil.TAG_ESTIMATE));
 		assertEquals(task.getRemains(),
 				wholeJson.getLong(SprintBacklogUtil.TAG_REMAINS));
-		assertEquals(task.getActual(),
-				wholeJson.getLong(SprintBacklogUtil.TAG_ACTUAL));
+		/*assertEquals(task.getActual(),
+				wholeJson.getLong(SprintBacklogUtil.TAG_ACTUAL));*/
 		assertEquals(task.getNotes(),
 				wholeJson.getString(SprintBacklogUtil.TAG_NOTES));
 	}
@@ -505,7 +505,7 @@ public class SprintBacklogWebServiceControllerTest extends JerseyTest {
 		story.save();
 		TaskObject task = new TaskObject(mProject.getId());
 		task.setName("Test_Task_Name").setStatus(TaskObject.STATUS_UNCHECK)
-				.setEstimate(13).setRemains(8).setActual(10)
+				.setEstimate(13).setRemains(8)/*.setActual(10)*/
 				.setNotes("Test_Task_Notes");
 		task.save();
 		String sprintId = String.valueOf(sprint.getId());

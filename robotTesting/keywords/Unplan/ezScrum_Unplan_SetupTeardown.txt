@@ -20,7 +20,7 @@ Test Unplan Add Setup
     ${PROJECT_NAME}    Set Variable    Project01
     Select Project    ${PROJECT_NAME}_DisplayName
     # Switch to Unplanned Page
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
 
 Test Unplan Add Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -34,7 +34,7 @@ Test Unplan Edit Setup
     ${PROJECT_NAME}    Set Variable    Project01
     Select Project    ${PROJECT_NAME}_DisplayName
     # Switch Unplanned Page
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
 
 Test Unplan Edit Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -48,7 +48,7 @@ Test Unplan Delete Setup
     ${PROJECT_NAME}    Set Variable    Project01
     Select Project    ${PROJECT_NAME}_DisplayName
     # Switch Unplanned Page
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
 
 Test Unplan Delete Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}

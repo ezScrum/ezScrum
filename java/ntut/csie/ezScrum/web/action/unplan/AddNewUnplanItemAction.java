@@ -81,7 +81,7 @@ public class AddNewUnplanItemAction extends PermissionAction {
 			  .append("<SprintID>").append(sprint.getSerialId()).append("</SprintID>")
 			  .append("<Estimate>").append(unplanItem.getEstimate()).append("</Estimate>")
 			  .append("<Status>").append(unplanItem.getStatusString()).append("</Status>")
-			  .append("<ActualHour>").append(unplanItem.getActual()).append("</ActualHour>")
+			  //.append("<ActualHour>").append(unplanItem.getActual()).append("</ActualHour>")
 			  .append("<Handler>").append(unplanItem.getHandlerName()).append("</Handler>")
 			  .append("<Partners>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getPartnersUsername())).append("</Partners>")
 			  .append("<Notes>").append(TranslateSpecialChar.TranslateXMLChar(unplanItem.getNotes())).append("</Notes>")

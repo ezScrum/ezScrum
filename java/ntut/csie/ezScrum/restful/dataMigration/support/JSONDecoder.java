@@ -238,7 +238,7 @@ public class JSONDecoder {
 			String handler = taskJSON.getString(TaskJSONEnum.HANDLER);
 			int estimate = taskJSON.getInt(TaskJSONEnum.ESTIMATE);
 			int remain = taskJSON.getInt(TaskJSONEnum.REMAIN);
-			int actual = taskJSON.getInt(TaskJSONEnum.ACTUAL);
+			//int actual = taskJSON.getInt(TaskJSONEnum.ACTUAL);
 			String notes = taskJSON.getString(TaskJSONEnum.NOTES);
 			String status = taskJSON.getString(TaskJSONEnum.STATUS);
 			ArrayList<Long> partnersId = new ArrayList<Long>();
@@ -257,7 +257,7 @@ public class JSONDecoder {
 			task.setName(name)
 			    .setEstimate(estimate)
 			    .setRemains(remain)
-			    .setActual(actual)
+			    //.setActual(actual)
 			    .setNotes(notes)
 			    .setStatus(StatusTranslator.getStatusByStatusString(status))
 			    .setStoryId(storyId);
@@ -288,7 +288,7 @@ public class JSONDecoder {
 			String name = unplanJSON.getString(UnplanJSONEnum.NAME);
 			String handler = unplanJSON.getString(UnplanJSONEnum.HANDLER);
 			int estimate = unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
-			int actual = unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			//int actual = unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
 			String notes = unplanJSON.getString(UnplanJSONEnum.NOTES);
 			String status = unplanJSON.getString(UnplanJSONEnum.STATUS);
 			ArrayList<Long> partnersId = new ArrayList<Long>();
@@ -306,7 +306,7 @@ public class JSONDecoder {
 			unplan = new UnplanObject(sprintId, projectId);
 			unplan.setName(name)
 			        .setEstimate(estimate)
-			        .setActual(actual)
+			        /*.setActual(actual)*/
 			        .setNotes(notes)
 			        .setStatus(StatusTranslator.getStatusByStatusString(status));
 			if (!handler.isEmpty()) {

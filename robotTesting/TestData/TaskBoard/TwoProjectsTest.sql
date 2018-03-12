@@ -532,7 +532,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -541,31 +541,31 @@ CREATE TABLE IF NOT EXISTS `task` (
 
 -- 正在導出表  ezscrum_180.task 的資料：24 rows
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-REPLACE INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, `actual`, `notes`, `create_time`, `update_time`) VALUES
-	(1, 1, 1, 2, 'SprintStoryTaskOne', 3, 2, 1, 1, 0, '1', 1489671063862, 1489672782262),
-	(2, 2, 1, 2, 'SprintStoryTaskTwo', 1, 2, 2, 2, 0, '2', 1489671084917, 1489673261718),
-	(3, 3, 1, 2, 'SprintStoryTaskThree', 1, 3, 3, 0, 0, '3', 1489671102948, 1489766690194),
-	(4, 4, 1, 2, 'SprintStoryTaskfour', 1, 2, 4, 4, 0, '4', 1489671109060, 1489673265358),
-	(5, 5, 1, 2, 'SprintStoryTask15', 3, 1, 5, 5, 0, '5', 1489671116098, 1489671306870),
-	(6, 6, 1, 3, 'SprintStoryTaskOne1', 1, 2, 21, 21, 0, '11', 1489671134283, 1489673180910),
-	(7, 7, 1, 3, 'SprintStoryTasktwo2', 1, 2, 22, 22, 0, '2', 1489671175099, 1489673257046),
-	(8, 8, 1, 3, 'SprintStoryTaskThree3', 1, 3, 23, 0, 0, '3', 1489671184287, 1489766681420),
-	(9, 9, 1, 3, 'SprintStoryTaskFour4', 1, 2, 24, 24, 0, '4', 1489671194605, 1489673156079),
-	(10, 10, 1, 4, 'SprintStoryTaskThreeOne', 2, 2, 31, 31, 0, '31', 1489671259147, 1489672943510),
-	(11, 11, 1, 4, 'SprintStoryTaskThree2', 1, 3, 32, 0, 0, '32', 1489671267019, 1489766285409),
-	(12, 12, 1, 4, 'SprintStoryTask33', 3, 1, 33, 33, 0, '33', 1489671276028, 1489671431102),
-	(13, 1, 2, 6, 'SprintStoryTaskOne', 2, 2, 1, 1, 0, '1', 1489671955364, 1489766751152),
-	(14, 2, 2, 6, 'SprintStoryTaskTwo', 3, 2, 2, 2, 0, '2', 1489671966451, 1489766744752),
-	(15, 3, 2, 6, 'SprintStoryTaskThree', 2, 1, 3, 3, 0, '3', 1489671973755, 1489672537848),
-	(16, 4, 2, 6, 'SprintStoryTaskfour', 1, 3, 4, 0, 0, '4', 1489671986861, 1489766746649),
-	(17, 5, 2, 6, 'SprintStoryTaskfive', 1, 2, 5, 5, 0, '5', 1489671995452, 1489766737401),
-	(18, 6, 2, 7, 'SprintStoryTaskOne1', 1, 2, 11, 11, 0, '11', 1489672007443, 1489766733921),
-	(19, 7, 2, 7, 'SprintStoryTasktwo2', 2, 3, 2, 0, 0, '2', 1489672014829, 1489766731121),
-	(20, 8, 2, 7, 'SprintStoryTaskThree3', 2, 2, 3, 3, 0, '3', 1489672033339, 1489766718042),
-	(21, 9, 2, 7, 'SprintStoryTaskFour4', 3, 2, 4, 4, 0, '4', 1489672045172, 1489766714942),
-	(22, 10, 2, 8, 'SprintStoryTaskThreeOne', 3, 2, 31, 31, 0, '31', 1489672106627, 1489766764498),
-	(23, 11, 2, 8, 'SprintStoryTaskThree2', 1, 3, 32, 0, 0, '32', 1489672121300, 1489766761129),
-	(24, 12, 2, 8, 'SprintStoryTaskThreeThree', 2, 1, 33, 33, 0, '33', 1489672139320, 1489672634313);
+REPLACE INTO `task` (`id`, `serial_id`, `project_id`, `story_id`, `name`, `handler_id`, `status`, `estimate`, `remain`, /*`actual`,*/ `notes`, `create_time`, `update_time`) VALUES
+	(1, 1, 1, 2, 'SprintStoryTaskOne', 3, 2, 1, 1, /*0,*/ '1', 1489671063862, 1489672782262),
+	(2, 2, 1, 2, 'SprintStoryTaskTwo', 1, 2, 2, 2, /*0,*/ '2', 1489671084917, 1489673261718),
+	(3, 3, 1, 2, 'SprintStoryTaskThree', 1, 3, 3, 0, /*0,*/ '3', 1489671102948, 1489766690194),
+	(4, 4, 1, 2, 'SprintStoryTaskfour', 1, 2, 4, 4, /*0,*/ '4', 1489671109060, 1489673265358),
+	(5, 5, 1, 2, 'SprintStoryTask15', 3, 1, 5, 5, /*0,*/ '5', 1489671116098, 1489671306870),
+	(6, 6, 1, 3, 'SprintStoryTaskOne1', 1, 2, 21, 21, /*0,*/ '11', 1489671134283, 1489673180910),
+	(7, 7, 1, 3, 'SprintStoryTasktwo2', 1, 2, 22, 22, /*0,*/ '2', 1489671175099, 1489673257046),
+	(8, 8, 1, 3, 'SprintStoryTaskThree3', 1, 3, 23, 0, /*0,*/ '3', 1489671184287, 1489766681420),
+	(9, 9, 1, 3, 'SprintStoryTaskFour4', 1, 2, 24, 24, /*0,*/ '4', 1489671194605, 1489673156079),
+	(10, 10, 1, 4, 'SprintStoryTaskThreeOne', 2, 2, 31, 31, /*0,*/ '31', 1489671259147, 1489672943510),
+	(11, 11, 1, 4, 'SprintStoryTaskThree2', 1, 3, 32, 0, /*0,*/ '32', 1489671267019, 1489766285409),
+	(12, 12, 1, 4, 'SprintStoryTask33', 3, 1, 33, 33, /*0,*/ '33', 1489671276028, 1489671431102),
+	(13, 1, 2, 6, 'SprintStoryTaskOne', 2, 2, 1, 1, /*0,*/ '1', 1489671955364, 1489766751152),
+	(14, 2, 2, 6, 'SprintStoryTaskTwo', 3, 2, 2, 2, /*0,*/ '2', 1489671966451, 1489766744752),
+	(15, 3, 2, 6, 'SprintStoryTaskThree', 2, 1, 3, 3, /*0,*/ '3', 1489671973755, 1489672537848),
+	(16, 4, 2, 6, 'SprintStoryTaskfour', 1, 3, 4, 0, /*0,*/ '4', 1489671986861, 1489766746649),
+	(17, 5, 2, 6, 'SprintStoryTaskfive', 1, 2, 5, 5, /*0,*/ '5', 1489671995452, 1489766737401),
+	(18, 6, 2, 7, 'SprintStoryTaskOne1', 1, 2, 11, 11, /*0,*/ '11', 1489672007443, 1489766733921),
+	(19, 7, 2, 7, 'SprintStoryTasktwo2', 2, 3, 2, 0, /*0,*/ '2', 1489672014829, 1489766731121),
+	(20, 8, 2, 7, 'SprintStoryTaskThree3', 2, 2, 3, 3, /*0,*/ '3', 1489672033339, 1489766718042),
+	(21, 9, 2, 7, 'SprintStoryTaskFour4', 3, 2, 4, 4, /*0,*/ '4', 1489672045172, 1489766714942),
+	(22, 10, 2, 8, 'SprintStoryTaskThreeOne', 3, 2, 31, 31, /*0,*/ '31', 1489672106627, 1489766764498),
+	(23, 11, 2, 8, 'SprintStoryTaskThree2', 1, 3, 32, 0, /*0,*/ '32', 1489672121300, 1489766761129),
+	(24, 12, 2, 8, 'SprintStoryTaskThreeThree', 2, 1, 33, 33, /*0,*/ '33', 1489672139320, 1489672634313);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 -- 導出  表 ezscrum_180.token 結構
@@ -591,7 +591,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,

@@ -121,7 +121,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String handler = handlerAccount.getUsername();
 		String partner = partnerAccount.getUsername();
 		int estimate = 3;
-		int actual = 2;
+		//int actual = 2;
 		String notes = "TEST_CREATE_UNPLAN";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -135,7 +135,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, name);
 		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
 		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
 		unplanJSON.put(UnplanJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -164,7 +164,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		assertEquals(name, unplan.getName());
 		assertEquals(handler, unplan.getHandler().getUsername());
 		assertEquals(estimate, unplan.getEstimate());
-		assertEquals(actual, unplan.getActual());
+		//assertEquals(actual, unplan.getActual());
 		assertEquals(notes, unplan.getNotes());
 		assertEquals(status, unplan.getStatusString());
 	}
@@ -176,7 +176,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-		.setActual(0).save();
+		/*.setActual(0)*/.save();
 		
 		// Check unplan's histories before create history
 		assertEquals(1, unplan.getHistories().size());
@@ -248,7 +248,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String handler = handlerAccount.getUsername();
 		String partner = partnerAccount.getUsername();
 		int estimate = 3;
-		int actual = 2;
+		//int actual = 2;
 		String notes = "TEST_CREATE_UNPLAN";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -262,7 +262,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, name);
 		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
 		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
 		unplanJSON.put(UnplanJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -303,7 +303,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String handler = handlerAccount.getUsername();
 		String partner = partnerAccount.getUsername();
 		int estimate = 3;
-		int actual = 2;
+		//int actual = 2;
 		String notes = "TEST_CREATE_UNPLAN";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -317,7 +317,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, name);
 		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
 		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
 		unplanJSON.put(UnplanJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -358,7 +358,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		String handler = handlerAccount.getUsername();
 		String partner = partnerAccount.getUsername();
 		int estimate = 3;
-		int actual = 2;
+		//int actual = 2;
 		String notes = "TEST_CREATE_UNPLAN";
 		String status = "assigned";
 		ProjectObject project = mCP.getAllProjects().get(0);
@@ -372,7 +372,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, name);
 		unplanJSON.put(UnplanJSONEnum.HANDLER, handler);
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, estimate);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, actual);
 		unplanJSON.put(UnplanJSONEnum.NOTES, notes);
 		unplanJSON.put(UnplanJSONEnum.STATUS, status);
 		JSONArray partnersIdJSONArray = new JSONArray();
@@ -410,7 +410,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-		.setActual(0).save();
+		/*.setActual(0)*/.save();
 		
 		// Check unplan's histories before create history
 		assertEquals(1, unplan.getHistories().size());
@@ -455,7 +455,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-		.setActual(0).save();
+		/*.setActual(0)*/.save();
 		
 		// Check unplan's histories before create history
 		assertEquals(1, unplan.getHistories().size());
@@ -500,7 +500,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		SprintObject sprint = mCS.getSprints().get(0);
 		UnplanObject unplan = new UnplanObject(sprint.getId(), project.getId());
 		unplan.setName("TEST_NAME").setNotes("TEST_NOTES").setEstimate(10)
-		.setActual(0).save();
+		/*.setActual(0)*/.save();
 		
 		// Check unplan's histories before create history
 		assertEquals(1, unplan.getHistories().size());

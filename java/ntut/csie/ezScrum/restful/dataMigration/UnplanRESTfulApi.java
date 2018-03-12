@@ -50,10 +50,10 @@ public class UnplanRESTfulApi {
 
 		// Create Unplan
 		UnplanObject unplan = JSONDecoder.toUnplan(projectId, sprintId, entity);
-		int actual = unplan.getActual();
+		//int actual = unplan.getActual();
 		unplan.save();
 		// Update Actual
-		unplan.setActual(actual);
+		//unplan.setActual(actual);
 		UnplanDAO.getInstance().update(unplan);
 		return ResponseFactory.getResponse(Response.Status.OK, ResponseJSONEnum.SUCCESS_MESSAGE, unplan.toString());
 	}

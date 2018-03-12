@@ -156,11 +156,11 @@ ezScrum.EditTaskForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
 		                }
 		            },
 		            state : ''
-		        },  {
+		        },  /*{
 		        	fieldLabel: 'Actual',
 		            name: 'Actual',
 		            vtype:'Float'
-		        }, {
+		        },*/ {
 		        	fieldLabel: 'Notes',
 		            xtype: 'textarea',
 		            name: 'Notes',

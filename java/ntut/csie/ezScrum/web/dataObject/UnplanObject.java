@@ -33,7 +33,7 @@ public class UnplanObject implements IBaseObject {
 	private String mName = "";
 	private String mNotes = "";
 	private int mEstimate = 0;
-	private int mActual = 0;
+	//private int mActual = 0;
 	private int mStatus = STATUS_UNCHECK;
 	private long mCreateTime = DEFAULT_VALUE;
 	private long mUpdateTime = DEFAULT_VALUE;
@@ -72,10 +72,10 @@ public class UnplanObject implements IBaseObject {
 		return this;
 	}
 	
-	public UnplanObject setActual(int actual) {
+	/*public UnplanObject setActual(int actual) {
 		mActual = actual;
 		return this;
-	}
+	}*/
 	
 	public UnplanObject setNotes(String notes) {
 		mNotes = notes;
@@ -150,9 +150,9 @@ public class UnplanObject implements IBaseObject {
 		return mEstimate;
 	}
 
-	public int getActual() {
+	/*public int getActual() {
 		return mActual;
-	}
+	}*/
 
 	public String getNotes() {
 		return mNotes;
@@ -244,7 +244,7 @@ public class UnplanObject implements IBaseObject {
 		
 		unplan.put(UnplanEnum.NAME, mName)
 				.put(UnplanEnum.ESTIMATE, mEstimate)
-				.put(UnplanEnum.ACTUAL, mActual)
+				//.put(UnplanEnum.ACTUAL, mActual)
 				.put(UnplanEnum.SPRINT_ID, mSprintId)
 				.put(UnplanEnum.PROJECT_ID, mProjectId)
 				.put(UnplanEnum.NOTES, mNotes)
@@ -328,7 +328,7 @@ public class UnplanObject implements IBaseObject {
 		setNotes(unplan.getNotes());
 		setSprintId(unplan.getSprintId());
 		setEstimate(unplan.getEstimate());
-		setActual(unplan.getActual());
+		//setActual(unplan.getActual());
 		setHandlerId(unplan.getHandlerId());
 		setStatus(unplan.getStatus());
 		setCreateTime(unplan.getCreateTime());
@@ -336,7 +336,7 @@ public class UnplanObject implements IBaseObject {
 	}
 
 	private void doCreate() {
-		mActual = mEstimate;
+		//mActual = mEstimate;
 		
 		mId = UnplanDAO.getInstance().create(this);
 		for (long partnerId : mPartnersId) {
@@ -367,9 +367,9 @@ public class UnplanObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
 					mEstimate, mUpdateTime);
 		}
-		if (mActual != oldUnplan.getActual()) {
+		/*if (mActual != oldUnplan.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual, mUpdateTime);
-		}
+		}*/
 		if (mSprintId != oldUnplan.getSprintId()) {
 			addHistory(HistoryObject.TYPE_SPRINT_ID, oldUnplan.getSprintId(), mSprintId, mUpdateTime);
 		}
@@ -399,10 +399,10 @@ public class UnplanObject implements IBaseObject {
 			addHistory(HistoryObject.TYPE_ESTIMATE, oldUnplan.getEstimate(),
 					mEstimate, mUpdateTime);
 		}
-		if (mActual != oldUnplan.getActual()) {
+		/*if (mActual != oldUnplan.getActual()) {
 			addHistory(HistoryObject.TYPE_ACTUAL, oldUnplan.getActual(), mActual,
 					mUpdateTime);
-		}
+		}*/
 		if (mStatus != oldUnplan.getStatus()) {
 			addHistory(HistoryObject.TYPE_STATUS, oldUnplan.getStatus(), mStatus,
 					mUpdateTime);

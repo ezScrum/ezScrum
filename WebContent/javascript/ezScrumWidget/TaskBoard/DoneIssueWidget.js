@@ -48,10 +48,10 @@ ezScrum.DoneForm = Ext.extend(ezScrum.layout.TaskBoardCardWindowForm, {
                         fieldLabel	: 'Name',
                         name      	: 'Name',
                         allowBlank	: false
-                    }, {
+                    }, /*{
                     	fieldLabel	: 'Actual Hour',
                     	name      	: 'Actualhour'
-                    }, {
+                    },*/ {
                         fieldLabel	: 'Notes',
                         xtype     	: 'textarea',
                         name      	: 'Notes',

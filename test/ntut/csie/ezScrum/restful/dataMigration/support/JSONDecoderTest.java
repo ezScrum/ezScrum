@@ -317,7 +317,7 @@ public class JSONDecoderTest {
 		taskJSON.put(TaskJSONEnum.HANDLER, "account1");
 		taskJSON.put(TaskJSONEnum.ESTIMATE, 1);
 		taskJSON.put(TaskJSONEnum.REMAIN, 2);
-		taskJSON.put(TaskJSONEnum.ACTUAL, 3);
+		//taskJSON.put(TaskJSONEnum.ACTUAL, 3);
 		taskJSON.put(TaskJSONEnum.NOTES, "notes");
 		taskJSON.put(TaskJSONEnum.STATUS, "assigned");
 		JSONArray partnerJSONArray = new JSONArray();
@@ -331,7 +331,7 @@ public class JSONDecoderTest {
 		assertEquals(taskJSON.getString(TaskJSONEnum.HANDLER), task.getHandler().getUsername());
 		assertEquals(taskJSON.getInt(TaskJSONEnum.ESTIMATE), task.getEstimate());
 		assertEquals(taskJSON.getInt(TaskJSONEnum.REMAIN), task.getRemains());
-		assertEquals(taskJSON.getInt(TaskJSONEnum.ACTUAL), task.getActual());
+		//assertEquals(taskJSON.getInt(TaskJSONEnum.ACTUAL), task.getActual());
 		assertEquals(taskJSON.getString(TaskJSONEnum.NOTES), task.getNotes());
 		assertEquals(TaskObject.STATUS_CHECK, task.getStatus());
 		assertEquals(projectId, task.getProjectId());
@@ -361,7 +361,7 @@ public class JSONDecoderTest {
 		unplanJSON.put(UnplanJSONEnum.NAME, "name");
 		unplanJSON.put(UnplanJSONEnum.HANDLER, "account1");
 		unplanJSON.put(UnplanJSONEnum.ESTIMATE, 1);
-		unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
+		//unplanJSON.put(UnplanJSONEnum.ACTUAL, 3);
 		unplanJSON.put(UnplanJSONEnum.NOTES, "notes");
 		unplanJSON.put(UnplanJSONEnum.STATUS, "assigned");
 		JSONArray partnerJSONArray = new JSONArray();
@@ -374,7 +374,7 @@ public class JSONDecoderTest {
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NAME), unplan.getName());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.HANDLER), unplan.getHandler().getUsername());
 		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ESTIMATE), unplan.getEstimate());
-		assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
+		//assertEquals(unplanJSON.getInt(UnplanJSONEnum.ACTUAL), unplan.getActual());
 		assertEquals(unplanJSON.getString(UnplanJSONEnum.NOTES), unplan.getNotes());
 		assertEquals(UnplanObject.STATUS_CHECK, unplan.getStatus());
 		assertEquals(projectId, unplan.getProjectId());

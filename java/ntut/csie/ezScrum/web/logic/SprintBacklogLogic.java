@@ -115,10 +115,10 @@ public class SprintBacklogLogic {
 				notes, closeDate);
 	}
 
-	public void closeTask(long id, String name, String notes, int actual,
+	public void closeTask(long id, String name, String notes, /*int actual,*/
 			String changeDate) {
 		Date closeDate = parseToDate(changeDate);
-		mSprintBacklogMapper.closeTask(id, name, notes, actual, closeDate);
+		mSprintBacklogMapper.closeTask(id, name, notes, /*actual,*/ closeDate);
 	}
 
 	public void reopenTask(long id, String name, String notes, String changeDate) {

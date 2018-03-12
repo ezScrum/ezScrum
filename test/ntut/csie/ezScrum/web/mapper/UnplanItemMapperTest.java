@@ -87,7 +87,7 @@ public class UnplanItemMapperTest {
 		assertEquals("TEST_UNPLAN_1", unplan.getName());
 		assertEquals("TEST_UNPLAN_NOTES_1", unplan.getNotes());
 		assertEquals(2, unplan.getEstimate());
-		assertEquals(2, unplan.getActual());
+		//assertEquals(2, unplan.getActual());
 		assertEquals(1, unplan.getSprintId());
 		assertEquals(1, unplan.getProjectId());
 	}
@@ -111,7 +111,7 @@ public class UnplanItemMapperTest {
 			assertEquals(expectUnplan.getName(), actualUnplan.getName());
 			assertEquals(expectUnplan.getNotes(), actualUnplan.getNotes());
 			assertEquals(expectUnplan.getEstimate(), actualUnplan.getEstimate());
-			assertEquals(expectUnplan.getActual(), actualUnplan.getActual());
+			//assertEquals(expectUnplan.getActual(), actualUnplan.getActual());
 			assertEquals(expectUnplan.getSprintId(), actualUnplan.getSprintId());
 			assertEquals(expectUnplan.getProjectId(), actualUnplan.getProjectId());
 		}
@@ -134,7 +134,7 @@ public class UnplanItemMapperTest {
 		unplanInfo.name = "TEST_NAME";
 		unplanInfo.notes = "TEST_NOTES";
 		unplanInfo.estimate = 10;
-		unplanInfo.actual = 0;
+		//unplanInfo.actual = 0;
 		
 		long id = mUnplanMapper.addUnplan(sProjectId, sSprintId, unplanInfo);
 		UnplanObject unplan = UnplanObject.get(id);
@@ -142,7 +142,7 @@ public class UnplanItemMapperTest {
 		assertEquals(unplanInfo.name, unplan.getName());
 		assertEquals(unplanInfo.notes, unplan.getNotes());
 		assertEquals(unplanInfo.estimate, unplan.getEstimate());
-		assertEquals(unplanInfo.estimate, unplan.getActual());
+		//assertEquals(unplanInfo.estimate, unplan.getActual());
 		assertEquals(UnplanObject.STATUS_UNCHECK, unplan.getStatus());
 		assertEquals(1, unplan.getSerialId());
 		assertEquals(sProjectId, unplan.getProjectId());
@@ -167,7 +167,7 @@ public class UnplanItemMapperTest {
 		assertEquals("TEST_UNPLAN_1", unplan.getName());
 		assertEquals("TEST_UNPLAN_NOTES_1", unplan.getNotes());
 		assertEquals(2, unplan.getEstimate());
-		assertEquals(2, unplan.getActual());
+		//assertEquals(2, unplan.getActual());
 		assertEquals(sSprintId, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 		
@@ -177,7 +177,7 @@ public class UnplanItemMapperTest {
 		unplanInfo.name = "亨利欺負學長";
 		unplanInfo.notes = "亨利快衝阿";
 		unplanInfo.estimate = 888;
-		unplanInfo.actual = 456;
+		//unplanInfo.actual = 456;
 		unplanInfo.sprintId = 2;
 		unplanInfo.status = UnplanObject.STATUS_DONE;
 		ArrayList<Long> partnersId = new ArrayList<Long>();
@@ -192,7 +192,7 @@ public class UnplanItemMapperTest {
 		assertEquals("亨利欺負學長", unplan.getName());
 		assertEquals("亨利快衝阿", unplan.getNotes());
 		assertEquals(888, unplan.getEstimate());
-		assertEquals(456, unplan.getActual());
+		//assertEquals(456, unplan.getActual());
 		assertEquals(2, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 		assertEquals(2, unplan.getPartnersId().size());
@@ -213,7 +213,7 @@ public class UnplanItemMapperTest {
 		unplanInfo.name = "亨利欺負學長";
 		unplanInfo.notes = "亨利快衝阿";
 		unplanInfo.estimate = 888;
-		unplanInfo.actual = 456;
+		//unplanInfo.actual = 456;
 		unplanInfo.sprintId = 2;
 		unplanInfo.status = UnplanObject.STATUS_DONE;
 		
@@ -225,14 +225,14 @@ public class UnplanItemMapperTest {
 		assertEquals("亨利欺負學長", unplan.getName());
 		assertEquals("亨利快衝阿", unplan.getNotes());
 		assertEquals(888, unplan.getEstimate());
-		assertEquals(456, unplan.getActual());
+		//assertEquals(456, unplan.getActual());
 		assertEquals(2, unplan.getSprintId());
 		assertEquals(sProjectId, unplan.getProjectId());
 		
 		// get histories
 		ArrayList<HistoryObject> histories = unplan.getHistories();
 		// check histories size
-		assertEquals(7, histories.size());
+		assertEquals(6, histories.size());
 		// check 1th history
 		assertEquals(HistoryObject.TYPE_CREATE, histories.get(0).getHistoryType());
 		assertEquals("Create Unplan #1", histories.get(0).getDescription());
@@ -249,11 +249,8 @@ public class UnplanItemMapperTest {
 		assertEquals(HistoryObject.TYPE_ESTIMATE, histories.get(4).getHistoryType());
 		assertEquals("2 => 888", histories.get(4).getDescription());
 		// check 6th history
-		assertEquals(HistoryObject.TYPE_ACTUAL, histories.get(5).getHistoryType());
-		assertEquals("2 => 456", histories.get(5).getDescription());
-		// check 7th history
-		assertEquals(HistoryObject.TYPE_SPRINT_ID, histories.get(6).getHistoryType());
-		assertEquals("Sprint #1 => Sprint #2", histories.get(6).getDescription());
+		assertEquals(HistoryObject.TYPE_SPRINT_ID, histories.get(5).getHistoryType());
+		assertEquals("Sprint #1 => Sprint #2", histories.get(5).getDescription());
 	}
 	
 	@Test

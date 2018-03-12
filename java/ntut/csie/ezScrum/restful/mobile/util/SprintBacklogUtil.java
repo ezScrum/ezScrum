@@ -13,7 +13,7 @@ public interface SprintBacklogUtil {
 	public final static String TAG_HANDLER = "handler" ;
 	public final static String TAG_PARTNERS = "partners" ;
 	public final static String TAG_REMAINS = "remains" ;
-	public final static String TAG_ACTUAL = "actual" ;
+	//public final static String TAG_ACTUAL = "actual" ;
 	public final static String TAG_NOTES = "notes" ;
 	public final static String TAG_TASKINFORMATION = "taskInformation" ;
 	public final static String TAG_SPRINTBACKLOGINFORMATION = "sprintBacklogInformation"  ;

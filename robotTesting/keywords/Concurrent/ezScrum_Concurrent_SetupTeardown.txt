@@ -14,7 +14,7 @@ Test Concurrent Suite Setup
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
 
 Test Concurrent Suite Teardown
     Click Image    images/logout.gif

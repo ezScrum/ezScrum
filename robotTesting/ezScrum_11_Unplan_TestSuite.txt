@@ -8,7 +8,7 @@ Resource          keywords/Unplan/ezScrum_Unplan_SetupTeardown.txt
 @{addUnplanList}    1    Test Unplanned    1    account01    account02;account03    99    This is Unplanned Notes
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
 @{editUnplanList}    1    New Unplanned Name    1    account03    account02    50    New Unplanned Notes
-...               30    assigned    ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
+...               assigned    ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 status, 8 specific time
 @{deleteUnplanList1}    1    Test Unplanned 1    1    account03    account02    99    This is Unplanned Notes 1
 ...               ?    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
 @{deleteUnplanList2}    2    Test Unplanned 2    1    account03    account02    99    This is Unplanned Notes 2
@@ -27,10 +27,10 @@ Test Unplan - Add Unplan
     ${actualSprintId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
     ${actualEstimate} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
     ${actualStatus} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
-    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
-    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
-    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']
-    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-8']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
+    Comment    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
+    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
+    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
+    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7specific time
     # assert
     Should Be Equal    1    ${tcItems}
     Should Be Equal    ${addUnplanList[0]}    ${actualId}
@@ -40,7 +40,7 @@ Test Unplan - Add Unplan
     Should Be Equal    ${addUnplanList[4]}    ${actualPartners}
     Should Be Equal    ${addUnplanList[5]}    ${actualEstimate}
     Should Be Equal    ${addUnplanList[6]}    ${actualNotes}
-    Should Be Equal    ${addUnplanList[5]}    ${actualActual}
+    Comment    Should Be Equal    ${addUnplanList[5]}    ${actualActual}
     Should Be Equal    new    ${actualStatus}
     [Teardown]    Test Unplan Add Teardown
 
@@ -54,10 +54,10 @@ Test Unplan - Edit Unplan
     ${actualSprintId} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-2']
     ${actualEstimate} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-3']
     ${actualStatus} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-4']
-    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
-    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
-    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']
-    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-8']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 actual, 8 status, 9 specific time
+    Comment    ${actualActual} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
+    ${actualHandler} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-5']
+    ${actualPartners} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-6']
+    ${actualNotes} =    Get Text    //div[@id='UnplannedItem_Panel']//div[@class='x-grid3-cell-inner x-grid3-col-7']    # 0 id, 1 name, 2 sprint id, 3 handler, 4 partners, 5 estimate, 6 notes, 7 status, 8 specific time
     # assert
     Should Be Equal    ${editUnplanList[0]}    ${actualId}
     Should Be Equal    ${editUnplanList[1]}    ${actualName}
@@ -66,8 +66,8 @@ Test Unplan - Edit Unplan
     Should Be Equal    ${editUnplanList[4]}    ${actualPartners}
     Should Be Equal    ${editUnplanList[5]}    ${actualEstimate}
     Should Be Equal    ${editUnplanList[6]}    ${actualNotes}
-    Should Be Equal    ${editUnplanList[7]}    ${actualActual}
-    Should Be Equal    ${editUnplanList[8]}    ${actualStatus}
+    Comment    Should Be Equal    ${editUnplanList[7]}    ${actualActual}
+    Should Be Equal    ${editUnplanList[7]}    ${actualStatus}
     [Teardown]    Test Unplan Edit Teardown
 
 Test Unplan - Delete Unplan

@@ -17,7 +17,7 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 	public final static int TYPE_NAME = 2;
 	public final static int TYPE_ESTIMATE = 3;
 	public final static int TYPE_REMAIMS = 4;
-	public final static int TYPE_ACTUAL = 5;
+	//public final static int TYPE_ACTUAL = 5;
 	public final static int TYPE_IMPORTANCE = 6;
 	public final static int TYPE_VALUE = 7;
 	public final static int TYPE_ATTACH_FILE = 11;
@@ -123,8 +123,8 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 				return getNormalDesc();
 			case TYPE_REMAIMS:
 				return getNormalDesc();
-			case TYPE_ACTUAL:
-				return getNormalDesc();
+			/*case TYPE_ACTUAL:
+				return getNormalDesc();*/
 			case TYPE_IMPORTANCE:
 				return getNormalDesc();
 			case TYPE_VALUE:
@@ -167,8 +167,8 @@ public class HistoryObject implements IBaseObject,Comparable<HistoryObject> {
 				return "Estimate";
 			case TYPE_REMAIMS:
 				return "Remains";
-			case TYPE_ACTUAL:
-				return "Actual Hour";
+			/*case TYPE_ACTUAL:
+				return "Actual Hour";*/
 			case TYPE_IMPORTANCE:
 				return "Importance";
 			case TYPE_VALUE:

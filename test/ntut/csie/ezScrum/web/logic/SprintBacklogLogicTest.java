@@ -175,9 +175,9 @@ public class SprintBacklogLogicTest {
 
 		// Done Issue
 		mSprintBacklogLogic.closeTask(task.getId(), DONE_NAME, DONE_NOTE,
-				task.getActual(), CHECKOUT_TIME);
+				/*task.getActual(),*/ CHECKOUT_TIME);
 		mSprintBacklogLogic.closeTask(task2.getId(), DONE_NAME, DONE_NOTE,
-				task2.getActual(), CHECKOUT_TIME);
+				/*task2.getActual(),*/ CHECKOUT_TIME);
 
 		task.reload();
 		task2.reload();

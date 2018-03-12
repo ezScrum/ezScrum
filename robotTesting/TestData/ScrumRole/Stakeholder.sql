@@ -381,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,

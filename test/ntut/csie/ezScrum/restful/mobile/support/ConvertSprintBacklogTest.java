@@ -198,7 +198,7 @@ public class ConvertSprintBacklogTest {
 	@Test
 	public void testGetTaskJsonString() throws JSONException {
 		TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
-		task.setName("TEST_TASK").setEstimate(3).setActual(5)
+		task.setName("TEST_TASK").setEstimate(3)/*.setActual(5)*/
 			.setRemains(8).setNotes("TEST_NOTE").save();
 		
 		// assert data
@@ -210,7 +210,7 @@ public class ConvertSprintBacklogTest {
 		assertEquals("[]", responseJson.getJSONArray("partners").toString());
 		assertEquals(task.getEstimate(), responseJson.getInt("estimate"));
 		assertEquals(task.getRemains(), responseJson.getInt("remains"));
-		assertEquals(task.getActual(), responseJson.getInt("actual"));
+		//assertEquals(task.getActual(), responseJson.getInt("actual"));
 		assertEquals(task.getNotes(), responseJson.getString("notes"));
 	}
 	
@@ -219,7 +219,7 @@ public class ConvertSprintBacklogTest {
 		ArrayList<TaskObject> tasks = new ArrayList<TaskObject>();
 		for (int i = 0; i < 5; i++) {
 			TaskObject task = new TaskObject(mCP.getAllProjects().get(0).getId());
-			task.setName("TEST_TASK_" + (i+1)).setEstimate(3*i).setActual(5*i)
+			task.setName("TEST_TASK_" + (i+1)).setEstimate(3*i)/*.setActual(5*i)*/
 				.setRemains(8*i).setNotes("TEST_NOTE_" + (i+1)).save();
 			tasks.add(task);
 		}
@@ -238,7 +238,7 @@ public class ConvertSprintBacklogTest {
 			assertEquals("[]", taskJson.getJSONArray("partners").toString());
 			assertEquals(task.getEstimate(), taskJson.getInt("estimate"));
 			assertEquals(task.getRemains(), taskJson.getInt("remain"));
-			assertEquals(task.getActual(), taskJson.getInt("actual"));
+			//assertEquals(task.getActual(), taskJson.getInt("actual"));
 			assertEquals(task.getNotes(), taskJson.getString("notes"));
 		}
 	}

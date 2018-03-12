@@ -31,14 +31,14 @@ Test ProductBacklog - Search
     [Setup]    Test Product Backlog Search Setup
     Reload Page
     Title Should Be    ezScrum, SSLab NTUT
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Sleep    5s
     ${sprint1Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint1 in A"]/../../td[1]/div
     ${sprint2Id}=    Get Text    //div[@id="SprintPlan_Page_Layout"]//div/table/tbody/tr//td/div[text()="sprint2 in A"]/../../td[1]/div
     # search前先重新整理
     Reload Page
     Title Should Be    ezScrum, SSLab NTUT
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     Wait Until Page Contains Element    xpath=//div[@id="productBacklogMasterPanel"]//span[text()="Product Backlog"]
     # 設定搜尋條件    搜尋StoryName
     Set Product Backlog Search Condition    Story Name    First

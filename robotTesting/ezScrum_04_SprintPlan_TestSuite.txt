@@ -17,27 +17,27 @@ Library           DateTime
 *** Test Cases ***
 Test Sprint Plan - Create Sprint
     [Setup]    Test Create Sprint Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    sprint1 sprint goal    2    4    100    100
     [Teardown]    Test Create Sprint Teardown
 
 Test Sprint Plan - Delete Sprint
     [Setup]    Test Delete Sprint Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Delete Sprint
     [Teardown]    Test Delete Sprint Teardown
 
 Test Sprint Plan - Sprint Goal With NewLine
     [Documentation]    修正在Sprint Goal 輸入換行符號時，無法進入Sprint Backlog.
     [Setup]    Test Sprint Goal With NewLine Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Verify Sprint Goal With NewLine
     [Teardown]    Test Sprint Goal With NewLine Teardown
 
 Test Sprint Plan - Check End Date and Demo Date
     [Setup]    Test Check End Date and Demo Date Setup
     #Select Sprint Plan
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     #Click New Sprint
     Page Should Contain    New Sprint
     Click Element    xpath=//table[@id="SprintPlan_addSprintBtn"]//button[text()="New Sprint"]
@@ -136,7 +136,7 @@ Test Sprint Plan - Check End Date and Demo Date
 Test Sprint Plan - Check Recommended Start Date
     [Setup]    Test Check Recommended Start Date Setup
     #Select Sprint Plan
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     #Create New Sprint
     Create Sprint    sprint1 sprint goal    2    4    100    100
     #Create New Sprint
@@ -154,7 +154,7 @@ Test Sprint Plan - Check Recommended Start Date
 
 Test Sprint Plan - Interval Check
     [Setup]    Test Interval Check Setup
-    Select Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint With Typing Zero In Interval    test sprint    1    100    100
     #It does nothing if Submit Button is disabled
     Click Element    xpath=//button[text()="Submit"]
@@ -165,7 +165,7 @@ Test Sprint Plan - Interval Check
 
 Test Sprint Plan - Can Not Create Second Sprint With Same Date
     [Setup]    Test Can Not Create Second Sprint With Same Date Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    Test    2    4    100    100
     Create Sprint With Same Date    Test2    2    3    50    50
     ${PopOutText}=    Get Text    xpath=//span[text()="Sorry, the Start Date or End Date is overlap with the other sprint."]
@@ -176,7 +176,7 @@ Test Sprint Plan - Can Not Create Second Sprint With Same Date
 
 Test Sprint Plan - Can Not Create Sprints With Same Range
     [Setup]    Test Can Not Create Second Sprint With Same Date Setup
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint With Date    Test1    2016/09/15    1    4    80    80
     Create Sprint With Date    Test2    2016/09/24    1    4    80    80
     Create Sprint With Date    Test3    2016/09/01    1    4    80    80

@@ -278,7 +278,7 @@ public class TaskBoardHelper {
 		String Status;
 		String Partners;
 		String Link;
-		String Actual;
+		//String Actual;
 		
 		public TaskBoard_Task(TaskObject task) {
 			Id = Long.toString(task.getSerialId());
@@ -286,7 +286,7 @@ public class TaskBoardHelper {
 			Estimate = String.valueOf(task.getEstimate());
 			IsRemainHoursChanged = task.isRemainHoursChanged();
 			RemainHours = String.valueOf(task.getRemains());
-			Actual = String.valueOf(task.getActual());
+			//Actual = String.valueOf(task.getActual());
 			HandlerUserName = task.getHandler() == null ? "" : task.getHandler().getUsername();
 			Partners = task.getPartnersUsername();
 			Status = task.getStatusString();

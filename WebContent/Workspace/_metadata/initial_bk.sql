@@ -109,7 +109,7 @@ CREATE TABLE `task` (
   `status` TINYINT UNSIGNED NOT NULL,
   `estimate` INT NOT NULL DEFAULT 0,
   `remain` INT NOT NULL DEFAULT 0,
-  `actual` INT NOT NULL DEFAULT 0,
+  /*`actual` INT NOT NULL DEFAULT 0,*/
   `notes` TEXT NULL,
   `create_time` BIGINT UNSIGNED NOT NULL,
   `update_time` BIGINT UNSIGNED NOT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE `unplan` (
   `name` VARCHAR(255) NOT NULL,
   `handler_id` BIGINT NOT NULL,
   `estimate` INT NOT NULL,
-  `actual` INT NOT NULL,
+  /*`actual` INT NOT NULL,*/
   `notes` TEXT NOT NULL,
   `status` TINYINT UNSIGNED NOT NULL,
   `project_id` BIGINT UNSIGNED NOT NULL,

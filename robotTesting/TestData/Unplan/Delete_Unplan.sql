@@ -355,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `status` tinyint(3) unsigned NOT NULL,
   `estimate` int(11) NOT NULL DEFAULT '0',
   `remain` int(11) NOT NULL DEFAULT '0',
-  `actual` int(11) NOT NULL DEFAULT '0',
+  /*`actual` int(11) NOT NULL DEFAULT '0',*/
   `notes` text,
   `create_time` bigint(20) unsigned NOT NULL,
   `update_time` bigint(20) unsigned NOT NULL,
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `unplan` (
   `name` varchar(255) NOT NULL,
   `handler_id` bigint(20) NOT NULL,
   `estimate` int(11) NOT NULL,
-  `actual` int(11) NOT NULL,
+  /*`actual` int(11) NOT NULL,*/
   `notes` text NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `project_id` bigint(20) unsigned NOT NULL,
@@ -408,10 +408,10 @@ CREATE TABLE IF NOT EXISTS `unplan` (
 -- 正在導出表  ezscrum_180.unplan 的資料：3 rows
 DELETE FROM `unplan`;
 /*!40000 ALTER TABLE `unplan` DISABLE KEYS */;
-INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, `actual`, `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
-	(1, 1, 'Test Unplanned 1', 4, 99, 99, 'This is Unplanned Notes 1', 1, 1, 1, 1457579685339, 1457579685339),
-	(2, 2, 'Test Unplanned 2', 4, 99, 99, 'This is Unplanned Notes 2', 1, 1, 1, 1457579711106, 1457579711106),
-	(3, 3, 'Test Unplanned 3', 3, 99, 99, 'This is Unplanned Notes 3', 1, 1, 1, 1457579734570, 1457579734570);
+INSERT INTO `unplan` (`id`, `serial_id`, `name`, `handler_id`, `estimate`, /*`actual`,*/ `notes`, `status`, `project_id`, `sprint_id`, `create_time`, `update_time`) VALUES
+	(1, 1, 'Test Unplanned 1', 4, 99, /*99,*/ 'This is Unplanned Notes 1', 1, 1, 1, 1457579685339, 1457579685339),
+	(2, 2, 'Test Unplanned 2', 4, 99, /*99,*/ 'This is Unplanned Notes 2', 1, 1, 1, 1457579711106, 1457579711106),
+	(3, 3, 'Test Unplanned 3', 3, 99, /*99,*/ 'This is Unplanned Notes 3', 1, 1, 1, 1457579734570, 1457579734570);
 /*!40000 ALTER TABLE `unplan` ENABLE KEYS */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

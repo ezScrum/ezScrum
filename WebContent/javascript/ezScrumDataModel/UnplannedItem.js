@@ -1,5 +1,5 @@
 var UnplannedItemRecord = Ext.data.Record.create([
-	{name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimate', sortType:'asFloat'}, 'Status', 'ActualHour', 'Handler', 'Partners', 'Notes', 'Link'
+	{name:'Id', sortType:'asInt'}, 'Name', 'SprintID', {name:'Estimate', sortType:'asFloat'}, 'Status', /*'ActualHour',*/ 'Handler', 'Partners', 'Notes', 'Link'
 ]);
 	
 var UnplannedItemReader = new Ext.data.XmlReader({
@@ -16,7 +16,7 @@ var UnplannedItemStore = new Ext.data.Store({
 		{name : 'SprintID'},
 		{name : 'Estimate', type:'float'},
 		{name : 'Status'},
-		{name : 'ActualHour'},
+		//{name : 'ActualHour'},
 		{name : 'Handler'},
 		{name : 'Partners'},
 		{name : 'Notes'}
@@ -31,7 +31,7 @@ var UnplannedItemColumnModel = function () {
 		{dataIndex: 'SprintID',header: 'SprintID', width: 50},
 		{dataIndex: 'Estimate',header: 'Estimate', width: 70},
 		{dataIndex: 'Status',header: 'Status', width: 50},
-		{dataIndex: 'ActualHour',header: 'Actual', width: 50},
+		//{dataIndex: 'ActualHour',header: 'Actual', width: 50},
 		{dataIndex: 'Handler',header: 'Handler', width: 50},
 		{dataIndex: 'Partners',header: 'Partners', width: 50},
 		{dataIndex: 'Notes',header: 'Notes', width: 300}

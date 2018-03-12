@@ -88,7 +88,7 @@ public class AjaxAddSprintTaskAction extends PermissionAction {
 		sb.append("<Name>" + TranslateSpecialChar.TranslateXMLChar(task.getName())
 				+ "</Name>");
 		sb.append("<Estimate>" + task.getEstimate() + "</Estimate>");
-		sb.append("<Actual>" + task.getActual() + "</Actual>");
+		//sb.append("<Actual>" + task.getActual() + "</Actual>");
 		sb.append("<Notes>" + TranslateSpecialChar.TranslateXMLChar(task.getNotes())
 				+ "</Notes>");
 		sb.append("</Task></AddNewTask>");

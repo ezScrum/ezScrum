@@ -40,7 +40,7 @@ public class UnplanItemMapper {
 		UnplanObject unplan = new UnplanObject(sprintId, projectId);
 		unplan.setName(unplanInfo.name).setNotes(unplanInfo.notes)
 			.setEstimate(unplanInfo.estimate).setStatus(unplanInfo.status)
-			.setActual(unplanInfo.actual).setHandlerId(unplanInfo.handlerId)
+			/*.setActual(unplanInfo.actual)*/.setHandlerId(unplanInfo.handlerId)
 			.setCreateTime(unplanInfo.specificTime).save();
 		
 		for (long partnerId : unplanInfo.partnersId) {
@@ -53,7 +53,7 @@ public class UnplanItemMapper {
 		UnplanObject unplan = UnplanObject.get(unplanInfo.projectId, unplanInfo.serialId);
 		if (unplan != null) {
 			unplan.setName(unplanInfo.name).setNotes(unplanInfo.notes)
-			.setEstimate(unplanInfo.estimate).setActual(unplanInfo.actual)
+			.setEstimate(unplanInfo.estimate)/*.setActual(unplanInfo.actual)*/
 			.setHandlerId(unplanInfo.handlerId).setPartnersId(unplanInfo.partnersId)
 			.setStatus(unplanInfo.status).setSprintId(unplanInfo.sprintId)
 			.setUpdateTime(unplanInfo.specificTime).save();

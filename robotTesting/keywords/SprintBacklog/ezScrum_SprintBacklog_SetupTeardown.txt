@@ -12,7 +12,7 @@ Test Sprint Backlog - PreCondition
     ${_IsProjectIDExisted}=    Check ProjectID Is Existed    ${PROJECT_NAME}
     Run Keyword If    "${_IsProjectIDExisted}"=="false"    Create Project
     Run Keyword If    "${_IsProjectIDExisted}"=="true"    Select Project    ${PROJECT_NAME}DisplayName
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    sprint1 sprint goal    2    4    100    100
 
 Test Sprint Backlog - PostCondition
@@ -33,7 +33,7 @@ Test Sprint Backlog - Edit Story Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Create Story With Arguments    add story for test edit story    0    0    0    ${EMPTY}    "Note: newStoryNormal"
     ...    "HowToDemo: newStoryNormal"
 
@@ -52,7 +52,7 @@ Test Sprint Backlog - Add Story Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Sprint Backlog - Add Story Teardown
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -69,7 +69,7 @@ Test Sprint Backlog - Drop Story Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Comment    Create Story With Arguments    add story for test drop story    0    0    0    ${EMPTY}
     ...    "Note: dropStory"    "HowToDemo: dropStory"
 
@@ -100,7 +100,7 @@ Test Sprint Backlog - Edit Sprint Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
 
 Test Sprint Backlog - Edit Sprint Teardown
     Comment    Test Sprint Backlog - PostCondition
@@ -109,7 +109,7 @@ Test Sprint Backlog - Edit Sprint Teardown
 
 Test Sprint Backlog - Add Task Setup
     Comment    Test Sprint Backlog - PreCondition
-    Comment    Select Project Management Item    Sprint Backlog
+    Comment    Go To Page    Sprint Backlog
     Comment    Create Story With Arguments    story for add task    0    0    0    ${EMPTY}
     ...    for add task    display after add task
     #setup
@@ -120,7 +120,7 @@ Test Sprint Backlog - Add Task Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Set Test Variable    ${storyName}    story for add task
 
 Test Sprint Backlog - Add Task Teardown
@@ -130,7 +130,7 @@ Test Sprint Backlog - Add Task Teardown
 
 Test Sprint Backlog - Edit Task Setup
     Comment    Test Sprint Backlog - PreCondition
-    Comment    Select Project Management Item    Sprint Backlog
+    Comment    Go To Page    Sprint Backlog
     Comment    Create Story With Arguments    story for edit task    0    0    0    ${EMPTY}
     ...    for edit task    display after edit task
     #setup
@@ -141,7 +141,7 @@ Test Sprint Backlog - Edit Task Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Set Test Variable    ${storyName}    story for edit task
 
 Test Sprint Backlog - Edit Task Teardown
@@ -159,7 +159,7 @@ Test Sprint Backlog - Drop Task Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Comment    Create Story With Arguments    story for drop task    0    0    0    ${EMPTY}
     ...    for drop task    display after drop task
     Set Test Variable    ${storyName}    story for drop task
@@ -179,7 +179,7 @@ Test Sprint Backlog - Add Existing Task Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Comment    Create Story With Arguments    story for add existing task    0    0    0    ${EMPTY}
     ...    for add existing task    display after add existing task
     Set Test Variable    ${storyName}    story for add existing task
@@ -199,7 +199,7 @@ Test Sprint Backlog - Show Task History Setup
     _InputLoginForm    ${userName}    ${userPassword}
     #Select project
     Select Project    localtestProjectDisplayName
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Create Story With Arguments    story for show task history    0    0    0    ${EMPTY}    for show task history
     ...    display after show task history
     Set Test Variable    ${storyName}    story for show task history
@@ -232,7 +232,7 @@ Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    TestProject
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Disabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -254,7 +254,7 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled 
     Comment    Wait Until Element Is Visible    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]    60
     Comment    Click Element    xpath=//a[@class="x-tree-node-anchor"]/span[text()="Sprint Backlog"]
     Select Project    TestProject
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Disabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
@@ -272,8 +272,23 @@ Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled S
     Click Button    xpath=//input[@id="Next"]
     #Select Project
     Select Project    TestProject
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
 
 Test Sprint Backlog - Button Printable Stories Enabled Printable Tasks Enabled Teardown
     Clean Database    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Close Browser
+
+Sprint Backlog - Check Task Actual Hours Has Been Removed When Edit Task
+    #setup
+    Open Browser    ${LOGIN_URL}    ${BROWSER}
+    ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    SprintBacklog    Drop_Task.sql
+    Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
+    Maximize Browser Window
+    _InputLoginForm    ${userName}    ${userPassword}
+    #Select project
+    Select Project    localtestProjectDisplayName
+    Go To Page    Sprint Backlog
+    Set Test Variable    ${storyName}    story for edit task
+    Set Test Variable    ${taskName}    task 1 for drop task
+    Set Test Variable    ${taskEstimate}    3
+    Set Test Variable    ${taskNotes}    notes for drop task

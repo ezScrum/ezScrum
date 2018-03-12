@@ -279,8 +279,8 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		        .append("\"Attach\":false,")
 		        .append("\"Status\":\"").append(task.getStatusString()).append("\",")
 		        .append("\"Partners\":\"\",")
-		        .append("\"Link\":\"").append("\",")
-		        .append("\"Actual\":\"").append(task.getActual()).append("\"")
+		        .append("\"Link\":\"")/*.append("\",")
+		        .append("\"Actual\":\"").append(task.getActual())*/.append("\"")
 		        .append("}]}],")
 		        .append("\"success\":true,\"Total\":1}");
 		assertEquals(expectedResponseText.toString(), result);
@@ -316,7 +316,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		ArrayList<TaskObject> tasks = ATTS.getTasks();
 		ArrayList<StoryObject> stories = ASTS.getStories();
 		sprintBacklogLogic.checkOutTask(tasks.get(0).getId(), tasks.get(0).getName(), CA.getAccount_ID(1), "", tasks.get(0).getNotes(), "");
-		sprintBacklogLogic.closeTask(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), 0, "");
+		sprintBacklogLogic.closeTask(tasks.get(0).getId(), tasks.get(0).getName(), tasks.get(0).getNotes(), /*0,*/ "");
 		sprintBacklogLogic.closeStory(stories.get(0).getId(), stories.get(0).getName(), stories.get(0).getNotes(), "");
 		// 將第三個 task check out，用 TEST_ACCOUNT_ID_1 checkout task
 		sprintBacklogLogic.checkOutTask(tasks.get(2).getId(), tasks.get(2).getName(), CA.getAccount_ID(1), "", tasks.get(2).getNotes(), "");
@@ -392,7 +392,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 				}
 				assertEquals(task.getPartnersUsername(), taskList.get(j).get("Partners"));
 				assertEquals("", taskList.get(j).get("Link"));
-				assertEquals(String.valueOf(task.getActual()), taskList.get(j).get("Actual"));
+				//assertEquals(String.valueOf(task.getActual()), taskList.get(j).get("Actual"));
 			}
 		}
 	}
@@ -568,7 +568,7 @@ public class GetTaskBoardStoryTaskListTest extends MockStrutsTestCase {
 		assertEquals(task.getName(), actualTask.getString("Name"));
 		assertEquals(task.getEstimate(), actualTask.getInt("Estimate"));
 		assertEquals(task.getRemains(), actualTask.getInt("RemainHours"));
-		assertEquals(task.getActual(), actualTask.getInt("Actual"));
+		//assertEquals(task.getActual(), actualTask.getInt("Actual"));
 		assertEquals(task.getNotes(), actualTask.getString("Notes"));
 		assertEquals(task.getStatusString(), actualTask.getString("Status"));
 	}

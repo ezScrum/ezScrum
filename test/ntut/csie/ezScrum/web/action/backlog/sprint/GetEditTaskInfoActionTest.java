@@ -113,7 +113,7 @@ public class GetEditTaskInfoActionTest extends MockStrutsTestCase {
 					.append("<Name>").append(task.getName()).append("</Name>")
 					.append("<Status>").append(task.getStatusString()).append("</Status>")
 					.append("<Estimate>").append(task.getEstimate()).append("</Estimate>")
-					.append("<Actual>").append(task.getActual()).append("</Actual>")
+					//.append("<Actual>").append(task.getActual()).append("</Actual>")
 					.append("<Handler></Handler>")
 					.append("<Remains>").append(task.getRemains()).append("</Remains>")
 					.append("<Partners></Partners>")

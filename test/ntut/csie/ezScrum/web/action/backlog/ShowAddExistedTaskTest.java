@@ -151,8 +151,10 @@ public class ShowAddExistedTaskTest extends MockStrutsTestCase {
 							.append("</Link><Name>").append(expectedTaskName)
 							.append("</Name><Status>").append("new")
 							.append("</Status><Estimate>").append(expectedTaskEstimation)
-							.append("</Estimate><Actual>").append(0)
-							.append("</Actual><Handler></Handler><Partners></Partners><Notes>").append(expectedTaskNote)
+							/*.append("</Estimate><Actual>").append(0)
+							.append("</Actual><Handler></Handler><Partners></Partners><Notes>").append(expectedTaskNote)*/
+							.append("</Estimate>")
+							.append("<Handler></Handler><Partners></Partners><Notes>").append(expectedTaskNote)
 							.append("</Notes></Task></Tasks>");
 		String actualResponseText = response.getWriterBuffer().toString();
 		assertEquals(expectedResponseText.toString(), actualResponseText);

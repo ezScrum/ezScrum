@@ -16,7 +16,7 @@ Resource          keywords/SerialNumber/ezScrum_SerialNumber.txt
 Test Serial Number - Check ID In Sprint Plan
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Sprint_Plan.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    second sprint1    2    4    100    100
     Create Sprint Without StartDate    second sprint2    2    4    100    100
     Compare Text In Specific Xpath    //div[text() ="second sprint1"]/../../td[1]/div    1    #4    #should be 1
@@ -24,12 +24,12 @@ Test Serial Number - Check ID In Sprint Plan
     Delete Sprint
     Create Sprint Without StartDate    second sprint3    2    4    100    100
     Compare Text In Specific Xpath    //div[text() ="second sprint3"]/../../td[1]/div    3    #6    #should be 3
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     Add A New Story With Story Name And Value    story1    13
     Add A New Story With Story Name And Value    story2    8
     Select Sprint Backlog Page And Add All Existing Story
     Reload Page
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Click Element    xpath=//div[text()="second sprint1"]
     Compare Text In Specific Xpath    //div[text()="story1"]/../../td[1]/div    1    #4    #should be 1
     Compare Text In Specific Xpath    //div[text()="story2"]/../../td[1]/div    2    #5    #should be 2
@@ -38,7 +38,7 @@ Test Serial Number - Check ID In Sprint Plan
 Test Serial Number - Check ID In Product Backlog
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Product_Backlog.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     Add A New Story With Story Name And Value    story1    10
     Add A New Story With Story Name And Value    story2    10
     Compare Text In Specific Xpath    //div[text()="story1"]/../../td[2]/div    1
@@ -46,10 +46,10 @@ Test Serial Number - Check ID In Product Backlog
     Delete Story
     Add A New Story With Story Name And Value    story3    10
     Compare Text In Specific Xpath    //div[text()="story3"]/../../td[2]/div    3
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    test sprint    2    4    100    100
     Select Sprint Backlog Page And Add All Existing Story
-    Select Project Management Item    Product Backlog
+    Go To Page    Product Backlog
     Compare Text In Specific Xpath    //div[text()="story1"]/../../td[6]/div    4
     Compare Text In Specific Xpath    //div[text()="story3"]/../../td[6]/div    4
     [Teardown]    Clean Database and Exit ezScrum
@@ -57,9 +57,9 @@ Test Serial Number - Check ID In Product Backlog
 Test Serial Number - Check ID In Sprint Backlog
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Sprint_Backlog.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Sprint Plan
+    Go To Page    Sprint Plan
     Create Sprint    test sprint    2    4    100    100
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Click Element    xpath=//button[text()="Add Existing Stories"]
     Wait Until Page Contains    Add Existing Stories
     Mouse Down    xpath=//div[@class='x-grid3-hd-checker']    # click check box header
@@ -101,7 +101,7 @@ Test Serial Number - Check ID In Release Plan
 Test Serial Number - Check ID In Unplan Item
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Unplan_Item.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Unplanned
+    Go To Page    Unplanned
     Add A New Unplanned Item    unplanned1
     Add A New Unplanned Item    unplanned2
     Click Element    //div[text()="unplanned2"]
@@ -122,7 +122,7 @@ Test Serial Number - Check ID In Unplan Item
 Test Serial Number - Check ID In Restrosapective
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Retrospective.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Retrospective
+    Go To Page    Retrospective
     Add A New Restrospective    retrospective1
     Add A New Restrospective    retrospective2
     Click Element    //div[text()="retrospective2"]
@@ -143,13 +143,13 @@ Test Serial Number - Check ID In Restrosapective
 Test Serial Number - Check ID In Scrum Report
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Scrum_Report.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    Scrum Report
+    Go To Page    Scrum Report
     Select Frame    xpath=//iframe[@id="remainingWorkReport"]
     Click Element    xpath=//select[@id='ShowSprint']
     Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[1]    Sprint 1    #check sprint ID in drop down list    #Sprint 4    #should be Sprint 1
     Compare Text In Specific Xpath    //select[@id='ShowSprint']/option[2]    Sprint 3    #check sprint ID in drop down list    #Sprint 6    #should be Sprint 3
     Reload Page
-    Select Project Management Item    Scrum Report
+    Go To Page    Scrum Report
     Mouse Down    xpath=//div[@id="ezScrum_Report_Page"]/div/div/div/div[1]/div[1]/ul/li[2]/a[2]/em/span/span
     Mouse Up    xpath=//div[@id="ezScrum_Report_Page"]/div/div/div/div[1]/div[1]/ul/li[2]/a[2]/em/span/span
     Select Frame    xpath=//iframe[@id="scheduleReport"]
@@ -162,9 +162,9 @@ Test Serial Number - Check ID In Scrum Report
 Test Serial Number - Check ID In Task Board
     [Setup]    SetUp Data Base And Login ezScrum    Check_ID_In_Task_Board.sql
     Click Element    xpath=//div[text()="second"]
-    Select Project Management Item    TaskBoard
-    Select Project Management Item    Scrum Report
-    Select Project Management Item    TaskBoard
+    Go To Page    TaskBoard
+    Go To Page    Scrum Report
+    Go To Page    TaskBoard
     Compare Text In Specific Xpath    (//table[@class="StoryCard_Header"])[1]/tbody/tr/td/h2    [Story] #1    #check story card ID    #[Story] #4    #should be [Story] #1
     Compare Text In Specific Xpath    (//table[@class="StoryCard_Header"])[2]/tbody/tr/td/h2    [Story] #3    #check story card ID    #[Story] #6    #should be [Story] #3
     Compare Text In Specific Xpath    (//table[@class="TaskCard_Header"])[1]/tbody/tr/td/h2    [Task] #1    #check taslk card ID    #[Task] #4    #should be [Task] #1

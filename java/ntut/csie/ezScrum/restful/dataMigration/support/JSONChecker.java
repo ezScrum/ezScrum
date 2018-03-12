@@ -156,7 +156,7 @@ public class JSONChecker {
 			taskJSON.getString(TaskJSONEnum.HANDLER);
 			taskJSON.getInt(TaskJSONEnum.ESTIMATE);
 			taskJSON.getInt(TaskJSONEnum.REMAIN);
-			taskJSON.getInt(TaskJSONEnum.ACTUAL);
+			//taskJSON.getInt(TaskJSONEnum.ACTUAL);
 			taskJSON.getString(TaskJSONEnum.NOTES);
 			taskJSON.getString(TaskJSONEnum.STATUS);
 			JSONArray partnerJSONArray = taskJSON.getJSONArray(TaskJSONEnum.PARTNERS);
@@ -176,7 +176,7 @@ public class JSONChecker {
 			unplanJSON.getString(UnplanJSONEnum.NAME);
 			unplanJSON.getString(UnplanJSONEnum.HANDLER);
 			unplanJSON.getInt(UnplanJSONEnum.ESTIMATE);
-			unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
+			//unplanJSON.getInt(UnplanJSONEnum.ACTUAL);
 			unplanJSON.getString(UnplanJSONEnum.NOTES);
 			unplanJSON.getString(UnplanJSONEnum.STATUS);
 			JSONArray partnerJSONArray = unplanJSON.getJSONArray(UnplanJSONEnum.PARTNERS);

@@ -55,7 +55,7 @@ Drop Story
 Add Existing Story
     [Arguments]    ${storyName}
     # click show add existing story window
-    Select Project Management Item    Sprint Backlog
+    Go To Page    Sprint Backlog
     Click Element    xpath=//button[text()="Add Existing Stories"]
     Wait Until Page Contains    Add Existing Stories
     Mouse Down    xpath=//div[@class="x-grid3-cell-inner x-grid3-col-4" and (text()="${storyName}")]

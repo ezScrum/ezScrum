@@ -7,14 +7,14 @@ Resource          ../SprintBacklog/ezScrum_SprintBacklog_Task.txt
 Library           ../lib/DatabaseHandler.py
 
 *** Keywords ***
-Test TaskBoard_AttachFile - Setup
+TaskBoard_AttachFile - Setup
     ${attachFilePath}=    Catenate    SEPARATOR=\\    ${EXECDIR}    TestData    TaskBoard    Test_TaskBoard_AttachFile.sql
     Load Database    ${DB_URL}    ${DB_NAME}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${attachFilePath}
     Login Page    ${LOGIN_URL}
 
-Test TaskBoard_AttachFile - Teardown on Story
-    Select Project Management Item    Retrospective
-    Select Project Management Item    TaskBoard
+TaskBoard_AttachFile - Teardown on Story
+    Go To Page    Retrospective
+    Go To Page    TaskBoard
     #Delete Attached file in Story
     Wait Until Element Is Visible    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
     Click Element    //td[@class='StroyCard_Description']/h1[text()="story01"]/../../../tr/td/p/a[contains(@onclick, 'deleteStoryAttachFile')]
@@ -23,9 +23,9 @@ Test TaskBoard_AttachFile - Teardown on Story
     Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
     Exit ezScrum System
 
-Test TaskBoard_AttachFile - Teardown on Task
-    Select Project Management Item    Retrospective
-    Select Project Management Item    TaskBoard
+TaskBoard_AttachFile - Teardown on Task
+    Go To Page    Retrospective
+    Go To Page    TaskBoard
     #Delete Attached file in Task
     Wait Until Element Is Visible    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]
     Click Element    //td[@class='TaskCard_Description']/h1[text()='task02']/../../../tr/td/p/a[contains(@onclick, 'deleteTaskAttachFile')]

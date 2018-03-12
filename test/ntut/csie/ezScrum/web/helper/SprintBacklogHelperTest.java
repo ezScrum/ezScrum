@@ -125,7 +125,7 @@ public class SprintBacklogHelperTest {
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
 		taskInfo.remains = task.getRemains();
-		taskInfo.actual = task.getActual();
+		//taskInfo.actual = task.getActual();
 		taskInfo.notes = task.getNotes();
 		// update task
 		mSprintBacklogHelper.updateTask(taskInfo, "account_not_exist_handler",
@@ -154,7 +154,7 @@ public class SprintBacklogHelperTest {
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
 		taskInfo.remains = task.getRemains();
-		taskInfo.actual = task.getActual();
+		//taskInfo.actual = task.getActual();
 		taskInfo.notes = task.getNotes();
 		// create handler
 		AccountObject handler = new AccountObject("account_handler");
@@ -185,7 +185,7 @@ public class SprintBacklogHelperTest {
 		taskInfo.handlerId = task.getHandlerId();
 		taskInfo.estimate = task.getEstimate();
 		taskInfo.remains = task.getRemains();
-		taskInfo.actual = task.getActual();
+		//taskInfo.actual = task.getActual();
 		taskInfo.notes = task.getNotes();
 		// create handler
 		AccountObject handler = new AccountObject("account_handler");
